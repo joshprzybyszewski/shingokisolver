@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	f, err := os.Create(`solverProfile`)
+	f, err := os.Create(`solverProfile.pprof`)
 	if err != nil {
 		log.Fatal(err)
 	}
