@@ -3,7 +3,6 @@ package puzzlegrid
 import (
 	"errors"
 	"fmt"
-	"log"
 )
 
 type queueItem struct {
@@ -16,7 +15,7 @@ type BfsSolver struct {
 	queue []*queueItem
 }
 
-func NewSolver(
+func NewBFSSolver(
 	size int,
 	nl []NodeLocation,
 ) *BfsSolver {
@@ -39,7 +38,6 @@ func (b *BfsSolver) Solve() error {
 		fmt.Println(`could not solve`)
 		return errors.New(`unsolvable`)
 	}
-	// TODO verify if this is what we want?
 	fmt.Println(g.String())
 	return nil
 }
@@ -52,7 +50,7 @@ func (b *BfsSolver) solve() (*grid, bool) {
 			return g, true
 		}
 		numProcessed++
-		if numProcessed%1600 == 0 {
+		if numProcessed < 10 || numProcessed%10000 == 0 {
 			fmt.Printf("Processed: %d\n%s\n", numProcessed, g.String())
 			fmt.Scanf("hello there")
 		}
@@ -63,7 +61,6 @@ func (b *BfsSolver) solve() (*grid, bool) {
 func (b *BfsSolver) processQueueItem() (*grid, bool) {
 	q := b.queue[0]
 	b.queue = b.queue[1:]
-	log.Printf("q.grid:\n%s\n", q.grid.String())
 
 	if isIncomplete, err := q.grid.IsIncomplete(); err != nil {
 		return q.grid, false

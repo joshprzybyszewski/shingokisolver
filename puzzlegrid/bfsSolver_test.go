@@ -3,7 +3,6 @@ package puzzlegrid
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -16,8 +15,41 @@ func TestSolve3x3(t *testing.T) {
 		Value:   2,
 	}}
 
-	s := NewSolver(numEdges, nodes)
+	s := NewBFSSolver(numEdges, nodes)
 	err := s.Solve()
 	require.NoError(t, err)
-	assert.Error(t, err)
+}
+
+func TestSolve5x5(t *testing.T) {
+	numEdges := 5
+	nodes := []NodeLocation{{
+		Row:     3,
+		Col:     2,
+		IsWhite: false,
+		Value:   4,
+	}, {
+		Row:     3,
+		Col:     5,
+		IsWhite: true,
+		Value:   5,
+	}, {
+		Row:     4,
+		Col:     0,
+		IsWhite: true,
+		Value:   5,
+	}, {
+		Row:     5,
+		Col:     1,
+		IsWhite: false,
+		Value:   2,
+	}, {
+		Row:     5,
+		Col:     3,
+		IsWhite: false,
+		Value:   5,
+	}}
+
+	s := NewBFSSolver(numEdges, nodes)
+	err := s.Solve()
+	require.NoError(t, err)
 }

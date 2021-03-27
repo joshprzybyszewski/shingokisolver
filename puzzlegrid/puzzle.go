@@ -3,7 +3,6 @@ package puzzlegrid
 import (
 	"errors"
 	"fmt"
-	"log"
 	"strings"
 )
 
@@ -400,7 +399,6 @@ func (g *grid) isInvalidNode(
 
 func (g *grid) IsIncomplete() (bool, error) {
 	if g.IsInvalid() {
-		log.Printf("g.IsInvalid() ")
 		return true, errors.New(`invalid grid`)
 	}
 
@@ -412,7 +410,6 @@ func (g *grid) IsIncomplete() (bool, error) {
 			hasCol := g.IsEdge(headDown, r, c)
 			if hasRow || hasCol {
 				if !hasRow || !hasCol {
-					log.Printf("!hasRow || !hasCol ")
 					// don't need to walk the whole path if we see
 					// from the start that it's not going to complete.
 					return true, nil
@@ -429,13 +426,10 @@ func (g *grid) IsIncomplete() (bool, error) {
 	curR, curC, move := g.walkToNextPoint(firstR, firstC, headDown)
 	g.markNodesAsSeen(firstR, curR, firstC, curC)
 	var nextR, nextC int
-	log.Printf("headNowhere: %d, %d, %d, %d, %d)", move, curR, firstR, curC, firstC)
-	log.Printf("first (%d, %d), cur (%d, %d)", firstR, firstC, curR, curC)
-	for move != headNowhere || curR != firstR || curC != firstC {
-	nextR, nextC, move = g.walkToNextPoint(curR, curC, move)
-	log.Printf("move (%d) next (%d, %d), cur (%d, %d)", move, nextR, nextC, curR, curC)
-	g.markNodesAsSeen(curR, nextR, curC, nextC)
-		if curR == nextR && curC == nextC {
+	for curR != firstR || curC != firstC {
+		nextR, nextC, move = g.walkToNextPoint(curR, curC, move)
+		g.markNodesAsSeen(curR, nextR, curC, nextC)
+		if move == headNowhere || curR == nextR && curC == nextC {
 			break
 		}
 		curR, curC = nextR, nextC
@@ -448,7 +442,6 @@ func (g *grid) IsIncomplete() (bool, error) {
 	for _, cMap := range g.nodes {
 		for _, n := range cMap {
 			if n.straightLineLens != n.val || !n.seen {
-				log.Printf("%+v: n.straightLineLens != n.val (%v) || !n.seen (%v) ", n, n.straightLineLens != n.val, !n.seen)
 				// somehow, we made a loop, but we didn't see all of the nodes
 				// in the grid. therefore, this is incomplete.
 				return true, nil
@@ -472,19 +465,19 @@ func (g *grid) walkToNextPoint(
 	}
 
 	if efn.isabove && avoid != headUp {
-		return fromR, fromC - efn.above, headUp
+		return fromR - efn.above, fromC, headDown
 	}
 
 	if efn.isleft && avoid != headLeft {
-		return fromR - efn.left, fromC, headLeft
+		return fromR, fromC - efn.left, headRight
 	}
 
 	if efn.isbelow && avoid != headDown {
-		return fromR, fromC + efn.below, headDown
+		return fromR + efn.below, fromC, headUp
 	}
 
 	if efn.isright && avoid != headRight {
-		return fromR + efn.right, fromC, headRight
+		return fromR, fromC + efn.right, headLeft
 	}
 
 	return 0, 0, headNowhere

@@ -31,7 +31,8 @@ func main() {
 		Value:   5,
 	}}
 
-	s := puzzlegrid.NewSolver(numEdges, nodes)
+	s := puzzlegrid.NewDFSSolver(numEdges, nodes)
+	s.Solve()
 
 	numEdges = 2
 	nodes = []puzzlegrid.NodeLocation{{
@@ -41,6 +42,6 @@ func main() {
 		Value:   2,
 	}}
 
-	s = puzzlegrid.NewSolver(numEdges, nodes)
+	s = puzzlegrid.NewDFSSolver(numEdges, nodes)
 	s.Solve()
 }
