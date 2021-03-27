@@ -3,6 +3,11 @@ package puzzlegrid
 import (
 	"errors"
 	"fmt"
+	"time"
+)
+
+var (
+	showProcess = false
 )
 
 type queueItem struct {
@@ -13,6 +18,8 @@ type queueItem struct {
 
 type BfsSolver struct {
 	queue []*queueItem
+
+	numProcessed int
 }
 
 func NewBFSSolver(
@@ -23,16 +30,28 @@ func NewBFSSolver(
 		return nil
 	}
 
+	bestR, bestC, bestVal := -1, -1, -1
+	for _, n := range nl {
+		if n.Value > bestVal {
+			bestR = n.Row
+			bestC = n.Col
+			bestVal = n.Value
+		}
+	}
+
 	return &BfsSolver{
 		queue: []*queueItem{{
 			grid: newGrid(size, nl),
-			row:  nl[0].Row,
-			col:  nl[0].Col,
+			row:  bestR,
+			col:  bestC,
 		}},
 	}
 }
 
 func (b *BfsSolver) Solve() error {
+	defer func(t0 time.Time) {
+		fmt.Printf("BfsSolver.Solve processed %d paths in %s\n", b.numProcessed, time.Since(t0).String())
+	}(time.Now())
 	g, isSolved := b.solve()
 	if !isSolved {
 		fmt.Println(`could not solve`)
@@ -43,15 +62,15 @@ func (b *BfsSolver) Solve() error {
 }
 
 func (b *BfsSolver) solve() (*grid, bool) {
-	numProcessed := 0
 	for len(b.queue) > 0 {
+		b.numProcessed++
 		g, isSolved := b.processQueueItem()
 		if isSolved {
+			fmt.Printf("Processed: %d\n", b.numProcessed)
 			return g, true
 		}
-		numProcessed++
-		if numProcessed < 10 || numProcessed%10000 == 0 {
-			fmt.Printf("Processed: %d\n%s\n", numProcessed, g.String())
+		if showProcess && (b.numProcessed < 100 || b.numProcessed%100 == 0) {
+			fmt.Printf("Processed: %d\n%s\n", b.numProcessed, g.String())
 			fmt.Scanf("hello there")
 		}
 	}

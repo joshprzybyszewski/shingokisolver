@@ -3,6 +3,7 @@ package puzzlegrid
 import (
 	"errors"
 	"fmt"
+	"time"
 )
 
 type DfsSolver struct {
@@ -25,6 +26,10 @@ func NewDFSSolver(
 }
 
 func (d *DfsSolver) Solve() error {
+	defer func(t0 time.Time) {
+		fmt.Printf("DfsSolver.Solve processed %d paths in %s\n", d.numProcessed, time.Since(t0).String())
+	}(time.Now())
+
 	g, isSolved := d.solve()
 	if !isSolved {
 		fmt.Println(`could not solve`)
@@ -60,8 +65,8 @@ func (d *DfsSolver) processQueueItem(
 	}
 
 	d.numProcessed++
-	if d.numProcessed < 10 || d.numProcessed%10 == 0 {
-		fmt.Printf("Processed: %d\n%s\n", d.numProcessed, q.grid.String())
+	if showProcess && (d.numProcessed < 100 || d.numProcessed%10 == 0) {
+		fmt.Printf("Processing (%d, %d): %d\n%s\n", q.row, q.col, d.numProcessed, q.grid.String())
 		fmt.Scanf("hello there")
 	}
 

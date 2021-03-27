@@ -17,10 +17,10 @@ type cardinal int
 
 const (
 	headNowhere cardinal = 0
-	headUp      cardinal = 1
-	headLeft    cardinal = 2
-	headDown    cardinal = 3
-	headRight   cardinal = 4
+	headRight   cardinal = 1
+	headUp      cardinal = 2
+	headLeft    cardinal = 3
+	headDown    cardinal = 4
 )
 
 type row int
@@ -117,7 +117,6 @@ type node struct {
 }
 
 func (n *node) copy() *node {
-
 	return &node{
 		nType: n.nType,
 		val:   n.val,
@@ -125,6 +124,8 @@ func (n *node) copy() *node {
 }
 
 type grid struct {
+	numEdges int
+
 	rows  []edges
 	cols  []edges
 	nodes map[row]map[col]*node
@@ -154,11 +155,11 @@ func newGrid(
 			val:   nl.Value,
 		}
 	}
-	rows := make([]edges, numEdges)
+	rows := make([]edges, numEdges+1)
 	for i := range rows {
 		rows[i] = newEdges()
 	}
-	cols := make([]edges, numEdges)
+	cols := make([]edges, numEdges+1)
 	for i := range cols {
 		cols[i] = newEdges()
 	}
@@ -167,6 +168,7 @@ func newGrid(
 		efnCache[i] = make([]*edgesFromNode, numEdges+1)
 	}
 	return &grid{
+		numEdges:   numEdges,
 		rows:       rows,
 		cols:       cols,
 		nodes:      nodes,
@@ -203,6 +205,7 @@ func (g *grid) Copy() *grid {
 	}
 
 	return &grid{
+		numEdges:   g.numEdges,
 		rows:       rows,
 		cols:       cols,
 		nodes:      nodes,
@@ -214,19 +217,19 @@ func (g *grid) IsEdge(
 	move cardinal,
 	r, c int,
 ) bool {
-	if r < 0 || r >= len(g.rows) || c < 0 || c >= len(g.cols) {
+	if r < 0 || c < 0 {
 		return false
 	}
 
 	switch move {
 	case headLeft:
-		return g.rows[r].isEdge(c - 1)
+		return r < len(g.rows) && c <= len(g.cols) && g.rows[r].isEdge(c-1)
 	case headRight:
-		return g.rows[r].isEdge(c)
+		return r < len(g.rows) && c < len(g.cols) && g.rows[r].isEdge(c)
 	case headUp:
-		return g.cols[c].isEdge(r - 1)
+		return c < len(g.cols) && r <= len(g.rows) && g.cols[c].isEdge(r-1)
 	case headDown:
-		return g.cols[c].isEdge(r)
+		return c < len(g.cols) && r < len(g.rows) && g.cols[c].isEdge(r)
 	default:
 		return false
 	}
@@ -237,27 +240,39 @@ func (g *grid) AddEdge(
 	move cardinal,
 	r, c int,
 ) (*grid, error) {
-	if r < 0 || r >= len(g.rows) || c < 0 || c >= len(g.cols) {
-		return nil, errors.New(`invalid (r, c) on AddEdge`)
+	if r < 0 || c < 0 {
+		return nil, fmt.Errorf("invalid g.AddEdge(%d, %d, %d)", move, r, c)
 	}
 
 	var newEdges edges
 	switch move {
 	case headLeft, headRight:
+		if r >= len(g.rows) {
+			return nil, fmt.Errorf("r >= len(g.rows) g.AddEdge(%d, %d, %d)", move, r, c)
+		}
 		orig := g.rows[r]
 		startI := c
 		if move == headLeft {
 			startI = c - 1
+		}
+		if startI < 0 || startI >= g.numEdges {
+			return nil, fmt.Errorf("invalid col g.AddEdge(%d, %d, %d)", move, r, c)
 		}
 		newEdges = orig.addEdge(startI)
 		if newEdges == orig {
 			return nil, errors.New(`did not add edge`)
 		}
 	case headUp, headDown:
+		if c >= len(g.cols) {
+			return nil, fmt.Errorf("c >= len(g.cols) g.AddEdge(%d, %d, %d)", move, r, c)
+		}
 		orig := g.cols[c]
 		startI := r
 		if move == headUp {
 			startI = r - 1
+		}
+		if startI < 0 || startI >= g.numEdges {
+			return nil, fmt.Errorf("invalid row g.AddEdge(%d, %d, %d)", move, r, c)
 		}
 		newEdges = orig.addEdge(startI)
 		if newEdges == orig {
@@ -323,6 +338,9 @@ func (g *grid) getEdgesFromNode(
 	r, c int,
 ) *edgesFromNode {
 	if r < 0 || c < 0 {
+		return nil
+	}
+	if numNodes := len(g.cachedEFNs); r >= numNodes || c >= numNodes {
 		return nil
 	}
 
