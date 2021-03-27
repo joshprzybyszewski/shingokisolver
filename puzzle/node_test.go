@@ -8,14 +8,14 @@ import (
 
 func TestEdgesFromNodeGetNumCardinals(t *testing.T) {
 	efn := edgesFromNode{}
-	assert.Zero(t, efn.getNumCardinals())
+	assert.Zero(t, efn.getNumOutgoingDirections())
 	efn = edgesFromNode{
 		isabove: true,
 		isbelow: true,
 		isleft:  true,
 		isright: true,
 	}
-	assert.Equal(t, int8(4), efn.getNumCardinals())
+	assert.Equal(t, int8(4), efn.getNumOutgoingDirections())
 }
 
 func TestNodeTypeIsInvalidEdges(t *testing.T) {

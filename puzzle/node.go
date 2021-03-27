@@ -32,7 +32,7 @@ func newEdgesFromNode(
 	}
 }
 
-func (efn edgesFromNode) getNumCardinals() int8 {
+func (efn edgesFromNode) getNumOutgoingDirections() int8 {
 	var numBranches int8
 
 	if efn.isabove {

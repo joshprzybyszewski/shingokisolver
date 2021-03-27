@@ -257,7 +257,10 @@ func TestGetEdgesFromNode(t *testing.T) {
 	assert.False(t, g.IsEdge(headRight, 1, 1))
 	assert.False(t, g.IsEdge(headDown, 1, 1))
 
-	efn := g.getEdgesFromNode(1, 1)
+	efn := g.getEdgesFromNode(nodeCoord{
+		row: 1,
+		col: 1,
+	})
 	require.NotNil(t, efn)
 	expEFN := edgesFromNode{
 		above:       1,

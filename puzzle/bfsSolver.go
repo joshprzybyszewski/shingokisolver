@@ -5,9 +5,8 @@ import (
 )
 
 type bfsQueueItem struct {
-	grid *grid
-	row  int
-	col  int
+	grid  *grid
+	coord nodeCoord
 }
 
 type bfsSolver struct {
@@ -24,20 +23,20 @@ func newBFSSolver(
 		return nil
 	}
 
-	bestR, bestC, bestVal := -1, -1, int8(-1)
-	for _, n := range nl {
-		if n.Value > bestVal {
-			bestR = n.Row
-			bestC = n.Col
-			bestVal = n.Value
+	g := newGrid(size, nl)
+	var bestCoord nodeCoord
+	bestVal := int8(-1)
+	for nc, n := range g.nodes {
+		if n.val > bestVal {
+			bestCoord = nc
+			bestVal = n.val
 		}
 	}
 
 	return &bfsSolver{
 		queue: []*bfsQueueItem{{
-			grid: newGrid(size, nl),
-			row:  bestR,
-			col:  bestC,
+			grid:  g,
+			coord: bestCoord,
 		}},
 	}
 }
@@ -53,10 +52,6 @@ func (b *bfsSolver) solve() (*grid, bool) {
 		if isSolved {
 			return g, true
 		}
-		if IncludeProgressLogs && (b.numProcessed < 100 || b.numProcessed%10000 == 0) {
-			fmt.Printf("Processed: %d\n%s\n", b.numProcessed, g.String())
-			fmt.Scanf("hello there")
-		}
 	}
 	return nil, false
 }
@@ -65,61 +60,54 @@ func (b *bfsSolver) processQueueItem() (*grid, bool) {
 	q := b.queue[0]
 	b.queue = b.queue[1:]
 
-	if isIncomplete, err := q.grid.IsIncomplete(q.row, q.col); err != nil {
+	if IncludeProgressLogs && (b.numProcessed < 100 || b.numProcessed%10000 == 0) {
+		fmt.Printf("About to process (%d, %d): %d\n%s\n", q.coord.row, q.coord.col, b.numProcessed, q.grid.String())
+		fmt.Scanf("hello there")
+	}
+
+	if isIncomplete, err := q.grid.IsIncomplete(q.coord); err != nil {
 		return q.grid, false
 	} else if !isIncomplete {
 		return q.grid, true
 	}
 
-	b.addQueueItems(q.grid, q.row, q.col)
+	b.addQueueItems(q.grid, q.coord)
 
 	return q.grid, false
 }
 
 func (b *bfsSolver) addQueueItems(
 	g *grid,
-	row, col int,
+	coord nodeCoord,
 ) {
-	b.addQueueItem(g, headUp, row, col)
-	b.addQueueItem(g, headRight, row, col)
-	b.addQueueItem(g, headDown, row, col)
-	b.addQueueItem(g, headLeft, row, col)
+	b.addQueueItem(g, headUp, coord)
+	b.addQueueItem(g, headRight, coord)
+	b.addQueueItem(g, headDown, coord)
+	b.addQueueItem(g, headLeft, coord)
 }
 
 func (b *bfsSolver) addQueueItem(
 	g *grid,
 	move cardinal,
-	r, c int,
+	coord nodeCoord,
 ) {
-	newGrid, err := g.AddEdge(move, r, c)
+	newCoord, newGrid, err := g.AddEdge(move, coord)
 	if err != nil {
 		return
 	}
 
-	var newRow, newCol int
-	switch move {
-	case headUp:
-		newRow = r - 1
-		newCol = c
-	case headDown:
-		newRow = r + 1
-		newCol = c
-	case headLeft:
-		newRow = r
-		newCol = c - 1
-	case headRight:
-		newRow = r
-		newCol = c + 1
-	}
-
-	if newGrid.isRangeInvalidWithBoundsCheck(newRow-2, newRow+2, newCol-2, newCol+2) {
+	if newGrid.isRangeInvalidWithBoundsCheck(
+		newCoord.row-2,
+		newCoord.row+2,
+		newCoord.col-2,
+		newCoord.col+2,
+	) {
 		// this is a sanity check to reduce the amount of calc we need to do
 		return
 	}
 
 	b.queue = append(b.queue, &bfsQueueItem{
-		grid: newGrid,
-		row:  newRow,
-		col:  newCol,
+		grid:  newGrid,
+		coord: newCoord,
 	})
 }

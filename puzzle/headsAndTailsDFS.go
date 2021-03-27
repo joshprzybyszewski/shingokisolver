@@ -5,15 +5,10 @@ import (
 	"fmt"
 )
 
-type headsAndTailsNode struct {
-	row int
-	col int
-}
-
 type headsAndTailsItem struct {
 	grid    *grid
-	head    headsAndTailsNode
-	tail    headsAndTailsNode
+	head    nodeCoord
+	tail    nodeCoord
 	useHead bool
 }
 
@@ -41,23 +36,21 @@ func (d *headsAndTailsDFSSolver) iterations() int {
 }
 
 func (d *headsAndTailsDFSSolver) solve() (*grid, bool) {
-	bestR, bestC, bestVal := -1, -1, int8(-1)
-	for r, cMap := range d.grid.nodes {
-		for c, n := range cMap {
-			if n.val > bestVal {
-				bestR = int(r)
-				bestC = int(c)
-				bestVal = n.val
-			}
+	bestR, bestC, bestVal := rowIndex(-1), colIndex(-1), int8(-1)
+	for nc, n := range d.grid.nodes {
+		if n.val > bestVal {
+			bestR = nc.row
+			bestC = nc.col
+			bestVal = n.val
 		}
 	}
 	return d.processQueueItem(&headsAndTailsItem{
 		grid: d.grid,
-		head: headsAndTailsNode{
+		head: nodeCoord{
 			row: bestR,
 			col: bestC,
 		},
-		tail: headsAndTailsNode{
+		tail: nodeCoord{
 			row: bestR,
 			col: bestC,
 		},
@@ -77,12 +70,15 @@ func (d *headsAndTailsDFSSolver) processQueueItem(
 	}
 
 	d.numProcessed++
-	if IncludeProgressLogs && (d.numProcessed < 100 || d.numProcessed%1000 == 0) {
-		fmt.Printf("Processing (%d, %d): %d\n%s\n", nodeToUse.row, nodeToUse.col, d.numProcessed, q.grid.String())
+	if IncludeProgressLogs && (d.numProcessed < 100 || d.numProcessed%10000 == 0) {
+		fmt.Printf("About to process head(%d, %d) tail(%d, %d): %d\n%s\n",
+			q.head.row, q.head.col,
+			q.tail.row, q.tail.col,
+			d.numProcessed, q.grid.String())
 		fmt.Scanf("hello there")
 	}
 
-	if isIncomplete, err := q.grid.IsIncomplete(nodeToUse.row, nodeToUse.col); err != nil {
+	if isIncomplete, err := q.grid.IsIncomplete(nodeToUse); err != nil {
 		return q.grid, false
 	} else if !isIncomplete {
 		return q.grid, true
@@ -136,31 +132,18 @@ func (d *headsAndTailsDFSSolver) getQueueItem(
 	if useHead {
 		nodeToUse = q.head
 	}
-	r := nodeToUse.row
-	c := nodeToUse.col
 
-	newGrid, err := g.AddEdge(move, r, c)
+	newCoord, newGrid, err := g.AddEdge(move, nodeToUse)
 	if err != nil {
 		return nil, err
 	}
 
-	var newRow, newCol int
-	switch move {
-	case headUp:
-		newRow = r - 1
-		newCol = c
-	case headDown:
-		newRow = r + 1
-		newCol = c
-	case headLeft:
-		newRow = r
-		newCol = c - 1
-	case headRight:
-		newRow = r
-		newCol = c + 1
-	}
-
-	if newGrid.isRangeInvalidWithBoundsCheck(newRow-2, newRow+2, newCol-2, newCol+2) {
+	if newGrid.isRangeInvalidWithBoundsCheck(
+		newCoord.row-2,
+		newCoord.row+2,
+		newCoord.col-2,
+		newCoord.col+2,
+	) {
 		// this is a sanity check to reduce the amount of calc we need to do
 		return nil, errors.New(`invalid local range`)
 	}
@@ -168,11 +151,9 @@ func (d *headsAndTailsDFSSolver) getQueueItem(
 	newHead := q.head
 	newTail := q.tail
 	if useHead {
-		newHead.row = newRow
-		newHead.col = newCol
+		newHead = newCoord
 	} else {
-		newTail.row = newRow
-		newTail.col = newCol
+		newTail = newCoord
 	}
 
 	return &headsAndTailsItem{
