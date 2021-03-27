@@ -542,7 +542,7 @@ func (g *grid) String() string {
 				}
 				sb.WriteString(fmt.Sprintf("%2d", n.val))
 			} else {
-				sb.WriteString(`   `)
+				sb.WriteString(`XXX`)
 			}
 			sb.WriteString(`)`)
 			// now draw an edge?

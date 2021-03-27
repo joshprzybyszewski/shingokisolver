@@ -66,10 +66,9 @@ func (b *BfsSolver) solve() (*grid, bool) {
 		b.numProcessed++
 		g, isSolved := b.processQueueItem()
 		if isSolved {
-			fmt.Printf("Processed: %d\n", b.numProcessed)
 			return g, true
 		}
-		if showProcess && (b.numProcessed < 100 || b.numProcessed%100 == 0) {
+		if showProcess && (b.numProcessed < 100 || b.numProcessed%10000 == 0) {
 			fmt.Printf("Processed: %d\n%s\n", b.numProcessed, g.String())
 			fmt.Scanf("hello there")
 		}

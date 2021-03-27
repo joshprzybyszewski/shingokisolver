@@ -65,7 +65,7 @@ func (d *DfsSolver) processQueueItem(
 	}
 
 	d.numProcessed++
-	if showProcess && (d.numProcessed < 100 || d.numProcessed%10 == 0) {
+	if showProcess && (d.numProcessed < 100 || d.numProcessed%1000 == 0) {
 		fmt.Printf("Processing (%d, %d): %d\n%s\n", q.row, q.col, d.numProcessed, q.grid.String())
 		fmt.Scanf("hello there")
 	}
