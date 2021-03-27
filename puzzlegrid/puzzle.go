@@ -63,7 +63,7 @@ type edgesFromNode struct {
 	isright bool
 }
 
-func (efn edgesFromNode) hasBranch() bool {
+func (efn edgesFromNode) getNumCardinals() int {
 	numBranches := 0
 
 	if efn.isabove {
@@ -79,7 +79,7 @@ func (efn edgesFromNode) hasBranch() bool {
 		numBranches++
 	}
 
-	return numBranches > 2
+	return numBranches
 }
 
 type nodeType uint8
@@ -112,8 +112,7 @@ type node struct {
 	nType nodeType
 	val   int
 
-	straightLineLens int // a cached value of the current number of edges
-	seen             bool
+	seen bool
 }
 
 func (n *node) copy() *node {
@@ -318,7 +317,7 @@ func (g *grid) isRangeInvalid(
 		for c := startC; c < stopC; c++ {
 			// check that this point doesn't branch
 			efn := g.getEdgesFromNode(r, c)
-			if efn.hasBranch() {
+			if efn.getNumCardinals() > 2 {
 				// this is a branch.
 				// therefore, this grid is invalid
 				return true
@@ -411,33 +410,42 @@ func (g *grid) isInvalidNode(
 	}
 
 	// check that the num of straight line edges < n.val
-	n.straightLineLens = efn.totalEdges
-	return n.val < n.straightLineLens
+	return n.val < efn.totalEdges
 }
 
-func (g *grid) IsIncomplete() (bool, error) {
+func (g *grid) IsIncomplete(
+	firstR, firstC int,
+) (bool, error) {
 	if g.IsInvalid() {
 		return true, errors.New(`invalid grid`)
 	}
 
-	firstR := -1
-	firstC := -1
-	for r := 0; r < len(g.rows) && firstR < 0; r++ {
-		for c := 0; c < len(g.cols) && firstC < 0; c++ {
-			hasRow := g.IsEdge(headRight, r, c)
-			hasCol := g.IsEdge(headDown, r, c)
-			if hasRow || hasCol {
-				if !hasRow || !hasCol {
-					// don't need to walk the whole path if we see
-					// from the start that it's not going to complete.
-					return true, nil
+	efn := g.getEdgesFromNode(firstR, firstC)
+	if efn.getNumCardinals() != 2 {
+		// don't need to walk the whole path if we see
+		// from the start that it's not going to complete.
+		return true, nil
+	} else {
+		// we were given bad intel. let's find a node.
+		firstR, firstC = -1, -1
+		for r := 0; r < len(g.rows) && firstR < 0; r++ {
+			for c := 0; c < len(g.cols) && firstC < 0; c++ {
+				hasRow := g.IsEdge(headRight, r, c)
+				hasCol := g.IsEdge(headDown, r, c)
+				if hasRow || hasCol {
+					if !hasRow || !hasCol {
+						// don't need to walk the whole path if we see
+						// from the start that it's not going to complete.
+						return true, nil
+					}
+					// found firstEdge
+					firstR = r
+					firstC = c
 				}
-				// found firstEdge
-				firstR = r
-				firstC = c
 			}
 		}
 	}
+
 	// from the firstEdge, make your way around the grid until we get back
 	// to the start. if we can't complete, then it's incomplete. as we see nodes,
 	// mark them as seen
@@ -457,9 +465,10 @@ func (g *grid) IsIncomplete() (bool, error) {
 		return true, nil
 	}
 
-	for _, cMap := range g.nodes {
-		for _, n := range cMap {
-			if n.straightLineLens != n.val || !n.seen {
+	for r, cMap := range g.nodes {
+		for c, n := range cMap {
+			efn := g.getEdgesFromNode(int(r), int(c))
+			if efn == nil || efn.totalEdges != n.val || !n.seen {
 				// somehow, we made a loop, but we didn't see all of the nodes
 				// in the grid. therefore, this is incomplete.
 				return true, nil

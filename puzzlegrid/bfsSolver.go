@@ -80,7 +80,7 @@ func (b *BfsSolver) processQueueItem() (*grid, bool) {
 	q := b.queue[0]
 	b.queue = b.queue[1:]
 
-	if isIncomplete, err := q.grid.IsIncomplete(); err != nil {
+	if isIncomplete, err := q.grid.IsIncomplete(q.row, q.col); err != nil {
 		return q.grid, false
 	} else if !isIncomplete {
 		return q.grid, true

@@ -70,7 +70,7 @@ func (d *DfsSolver) processQueueItem(
 		fmt.Scanf("hello there")
 	}
 
-	if isIncomplete, err := q.grid.IsIncomplete(); err != nil {
+	if isIncomplete, err := q.grid.IsIncomplete(q.row, q.col); err != nil {
 		return q.grid, false
 	} else if !isIncomplete {
 		return q.grid, true
