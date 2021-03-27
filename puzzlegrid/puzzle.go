@@ -240,14 +240,14 @@ func (g *grid) AddEdge(
 	r, c int,
 ) (*grid, error) {
 	if r < 0 || c < 0 {
-		return nil, fmt.Errorf("invalid g.AddEdge(%d, %d, %d)", move, r, c)
+		return nil, errors.New(`AddEdge had negative input`)
 	}
 
 	var newEdges edges
 	switch move {
 	case headLeft, headRight:
 		if r >= len(g.rows) {
-			return nil, fmt.Errorf("r >= len(g.rows) g.AddEdge(%d, %d, %d)", move, r, c)
+			return nil, errors.New(`AddEdge had too many rows`)
 		}
 		orig := g.rows[r]
 		startI := c
@@ -255,7 +255,7 @@ func (g *grid) AddEdge(
 			startI = c - 1
 		}
 		if startI < 0 || startI >= g.numEdges {
-			return nil, fmt.Errorf("invalid col g.AddEdge(%d, %d, %d)", move, r, c)
+			return nil, errors.New(`AddEdge had bad cols`)
 		}
 		newEdges = orig.addEdge(startI)
 		if newEdges == orig {
@@ -263,7 +263,7 @@ func (g *grid) AddEdge(
 		}
 	case headUp, headDown:
 		if c >= len(g.cols) {
-			return nil, fmt.Errorf("c >= len(g.cols) g.AddEdge(%d, %d, %d)", move, r, c)
+			return nil, errors.New(`AddEdge had too many cols`)
 		}
 		orig := g.cols[c]
 		startI := r
@@ -271,7 +271,7 @@ func (g *grid) AddEdge(
 			startI = r - 1
 		}
 		if startI < 0 || startI >= g.numEdges {
-			return nil, fmt.Errorf("invalid row g.AddEdge(%d, %d, %d)", move, r, c)
+			return nil, errors.New(`AddEdge had bad rows`)
 		}
 		newEdges = orig.addEdge(startI)
 		if newEdges == orig {
