@@ -21,13 +21,13 @@ func TestEdgesFromNodeGetNumCardinals(t *testing.T) {
 func TestNodeTypeIsInvalidEdges(t *testing.T) {
 	testCases := []struct {
 		msg                string
-		efn                *edgesFromNode
+		efn                edgesFromNode
 		expNoNodeOutput    bool
 		expWhiteNodeOutput bool
 		expBlackNodeOutput bool
 	}{{
 		msg: `up`,
-		efn: &edgesFromNode{
+		efn: edgesFromNode{
 			isabove: true,
 			isbelow: false,
 			isleft:  false,
@@ -35,7 +35,7 @@ func TestNodeTypeIsInvalidEdges(t *testing.T) {
 		},
 	}, {
 		msg: `right`,
-		efn: &edgesFromNode{
+		efn: edgesFromNode{
 			isabove: false,
 			isbelow: false,
 			isleft:  false,
@@ -43,7 +43,7 @@ func TestNodeTypeIsInvalidEdges(t *testing.T) {
 		},
 	}, {
 		msg: `down`,
-		efn: &edgesFromNode{
+		efn: edgesFromNode{
 			isabove: false,
 			isbelow: true,
 			isleft:  false,
@@ -51,7 +51,7 @@ func TestNodeTypeIsInvalidEdges(t *testing.T) {
 		},
 	}, {
 		msg: `left`,
-		efn: &edgesFromNode{
+		efn: edgesFromNode{
 			isabove: false,
 			isbelow: false,
 			isleft:  true,
@@ -59,7 +59,7 @@ func TestNodeTypeIsInvalidEdges(t *testing.T) {
 		},
 	}, {
 		msg: `up and down`,
-		efn: &edgesFromNode{
+		efn: edgesFromNode{
 			isabove: true,
 			isbelow: true,
 			isleft:  false,
@@ -68,7 +68,7 @@ func TestNodeTypeIsInvalidEdges(t *testing.T) {
 		expBlackNodeOutput: true,
 	}, {
 		msg: `left and right`,
-		efn: &edgesFromNode{
+		efn: edgesFromNode{
 			isabove: false,
 			isbelow: false,
 			isleft:  true,
@@ -77,7 +77,7 @@ func TestNodeTypeIsInvalidEdges(t *testing.T) {
 		expBlackNodeOutput: true,
 	}, {
 		msg: `up and right`,
-		efn: &edgesFromNode{
+		efn: edgesFromNode{
 			isabove: true,
 			isbelow: false,
 			isleft:  false,
@@ -86,7 +86,7 @@ func TestNodeTypeIsInvalidEdges(t *testing.T) {
 		expWhiteNodeOutput: true,
 	}, {
 		msg: `right and down`,
-		efn: &edgesFromNode{
+		efn: edgesFromNode{
 			isabove: false,
 			isbelow: true,
 			isleft:  false,
@@ -95,7 +95,7 @@ func TestNodeTypeIsInvalidEdges(t *testing.T) {
 		expWhiteNodeOutput: true,
 	}, {
 		msg: `down and left`,
-		efn: &edgesFromNode{
+		efn: edgesFromNode{
 			isabove: false,
 			isbelow: true,
 			isleft:  true,
@@ -104,7 +104,7 @@ func TestNodeTypeIsInvalidEdges(t *testing.T) {
 		expWhiteNodeOutput: true,
 	}, {
 		msg: `left and up`,
-		efn: &edgesFromNode{
+		efn: edgesFromNode{
 			isabove: true,
 			isbelow: false,
 			isleft:  true,
@@ -113,7 +113,7 @@ func TestNodeTypeIsInvalidEdges(t *testing.T) {
 		expWhiteNodeOutput: true,
 	}, {
 		msg: `up, right, and down`,
-		efn: &edgesFromNode{
+		efn: edgesFromNode{
 			isabove: true,
 			isbelow: true,
 			isleft:  false,
@@ -123,7 +123,7 @@ func TestNodeTypeIsInvalidEdges(t *testing.T) {
 		expBlackNodeOutput: true,
 	}, {
 		msg: `up, right, and left`,
-		efn: &edgesFromNode{
+		efn: edgesFromNode{
 			isabove: true,
 			isbelow: false,
 			isleft:  true,
@@ -133,7 +133,7 @@ func TestNodeTypeIsInvalidEdges(t *testing.T) {
 		expBlackNodeOutput: true,
 	}, {
 		msg: `up, down, and left`,
-		efn: &edgesFromNode{
+		efn: edgesFromNode{
 			isabove: true,
 			isbelow: true,
 			isleft:  true,

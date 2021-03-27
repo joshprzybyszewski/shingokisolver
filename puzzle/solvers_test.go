@@ -22,8 +22,9 @@ func TestSolve3x3(t *testing.T) {
 
 	for _, st := range AllSolvers {
 		s := NewSolver(numEdges, nodes, st)
-		err := s.Solve()
+		sr, err := s.Solve()
 		require.NoError(t, err)
+		t.Logf("sr: %s\n", sr)
 	}
 }
 
@@ -63,7 +64,8 @@ func TestSolve5x5(t *testing.T) {
 
 	for _, st := range AllSolvers {
 		s := NewSolver(numEdges, nodes, st)
-		err := s.Solve()
+		sr, err := s.Solve()
 		require.NoError(t, err)
+		t.Logf("sr: %s\n", sr)
 	}
 }

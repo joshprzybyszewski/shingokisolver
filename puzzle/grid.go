@@ -4,19 +4,19 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"sync"
 )
 
 type row uint8
 type col uint8
 
 type grid struct {
-	numEdges int
-
 	rows  []edges
 	cols  []edges
 	nodes map[row]map[col]*node
 
-	cachedEFNs [][]*edgesFromNode
+	cachedEFNs [][]edgesFromNode
+	efnLock    sync.RWMutex
 }
 
 func newGrid(
@@ -49,12 +49,11 @@ func newGrid(
 	for i := range cols {
 		cols[i] = newEdges()
 	}
-	efnCache := make([][]*edgesFromNode, numEdges+1)
+	efnCache := make([][]edgesFromNode, numEdges+1)
 	for i := range efnCache {
-		efnCache[i] = make([]*edgesFromNode, numEdges+1)
+		efnCache[i] = make([]edgesFromNode, numEdges+1)
 	}
 	return &grid{
-		numEdges:   numEdges,
 		rows:       rows,
 		cols:       cols,
 		nodes:      nodes,
@@ -85,13 +84,12 @@ func (g *grid) deepCopy() *grid {
 		cols[i] = g.cols[i]
 	}
 
-	efnCache := make([][]*edgesFromNode, len(g.cachedEFNs))
+	efnCache := make([][]edgesFromNode, len(g.cachedEFNs))
 	for i := range efnCache {
-		efnCache[i] = make([]*edgesFromNode, len(g.cachedEFNs[i]))
+		efnCache[i] = make([]edgesFromNode, len(g.cachedEFNs[i]))
 	}
 
 	return &grid{
-		numEdges:   g.numEdges,
 		rows:       rows,
 		cols:       cols,
 		nodes:      nodes,
@@ -119,7 +117,6 @@ func (g *grid) IsEdge(
 	default:
 		return false
 	}
-
 }
 
 func (g *grid) AddEdge(
@@ -141,7 +138,7 @@ func (g *grid) AddEdge(
 		if move == headLeft {
 			startI = c - 1
 		}
-		if startI < 0 || startI >= g.numEdges {
+		if startI < 0 || startI >= g.numEdges() {
 			return nil, errors.New(`AddEdge had bad cols`)
 		}
 		newEdges = orig.addEdge(startI)
@@ -157,7 +154,7 @@ func (g *grid) AddEdge(
 		if move == headUp {
 			startI = r - 1
 		}
-		if startI < 0 || startI >= g.numEdges {
+		if startI < 0 || startI >= g.numEdges() {
 			return nil, errors.New(`AddEdge had bad rows`)
 		}
 		newEdges = orig.addEdge(startI)
@@ -175,15 +172,18 @@ func (g *grid) AddEdge(
 	case headUp, headDown:
 		gCpy.cols[c] = newEdges
 	}
-
 	return gCpy, nil
 }
 
-func (g *grid) isInvalid() bool {
-	return g.isRangeInvalid(0, len(g.rows), 0, len(g.cols))
+func (g *grid) numNodes() int {
+	return len(g.cachedEFNs)
 }
 
-func (g *grid) isRangeInvalid(
+func (g *grid) numEdges() int {
+	return len(g.cachedEFNs) - 1
+}
+
+func (g *grid) isRangeInvalidWithBoundsCheck(
 	startR, stopR int,
 	startC, stopC int,
 ) bool {
@@ -199,13 +199,19 @@ func (g *grid) isRangeInvalid(
 	if maxC := len(g.cols); stopC > maxC {
 		stopC = maxC
 	}
+	return g.isRangeInvalid(startR, stopR, startC, stopC)
+}
 
+func (g *grid) isRangeInvalid(
+	startR, stopR int,
+	startC, stopC int,
+) bool {
 	for r := startR; r < stopR; r++ {
 		for c := startC; c < stopC; c++ {
 			// check that this point doesn't branch
 			efn := g.getEdgesFromNode(r, c)
-			if efn.getNumCardinals() > 2 {
-				// this is a branch.
+			if !efn.isPopulated || efn.getNumCardinals() > 2 {
+				// either we can't get the node, or this is a branch.
 				// therefore, this grid is invalid
 				return true
 			}
@@ -222,40 +228,48 @@ func (g *grid) isRangeInvalid(
 
 func (g *grid) getEdgesFromNode(
 	r, c int,
-) *edgesFromNode {
+) edgesFromNode {
 	if r < 0 || c < 0 {
-		return nil
+		return edgesFromNode{}
 	}
-	if numNodes := len(g.cachedEFNs); r >= numNodes || c >= numNodes {
-		return nil
-	}
-
-	if g.cachedEFNs[r][c] != nil {
-		return g.cachedEFNs[r][c]
+	if numNodes := g.numNodes(); r >= numNodes || c >= numNodes {
+		return edgesFromNode{}
 	}
 
-	above := g.getLenStraightPath(headUp, r, c)
-	below := g.getLenStraightPath(headDown, r, c)
-	left := g.getLenStraightPath(headLeft, r, c)
-	right := g.getLenStraightPath(headRight, r, c)
-	efn := edgesFromNode{
-		totalEdges: above + below + left + right,
-		above:      above,
-		below:      below,
-		left:       left,
-		right:      right,
-		isabove:    above != 0,
-		isbelow:    below != 0,
-		isleft:     left != 0,
-		isright:    right != 0,
+	efn := g.readCacheForEdgesFromNode(r, c)
+	if efn.isPopulated {
+		return efn
 	}
 
-	g.cachedEFNs[r][c] = &efn
+	g.efnLock.Lock()
+	defer g.efnLock.Unlock()
 
-	return &efn
+	efn = g.cachedEFNs[r][c]
+	if efn.isPopulated {
+		return efn
+	}
+
+	efn = newEdgesFromNode(
+		g.findStraightLinePathLen(headUp, r, c),
+		g.findStraightLinePathLen(headDown, r, c),
+		g.findStraightLinePathLen(headLeft, r, c),
+		g.findStraightLinePathLen(headRight, r, c),
+	)
+
+	g.cachedEFNs[r][c] = efn
+
+	return efn
 }
 
-func (g *grid) getLenStraightPath(
+func (g *grid) readCacheForEdgesFromNode(
+	r, c int,
+) edgesFromNode {
+	g.efnLock.RLock()
+	defer g.efnLock.RUnlock()
+	return g.cachedEFNs[r][c]
+}
+
+func (g *grid) findStraightLinePathLen(
 	move cardinal,
 	r, c int,
 ) int8 {
@@ -283,7 +297,7 @@ func (g *grid) getLenStraightPath(
 
 func (g *grid) isInvalidNode(
 	r, c int,
-	efn *edgesFromNode,
+	efn edgesFromNode,
 ) bool {
 	n, ok := g.nodes[row(r)][col(c)]
 	if !ok || n.nType == noNode {
@@ -303,12 +317,12 @@ func (g *grid) isInvalidNode(
 func (g *grid) IsIncomplete(
 	firstR, firstC int,
 ) (bool, error) {
-	if g.isInvalid() {
+	if g.isRangeInvalid(0, len(g.rows), 0, len(g.cols)) {
 		return true, errors.New(`invalid grid`)
 	}
 
 	efn := g.getEdgesFromNode(firstR, firstC)
-	if nCards := efn.getNumCardinals(); nCards == 0 {
+	if nCards := efn.getNumCardinals(); !efn.isPopulated || nCards == 0 {
 		// we were given bad intel. let's find a node with any edges.
 		firstR, firstC = -1, -1
 		for r := 0; r < len(g.rows) && firstR < 0; r++ {
@@ -364,7 +378,7 @@ func (g *grid) IsIncomplete(
 	for r, cMap := range g.nodes {
 		for c, n := range cMap {
 			efn := g.getEdgesFromNode(int(r), int(c))
-			if efn == nil || !n.seen {
+			if !efn.isPopulated || !n.seen {
 				// somehow, we made a loop, but we didn't see all of the nodes
 				// in the grid. therefore, this is incomplete.
 				return true, nil
@@ -389,7 +403,7 @@ func (g *grid) walkToNextPoint(
 	avoid cardinal,
 ) (nextR, nextC int, _ cardinal) {
 	efn := g.getEdgesFromNode(fromR, fromC)
-	if efn == nil {
+	if efn.isPopulated {
 		return 0, 0, headNowhere
 	}
 

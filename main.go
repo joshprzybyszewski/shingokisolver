@@ -47,11 +47,11 @@ func main() {
 
 			sr, err := s.Solve()
 			if err != nil {
-				fmt.Printf("%s could not solve! %v: %s\n", st, err, sr)
+				fmt.Printf("%s could not solve! %v: %s\n\n\n", st, err, sr)
 				continue
 			}
 
-			fmt.Printf("%s solved: %s\n", st, sr)
+			fmt.Printf("%s solved: %s\n\n\n", st, sr)
 			if time.Since(t0) > 30*time.Second {
 				break
 			}

@@ -11,6 +11,25 @@ type edgesFromNode struct {
 	isbelow bool
 	isleft  bool
 	isright bool
+
+	isPopulated bool
+}
+
+func newEdgesFromNode(
+	above, below, left, right int8,
+) edgesFromNode {
+	return edgesFromNode{
+		totalEdges:  above + below + left + right,
+		above:       above,
+		below:       below,
+		left:        left,
+		right:       right,
+		isabove:     above != 0,
+		isbelow:     below != 0,
+		isleft:      left != 0,
+		isright:     right != 0,
+		isPopulated: true,
+	}
 }
 
 func (efn edgesFromNode) getNumCardinals() int8 {
@@ -43,7 +62,7 @@ const (
 	blackNode nodeType = 2
 )
 
-func (nt nodeType) isInvalidEdges(efn *edgesFromNode) bool {
+func (nt nodeType) isInvalidEdges(efn edgesFromNode) bool {
 	switch nt {
 	case whiteNode:
 		// white nodes need to be straight. therefore, they're

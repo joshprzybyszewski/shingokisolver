@@ -160,7 +160,7 @@ func (d *headsAndTailsDFSSolver) getQueueItem(
 		newCol = c + 1
 	}
 
-	if newGrid.isRangeInvalid(newRow-2, newRow+2, newCol-2, newCol+2) {
+	if newGrid.isRangeInvalidWithBoundsCheck(newRow-2, newRow+2, newCol-2, newCol+2) {
 		// this is a sanity check to reduce the amount of calc we need to do
 		return nil, errors.New(`invalid local range`)
 	}
