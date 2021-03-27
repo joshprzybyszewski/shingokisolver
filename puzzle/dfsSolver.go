@@ -1,46 +1,40 @@
-package puzzlegrid
+package puzzle
 
 import (
-	"errors"
 	"fmt"
-	"time"
 )
 
-type DfsSolver struct {
+type dfsQueueItem struct {
+	grid *grid
+	row  int
+	col  int
+}
+
+type dfsSolver struct {
 	grid *grid
 
 	numProcessed int
 }
 
-func NewDFSSolver(
+func newDFSSolver(
 	size int,
 	nl []NodeLocation,
-) *DfsSolver {
+) *dfsSolver {
 	if len(nl) == 0 {
 		return nil
 	}
 
-	return &DfsSolver{
+	return &dfsSolver{
 		grid: newGrid(size, nl),
 	}
 }
 
-func (d *DfsSolver) Solve() error {
-	defer func(t0 time.Time) {
-		fmt.Printf("DfsSolver.Solve processed %d paths in %s\n", d.numProcessed, time.Since(t0).String())
-	}(time.Now())
-
-	g, isSolved := d.solve()
-	if !isSolved {
-		fmt.Println(`could not solve`)
-		return errors.New(`unsolvable`)
-	}
-	fmt.Println(g.String())
-	return nil
+func (d *dfsSolver) iterations() int {
+	return d.numProcessed
 }
 
-func (d *DfsSolver) solve() (*grid, bool) {
-	bestR, bestC, bestVal := -1, -1, -1
+func (d *dfsSolver) solve() (*grid, bool) {
+	bestR, bestC, bestVal := -1, -1, int8(-1)
 	for r, cMap := range d.grid.nodes {
 		for c, n := range cMap {
 			if n.val > bestVal {
@@ -50,22 +44,22 @@ func (d *DfsSolver) solve() (*grid, bool) {
 			}
 		}
 	}
-	return d.processQueueItem(&queueItem{
+	return d.processQueueItem(&dfsQueueItem{
 		grid: d.grid,
 		row:  bestR,
 		col:  bestC,
 	})
 }
 
-func (d *DfsSolver) processQueueItem(
-	q *queueItem,
+func (d *dfsSolver) processQueueItem(
+	q *dfsQueueItem,
 ) (*grid, bool) {
 	if q == nil {
 		return nil, false
 	}
 
 	d.numProcessed++
-	if showProcess && (d.numProcessed < 100 || d.numProcessed%1000 == 0) {
+	if IncludeProgressLogs && (d.numProcessed < 100 || d.numProcessed%1000 == 0) {
 		fmt.Printf("Processing (%d, %d): %d\n%s\n", q.row, q.col, d.numProcessed, q.grid.String())
 		fmt.Scanf("hello there")
 	}
@@ -76,7 +70,7 @@ func (d *DfsSolver) processQueueItem(
 		return q.grid, true
 	}
 
-	for _, qi := range []*queueItem{
+	for _, qi := range []*dfsQueueItem{
 		d.getQueueItem(q.grid, headUp, q.row, q.col),
 		d.getQueueItem(q.grid, headRight, q.row, q.col),
 		d.getQueueItem(q.grid, headDown, q.row, q.col),
@@ -91,11 +85,11 @@ func (d *DfsSolver) processQueueItem(
 	return q.grid, false
 }
 
-func (d *DfsSolver) getQueueItem(
+func (d *dfsSolver) getQueueItem(
 	g *grid,
 	move cardinal,
 	r, c int,
-) *queueItem {
+) *dfsQueueItem {
 	newGrid, err := g.AddEdge(move, r, c)
 	if err != nil {
 		return nil
@@ -122,7 +116,7 @@ func (d *DfsSolver) getQueueItem(
 		return nil
 	}
 
-	return &queueItem{
+	return &dfsQueueItem{
 		grid: newGrid,
 		row:  newRow,
 		col:  newCol,

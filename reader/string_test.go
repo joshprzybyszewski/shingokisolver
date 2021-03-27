@@ -3,7 +3,7 @@ package reader
 import (
 	"testing"
 
-	"github.com/joshprzybyszewski/shingokisolver/puzzlegrid"
+	"github.com/joshprzybyszewski/shingokisolver/puzzle"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -23,7 +23,7 @@ w2b2.b2.b2..
 
 	expPD := PuzzleDef{
 		NumEdges: 7,
-		Nodes: []puzzlegrid.NodeLocation{{
+		Nodes: []puzzle.NodeLocation{{
 			Row:     0,
 			Col:     3,
 			IsWhite: false,

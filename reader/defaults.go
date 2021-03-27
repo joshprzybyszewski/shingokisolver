@@ -1,11 +1,11 @@
 package reader
 
-import "github.com/joshprzybyszewski/shingokisolver/puzzlegrid"
+import "github.com/joshprzybyszewski/shingokisolver/puzzle"
 
 func DefaultPuzzles() []PuzzleDef {
 	pds := []PuzzleDef{{
 		NumEdges: 2,
-		Nodes: []puzzlegrid.NodeLocation{{
+		Nodes: []puzzle.NodeLocation{{
 			Row:     1,
 			Col:     1,
 			IsWhite: false,
@@ -13,7 +13,7 @@ func DefaultPuzzles() []PuzzleDef {
 		}},
 	}, {
 		NumEdges: 5,
-		Nodes: []puzzlegrid.NodeLocation{{
+		Nodes: []puzzle.NodeLocation{{
 			Row:     3,
 			Col:     2,
 			IsWhite: false,

@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/joshprzybyszewski/shingokisolver/puzzlegrid"
+	"github.com/joshprzybyszewski/shingokisolver/puzzle"
 )
 
 const (
@@ -16,7 +16,7 @@ const (
 
 type PuzzleDef struct {
 	NumEdges int
-	Nodes    []puzzlegrid.NodeLocation
+	Nodes    []puzzle.NodeLocation
 }
 
 func FromString(input string) (PuzzleDef, error) {
@@ -61,11 +61,11 @@ func FromString(input string) (PuzzleDef, error) {
 				return PuzzleDef{}, errors.New(`expected value from bytes: `)
 			}
 
-			pd.Nodes = append(pd.Nodes, puzzlegrid.NodeLocation{
+			pd.Nodes = append(pd.Nodes, puzzle.NodeLocation{
 				Row:     lineIndex,
 				Col:     colIndex,
 				IsWhite: isWhite,
-				Value:   val,
+				Value:   int8(val),
 			})
 		}
 		if colIndex != len(lines) {

@@ -1,4 +1,4 @@
-package puzzlegrid
+package puzzle
 
 import (
 	"testing"
@@ -6,7 +6,14 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+var
+
 func TestSolve3x3(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+		return
+	}
+
 	numEdges := 2
 	nodes := []NodeLocation{{
 		Row:     1,
@@ -15,12 +22,17 @@ func TestSolve3x3(t *testing.T) {
 		Value:   2,
 	}}
 
-	s := NewBFSSolver(numEdges, nodes)
+	s := newBFSSolver(numEdges, nodes)
 	err := s.Solve()
 	require.NoError(t, err)
 }
 
 func TestSolve5x5(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+		return
+	}
+
 	numEdges := 5
 	nodes := []NodeLocation{{
 		Row:     3,
@@ -49,7 +61,7 @@ func TestSolve5x5(t *testing.T) {
 		Value:   5,
 	}}
 
-	s := NewBFSSolver(numEdges, nodes)
+	s := newBFSSolver(numEdges, nodes)
 	err := s.Solve()
 	require.NoError(t, err)
 }

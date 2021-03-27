@@ -1,36 +1,30 @@
-package puzzlegrid
+package puzzle
 
 import (
-	"errors"
 	"fmt"
-	"time"
 )
 
-var (
-	showProcess = false
-)
-
-type queueItem struct {
+type bfsQueueItem struct {
 	grid *grid
 	row  int
 	col  int
 }
 
-type BfsSolver struct {
-	queue []*queueItem
+type bfsSolver struct {
+	queue []*bfsQueueItem
 
 	numProcessed int
 }
 
-func NewBFSSolver(
+func newBFSSolver(
 	size int,
 	nl []NodeLocation,
-) *BfsSolver {
+) *bfsSolver {
 	if len(nl) == 0 {
 		return nil
 	}
 
-	bestR, bestC, bestVal := -1, -1, -1
+	bestR, bestC, bestVal := -1, -1, int8(-1)
 	for _, n := range nl {
 		if n.Value > bestVal {
 			bestR = n.Row
@@ -39,8 +33,8 @@ func NewBFSSolver(
 		}
 	}
 
-	return &BfsSolver{
-		queue: []*queueItem{{
+	return &bfsSolver{
+		queue: []*bfsQueueItem{{
 			grid: newGrid(size, nl),
 			row:  bestR,
 			col:  bestC,
@@ -48,27 +42,18 @@ func NewBFSSolver(
 	}
 }
 
-func (b *BfsSolver) Solve() error {
-	defer func(t0 time.Time) {
-		fmt.Printf("BfsSolver.Solve processed %d paths in %s\n", b.numProcessed, time.Since(t0).String())
-	}(time.Now())
-	g, isSolved := b.solve()
-	if !isSolved {
-		fmt.Println(`could not solve`)
-		return errors.New(`unsolvable`)
-	}
-	fmt.Println(g.String())
-	return nil
+func (b *bfsSolver) iterations() int {
+	return b.numProcessed
 }
 
-func (b *BfsSolver) solve() (*grid, bool) {
+func (b *bfsSolver) solve() (*grid, bool) {
 	for len(b.queue) > 0 {
 		b.numProcessed++
 		g, isSolved := b.processQueueItem()
 		if isSolved {
 			return g, true
 		}
-		if showProcess && (b.numProcessed < 100 || b.numProcessed%10000 == 0) {
+		if IncludeProgressLogs && (b.numProcessed < 100 || b.numProcessed%10000 == 0) {
 			fmt.Printf("Processed: %d\n%s\n", b.numProcessed, g.String())
 			fmt.Scanf("hello there")
 		}
@@ -76,7 +61,7 @@ func (b *BfsSolver) solve() (*grid, bool) {
 	return nil, false
 }
 
-func (b *BfsSolver) processQueueItem() (*grid, bool) {
+func (b *bfsSolver) processQueueItem() (*grid, bool) {
 	q := b.queue[0]
 	b.queue = b.queue[1:]
 
@@ -91,7 +76,7 @@ func (b *BfsSolver) processQueueItem() (*grid, bool) {
 	return q.grid, false
 }
 
-func (b *BfsSolver) addQueueItems(
+func (b *bfsSolver) addQueueItems(
 	g *grid,
 	row, col int,
 ) {
@@ -101,7 +86,7 @@ func (b *BfsSolver) addQueueItems(
 	b.addQueueItem(g, headLeft, row, col)
 }
 
-func (b *BfsSolver) addQueueItem(
+func (b *bfsSolver) addQueueItem(
 	g *grid,
 	move cardinal,
 	r, c int,
@@ -132,7 +117,7 @@ func (b *BfsSolver) addQueueItem(
 		return
 	}
 
-	b.queue = append(b.queue, &queueItem{
+	b.queue = append(b.queue, &bfsQueueItem{
 		grid: newGrid,
 		row:  newRow,
 		col:  newCol,
