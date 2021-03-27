@@ -1,7 +1,7 @@
 package puzzle
 
 type getEdgesFromNoder interface {
-	getEdgesFromNode(nodeCoord) edgesFromNode
+	getEdgesFromNode(nodeCoord) (edgesFromNode, bool)
 }
 
 type walker interface {
@@ -54,33 +54,33 @@ func (sw *simpleWalker) walkToNextPoint(
 	avoid cardinal,
 ) cardinal {
 
-	efn := sw.provider.getEdgesFromNode(sw.cur)
-	if !efn.isPopulated {
+	efn, ok := sw.provider.getEdgesFromNode(sw.cur)
+	if !ok {
 		return headNowhere
 	}
 
-	if efn.isabove && avoid != headUp {
+	if efn.isabove() && avoid != headUp {
 		nextRow := sw.cur.row - rowIndex(efn.above)
 		sw.markNodesAsSeen(nextRow, sw.cur.row, sw.cur.col, sw.cur.col)
 		sw.cur.row = nextRow
 		return headDown
 	}
 
-	if efn.isleft && avoid != headLeft {
+	if efn.isleft() && avoid != headLeft {
 		nextCol := sw.cur.col - colIndex(efn.left)
 		sw.markNodesAsSeen(sw.cur.row, sw.cur.row, nextCol, sw.cur.col)
 		sw.cur.col = nextCol
 		return headRight
 	}
 
-	if efn.isbelow && avoid != headDown {
+	if efn.isbelow() && avoid != headDown {
 		nextRow := sw.cur.row + rowIndex(efn.below)
 		sw.markNodesAsSeen(sw.cur.row, nextRow, sw.cur.col, sw.cur.col)
 		sw.cur.row = nextRow
 		return headUp
 	}
 
-	if efn.isright && avoid != headRight {
+	if efn.isright() && avoid != headRight {
 		nextCol := sw.cur.col + colIndex(efn.right)
 		sw.markNodesAsSeen(sw.cur.row, sw.cur.row, sw.cur.col, nextCol)
 		sw.cur.col = nextCol

@@ -5,8 +5,8 @@ import (
 )
 
 type bfsQueueItem struct {
-	grid  *grid
-	coord nodeCoord
+	puzzle *puzzle
+	coord  nodeCoord
 }
 
 type bfsSolver struct {
@@ -35,8 +35,8 @@ func newBFSSolver(
 
 	return &bfsSolver{
 		queue: []*bfsQueueItem{{
-			grid:  g,
-			coord: bestCoord,
+			puzzle: g,
+			coord:  bestCoord,
 		}},
 	}
 }
@@ -45,7 +45,7 @@ func (b *bfsSolver) iterations() int {
 	return b.numProcessed
 }
 
-func (b *bfsSolver) solve() (*grid, bool) {
+func (b *bfsSolver) solve() (*puzzle, bool) {
 	for len(b.queue) > 0 {
 		b.numProcessed++
 		g, isSolved := b.processQueueItem()
@@ -56,28 +56,28 @@ func (b *bfsSolver) solve() (*grid, bool) {
 	return nil, false
 }
 
-func (b *bfsSolver) processQueueItem() (*grid, bool) {
+func (b *bfsSolver) processQueueItem() (*puzzle, bool) {
 	q := b.queue[0]
 	b.queue = b.queue[1:]
 
 	if IncludeProgressLogs && (b.numProcessed < 100 || b.numProcessed%10000 == 0) {
-		fmt.Printf("About to process (%d, %d): %d\n%s\n", q.coord.row, q.coord.col, b.numProcessed, q.grid.String())
+		fmt.Printf("About to process (%d, %d): %d\n%s\n", q.coord.row, q.coord.col, b.numProcessed, q.puzzle.String())
 		fmt.Scanf("hello there")
 	}
 
-	if isIncomplete, err := q.grid.IsIncomplete(q.coord); err != nil {
-		return q.grid, false
+	if isIncomplete, err := q.puzzle.IsIncomplete(q.coord); err != nil {
+		return q.puzzle, false
 	} else if !isIncomplete {
-		return q.grid, true
+		return q.puzzle, true
 	}
 
-	b.addQueueItems(q.grid, q.coord)
+	b.addQueueItems(q.puzzle, q.coord)
 
-	return q.grid, false
+	return q.puzzle, false
 }
 
 func (b *bfsSolver) addQueueItems(
-	g *grid,
+	g *puzzle,
 	coord nodeCoord,
 ) {
 	b.addQueueItem(g, headUp, coord)
@@ -87,7 +87,7 @@ func (b *bfsSolver) addQueueItems(
 }
 
 func (b *bfsSolver) addQueueItem(
-	g *grid,
+	g *puzzle,
 	move cardinal,
 	coord nodeCoord,
 ) {
@@ -107,7 +107,7 @@ func (b *bfsSolver) addQueueItem(
 	}
 
 	b.queue = append(b.queue, &bfsQueueItem{
-		grid:  newGrid,
-		coord: newCoord,
+		puzzle: newGrid,
+		coord:  newCoord,
 	})
 }

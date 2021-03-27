@@ -6,7 +6,7 @@ import (
 )
 
 type solver interface {
-	solve() (*grid, bool)
+	solve() (*puzzle, bool)
 	iterations() int
 }
 

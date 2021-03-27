@@ -10,10 +10,10 @@ func TestEdgesFromNodeGetNumCardinals(t *testing.T) {
 	efn := edgesFromNode{}
 	assert.Zero(t, efn.getNumOutgoingDirections())
 	efn = edgesFromNode{
-		isabove: true,
-		isbelow: true,
-		isleft:  true,
-		isright: true,
+		above: 1,
+		below: 1,
+		left:  1,
+		right: 1,
 	}
 	assert.Equal(t, int8(4), efn.getNumOutgoingDirections())
 }
@@ -28,116 +28,89 @@ func TestNodeTypeIsInvalidEdges(t *testing.T) {
 	}{{
 		msg: `up`,
 		efn: edgesFromNode{
-			isabove: true,
-			isbelow: false,
-			isleft:  false,
-			isright: false,
+			above: 1,
 		},
 	}, {
 		msg: `right`,
 		efn: edgesFromNode{
-			isabove: false,
-			isbelow: false,
-			isleft:  false,
-			isright: true,
+			right: 1,
 		},
 	}, {
 		msg: `down`,
 		efn: edgesFromNode{
-			isabove: false,
-			isbelow: true,
-			isleft:  false,
-			isright: false,
+			below: 1,
 		},
 	}, {
 		msg: `left`,
 		efn: edgesFromNode{
-			isabove: false,
-			isbelow: false,
-			isleft:  true,
-			isright: false,
+			left: 1,
 		},
 	}, {
 		msg: `up and down`,
 		efn: edgesFromNode{
-			isabove: true,
-			isbelow: true,
-			isleft:  false,
-			isright: false,
+			above: 1,
+			below: 1,
 		},
 		expBlackNodeOutput: true,
 	}, {
 		msg: `left and right`,
 		efn: edgesFromNode{
-			isabove: false,
-			isbelow: false,
-			isleft:  true,
-			isright: true,
+			left:  1,
+			right: 1,
 		},
 		expBlackNodeOutput: true,
 	}, {
 		msg: `up and right`,
 		efn: edgesFromNode{
-			isabove: true,
-			isbelow: false,
-			isleft:  false,
-			isright: true,
+			above: 1,
+			right: 1,
 		},
 		expWhiteNodeOutput: true,
 	}, {
 		msg: `right and down`,
 		efn: edgesFromNode{
-			isabove: false,
-			isbelow: true,
-			isleft:  false,
-			isright: true,
+			below: 1,
+			right: 1,
 		},
 		expWhiteNodeOutput: true,
 	}, {
 		msg: `down and left`,
 		efn: edgesFromNode{
-			isabove: false,
-			isbelow: true,
-			isleft:  true,
-			isright: false,
+			below: 1,
+			left:  1,
 		},
 		expWhiteNodeOutput: true,
 	}, {
 		msg: `left and up`,
 		efn: edgesFromNode{
-			isabove: true,
-			isbelow: false,
-			isleft:  true,
-			isright: false,
+			above: 1,
+			left:  1,
 		},
 		expWhiteNodeOutput: true,
 	}, {
 		msg: `up, right, and down`,
 		efn: edgesFromNode{
-			isabove: true,
-			isbelow: true,
-			isleft:  false,
-			isright: true,
+			above: 1,
+			below: 1,
+			right: 1,
 		},
 		expWhiteNodeOutput: true,
 		expBlackNodeOutput: true,
 	}, {
 		msg: `up, right, and left`,
 		efn: edgesFromNode{
-			isabove: true,
-			isbelow: false,
-			isleft:  true,
-			isright: true,
+			above: 1,
+			left:  1,
+			right: 1,
 		},
 		expWhiteNodeOutput: true,
 		expBlackNodeOutput: true,
 	}, {
 		msg: `up, down, and left`,
 		efn: edgesFromNode{
-			isabove: true,
-			isbelow: true,
-			isleft:  true,
-			isright: false,
+			above: 1,
+			below: 1,
+			left:  1,
 		},
 		expWhiteNodeOutput: true,
 		expBlackNodeOutput: true,
@@ -151,21 +124,19 @@ func TestNodeTypeIsInvalidEdges(t *testing.T) {
 }
 
 func TestNodeCopy(t *testing.T) {
-	var n *node
-	assert.Nil(t, n.copy())
-
-	n = &node{
+	n := node{
 		nType: blackNode,
 		val:   4,
 	}
-	assert.Equal(t, &node{
+	cpy1 := n.copy()
+	assert.Equal(t, node{
 		nType: blackNode,
 		val:   4,
-	}, n.copy())
+	}, cpy1)
+	n.val = 5
 
-	n.seen = true
-	assert.Equal(t, &node{
+	assert.Equal(t, node{
 		nType: blackNode,
 		val:   4,
-	}, n.copy())
+	}, cpy1)
 }

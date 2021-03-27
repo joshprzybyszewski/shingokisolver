@@ -5,12 +5,12 @@ import (
 )
 
 type dfsSolverStep struct {
-	grid  *grid
-	coord nodeCoord
+	puzzle *puzzle
+	coord  nodeCoord
 }
 
 type dfsSolver struct {
-	grid *grid
+	puzzle *puzzle
 
 	numProcessed int
 }
@@ -24,7 +24,7 @@ func newDFSSolver(
 	}
 
 	return &dfsSolver{
-		grid: newGrid(size, nl),
+		puzzle: newGrid(size, nl),
 	}
 }
 
@@ -32,45 +32,45 @@ func (d *dfsSolver) iterations() int {
 	return d.numProcessed
 }
 
-func (d *dfsSolver) solve() (*grid, bool) {
+func (d *dfsSolver) solve() (*puzzle, bool) {
 	var bestCoord nodeCoord
 	bestVal := int8(-1)
-	for nc, n := range d.grid.nodes {
+	for nc, n := range d.puzzle.nodes {
 		if n.val > bestVal {
 			bestCoord = nc
 			bestVal = n.val
 		}
 	}
 	return d.takeNextStepIntoDepth(&dfsSolverStep{
-		grid:  d.grid,
-		coord: bestCoord,
+		puzzle: d.puzzle,
+		coord:  bestCoord,
 	})
 }
 
 func (d *dfsSolver) takeNextStepIntoDepth(
 	q *dfsSolverStep,
-) (*grid, bool) {
+) (*puzzle, bool) {
 	if q == nil {
 		return nil, false
 	}
 
 	d.numProcessed++
 	if IncludeProgressLogs && (d.numProcessed < 100 || d.numProcessed%1000 == 0) {
-		fmt.Printf("About to process (%d, %d): %d\n%s\n", q.coord.row, q.coord.col, d.numProcessed, q.grid.String())
+		fmt.Printf("About to process (%d, %d): %d\n%s\n", q.coord.row, q.coord.col, d.numProcessed, q.puzzle.String())
 		fmt.Scanf("hello there")
 	}
 
-	if isIncomplete, err := q.grid.IsIncomplete(q.coord); err != nil {
-		return q.grid, false
+	if isIncomplete, err := q.puzzle.IsIncomplete(q.coord); err != nil {
+		return q.puzzle, false
 	} else if !isIncomplete {
-		return q.grid, true
+		return q.puzzle, true
 	}
 
 	for _, qi := range []*dfsSolverStep{
-		d.getNextStep(q.grid, headUp, q.coord),
-		d.getNextStep(q.grid, headRight, q.coord),
-		d.getNextStep(q.grid, headDown, q.coord),
-		d.getNextStep(q.grid, headLeft, q.coord),
+		d.getNextStep(q.puzzle, headUp, q.coord),
+		d.getNextStep(q.puzzle, headRight, q.coord),
+		d.getNextStep(q.puzzle, headDown, q.coord),
+		d.getNextStep(q.puzzle, headLeft, q.coord),
 	} {
 		g, isSolved := d.takeNextStepIntoDepth(qi)
 		if isSolved {
@@ -78,11 +78,11 @@ func (d *dfsSolver) takeNextStepIntoDepth(
 		}
 	}
 
-	return q.grid, false
+	return q.puzzle, false
 }
 
 func (d *dfsSolver) getNextStep(
-	g *grid,
+	g *puzzle,
 	move cardinal,
 	nc nodeCoord,
 ) *dfsSolverStep {
@@ -102,7 +102,7 @@ func (d *dfsSolver) getNextStep(
 	}
 
 	return &dfsSolverStep{
-		grid:  newGrid,
-		coord: newCoord,
+		puzzle: newGrid,
+		coord:  newCoord,
 	}
 }

@@ -6,14 +6,14 @@ import (
 )
 
 type headsAndTailsItem struct {
-	grid    *grid
+	puzzle  *puzzle
 	head    nodeCoord
 	tail    nodeCoord
 	useHead bool
 }
 
 type headsAndTailsDFSSolver struct {
-	grid *grid
+	puzzle *puzzle
 
 	numProcessed int
 }
@@ -27,7 +27,7 @@ func newHeadsAndTailsDFSSolver(
 	}
 
 	return &headsAndTailsDFSSolver{
-		grid: newGrid(size, nl),
+		puzzle: newGrid(size, nl),
 	}
 }
 
@@ -35,9 +35,9 @@ func (d *headsAndTailsDFSSolver) iterations() int {
 	return d.numProcessed
 }
 
-func (d *headsAndTailsDFSSolver) solve() (*grid, bool) {
+func (d *headsAndTailsDFSSolver) solve() (*puzzle, bool) {
 	bestR, bestC, bestVal := rowIndex(-1), colIndex(-1), int8(-1)
-	for nc, n := range d.grid.nodes {
+	for nc, n := range d.puzzle.nodes {
 		if n.val > bestVal {
 			bestR = nc.row
 			bestC = nc.col
@@ -45,7 +45,7 @@ func (d *headsAndTailsDFSSolver) solve() (*grid, bool) {
 		}
 	}
 	return d.processQueueItem(&headsAndTailsItem{
-		grid: d.grid,
+		puzzle: d.puzzle,
 		head: nodeCoord{
 			row: bestR,
 			col: bestC,
@@ -60,7 +60,7 @@ func (d *headsAndTailsDFSSolver) solve() (*grid, bool) {
 
 func (d *headsAndTailsDFSSolver) processQueueItem(
 	q *headsAndTailsItem,
-) (*grid, bool) {
+) (*puzzle, bool) {
 	if q == nil {
 		return nil, false
 	}
@@ -74,14 +74,14 @@ func (d *headsAndTailsDFSSolver) processQueueItem(
 		fmt.Printf("About to process head(%d, %d) tail(%d, %d): %d\n%s\n",
 			q.head.row, q.head.col,
 			q.tail.row, q.tail.col,
-			d.numProcessed, q.grid.String())
+			d.numProcessed, q.puzzle.String())
 		fmt.Scanf("hello there")
 	}
 
-	if isIncomplete, err := q.grid.IsIncomplete(nodeToUse); err != nil {
-		return q.grid, false
+	if isIncomplete, err := q.puzzle.IsIncomplete(nodeToUse); err != nil {
+		return q.puzzle, false
 	} else if !isIncomplete {
-		return q.grid, true
+		return q.puzzle, true
 	}
 
 	for c, useHead := range map[cardinal]bool{
@@ -90,10 +90,10 @@ func (d *headsAndTailsDFSSolver) processQueueItem(
 		headDown:  q.useHead,
 		headLeft:  q.useHead,
 	} {
-		qi, err := d.getQueueItem(q.grid, c, q, useHead)
+		qi, err := d.getQueueItem(q.puzzle, c, q, useHead)
 		if err != nil {
 			continue
-			// return q.grid, false
+			// return q.puzzle, false
 		}
 		g, isSolved := d.processQueueItem(qi)
 		if isSolved {
@@ -107,10 +107,10 @@ func (d *headsAndTailsDFSSolver) processQueueItem(
 		headDown:  !q.useHead,
 		headLeft:  !q.useHead,
 	} {
-		qi, err := d.getQueueItem(q.grid, c, q, useHead)
+		qi, err := d.getQueueItem(q.puzzle, c, q, useHead)
 		if err != nil {
 			continue
-			// return q.grid, false
+			// return q.puzzle, false
 		}
 		g, isSolved := d.processQueueItem(qi)
 		if isSolved {
@@ -118,11 +118,11 @@ func (d *headsAndTailsDFSSolver) processQueueItem(
 		}
 	}
 
-	return q.grid, false
+	return q.puzzle, false
 }
 
 func (d *headsAndTailsDFSSolver) getQueueItem(
-	g *grid,
+	g *puzzle,
 	move cardinal,
 	q *headsAndTailsItem,
 	useHead bool,
@@ -157,7 +157,7 @@ func (d *headsAndTailsDFSSolver) getQueueItem(
 	}
 
 	return &headsAndTailsItem{
-		grid:    newGrid,
+		puzzle:  newGrid,
 		head:    newHead,
 		tail:    newTail,
 		useHead: !useHead,

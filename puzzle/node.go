@@ -1,50 +1,45 @@
 package puzzle
 
 type edgesFromNode struct {
-	above      int8
-	below      int8
-	left       int8
-	right      int8
-	totalEdges int8
-
-	isabove bool
-	isbelow bool
-	isleft  bool
-	isright bool
-
-	isPopulated bool
+	above int8
+	below int8
+	left  int8
+	right int8
 }
 
-func newEdgesFromNode(
-	above, below, left, right int8,
-) edgesFromNode {
-	return edgesFromNode{
-		totalEdges:  above + below + left + right,
-		above:       above,
-		below:       below,
-		left:        left,
-		right:       right,
-		isabove:     above != 0,
-		isbelow:     below != 0,
-		isleft:      left != 0,
-		isright:     right != 0,
-		isPopulated: true,
-	}
+func (efn edgesFromNode) totalEdges() int8 {
+	return efn.above + efn.below + efn.left + efn.right
+}
+
+func (efn edgesFromNode) isabove() bool {
+	return efn.above != 0
+}
+
+func (efn edgesFromNode) isbelow() bool {
+	return efn.below != 0
+}
+
+func (efn edgesFromNode) isleft() bool {
+	return efn.left != 0
+}
+
+func (efn edgesFromNode) isright() bool {
+	return efn.right != 0
 }
 
 func (efn edgesFromNode) getNumOutgoingDirections() int8 {
 	var numBranches int8
 
-	if efn.isabove {
+	if efn.isabove() {
 		numBranches++
 	}
-	if efn.isbelow {
+	if efn.isbelow() {
 		numBranches++
 	}
-	if efn.isleft {
+	if efn.isleft() {
 		numBranches++
 	}
-	if efn.isright {
+	if efn.isright() {
 		numBranches++
 	}
 
@@ -67,11 +62,11 @@ func (nt nodeType) isInvalidEdges(efn edgesFromNode) bool {
 	case whiteNode:
 		// white nodes need to be straight. therefore, they're
 		// invalid if they have opposing directions set
-		return (efn.isabove || efn.isbelow) && (efn.isleft || efn.isright)
+		return (efn.isabove() || efn.isbelow()) && (efn.isleft() || efn.isright())
 	case blackNode:
 		// black nodes need to be bent. therefore, they're
 		// invalid if they have a straight line in them
-		return (efn.isabove && efn.isbelow) || (efn.isleft && efn.isright)
+		return (efn.isabove() && efn.isbelow()) || (efn.isleft() && efn.isright())
 	default:
 		return false
 	}
@@ -80,16 +75,8 @@ func (nt nodeType) isInvalidEdges(efn edgesFromNode) bool {
 type node struct {
 	nType nodeType
 	val   int8
-
-	seen bool
 }
 
-func (n *node) copy() *node {
-	if n == nil {
-		return nil
-	}
-	return &node{
-		nType: n.nType,
-		val:   n.val,
-	}
+func (n node) copy() node {
+	return n
 }
