@@ -421,12 +421,8 @@ func (g *grid) IsIncomplete(
 	}
 
 	efn := g.getEdgesFromNode(firstR, firstC)
-	if efn.getNumCardinals() != 2 {
-		// don't need to walk the whole path if we see
-		// from the start that it's not going to complete.
-		return true, nil
-	} else {
-		// we were given bad intel. let's find a node.
+	if nCards := efn.getNumCardinals(); nCards == 0 {
+		// we were given bad intel. let's find a node with any edges.
 		firstR, firstC = -1, -1
 		for r := 0; r < len(g.rows) && firstR < 0; r++ {
 			for c := 0; c < len(g.cols) && firstC < 0; c++ {
@@ -444,6 +440,10 @@ func (g *grid) IsIncomplete(
 				}
 			}
 		}
+	} else if nCards != 2 {
+		// don't need to walk the whole path if we see
+		// from the start that it's not going to complete.
+		return true, nil
 	}
 
 	// from the firstEdge, make your way around the grid until we get back
