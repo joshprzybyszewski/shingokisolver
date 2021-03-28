@@ -67,73 +67,68 @@ func newGrid(
 	}
 }
 
-func (g *puzzle) deepCopy() *puzzle {
-	if g == nil {
+func (p *puzzle) deepCopy() *puzzle {
+	if p == nil {
 		return nil
 	}
 
 	nodes := map[nodeCoord]node{}
-	for nc, n := range g.nodes {
+	for nc, n := range p.nodes {
 		nodes[nc] = n.copy()
 	}
 
 	return &puzzle{
-		numEdges:      g.numEdges,
+		numEdges:      p.numEdges,
 		nodes:         nodes,
-		outgoingEdges: g.outgoingEdges.copy(),
+		outgoingEdges: p.outgoingEdges.copy(),
 	}
 }
 
-func (g *puzzle) numNodes() int {
-	return int(g.numEdges) + 1
+func (p *puzzle) numNodes() int {
+	return int(p.numEdges) + 1
 }
 
-func (g *puzzle) IsEdge(
+func (p *puzzle) IsEdge(
 	move cardinal,
 	nc nodeCoord,
 ) bool {
-	isEdge, _ := g.isEdge(move, nc)
+	isEdge, _ := p.isEdge(move, nc)
 	return isEdge
 }
 
-func (g *puzzle) isEdge(
+func (p *puzzle) isEdge(
 	move cardinal,
 	nc nodeCoord,
 ) (bool, bool) {
-	if !g.isInBounds(nc) {
+	if !p.outgoingEdges.isInBounds(nc) {
 		return false, false
 	}
-	maxIndex := g.numEdges
+	maxIndex := p.numEdges
 
 	switch move {
 	case headLeft:
-		return nc.col != 0 && g.outgoingEdges.get(nc).isleft(), true
+		return nc.col != 0 && p.outgoingEdges.get(nc).isleft(), true
 	case headRight:
-		return uint8(nc.col) != maxIndex && g.outgoingEdges.get(nc).isright(), true
+		return uint8(nc.col) != maxIndex && p.outgoingEdges.get(nc).isright(), true
 	case headUp:
-		return nc.row != 0 && g.outgoingEdges.get(nc).isabove(), true
+		return nc.row != 0 && p.outgoingEdges.get(nc).isabove(), true
 	case headDown:
-		return uint8(nc.row) != maxIndex && g.outgoingEdges.get(nc).isbelow(), true
+		return uint8(nc.row) != maxIndex && p.outgoingEdges.get(nc).isbelow(), true
 	default:
 		return false, false
 	}
 }
 
-func (g *puzzle) isInBounds(
-	nc nodeCoord,
-) bool {
-	if nc.row < 0 || nc.col < 0 {
-		return false
-	}
-	maxIndex := g.numEdges
-	return uint8(nc.row) <= maxIndex && uint8(nc.col) <= maxIndex
-}
-
-func (g *puzzle) AddEdge(
+func (p *puzzle) AddEdge(
 	move cardinal,
-	nc nodeCoord,
+	startNode nodeCoord,
 ) (nodeCoord, *puzzle, error) {
-	isEdge, isValid := g.isEdge(move, nc)
+	endNode := startNode.translate(move)
+	if !p.outgoingEdges.isInBounds(endNode) {
+		return nodeCoord{}, nil, errors.New(`next point is out of bounds`)
+	}
+
+	isEdge, isValid := p.isEdge(move, startNode)
 	if !isValid {
 		return nodeCoord{}, nil, errors.New(`invalid input`)
 	}
@@ -141,145 +136,33 @@ func (g *puzzle) AddEdge(
 		return nodeCoord{}, nil, errors.New(`already had edge`)
 	}
 
-	newCoord := nc.translate(move)
-	if !g.isInBounds(newCoord) {
-		return nodeCoord{}, nil, errors.New(`next point is out of bounds`)
-	}
+	gCpy := p.deepCopy()
+	updateConnections(gCpy.outgoingEdges, startNode, endNode, move)
 
-	gCpy := g.deepCopy()
-	gCpy.updateConnections(nc, move)
-
-	return newCoord, gCpy, nil
+	return endNode, gCpy, nil
 }
 
-func (g *puzzle) updateConnections(
-	startCoord nodeCoord,
-	motion cardinal,
-) {
-	start := g.outgoingEdges.get(startCoord)
-	endCoord := startCoord.translate(motion)
-
-	end := g.outgoingEdges.get(endCoord)
-
-	switch motion {
-	case headLeft:
-		start.left = end.left + 1
-		end.right = start.right + 1
-	case headRight:
-		start.right = end.right + 1
-		end.left = start.left + 1
-	case headUp:
-		start.above = end.above + 1
-		end.below = start.below + 1
-	case headDown:
-		start.below = end.below + 1
-		end.above = start.above + 1
-	}
-
-	g.outgoingEdges.set(startCoord, start)
-	g.outgoingEdges.set(endCoord, end)
-
-	switch motion {
-	case headLeft:
-		g.updateRowConnections(endCoord, startCoord)
-	case headRight:
-		g.updateRowConnections(startCoord, endCoord)
-	case headUp:
-		g.updateColConnections(endCoord, startCoord)
-	case headDown:
-		g.updateColConnections(startCoord, endCoord)
-	}
-}
-
-func (g *puzzle) updateRowConnections(
-	leftNode, rightNode nodeCoord,
-) {
-	curCoord := rightNode
-	cur := g.outgoingEdges.get(curCoord)
-	for cur.isright() {
-		nextCoord := curCoord.translate(headRight)
-		if !g.isInBounds(nextCoord) {
-			break
-		}
-		next := g.outgoingEdges.get(nextCoord)
-		next.left = cur.left + 1
-		g.outgoingEdges.set(nextCoord, next)
-
-		cur = next
-		curCoord = nextCoord
-	}
-
-	curCoord = leftNode
-	cur = g.outgoingEdges.get(curCoord)
-	for cur.isleft() {
-		nextCoord := curCoord.translate(headLeft)
-		if !g.isInBounds(nextCoord) {
-			break
-		}
-		next := g.outgoingEdges.get(nextCoord)
-		next.right = cur.right + 1
-		g.outgoingEdges.set(nextCoord, next)
-
-		cur = next
-		curCoord = nextCoord
-	}
-}
-
-func (g *puzzle) updateColConnections(
-	topNode, bottomNode nodeCoord,
-) {
-	curCoord := topNode
-	cur := g.outgoingEdges.get(curCoord)
-	for cur.isabove() {
-		nextCoord := curCoord.translate(headUp)
-		if !g.isInBounds(nextCoord) {
-			break
-		}
-		next := g.outgoingEdges.get(nextCoord)
-		next.below = cur.below + 1
-		g.outgoingEdges.set(nextCoord, next)
-
-		cur = next
-		curCoord = nextCoord
-	}
-
-	curCoord = bottomNode
-	cur = g.outgoingEdges.get(curCoord)
-	for cur.isbelow() {
-		nextCoord := curCoord.translate(headDown)
-		if !g.isInBounds(nextCoord) {
-			break
-		}
-		next := g.outgoingEdges.get(nextCoord)
-		next.above = cur.above + 1
-		g.outgoingEdges.set(nextCoord, next)
-
-		cur = next
-		curCoord = nextCoord
-	}
-}
-
-func (g *puzzle) isRangeInvalidWithBoundsCheck(
+func (p *puzzle) isRangeInvalidWithBoundsCheck(
 	startR, stopR rowIndex,
 	startC, stopC colIndex,
 ) bool {
 	if startR < 0 {
 		startR = 0
 	}
-	if maxR := rowIndex(g.numNodes()); stopR > maxR {
+	if maxR := rowIndex(p.numNodes()); stopR > maxR {
 		stopR = maxR
 	}
 	if startC < 0 {
 		startC = 0
 	}
-	if maxC := colIndex(g.numNodes()); stopC > maxC {
+	if maxC := colIndex(p.numNodes()); stopC > maxC {
 		stopC = maxC
 	}
 
-	return g.isRangeInvalid(startR, stopR, startC, stopC)
+	return p.isRangeInvalid(startR, stopR, startC, stopC)
 }
 
-func (g *puzzle) isRangeInvalid(
+func (p *puzzle) isRangeInvalid(
 	startR, stopR rowIndex,
 	startC, stopC colIndex,
 ) bool {
@@ -290,19 +173,19 @@ func (g *puzzle) isRangeInvalid(
 				row: r,
 				col: c,
 			}
-			efn, ok := g.getEdgesFromNode(nc)
+			oe, ok := p.getOutgoingEdgesFrom(nc)
 			if !ok {
 				// the coordinate must be out of bounds
 				return true
 			}
-			if efn.getNumOutgoingDirections() > 2 {
+			if oe.getNumOutgoingDirections() > 2 {
 				// either we can't get the node, or this is a branch.
 				// therefore, this puzzle is invalid
 				return true
 			}
 
 			// if this point is a node, check for if it's invalid
-			if g.isInvalidNode(nc, efn) {
+			if isInvalidNode(p, nc, oe) {
 				return true
 			}
 		}
@@ -311,62 +194,39 @@ func (g *puzzle) isRangeInvalid(
 	return false
 }
 
-func (g *puzzle) getEdgesFromNode(
+func (p *puzzle) getOutgoingEdgesFrom(
 	coord nodeCoord,
 ) (edgesFromNode, bool) {
-	if coord.row < 0 || coord.col < 0 {
+	if !p.outgoingEdges.isInBounds(coord) {
 		return edgesFromNode{}, false
 	}
 
-	if numNodes := g.numNodes(); int(coord.row) >= numNodes || int(coord.col) >= numNodes {
-		return edgesFromNode{}, false
-	}
-
-	return g.outgoingEdges.get(coord), true
+	return p.outgoingEdges.get(coord), true
 }
 
-func (g *puzzle) isInvalidNode(
-	nc nodeCoord,
-	efn edgesFromNode,
-) bool {
-	n, ok := g.nodes[nc]
-	if !ok || n.nType == noNode {
-		// no node == not invalid
-		return false
-	}
-
-	// check that the node type rules are not broken
-	if n.nType.isInvalidEdges(efn) {
-		return true
-	}
-
-	// check that the num of straight line edges < n.val
-	return n.val < efn.totalEdges()
-}
-
-func (g *puzzle) IsIncomplete(
+func (p *puzzle) IsIncomplete(
 	coord nodeCoord,
 ) (bool, error) {
-	if g.isRangeInvalid(0, rowIndex(g.numNodes()), 0, colIndex(g.numNodes())) {
+	if p.isRangeInvalid(0, rowIndex(p.numNodes()), 0, colIndex(p.numNodes())) {
 		return true, errors.New(`invalid puzzle`)
 	}
 
-	efn, ok := g.getEdgesFromNode(coord)
+	oe, ok := p.getOutgoingEdgesFrom(coord)
 	if !ok {
 		return true, errors.New(`bad input`)
 	}
 
-	if nOutgoingEdges := efn.getNumOutgoingDirections(); nOutgoingEdges == 0 {
+	if nOutgoingEdges := oe.getNumOutgoingDirections(); nOutgoingEdges == 0 {
 		// we were given bad intel. let's find a node with any edges.
 		found := false
-		for r := rowIndex(0); int(r) < g.numNodes() && !found; r++ {
-			for c := colIndex(0); int(c) < g.numNodes() && !found; c++ {
+		for r := rowIndex(0); int(r) < p.numNodes() && !found; r++ {
+			for c := colIndex(0); int(c) < p.numNodes() && !found; c++ {
 				coord = nodeCoord{
 					row: r,
 					col: c,
 				}
-				hasRow := g.IsEdge(headRight, coord)
-				hasCol := g.IsEdge(headDown, coord)
+				hasRow := p.IsEdge(headRight, coord)
+				hasCol := p.IsEdge(headDown, coord)
 				if hasRow || hasCol {
 					if !hasRow || !hasCol {
 						// don't need to walk the whole path if we see
@@ -388,32 +248,29 @@ func (g *puzzle) IsIncomplete(
 		return true, nil
 	}
 
-	w := newWalker(g, coord)
+	w := newWalker(p, coord)
 	seenNodes, ok := w.walk()
 	if !ok {
 		// our path did not make it all the way around
 		return true, nil
 	}
 
-	for nc, n := range g.nodes {
-		efn, ok := g.getEdgesFromNode(nc)
-		if !ok {
-			return true, errors.New(`bad input`)
-		}
-		if sumStraightLines := efn.totalEdges(); sumStraightLines > n.val {
-			// this node has too many edges coming out of it
-			return true, errors.New(`this graph has too many connections for a node`)
-		} else if sumStraightLines != n.val {
-			// this node has fewer than the number of edges it needs. Therefore,
-			// we consider this graph incomplete
-			// TODO check if we have at least one edge that could be added that remains valid
-			return true, nil
-		}
-
+	for nc, n := range p.nodes {
 		if _, ok := seenNodes[nc]; !ok {
 			// node was not seen
 			return true, nil
 		}
+
+		oe, ok := p.getOutgoingEdgesFrom(nc)
+		if !ok {
+			return true, errors.New(`bad input`)
+		}
+		if oe.totalEdges() != n.val {
+			// previously (in isRangeInvalid) we checked if oe.totalEdges() > n.val
+			// This check exists to verify we have exactly how many we need.
+			return true, nil
+		}
+
 	}
 
 	// at this point, we have a valid board, our path is a loop,
@@ -422,21 +279,21 @@ func (g *puzzle) IsIncomplete(
 	return false, nil
 }
 
-func (g *puzzle) String() string {
-	if g == nil {
+func (p *puzzle) String() string {
+	if p == nil {
 		return `(*puzzle)<nil>`
 	}
 	var sb strings.Builder
-	for r := 0; r < g.numNodes(); r++ {
+	for r := 0; r < p.numNodes(); r++ {
 		var below strings.Builder
-		for c := 0; c < g.numNodes(); c++ {
+		for c := 0; c < p.numNodes(); c++ {
 			nc := nodeCoord{
 				row: rowIndex(r),
 				col: colIndex(c),
 			}
 			// write a node
 			sb.WriteString(`(`)
-			if n, ok := g.nodes[nc]; ok {
+			if n, ok := p.nodes[nc]; ok {
 				if n.nType == whiteNode {
 					sb.WriteString(`w`)
 				} else {
@@ -449,7 +306,7 @@ func (g *puzzle) String() string {
 			sb.WriteString(`)`)
 
 			// now draw an edge
-			if g.IsEdge(headRight, nc) {
+			if p.IsEdge(headRight, nc) {
 				sb.WriteString(`---`)
 			} else {
 				sb.WriteString(`   `)
@@ -457,7 +314,7 @@ func (g *puzzle) String() string {
 
 			// now draw any edges that are below
 			below.WriteString(`  `)
-			if g.IsEdge(headDown, nc) {
+			if p.IsEdge(headDown, nc) {
 				below.WriteString(`|`)
 			} else {
 				below.WriteString(` `)

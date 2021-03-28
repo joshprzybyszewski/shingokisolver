@@ -1,7 +1,7 @@
 package puzzle
 
 type getEdgesFromNoder interface {
-	getEdgesFromNode(nodeCoord) (edgesFromNode, bool)
+	getOutgoingEdgesFrom(nodeCoord) (edgesFromNode, bool)
 }
 
 type walker interface {
@@ -55,7 +55,7 @@ func (sw *simpleWalker) walkToNextPoint(
 	avoid cardinal,
 ) cardinal {
 
-	efn, ok := sw.provider.getEdgesFromNode(sw.cur)
+	efn, ok := sw.provider.getOutgoingEdgesFrom(sw.cur)
 	if !ok {
 		return headNowhere
 	}

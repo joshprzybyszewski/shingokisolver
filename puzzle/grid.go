@@ -1,5 +1,9 @@
 package puzzle
 
+type gridNodeBoundser interface {
+	isInBounds(nodeCoord) bool
+}
+
 type gridNodeGetter interface {
 	get(nodeCoord) edgesFromNode
 }
@@ -8,11 +12,18 @@ type gridNodeSetter interface {
 	set(nodeCoord, edgesFromNode)
 }
 
+type gridSetterAndGetter interface {
+	gridNodeBoundser
+	gridNodeGetter
+	gridNodeSetter
+}
+
 type gridCopyer interface {
 	copy() gridNoder
 }
 
 type gridNoder interface {
+	gridNodeBoundser
 	gridNodeGetter
 	gridNodeSetter
 	gridCopyer
@@ -45,6 +56,14 @@ type maxGrid [MAX_EDGES][MAX_EDGES]edgesFromNode
 
 var _ gridNoder = (*maxGrid)(nil)
 
+func (mg *maxGrid) isInBounds(nc nodeCoord) bool {
+	if nc.row < 0 || nc.col < 0 {
+		return false
+	}
+	maxIndex := len(mg)
+	return int(nc.row) < maxIndex && int(nc.col) < maxIndex
+}
+
 func (mg *maxGrid) get(nc nodeCoord) edgesFromNode {
 	return mg[nc.row][nc.col]
 }
@@ -66,6 +85,14 @@ func (mg *maxGrid) copy() gridNoder {
 type grid3x3 [3][3]edgesFromNode
 
 var _ gridNoder = (*grid3x3)(nil)
+
+func (g *grid3x3) isInBounds(nc nodeCoord) bool {
+	if nc.row < 0 || nc.col < 0 {
+		return false
+	}
+	maxIndex := len(g)
+	return int(nc.row) < maxIndex && int(nc.col) < maxIndex
+}
 
 func (g *grid3x3) get(nc nodeCoord) edgesFromNode {
 	return g[nc.row][nc.col]
@@ -89,6 +116,14 @@ type grid6x6 [6][6]edgesFromNode
 
 var _ gridNoder = (*grid6x6)(nil)
 
+func (g *grid6x6) isInBounds(nc nodeCoord) bool {
+	if nc.row < 0 || nc.col < 0 {
+		return false
+	}
+	maxIndex := len(g)
+	return int(nc.row) < maxIndex && int(nc.col) < maxIndex
+}
+
 func (g *grid6x6) get(nc nodeCoord) edgesFromNode {
 	return g[nc.row][nc.col]
 }
@@ -110,6 +145,14 @@ func (g *grid6x6) copy() gridNoder {
 type grid8x8 [8][8]edgesFromNode
 
 var _ gridNoder = (*grid8x8)(nil)
+
+func (g *grid8x8) isInBounds(nc nodeCoord) bool {
+	if nc.row < 0 || nc.col < 0 {
+		return false
+	}
+	maxIndex := len(g)
+	return int(nc.row) < maxIndex && int(nc.col) < maxIndex
+}
 
 func (g *grid8x8) get(nc nodeCoord) edgesFromNode {
 	return g[nc.row][nc.col]
@@ -133,6 +176,14 @@ type grid11x11 [11][11]edgesFromNode
 
 var _ gridNoder = (*grid11x11)(nil)
 
+func (g *grid11x11) isInBounds(nc nodeCoord) bool {
+	if nc.row < 0 || nc.col < 0 {
+		return false
+	}
+	maxIndex := len(g)
+	return int(nc.row) < maxIndex && int(nc.col) < maxIndex
+}
+
 func (g *grid11x11) get(nc nodeCoord) edgesFromNode {
 	return g[nc.row][nc.col]
 }
@@ -154,6 +205,14 @@ func (g *grid11x11) copy() gridNoder {
 type grid16x16 [16][16]edgesFromNode
 
 var _ gridNoder = (*grid16x16)(nil)
+
+func (g *grid16x16) isInBounds(nc nodeCoord) bool {
+	if nc.row < 0 || nc.col < 0 {
+		return false
+	}
+	maxIndex := len(g)
+	return int(nc.row) < maxIndex && int(nc.col) < maxIndex
+}
 
 func (g *grid16x16) get(nc nodeCoord) edgesFromNode {
 	return g[nc.row][nc.col]
@@ -177,6 +236,14 @@ type grid21x21 [21][21]edgesFromNode
 
 var _ gridNoder = (*grid21x21)(nil)
 
+func (g *grid21x21) isInBounds(nc nodeCoord) bool {
+	if nc.row < 0 || nc.col < 0 {
+		return false
+	}
+	maxIndex := len(g)
+	return int(nc.row) < maxIndex && int(nc.col) < maxIndex
+}
+
 func (g *grid21x21) get(nc nodeCoord) edgesFromNode {
 	return g[nc.row][nc.col]
 }
@@ -198,6 +265,14 @@ func (g *grid21x21) copy() gridNoder {
 type grid26x26 [26][26]edgesFromNode
 
 var _ gridNoder = (*grid26x26)(nil)
+
+func (g *grid26x26) isInBounds(nc nodeCoord) bool {
+	if nc.row < 0 || nc.col < 0 {
+		return false
+	}
+	maxIndex := len(g)
+	return int(nc.row) < maxIndex && int(nc.col) < maxIndex
+}
 
 func (g *grid26x26) get(nc nodeCoord) edgesFromNode {
 	return g[nc.row][nc.col]
