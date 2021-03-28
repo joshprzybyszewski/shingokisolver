@@ -9,10 +9,11 @@ type walker interface {
 }
 
 type simpleWalker struct {
-	provider getEdgesFromNoder
-	start    nodeCoord
-	cur      nodeCoord
-	seen     map[nodeCoord]struct{}
+	provider   getEdgesFromNoder
+	start      nodeCoord
+	cur        nodeCoord
+	seen       map[nodeCoord]struct{}
+	foundStart bool
 }
 
 func newWalker(
@@ -36,14 +37,14 @@ func (sw *simpleWalker) walk() (map[nodeCoord]struct{}, bool) {
 
 	for sw.cur.row != sw.start.row || sw.cur.col != sw.start.col {
 		move = sw.walkToNextPoint(move)
-		if move == headNowhere {
+		if move == headNowhere || sw.foundStart {
 			// if we can't go anywhere, then we'll break out of the loop
 			// because this means we don't have a loop.
 			break
 		}
 	}
 
-	if sw.cur.row == sw.start.row && sw.cur.col == sw.start.col {
+	if sw.foundStart || sw.cur.row == sw.start.row && sw.cur.col == sw.start.col {
 		return sw.seen, true
 	}
 
@@ -96,10 +97,17 @@ func (sw *simpleWalker) markNodesAsSeen(
 ) {
 	for r := minR; r <= maxR; r++ {
 		for c := minC; c <= maxC; c++ {
-			sw.seen[nodeCoord{
+			nc := nodeCoord{
 				row: r,
 				col: c,
-			}] = struct{}{}
+			}
+			if nc == sw.start {
+				if _, ok := sw.seen[nc]; ok {
+					// this means we've seen the starting node before
+					sw.foundStart = true
+				}
+			}
+			sw.seen[nc] = struct{}{}
 		}
 	}
 }

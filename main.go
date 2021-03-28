@@ -39,7 +39,7 @@ func main() {
 	for _, pd := range reader.DefaultPuzzles() {
 		for _, st := range puzzle.AllSolvers {
 			if st != puzzle.DFSSolverType {
-				break
+				continue
 			}
 			fmt.Printf("Starting to solve with %s...\n", st)
 			s := puzzle.NewSolver(
@@ -55,8 +55,8 @@ func main() {
 			}
 
 			fmt.Printf("%s solved: %s\n\n\n", st, sr)
-			if time.Since(t0) > 30*time.Second {
-				break
+			if *addPprof && time.Since(t0) > time.Second {
+				return
 			}
 		}
 	}

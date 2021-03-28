@@ -55,7 +55,7 @@ func (d *dfsSolver) takeNextStepIntoDepth(
 	}
 
 	d.numProcessed++
-	if IncludeProgressLogs && (d.numProcessed < 100 || d.numProcessed%1000 == 0) {
+	if IncludeProgressLogs && (d.numProcessed < 100 || d.numProcessed%1000 == 500) {
 		fmt.Printf("About to process (%d, %d): %d\n%s\n", q.coord.row, q.coord.col, d.numProcessed, q.puzzle.String())
 		fmt.Scanf("hello there")
 	}

@@ -101,22 +101,22 @@ func (d *headsAndTailsDFSSolver) processQueueItem(
 		}
 	}
 
-	for c, useHead := range map[cardinal]bool{
-		headUp:    !q.useHead,
-		headRight: !q.useHead,
-		headDown:  !q.useHead,
-		headLeft:  !q.useHead,
-	} {
-		qi, err := d.getQueueItem(q.puzzle, c, q, useHead)
-		if err != nil {
-			continue
-			// return q.puzzle, false
-		}
-		g, isSolved := d.processQueueItem(qi)
-		if isSolved {
-			return g, true
-		}
-	}
+	// for c, useHead := range map[cardinal]bool{
+	// 	headUp:    !q.useHead,
+	// 	headRight: !q.useHead,
+	// 	headDown:  !q.useHead,
+	// 	headLeft:  !q.useHead,
+	// } {
+	// 	qi, err := d.getQueueItem(q.puzzle, c, q, useHead)
+	// 	if err != nil {
+	// 		continue
+	// 		// return q.puzzle, false
+	// 	}
+	// 	g, isSolved := d.processQueueItem(qi)
+	// 	if isSolved {
+	// 		return g, true
+	// 	}
+	// }
 
 	return q.puzzle, false
 }

@@ -60,18 +60,10 @@ func newGrid(
 		}
 	}
 
-	var outgoingEdges gridNoder
-	switch numEdges {
-	case 2:
-		outgoingEdges = &grid3x3{}
-	default:
-		outgoingEdges = &maxGrid{}
-	}
-
 	return &puzzle{
 		numEdges:      uint8(numEdges),
 		nodes:         nodes,
-		outgoingEdges: outgoingEdges,
+		outgoingEdges: newGridNoder(numEdges),
 	}
 }
 
@@ -414,6 +406,7 @@ func (g *puzzle) IsIncomplete(
 		} else if sumStraightLines != n.val {
 			// this node has fewer than the number of edges it needs. Therefore,
 			// we consider this graph incomplete
+			// TODO check if we have at least one edge that could be added that remains valid
 			return true, nil
 		}
 
