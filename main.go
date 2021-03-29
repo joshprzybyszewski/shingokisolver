@@ -55,10 +55,10 @@ func main() {
 					pd.Nodes,
 				)
 				fmt.Printf("%s could not solve! %v: %s\n%s\n\n\n", st, err, sr, p.String())
-				continue
+			} else {
+				fmt.Printf("%s solved: %s\n\n\n", st, sr)
 			}
 
-			fmt.Printf("%s solved: %s\n\n\n", st, sr)
 			if *addPprof && time.Since(t0) > time.Second {
 				return
 			}

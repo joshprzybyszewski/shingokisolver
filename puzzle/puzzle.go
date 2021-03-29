@@ -41,14 +41,9 @@ func (p *Puzzle) DeepCopy() *Puzzle {
 		return nil
 	}
 
-	nodes := map[model.NodeCoord]model.Node{}
-	for nc, n := range p.nodes {
-		nodes[nc] = n.Copy()
-	}
-
 	return &Puzzle{
 		numEdges: p.numEdges,
-		nodes:    nodes,
+		nodes:    p.nodes,
 		nodeGrid: p.nodeGrid.Copy(),
 	}
 }
