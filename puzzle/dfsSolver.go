@@ -12,6 +12,8 @@ type dfsSolverStep struct {
 type dfsSolver struct {
 	puzzle *puzzle
 
+	goal *nodeCoord
+
 	numProcessed int
 }
 
@@ -25,6 +27,18 @@ func newDFSSolver(
 
 	return &dfsSolver{
 		puzzle: newPuzzle(size, nl),
+	}
+}
+
+func newDFSSolverForPartialSolution(
+	partiallySolved *puzzle,
+) *dfsSolver {
+	if partiallySolved == nil {
+		return nil
+	}
+
+	return &dfsSolver{
+		puzzle: partiallySolved,
 	}
 }
 
@@ -66,13 +80,13 @@ func (d *dfsSolver) takeNextStepIntoDepth(
 		return q.puzzle, true
 	}
 
-	for _, qi := range []*dfsSolverStep{
+	for _, step := range []*dfsSolverStep{
 		d.getNextStep(q.puzzle, headUp, q.coord),
 		d.getNextStep(q.puzzle, headRight, q.coord),
 		d.getNextStep(q.puzzle, headDown, q.coord),
 		d.getNextStep(q.puzzle, headLeft, q.coord),
 	} {
-		g, isSolved := d.takeNextStepIntoDepth(qi)
+		g, isSolved := d.takeNextStepIntoDepth(step)
 		if isSolved {
 			return g, true
 		}
@@ -105,4 +119,64 @@ func (d *dfsSolver) getNextStep(
 		puzzle: newPuzzle,
 		coord:  newCoord,
 	}
+}
+
+type dfsGoalSolution int
+
+const (
+	mayContinue  dfsGoalSolution = 0
+	badState     dfsGoalSolution = 1
+	solvedPuzzle dfsGoalSolution = 2
+	foundGoal    dfsGoalSolution = 3
+)
+
+func (d *dfsSolver) solveForGoal(
+	start, goal nodeCoord,
+) (*puzzle, dfsGoalSolution) {
+	d.goal = &goal
+	// TODO if I could pass in a slice of goals, then return a map[goal][]*puzzle
+	// then maybe that'd allow me to iterative connect points?
+
+	return d.takeNextStepIntoDepthTowardsGoal(&dfsSolverStep{
+		puzzle: d.puzzle,
+		coord:  start,
+	})
+}
+
+func (d *dfsSolver) takeNextStepIntoDepthTowardsGoal(
+	q *dfsSolverStep,
+) (*puzzle, dfsGoalSolution) {
+	if q == nil {
+		return nil, badState
+	}
+
+	d.numProcessed++
+	if IncludeProgressLogs && (d.numProcessed < 100 || d.numProcessed%1000 == 500) {
+		fmt.Printf("About to process (%d, %d): %d\n%s\n", q.coord.row, q.coord.col, d.numProcessed, q.puzzle.String())
+		fmt.Scanf("hello there")
+	}
+
+	for _, step := range []*dfsSolverStep{
+		d.getNextStep(q.puzzle, headUp, q.coord),
+		d.getNextStep(q.puzzle, headRight, q.coord),
+		d.getNextStep(q.puzzle, headDown, q.coord),
+		d.getNextStep(q.puzzle, headLeft, q.coord),
+	} {
+		if isIncomplete, err := step.puzzle.IsIncomplete(step.coord); err != nil {
+			continue
+		} else if !isIncomplete {
+			return step.puzzle, solvedPuzzle
+		}
+
+		g, sol := d.takeNextStepIntoDepthTowardsGoal(step)
+		switch sol {
+		case solvedPuzzle, foundGoal, badState:
+			return g, sol
+		}
+		if step.coord == *d.goal {
+			return g, foundGoal
+		}
+	}
+
+	return q.puzzle, mayContinue
 }

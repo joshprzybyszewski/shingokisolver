@@ -11,6 +11,71 @@ type target struct {
 	val   int
 }
 
+func buildTargets(p *puzzle) []target {
+	targets := make([]target, 0, len(p.nodes))
+
+	for nc, n := range p.nodes {
+		targets = append(targets, target{
+			coord: nc,
+			val:   int(n.val),
+		})
+	}
+
+	maxRowColVal := p.numEdges
+	isOnTheSide := func(coord nodeCoord) bool {
+		return coord.row == 0 ||
+			coord.row == rowIndex(maxRowColVal) ||
+			coord.col == 0 ||
+			coord.col == colIndex(maxRowColVal)
+	}
+	sort.Slice(targets, func(i, j int) bool {
+		// rank higher valued nodes at the start of the target list
+		if targets[i].val != targets[j].val {
+			return targets[i].val > targets[j].val
+		}
+
+		// put nodes with more limitations (i.e. on the sides of
+		// of the graph) higher up on the list
+		iIsEdge := isOnTheSide(targets[i].coord)
+		jIsEdge := isOnTheSide(targets[j].coord)
+		if iIsEdge && !jIsEdge {
+			return true
+		} else if jIsEdge && !iIsEdge {
+			return false
+		}
+
+		// at this point, we just want a consistent ordering.
+		// let's put nodes closer to (0,0) higher up in the list
+		if targets[i].coord.row != targets[j].coord.row {
+			return targets[i].coord.row < targets[j].coord.row
+		}
+		return targets[i].coord.col < targets[j].coord.col
+	})
+
+	return targets
+}
+
+type partialSolutionQueue struct {
+	items []*partialSolutionItem
+}
+
+func (q *partialSolutionQueue) isEmpty() bool {
+	return len(q.items) == 0
+}
+
+func (q *partialSolutionQueue) pop() *partialSolutionItem {
+	item := q.items[0]
+	q.items = q.items[1:]
+	return item
+}
+
+func (q *partialSolutionQueue) push(items ...*partialSolutionItem) {
+	// TODO for each item, if it already exists in the queue, don't
+	// add it a second time? But how is it non-deterministic? How
+	// can we generate the same partial solution?
+	q.items = append(q.items, items...)
+}
+
 type partialSolutionItem struct {
 	puzzle         *puzzle
 	numSolvedNodes int
@@ -18,13 +83,55 @@ type partialSolutionItem struct {
 	looseEnds []nodeCoord
 }
 
+// eliminates loose ends that don't actually exist
+func (partial *partialSolutionItem) removeDuplicateLooseEnds() {
+	sort.Slice(partial.looseEnds, func(i, j int) bool {
+		if partial.looseEnds[i].row != partial.looseEnds[j].row {
+			return partial.looseEnds[i].row < partial.looseEnds[j].row
+		}
+		return partial.looseEnds[i].col < partial.looseEnds[j].col
+	})
+
+	for i := 0; i < len(partial.looseEnds)-1; i++ {
+		if partial.looseEnds[i] == partial.looseEnds[i+1] {
+			partial.looseEnds = append(
+				partial.looseEnds[:i],
+				partial.looseEnds[i+2:]...)
+			i--
+		}
+	}
+}
+
+func printPartialSolution(
+	partial *partialSolutionItem,
+	iterations int,
+) {
+	if !IncludeProgressLogs {
+		return
+	}
+	// if !(iterations < 10 ||
+	// iterations%100 == 0 ||
+	if partial.puzzle == nil ||
+		partial.numSolvedNodes < len(partial.puzzle.nodes) {
+		return
+	}
+
+	log.Printf("printPartialSolution (%d iterations): (%d nodes solved) %v",
+		iterations,
+		partial.numSolvedNodes,
+		partial.looseEnds,
+	)
+	log.Printf(":\n%s\n", partial.puzzle.String())
+	fmt.Scanf("hello there")
+}
+
 type targetSolver struct {
 	puzzle *puzzle
 
-	queue []*partialSolutionItem
+	queue             *partialSolutionQueue
+	looseEndConnector *looseEndConnector
 
 	numProcessed int
-	targets      []target
 }
 
 func newTargetSolver(
@@ -36,7 +143,9 @@ func newTargetSolver(
 	}
 
 	return &targetSolver{
-		puzzle: newPuzzle(size, nl),
+		puzzle:            newPuzzle(size, nl),
+		queue:             &partialSolutionQueue{},
+		looseEndConnector: &looseEndConnector{},
 	}
 }
 
@@ -45,44 +154,53 @@ func (d *targetSolver) iterations() int {
 }
 
 func (d *targetSolver) solve() (*puzzle, bool) {
-	d.buildTargets()
+	targets := buildTargets(d.puzzle)
 
-	p := d.solveAllTargets()
+	p := d.getFullSolution(targets)
 	return p, p != nil
 }
 
-func (d *targetSolver) solveAllTargets() *puzzle {
-	d.queue = d.getSolutionsForNode(&partialSolutionItem{
-		puzzle:         d.puzzle,
-		numSolvedNodes: 0,
-	})
+func (d *targetSolver) getFullSolution(
+	targets []target,
+) *puzzle {
 
-	for len(d.queue) > 0 {
-		prev := d.queue[0]
-		d.queue = d.queue[1:]
+	d.queue.push(d.getPartialSolutionsForNode(
+		targets,
+		&partialSolutionItem{
+			puzzle:         d.puzzle,
+			numSolvedNodes: 0,
+		},
+	)...)
 
-		snis := d.getSolutionsForNode(prev)
-		if prev.numSolvedNodes < len(d.targets)-1 {
-			d.queue = append(d.queue, snis...)
+	for !d.queue.isEmpty() {
+		prev := d.queue.pop()
+
+		partials := d.getPartialSolutionsForNode(targets, prev)
+		if prev.numSolvedNodes < len(targets)-1 {
+			d.queue.push(partials...)
 			continue
 		}
 
-		p := d.connectTheDots(snis)
-		if p != nil {
-			return p
-		}
+		d.looseEndConnector.addPartialSolutions(partials...)
+	}
+
+	p := d.getFullSolutionFromLooseEndConnector()
+	if p != nil {
+		return p
 	}
 
 	return nil
 }
 
-func (d *targetSolver) getSolutionsForNode(
+func (d *targetSolver) getPartialSolutionsForNode(
+	targets []target,
 	prevPartial *partialSolutionItem,
 ) (partials []*partialSolutionItem) {
-	targetCoord := d.targets[prevPartial.numSolvedNodes].coord
+	targetCoord := targets[prevPartial.numSolvedNodes].coord
 
 	node, ok := prevPartial.puzzle.nodes[targetCoord]
 	if !ok {
+		// this should be returning an error, but really it shouldn't be happening
 		panic(`what?`)
 		// return nil
 	}
@@ -128,11 +246,12 @@ func (d *targetSolver) getSolutionsForNodeInDirections(
 		item := &partialSolutionItem{
 			puzzle:         prevPartial.puzzle.deepCopy(),
 			numSolvedNodes: prevPartial.numSolvedNodes + 1,
+			looseEnds:      make([]nodeCoord, len(prevPartial.looseEnds)),
 		}
 		copy(item.looseEnds, prevPartial.looseEnds)
 		// once we find a completion path, add it to the returned slice
 		partials = append(partials, item)
-		d.showPuzzle(item)
+		printPartialSolution(item, d.iterations())
 		return partials
 	}
 
@@ -178,79 +297,90 @@ func (d *targetSolver) getSolutionsForNodeInDirections(
 		item := &partialSolutionItem{
 			puzzle:         pWithEdge2,
 			numSolvedNodes: prevPartial.numSolvedNodes + 1,
-			looseEnds:      append(prevPartial.looseEnds, endOfEdge1, endOfEdge2),
+			looseEnds:      make([]nodeCoord, len(prevPartial.looseEnds)),
 		}
+		copy(item.looseEnds, prevPartial.looseEnds)
+		item.looseEnds = append(item.looseEnds, endOfEdge1, endOfEdge2)
+
 		// once we find a completion path, add it to the returned slice
 		partials = append(partials, item)
-		d.showPuzzle(item)
+		printPartialSolution(item, d.iterations())
 	}
 
 	return partials
 }
 
-func (d *targetSolver) connectTheDots(snis []*partialSolutionItem) *puzzle {
-	// TODO
-	d.printSNIs(snis)
+func (d *targetSolver) getFullSolutionFromLooseEndConnector() *puzzle {
+
+	defer func() {
+		d.numProcessed += d.looseEndConnector.iterations
+	}()
+
+	return d.looseEndConnector.solve()
+}
+
+type looseEndConnector struct {
+	partials   []*partialSolutionItem
+	iterations int
+}
+
+func (lec *looseEndConnector) addPartialSolutions(
+	partials ...*partialSolutionItem,
+) {
+	lec.partials = append(lec.partials, partials...)
+}
+
+func (lec *looseEndConnector) solve() *puzzle {
+	// remove duplicate loose ends from all of our solutions
+	for _, partial := range lec.partials {
+		partial.removeDuplicateLooseEnds()
+	}
+
+	// sort the partial solutions so that the solutions with the most
+	// connections (least number of loose ends) are at the front
+	sort.Slice(lec.partials, func(i, j int) bool {
+		return len(lec.partials[i].looseEnds) < len(lec.partials[j].looseEnds)
+	})
+
+	// iterate through the partial solutions, trying to connect all of their
+	// loose ends.
+	attemptedCache := newPuzzleCache()
+	for _, partial := range lec.partials {
+		if attemptedCache.contains(partial.puzzle) {
+			continue
+		}
+		p := lec.connectLooseEnds(partial)
+		if p != nil {
+			return p
+		}
+		attemptedCache.add(partial.puzzle)
+	}
+
 	return nil
 }
 
-func (d *targetSolver) printSNIs(partials []*partialSolutionItem) {
-	for _, p := range partials {
-		d.showPuzzle(p)
-	}
-}
+func (lec *looseEndConnector) connectLooseEnds(
+	partial *partialSolutionItem,
+) *puzzle {
+	printPartialSolution(partial, lec.iterations)
 
-func (d *targetSolver) showPuzzle(partial *partialSolutionItem) {
-	if d.iterations() > 10 &&
-		d.iterations()%100 != 0 &&
-		partial.numSolvedNodes < len(d.targets) {
-		return
-	}
-	log.Printf("showPuzzle (%d iterations): (%d nodes) %v", d.iterations(), partial.numSolvedNodes, partial.looseEnds)
-	p := partial.puzzle
-	if p == nil {
-		log.Printf(": (nil)\n")
-		return
-	}
-	log.Printf(":\n%s\n", p.String())
-	fmt.Scanf("hello there")
-}
-
-func (d *targetSolver) buildTargets() {
-	for nc, n := range d.puzzle.nodes {
-		d.targets = append(d.targets, target{
-			coord: nc,
-			val:   int(n.val),
-		})
-	}
-	maxRowColVal := d.puzzle.numEdges
-	isOnTheSide := func(coord nodeCoord) bool {
-		return coord.row == 0 || coord.col == 0 ||
-			coord.row == rowIndex(maxRowColVal) || coord.col == colIndex(maxRowColVal)
-	}
-	sort.Slice(d.targets, func(i, j int) bool {
-		// rank higher valued nodes at the start of the target list
-		if d.targets[i].val != d.targets[j].val {
-			return d.targets[i].val > d.targets[j].val
+	dfs := newDFSSolverForPartialSolution(partial.puzzle)
+	defer func() {
+		lec.iterations += dfs.iterations()
+	}()
+	for i, start := range partial.looseEnds {
+		for j := i; j < len(partial.looseEnds); j++ {
+			g, sol := dfs.solveForGoal(start, partial.looseEnds[j])
+			switch sol {
+			case solvedPuzzle:
+				return g
+			case foundGoal:
+				// TODO take note
+			case badState:
+				// just continue on with life...
+			}
 		}
+	}
 
-		// put nodes with more limitations (i.e. on the sides of
-		// of the graph) higher up on the list
-		iIsEdge := isOnTheSide(d.targets[i].coord)
-		jIsEdge := isOnTheSide(d.targets[j].coord)
-		if iIsEdge && !jIsEdge {
-			return true
-		} else if jIsEdge && !iIsEdge {
-			return false
-		}
-
-		// at this point, we just want a consistent ordering.
-		// let's put nodes closer to (0,0) higher up in the list
-		if d.targets[i].coord.row != d.targets[j].coord.row {
-			return d.targets[i].coord.row < d.targets[j].coord.row
-		}
-		return d.targets[i].coord.col < d.targets[j].coord.col
-	})
-
-	fmt.Printf("buildTargets complete!\n%+v\n", d.targets)
+	return nil
 }
