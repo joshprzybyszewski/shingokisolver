@@ -30,16 +30,8 @@ func newDFSSolver(
 	}
 }
 
-func newDFSSolverForPartialSolution(
-	partiallySolved *puzzle,
-) *dfsSolver {
-	if partiallySolved == nil {
-		return nil
-	}
-
-	return &dfsSolver{
-		puzzle: partiallySolved,
-	}
+func newDFSSolverForPartialSolution() *dfsSolver {
+	return &dfsSolver{}
 }
 
 func (d *dfsSolver) iterations() int {
@@ -130,24 +122,42 @@ const (
 	foundGoal    dfsGoalSolution = 3
 )
 
-func (d *dfsSolver) solveForGoal(
-	start, goal nodeCoord,
-) (*puzzle, dfsGoalSolution) {
-	d.goal = &goal
-	// TODO if I could pass in a slice of goals, then return a map[goal][]*puzzle
-	// then maybe that'd allow me to iterative connect points?
+func (d *dfsSolver) solveForGoals(
+	input *puzzle,
+	start nodeCoord,
+	goals []nodeCoord,
+) (*puzzle, map[nodeCoord][]*puzzle, dfsGoalSolution) {
 
-	return d.takeNextStepIntoDepthTowardsGoal(&dfsSolverStep{
-		puzzle: d.puzzle,
-		coord:  start,
-	})
+	if input == nil {
+		return nil, nil, badState
+	}
+
+	ret := make(map[nodeCoord][]*puzzle, len(goals))
+	for _, g := range goals {
+		ret[g] = nil
+	}
+
+	p, state := d.takeNextStepIntoDepthTowardsGoals(
+		ret,
+		&dfsSolverStep{
+			puzzle: input,
+			coord:  start,
+		},
+	)
+	if state == solvedPuzzle {
+		return p, nil, state
+	}
+	return nil, ret, state
 }
 
-func (d *dfsSolver) takeNextStepIntoDepthTowardsGoal(
+func (d *dfsSolver) takeNextStepIntoDepthTowardsGoals(
+	found map[nodeCoord][]*puzzle,
 	q *dfsSolverStep,
 ) (*puzzle, dfsGoalSolution) {
-	if q == nil {
+	if isIncomplete, err := q.puzzle.IsIncomplete(q.coord); err != nil {
 		return nil, badState
+	} else if !isIncomplete {
+		return q.puzzle, solvedPuzzle
 	}
 
 	d.numProcessed++
@@ -162,19 +172,17 @@ func (d *dfsSolver) takeNextStepIntoDepthTowardsGoal(
 		d.getNextStep(q.puzzle, headDown, q.coord),
 		d.getNextStep(q.puzzle, headLeft, q.coord),
 	} {
-		if isIncomplete, err := step.puzzle.IsIncomplete(step.coord); err != nil {
+		if step == nil {
 			continue
-		} else if !isIncomplete {
-			return step.puzzle, solvedPuzzle
 		}
 
-		g, sol := d.takeNextStepIntoDepthTowardsGoal(step)
+		g, sol := d.takeNextStepIntoDepthTowardsGoals(found, step)
 		switch sol {
-		case solvedPuzzle, foundGoal, badState:
+		case solvedPuzzle:
 			return g, sol
 		}
-		if step.coord == *d.goal {
-			return g, foundGoal
+		if slice, ok := found[step.coord]; ok {
+			found[step.coord] = append(slice, g)
 		}
 	}
 

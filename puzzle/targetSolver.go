@@ -59,6 +59,12 @@ type partialSolutionQueue struct {
 	items []*partialSolutionItem
 }
 
+func newPartialSolutionQueue() *partialSolutionQueue {
+	return &partialSolutionQueue{
+		items: make([]*partialSolutionItem, 0),
+	}
+}
+
 func (q *partialSolutionQueue) isEmpty() bool {
 	return len(q.items) == 0
 }
@@ -144,7 +150,7 @@ func newTargetSolver(
 
 	return &targetSolver{
 		puzzle:            newPuzzle(size, nl),
-		queue:             &partialSolutionQueue{},
+		queue:             newPartialSolutionQueue(),
 		looseEndConnector: &looseEndConnector{},
 	}
 }
@@ -360,24 +366,40 @@ func (lec *looseEndConnector) solve() *puzzle {
 }
 
 func (lec *looseEndConnector) connectLooseEnds(
-	partial *partialSolutionItem,
+	psi *partialSolutionItem,
 ) *puzzle {
-	printPartialSolution(partial, lec.iterations)
+	printPartialSolution(psi, lec.iterations)
 
-	dfs := newDFSSolverForPartialSolution(partial.puzzle)
-	defer func() {
-		lec.iterations += dfs.iterations()
-	}()
-	for i, start := range partial.looseEnds {
-		for j := i; j < len(partial.looseEnds); j++ {
-			g, sol := dfs.solveForGoal(start, partial.looseEnds[j])
+	psq := newPartialSolutionQueue()
+	psq.push(psi)
+
+	for !psq.isEmpty() {
+		partial := psq.pop()
+		printPartialSolution(partial, 420)
+		for i, start := range partial.looseEnds {
+			dfs := newDFSSolverForPartialSolution()
+			p, morePartials, sol := dfs.solveForGoals(partial.puzzle, start, partial.looseEnds[i+1:])
+			lec.iterations += dfs.iterations()
+
 			switch sol {
 			case solvedPuzzle:
-				return g
-			case foundGoal:
-				// TODO take note
-			case badState:
-				// just continue on with life...
+				return p
+			}
+
+			for hitGoal, slice := range morePartials {
+				for _, p := range slice {
+					newLooseEnds := make([]nodeCoord, 0, len(partial.looseEnds))
+					for _, le := range partial.looseEnds {
+						if le != hitGoal && le != start {
+							newLooseEnds = append(newLooseEnds, le)
+						}
+					}
+					psq.push(&partialSolutionItem{
+						puzzle:         p,
+						numSolvedNodes: partial.numSolvedNodes,
+						looseEnds:      newLooseEnds,
+					})
+				}
 			}
 		}
 	}
