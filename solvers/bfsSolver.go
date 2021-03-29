@@ -1,12 +1,15 @@
-package puzzle
+package solvers
 
 import (
 	"fmt"
+
+	"github.com/joshprzybyszewski/shingokisolver/model"
+	"github.com/joshprzybyszewski/shingokisolver/puzzle"
 )
 
 type bfsQueueItem struct {
-	puzzle *puzzle
-	coord  nodeCoord
+	puzzle *puzzle.Puzzle
+	coord  model.NodeCoord
 }
 
 type bfsSolver struct {
@@ -17,25 +20,18 @@ type bfsSolver struct {
 
 func newBFSSolver(
 	size int,
-	nl []NodeLocation,
+	nl []model.NodeLocation,
 ) *bfsSolver {
 	if len(nl) == 0 {
 		return nil
 	}
 
-	g := newPuzzle(size, nl)
-	var bestCoord nodeCoord
-	bestVal := int8(-1)
-	for nc, n := range g.nodes {
-		if n.val > bestVal {
-			bestCoord = nc
-			bestVal = n.val
-		}
-	}
+	p := puzzle.NewPuzzle(size, nl)
+	bestCoord := p.GetCoordForHighestValueNode()
 
 	return &bfsSolver{
 		queue: []*bfsQueueItem{{
-			puzzle: g,
+			puzzle: p,
 			coord:  bestCoord,
 		}},
 	}
@@ -45,7 +41,7 @@ func (b *bfsSolver) iterations() int {
 	return b.numProcessed
 }
 
-func (b *bfsSolver) solve() (*puzzle, bool) {
+func (b *bfsSolver) solve() (*puzzle.Puzzle, bool) {
 	for len(b.queue) > 0 {
 		b.numProcessed++
 		g, isSolved := b.processQueueItem()
@@ -56,12 +52,12 @@ func (b *bfsSolver) solve() (*puzzle, bool) {
 	return nil, false
 }
 
-func (b *bfsSolver) processQueueItem() (*puzzle, bool) {
+func (b *bfsSolver) processQueueItem() (*puzzle.Puzzle, bool) {
 	q := b.queue[0]
 	b.queue = b.queue[1:]
 
-	if IncludeProgressLogs && (b.numProcessed < 100 || b.numProcessed%10000 == 0) {
-		fmt.Printf("About to process (%d, %d): %d\n%s\n", q.coord.row, q.coord.col, b.numProcessed, q.puzzle.String())
+	if includeProgressLogs && (b.numProcessed < 100 || b.numProcessed%10000 == 0) {
+		fmt.Printf("About to process (%d, %d): %d\n%s\n", q.coord.Row, q.coord.Col, b.numProcessed, q.puzzle.String())
 		fmt.Scanf("hello there")
 	}
 
@@ -77,37 +73,37 @@ func (b *bfsSolver) processQueueItem() (*puzzle, bool) {
 }
 
 func (b *bfsSolver) addQueueItems(
-	g *puzzle,
-	coord nodeCoord,
+	g *puzzle.Puzzle,
+	coord model.NodeCoord,
 ) {
-	b.addQueueItem(g, headUp, coord)
-	b.addQueueItem(g, headRight, coord)
-	b.addQueueItem(g, headDown, coord)
-	b.addQueueItem(g, headLeft, coord)
+	b.addQueueItem(g, model.HeadUp, coord)
+	b.addQueueItem(g, model.HeadRight, coord)
+	b.addQueueItem(g, model.HeadDown, coord)
+	b.addQueueItem(g, model.HeadLeft, coord)
 }
 
 func (b *bfsSolver) addQueueItem(
-	g *puzzle,
-	move cardinal,
-	coord nodeCoord,
+	g *puzzle.Puzzle,
+	move model.Cardinal,
+	coord model.NodeCoord,
 ) {
-	newCoord, newPuzzle, err := g.AddEdge(move, coord)
+	newCoord, np, err := g.AddEdge(move, coord)
 	if err != nil {
 		return
 	}
 
-	if newPuzzle.isRangeInvalidWithBoundsCheck(
-		newCoord.row-2,
-		newCoord.row+2,
-		newCoord.col-2,
-		newCoord.col+2,
+	if np.IsRangeInvalid(
+		newCoord.Row-2,
+		newCoord.Row+2,
+		newCoord.Col-2,
+		newCoord.Col+2,
 	) {
 		// this is a sanity check to reduce the amount of calc we need to do
 		return
 	}
 
 	b.queue = append(b.queue, &bfsQueueItem{
-		puzzle: newPuzzle,
+		puzzle: np,
 		coord:  newCoord,
 	})
 }

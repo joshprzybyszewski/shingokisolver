@@ -4,183 +4,168 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+
+	"github.com/joshprzybyszewski/shingokisolver/model"
 )
 
-type rowIndex int8
-type colIndex int8
-
-type nodeCoord struct {
-	row rowIndex
-	col colIndex
-}
-
-func (nc nodeCoord) translate(
-	move cardinal,
-) nodeCoord {
-	switch move {
-	case headUp:
-		nc.row--
-	case headDown:
-		nc.row++
-	case headLeft:
-		nc.col--
-	case headRight:
-		nc.col++
-	}
-	return nc
-}
-
-type puzzle struct {
+type Puzzle struct {
 	numEdges uint8
-	nodes    map[nodeCoord]node
+	nodes    map[model.NodeCoord]model.Node
 
-	outgoingEdges gridNoder
+	nodeGrid model.Grid
 }
 
-func newPuzzle(
+func NewPuzzle(
 	numEdges int,
-	nodeLocations []NodeLocation,
-) *puzzle {
-	if numEdges > MAX_EDGES {
+	nodeLocations []model.NodeLocation,
+) *Puzzle {
+	if numEdges > model.MAX_EDGES {
 		return nil
 	}
 
-	nodes := map[nodeCoord]node{}
+	nodes := map[model.NodeCoord]model.Node{}
 	for _, nl := range nodeLocations {
-		nt := blackNode
-		if nl.IsWhite {
-			nt = whiteNode
-		}
-		nodes[nodeCoord{
-			row: rowIndex(nl.Row),
-			col: colIndex(nl.Col),
-		}] = node{
-			nType: nt,
-			val:   nl.Value,
-		}
+		nc := model.NewCoordFromInts(nl.Row, nl.Col)
+		nodes[nc] = model.NewNode(nl.IsWhite, nl.Value)
 	}
 
-	return &puzzle{
-		numEdges:      uint8(numEdges),
-		nodes:         nodes,
-		outgoingEdges: newPuzzleNoder(numEdges),
+	return &Puzzle{
+		numEdges: uint8(numEdges),
+		nodes:    nodes,
+		nodeGrid: model.NewGrid(numEdges),
 	}
 }
 
-func (p *puzzle) deepCopy() *puzzle {
+func (p *Puzzle) DeepCopy() *Puzzle {
 	if p == nil {
 		return nil
 	}
 
-	nodes := map[nodeCoord]node{}
+	nodes := map[model.NodeCoord]model.Node{}
 	for nc, n := range p.nodes {
-		nodes[nc] = n.copy()
+		nodes[nc] = n.Copy()
 	}
 
-	return &puzzle{
-		numEdges:      p.numEdges,
-		nodes:         nodes,
-		outgoingEdges: p.outgoingEdges.copy(),
+	return &Puzzle{
+		numEdges: p.numEdges,
+		nodes:    nodes,
+		nodeGrid: p.nodeGrid.Copy(),
 	}
 }
 
-func (p *puzzle) numNodes() int {
+func (p *Puzzle) GetCoordForHighestValueNode() model.NodeCoord {
+	var bestCoord model.NodeCoord
+	bestVal := int8(-1)
+	for nc, n := range p.nodes {
+		if n.Value() > bestVal {
+			bestCoord = nc
+			bestVal = n.Value()
+		}
+	}
+	return bestCoord
+}
+
+func (p *Puzzle) NodeTargets() map[model.NodeCoord]model.Node {
+	return p.nodes
+}
+
+func (p *Puzzle) NumEdges() int {
+	return int(p.numEdges)
+}
+
+func (p *Puzzle) numNodes() int {
 	return int(p.numEdges) + 1
 }
 
-func (p *puzzle) IsEdge(
-	move cardinal,
-	nc nodeCoord,
+func (p *Puzzle) IsEdge(
+	move model.Cardinal,
+	nc model.NodeCoord,
 ) bool {
 	isEdge, _ := p.isEdge(move, nc)
 	return isEdge
 }
 
-func (p *puzzle) isEdge(
-	move cardinal,
-	nc nodeCoord,
+func (p *Puzzle) isEdge(
+	move model.Cardinal,
+	nc model.NodeCoord,
 ) (bool, bool) {
-	if !p.outgoingEdges.isInBounds(nc) {
+	if !p.nodeGrid.IsInBounds(nc) {
 		return false, false
 	}
 	maxIndex := p.numEdges
 
 	switch move {
-	case headLeft:
-		return nc.col != 0 && p.outgoingEdges.get(nc).isleft(), true
-	case headRight:
-		return uint8(nc.col) != maxIndex && p.outgoingEdges.get(nc).isright(), true
-	case headUp:
-		return nc.row != 0 && p.outgoingEdges.get(nc).isabove(), true
-	case headDown:
-		return uint8(nc.row) != maxIndex && p.outgoingEdges.get(nc).isbelow(), true
+	case model.HeadLeft:
+		return nc.Col != 0 && p.nodeGrid.Get(nc).IsLeft(), true
+	case model.HeadRight:
+		return uint8(nc.Col) != maxIndex && p.nodeGrid.Get(nc).IsRight(), true
+	case model.HeadUp:
+		return nc.Row != 0 && p.nodeGrid.Get(nc).IsAbove(), true
+	case model.HeadDown:
+		return uint8(nc.Row) != maxIndex && p.nodeGrid.Get(nc).IsBelow(), true
 	default:
 		return false, false
 	}
 }
 
-func (p *puzzle) AddEdge(
-	move cardinal,
-	startNode nodeCoord,
-) (nodeCoord, *puzzle, error) {
-	endNode := startNode.translate(move)
-	if !p.outgoingEdges.isInBounds(endNode) {
-		return nodeCoord{}, nil, errors.New(`next point is out of bounds`)
+func (p *Puzzle) AddEdge(
+	move model.Cardinal,
+	startNode model.NodeCoord,
+) (model.NodeCoord, *Puzzle, error) {
+	endNode := startNode.Translate(move)
+	if !p.nodeGrid.IsInBounds(endNode) {
+		return model.NodeCoord{}, nil, errors.New(`next point is out of bounds`)
 	}
 
 	isEdge, isValid := p.isEdge(move, startNode)
 	if !isValid {
-		return nodeCoord{}, nil, errors.New(`invalid input`)
+		return model.NodeCoord{}, nil, errors.New(`invalid input`)
 	}
 	if isEdge {
-		return nodeCoord{}, nil, errors.New(`already had edge`)
+		return model.NodeCoord{}, nil, errors.New(`already had edge`)
 	}
 
-	gCpy := p.deepCopy()
-	updateConnections(gCpy.outgoingEdges, startNode, endNode, move)
-
+	gCpy := p.DeepCopy()
+	model.UpdateGridConnections(gCpy.nodeGrid, startNode, endNode, move)
 	return endNode, gCpy, nil
 }
 
-func (p *puzzle) isRangeInvalidWithBoundsCheck(
-	startR, stopR rowIndex,
-	startC, stopC colIndex,
+func (p *Puzzle) IsRangeInvalid(
+	startR, stopR model.RowIndex,
+	startC, stopC model.ColIndex,
 ) bool {
 	if startR < 0 {
 		startR = 0
 	}
-	if maxR := rowIndex(p.numNodes()); stopR > maxR {
+	if maxR := model.RowIndex(p.numNodes()); stopR > maxR {
 		stopR = maxR
 	}
 	if startC < 0 {
 		startC = 0
 	}
-	if maxC := colIndex(p.numNodes()); stopC > maxC {
+	if maxC := model.ColIndex(p.numNodes()); stopC > maxC {
 		stopC = maxC
 	}
 
 	return p.isRangeInvalid(startR, stopR, startC, stopC)
 }
 
-func (p *puzzle) isRangeInvalid(
-	startR, stopR rowIndex,
-	startC, stopC colIndex,
+func (p *Puzzle) isRangeInvalid(
+	startR, stopR model.RowIndex,
+	startC, stopC model.ColIndex,
 ) bool {
 	for r := startR; r < stopR; r++ {
 		for c := startC; c < stopC; c++ {
 			// check that this point doesn't branch
-			nc := nodeCoord{
-				row: r,
-				col: c,
-			}
+			nc := model.NewCoord(r, c)
 			oe, ok := p.getOutgoingEdgesFrom(nc)
 			if !ok {
 				// the coordinate must be out of bounds
 				return true
 			}
-			if oe.getNumOutgoingDirections() > 2 {
+			if oe.GetNumOutgoingDirections() > 2 {
 				// either we can't get the node, or this is a branch.
-				// therefore, this puzzle is invalid
+				// therefore, this Puzzle is invalid
 				return true
 			}
 
@@ -194,21 +179,21 @@ func (p *puzzle) isRangeInvalid(
 	return false
 }
 
-func (p *puzzle) getOutgoingEdgesFrom(
-	coord nodeCoord,
-) (edgesFromNode, bool) {
-	if !p.outgoingEdges.isInBounds(coord) {
-		return edgesFromNode{}, false
+func (p *Puzzle) getOutgoingEdgesFrom(
+	coord model.NodeCoord,
+) (model.OutgoingEdges, bool) {
+	if !p.nodeGrid.IsInBounds(coord) {
+		return model.OutgoingEdges{}, false
 	}
 
-	return p.outgoingEdges.get(coord), true
+	return p.nodeGrid.Get(coord), true
 }
 
-func (p *puzzle) IsIncomplete(
-	coord nodeCoord,
+func (p *Puzzle) IsIncomplete(
+	coord model.NodeCoord,
 ) (bool, error) {
-	if p.isRangeInvalid(0, rowIndex(p.numNodes()), 0, colIndex(p.numNodes())) {
-		return true, errors.New(`invalid puzzle`)
+	if p.isRangeInvalid(0, model.RowIndex(p.numNodes()), 0, model.ColIndex(p.numNodes())) {
+		return true, errors.New(`invalid Puzzle`)
 	}
 
 	oe, ok := p.getOutgoingEdgesFrom(coord)
@@ -216,17 +201,14 @@ func (p *puzzle) IsIncomplete(
 		return true, errors.New(`bad input`)
 	}
 
-	if nOutgoingEdges := oe.getNumOutgoingDirections(); nOutgoingEdges == 0 {
+	if nOutgoingEdges := oe.GetNumOutgoingDirections(); nOutgoingEdges == 0 {
 		// we were given bad intel. let's find a node with any edges.
 		found := false
-		for r := rowIndex(0); int(r) < p.numNodes() && !found; r++ {
-			for c := colIndex(0); int(c) < p.numNodes() && !found; c++ {
-				coord = nodeCoord{
-					row: r,
-					col: c,
-				}
-				hasRow := p.IsEdge(headRight, coord)
-				hasCol := p.IsEdge(headDown, coord)
+		for r := 0; r < p.numNodes() && !found; r++ {
+			for c := 0; c < p.numNodes() && !found; c++ {
+				coord = model.NewCoordFromInts(r, c)
+				hasRow := p.IsEdge(model.HeadRight, coord)
+				hasCol := p.IsEdge(model.HeadDown, coord)
 				if hasRow || hasCol {
 					if !hasRow || !hasCol {
 						// don't need to walk the whole path if we see
@@ -239,7 +221,7 @@ func (p *puzzle) IsIncomplete(
 			}
 		}
 		if !found {
-			// this puzzle had no edges!
+			// this Puzzle had no edges!
 			return true, nil
 		}
 	} else if nOutgoingEdges != 2 {
@@ -265,8 +247,8 @@ func (p *puzzle) IsIncomplete(
 		if !ok {
 			return true, errors.New(`bad input`)
 		}
-		if oe.totalEdges() != n.val {
-			// previously (in isRangeInvalid) we checked if oe.totalEdges() > n.val
+		if oe.TotalEdges() != n.Value() {
+			// previously (in isRangeInvalid) we checked if oe.TotalEdges() > n.val
 			// This check exists to verify we have exactly how many we need.
 			return true, nil
 		}
@@ -279,34 +261,31 @@ func (p *puzzle) IsIncomplete(
 	return false, nil
 }
 
-func (p *puzzle) String() string {
+func (p *Puzzle) String() string {
 	if p == nil {
-		return `(*puzzle)<nil>`
+		return `(*Puzzle)<nil>`
 	}
 	var sb strings.Builder
 	for r := 0; r < p.numNodes(); r++ {
 		var below strings.Builder
 		for c := 0; c < p.numNodes(); c++ {
-			nc := nodeCoord{
-				row: rowIndex(r),
-				col: colIndex(c),
-			}
+			nc := model.NewCoordFromInts(r, c)
 			// write a node
 			sb.WriteString(`(`)
 			if n, ok := p.nodes[nc]; ok {
-				if n.nType == whiteNode {
+				if n.Type() == model.WhiteNode {
 					sb.WriteString(`w`)
 				} else {
 					sb.WriteString(`b`)
 				}
-				sb.WriteString(fmt.Sprintf("%2d", n.val))
+				sb.WriteString(fmt.Sprintf("%2d", n.Value()))
 			} else {
 				sb.WriteString(`XXX`)
 			}
 			sb.WriteString(`)`)
 
 			// now draw an edge
-			if p.IsEdge(headRight, nc) {
+			if p.IsEdge(model.HeadRight, nc) {
 				sb.WriteString(`---`)
 			} else {
 				sb.WriteString(`   `)
@@ -314,7 +293,7 @@ func (p *puzzle) String() string {
 
 			// now draw any edges that are below
 			below.WriteString(`  `)
-			if p.IsEdge(headDown, nc) {
+			if p.IsEdge(model.HeadDown, nc) {
 				below.WriteString(`|`)
 			} else {
 				below.WriteString(` `)

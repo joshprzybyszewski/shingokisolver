@@ -1,4 +1,4 @@
-package puzzle
+package model
 
 type NodeLocation struct {
 	Row     int

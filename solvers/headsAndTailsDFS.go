@@ -1,33 +1,36 @@
-package puzzle
+package solvers
 
 import (
 	"errors"
 	"fmt"
+
+	"github.com/joshprzybyszewski/shingokisolver/model"
+	"github.com/joshprzybyszewski/shingokisolver/puzzle"
 )
 
 type headsAndTailsItem struct {
-	puzzle  *puzzle
-	head    nodeCoord
-	tail    nodeCoord
+	puzzle  *puzzle.Puzzle
+	head    model.NodeCoord
+	tail    model.NodeCoord
 	useHead bool
 }
 
 type headsAndTailsDFSSolver struct {
-	puzzle *puzzle
+	puzzle *puzzle.Puzzle
 
 	numProcessed int
 }
 
 func newHeadsAndTailsDFSSolver(
 	size int,
-	nl []NodeLocation,
+	nl []model.NodeLocation,
 ) *headsAndTailsDFSSolver {
 	if len(nl) == 0 {
 		return nil
 	}
 
 	return &headsAndTailsDFSSolver{
-		puzzle: newPuzzle(size, nl),
+		puzzle: puzzle.NewPuzzle(size, nl),
 	}
 }
 
@@ -35,32 +38,19 @@ func (d *headsAndTailsDFSSolver) iterations() int {
 	return d.numProcessed
 }
 
-func (d *headsAndTailsDFSSolver) solve() (*puzzle, bool) {
-	bestR, bestC, bestVal := rowIndex(-1), colIndex(-1), int8(-1)
-	for nc, n := range d.puzzle.nodes {
-		if n.val > bestVal {
-			bestR = nc.row
-			bestC = nc.col
-			bestVal = n.val
-		}
-	}
+func (d *headsAndTailsDFSSolver) solve() (*puzzle.Puzzle, bool) {
+	bestCoord := d.puzzle.GetCoordForHighestValueNode()
 	return d.processQueueItem(&headsAndTailsItem{
-		puzzle: d.puzzle,
-		head: nodeCoord{
-			row: bestR,
-			col: bestC,
-		},
-		tail: nodeCoord{
-			row: bestR,
-			col: bestC,
-		},
+		puzzle:  d.puzzle,
+		head:    bestCoord,
+		tail:    bestCoord,
 		useHead: true,
 	})
 }
 
 func (d *headsAndTailsDFSSolver) processQueueItem(
 	q *headsAndTailsItem,
-) (*puzzle, bool) {
+) (*puzzle.Puzzle, bool) {
 	if q == nil {
 		return nil, false
 	}
@@ -70,10 +60,10 @@ func (d *headsAndTailsDFSSolver) processQueueItem(
 	}
 
 	d.numProcessed++
-	if IncludeProgressLogs && (d.numProcessed < 100 || d.numProcessed%10000 == 0) {
+	if includeProgressLogs && (d.numProcessed < 100 || d.numProcessed%10000 == 0) {
 		fmt.Printf("About to process head(%d, %d) tail(%d, %d): %d\n%s\n",
-			q.head.row, q.head.col,
-			q.tail.row, q.tail.col,
+			q.head.Row, q.head.Col,
+			q.tail.Row, q.tail.Col,
 			d.numProcessed, q.puzzle.String())
 		fmt.Scanf("hello there")
 	}
@@ -84,11 +74,11 @@ func (d *headsAndTailsDFSSolver) processQueueItem(
 		return q.puzzle, true
 	}
 
-	for c, useHead := range map[cardinal]bool{
-		headUp:    q.useHead,
-		headRight: q.useHead,
-		headDown:  q.useHead,
-		headLeft:  q.useHead,
+	for c, useHead := range map[model.Cardinal]bool{
+		model.HeadUp:    q.useHead,
+		model.HeadRight: q.useHead,
+		model.HeadDown:  q.useHead,
+		model.HeadLeft:  q.useHead,
 	} {
 		qi, err := d.getQueueItem(q.puzzle, c, q, useHead)
 		if err != nil {
@@ -101,11 +91,11 @@ func (d *headsAndTailsDFSSolver) processQueueItem(
 		}
 	}
 
-	// for c, useHead := range map[cardinal]bool{
-	// 	headUp:    !q.useHead,
-	// 	headRight: !q.useHead,
-	// 	headDown:  !q.useHead,
-	// 	headLeft:  !q.useHead,
+	// for c, useHead := range map[model.Cardinal]bool{
+	// 	model.HeadUp:    !q.useHead,
+	// 	model.HeadRight: !q.useHead,
+	// 	model.HeadDown:  !q.useHead,
+	// 	model.HeadLeft:  !q.useHead,
 	// } {
 	// 	qi, err := d.getQueueItem(q.puzzle, c, q, useHead)
 	// 	if err != nil {
@@ -122,8 +112,8 @@ func (d *headsAndTailsDFSSolver) processQueueItem(
 }
 
 func (d *headsAndTailsDFSSolver) getQueueItem(
-	g *puzzle,
-	move cardinal,
+	g *puzzle.Puzzle,
+	move model.Cardinal,
 	q *headsAndTailsItem,
 	useHead bool,
 ) (*headsAndTailsItem, error) {
@@ -133,16 +123,16 @@ func (d *headsAndTailsDFSSolver) getQueueItem(
 		nodeToUse = q.head
 	}
 
-	newCoord, newPuzzle, err := g.AddEdge(move, nodeToUse)
+	newCoord, NewPuzzle, err := g.AddEdge(move, nodeToUse)
 	if err != nil {
 		return nil, err
 	}
 
-	if newPuzzle.isRangeInvalidWithBoundsCheck(
-		newCoord.row-2,
-		newCoord.row+2,
-		newCoord.col-2,
-		newCoord.col+2,
+	if NewPuzzle.IsRangeInvalid(
+		newCoord.Row-2,
+		newCoord.Row+2,
+		newCoord.Col-2,
+		newCoord.Col+2,
 	) {
 		// this is a sanity check to reduce the amount of calc we need to do
 		return nil, errors.New(`invalid local range`)
@@ -157,7 +147,7 @@ func (d *headsAndTailsDFSSolver) getQueueItem(
 	}
 
 	return &headsAndTailsItem{
-		puzzle:  newPuzzle,
+		puzzle:  NewPuzzle,
 		head:    newHead,
 		tail:    newTail,
 		useHead: !useHead,

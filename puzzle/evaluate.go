@@ -1,28 +1,19 @@
 package puzzle
 
+import "github.com/joshprzybyszewski/shingokisolver/model"
+
 func isInvalidNode(
-	p *puzzle,
-	nc nodeCoord,
-	efn edgesFromNode,
+	p *Puzzle,
+	nc model.NodeCoord,
+	oe model.OutgoingEdges,
 ) bool {
 	n, ok := p.nodes[nc]
-	if !ok || n.nType == noNode {
-		// no node == not invalid
-		return false
-	}
-
-	// check that the node type rules are not broken
-	if n.nType.isInvalidEdges(efn) {
-		return true
-	}
-
-	// check that the num of straight line edges does not exceed the node n.val
-	return efn.totalEdges() > n.val
+	return ok && n.IsInvalid(oe)
 }
 
-func isCompleteNode(
-	p *puzzle,
-	nc nodeCoord,
+func IsCompleteNode(
+	p *Puzzle,
+	nc model.NodeCoord,
 ) bool {
 	oe, ok := p.getOutgoingEdgesFrom(nc)
 	if !ok {
@@ -31,17 +22,5 @@ func isCompleteNode(
 	}
 
 	n, ok := p.nodes[nc]
-	if !ok || n.nType == noNode {
-		// no node == not invalid
-		return false
-	}
-
-	// check that the node type rules are not broken
-	if n.nType.isInvalidEdges(oe) {
-		return false
-	}
-
-	// this node needs two outgoing edges and for the sum of the straight lines
-	// to be equal to its value
-	return oe.getNumOutgoingDirections() == 2 && n.val == oe.totalEdges()
+	return ok && n.IsComplete(oe)
 }

@@ -1,32 +1,35 @@
-package puzzle
+package solvers
 
 import (
 	"fmt"
 	"log"
 	"sort"
+
+	"github.com/joshprzybyszewski/shingokisolver/model"
+	"github.com/joshprzybyszewski/shingokisolver/puzzle"
 )
 
 type target struct {
-	coord nodeCoord
+	coord model.NodeCoord
 	val   int
 }
 
-func buildTargets(p *puzzle) []target {
-	targets := make([]target, 0, len(p.nodes))
+func buildTargets(p *puzzle.Puzzle) []target {
+	targets := make([]target, 0, len(p.NodeTargets()))
 
-	for nc, n := range p.nodes {
+	for nc, n := range p.NodeTargets() {
 		targets = append(targets, target{
 			coord: nc,
-			val:   int(n.val),
+			val:   int(n.Value()),
 		})
 	}
 
-	maxRowColVal := p.numEdges
-	isOnTheSide := func(coord nodeCoord) bool {
-		return coord.row == 0 ||
-			coord.row == rowIndex(maxRowColVal) ||
-			coord.col == 0 ||
-			coord.col == colIndex(maxRowColVal)
+	maxRowColVal := p.NumEdges()
+	isOnTheSide := func(coord model.NodeCoord) bool {
+		return coord.Row == 0 ||
+			coord.Row == model.RowIndex(maxRowColVal) ||
+			coord.Col == 0 ||
+			coord.Col == model.ColIndex(maxRowColVal)
 	}
 	sort.Slice(targets, func(i, j int) bool {
 		// rank higher valued nodes at the start of the target list
@@ -46,10 +49,10 @@ func buildTargets(p *puzzle) []target {
 
 		// at this point, we just want a consistent ordering.
 		// let's put nodes closer to (0,0) higher up in the list
-		if targets[i].coord.row != targets[j].coord.row {
-			return targets[i].coord.row < targets[j].coord.row
+		if targets[i].coord.Row != targets[j].coord.Row {
+			return targets[i].coord.Row < targets[j].coord.Row
 		}
-		return targets[i].coord.col < targets[j].coord.col
+		return targets[i].coord.Col < targets[j].coord.Col
 	})
 
 	return targets
@@ -83,19 +86,19 @@ func (q *partialSolutionQueue) push(items ...*partialSolutionItem) {
 }
 
 type partialSolutionItem struct {
-	puzzle         *puzzle
+	puzzle         *puzzle.Puzzle
 	numSolvedNodes int
 
-	looseEnds []nodeCoord
+	looseEnds []model.NodeCoord
 }
 
 // eliminates loose ends that don't actually exist
 func (partial *partialSolutionItem) removeDuplicateLooseEnds() {
 	sort.Slice(partial.looseEnds, func(i, j int) bool {
-		if partial.looseEnds[i].row != partial.looseEnds[j].row {
-			return partial.looseEnds[i].row < partial.looseEnds[j].row
+		if partial.looseEnds[i].Row != partial.looseEnds[j].Row {
+			return partial.looseEnds[i].Row < partial.looseEnds[j].Row
 		}
-		return partial.looseEnds[i].col < partial.looseEnds[j].col
+		return partial.looseEnds[i].Col < partial.looseEnds[j].Col
 	})
 
 	for i := 0; i < len(partial.looseEnds)-1; i++ {
@@ -112,13 +115,11 @@ func printPartialSolution(
 	partial *partialSolutionItem,
 	iterations int,
 ) {
-	if !IncludeProgressLogs {
+	if !includeProgressLogs {
 		return
 	}
-	// if !(iterations < 10 ||
-	// iterations%100 == 0 ||
 	if partial.puzzle == nil ||
-		partial.numSolvedNodes < len(partial.puzzle.nodes) {
+		partial.numSolvedNodes < len(partial.puzzle.NodeTargets()) {
 		return
 	}
 
@@ -132,7 +133,7 @@ func printPartialSolution(
 }
 
 type targetSolver struct {
-	puzzle *puzzle
+	puzzle *puzzle.Puzzle
 
 	queue             *partialSolutionQueue
 	looseEndConnector *looseEndConnector
@@ -142,14 +143,14 @@ type targetSolver struct {
 
 func newTargetSolver(
 	size int,
-	nl []NodeLocation,
+	nl []model.NodeLocation,
 ) solver {
 	if len(nl) == 0 {
 		return nil
 	}
 
 	return &targetSolver{
-		puzzle:            newPuzzle(size, nl),
+		puzzle:            puzzle.NewPuzzle(size, nl),
 		queue:             newPartialSolutionQueue(),
 		looseEndConnector: &looseEndConnector{},
 	}
@@ -159,7 +160,7 @@ func (d *targetSolver) iterations() int {
 	return d.numProcessed
 }
 
-func (d *targetSolver) solve() (*puzzle, bool) {
+func (d *targetSolver) solve() (*puzzle.Puzzle, bool) {
 	targets := buildTargets(d.puzzle)
 
 	p := d.getFullSolution(targets)
@@ -168,7 +169,7 @@ func (d *targetSolver) solve() (*puzzle, bool) {
 
 func (d *targetSolver) getFullSolution(
 	targets []target,
-) *puzzle {
+) *puzzle.Puzzle {
 
 	d.queue.push(d.getPartialSolutionsForNode(
 		targets,
@@ -204,7 +205,7 @@ func (d *targetSolver) getPartialSolutionsForNode(
 ) (partials []*partialSolutionItem) {
 	targetCoord := targets[prevPartial.numSolvedNodes].coord
 
-	node, ok := prevPartial.puzzle.nodes[targetCoord]
+	node, ok := prevPartial.puzzle.NodeTargets()[targetCoord]
 	if !ok {
 		// this should be returning an error, but really it shouldn't be happening
 		panic(`what?`)
@@ -214,9 +215,9 @@ func (d *targetSolver) getPartialSolutionsForNode(
 	// go out in all directions from the target
 	// if it's still a valid puzzle, keep going outward
 	// until we "complete" the node.
-	for i, feeler1 := range allDirections {
-		for _, feeler2 := range allDirections[i+1:] {
-			if node.nType.isInvalidMotions(feeler1, feeler2) {
+	for i, feeler1 := range model.AllCardinals {
+		for _, feeler2 := range model.AllCardinals[i+1:] {
+			if node.IsInvalidMotions(feeler1, feeler2) {
 				continue
 			}
 
@@ -234,12 +235,12 @@ func (d *targetSolver) getPartialSolutionsForNode(
 
 func (d *targetSolver) getSolutionsForNodeInDirections(
 	prevPartial *partialSolutionItem,
-	targetCoord nodeCoord,
-	node node,
-	c1, c2 cardinal,
+	targetCoord model.NodeCoord,
+	node model.Node,
+	c1, c2 model.Cardinal,
 ) (partials []*partialSolutionItem) {
 
-	if isCompleteNode(prevPartial.puzzle, targetCoord) {
+	if puzzle.IsCompleteNode(prevPartial.puzzle, targetCoord) {
 		// the target node is already complete, perhaps a previous node
 		// accidentally completed it. If so, then let's do a sanity check
 		// on completion, and then add it as a "partial solution" that
@@ -250,9 +251,9 @@ func (d *targetSolver) getSolutionsForNodeInDirections(
 
 		d.numProcessed++
 		item := &partialSolutionItem{
-			puzzle:         prevPartial.puzzle.deepCopy(),
+			puzzle:         prevPartial.puzzle.DeepCopy(),
 			numSolvedNodes: prevPartial.numSolvedNodes + 1,
-			looseEnds:      make([]nodeCoord, len(prevPartial.looseEnds)),
+			looseEnds:      make([]model.NodeCoord, len(prevPartial.looseEnds)),
 		}
 		copy(item.looseEnds, prevPartial.looseEnds)
 		// once we find a completion path, add it to the returned slice
@@ -267,7 +268,7 @@ func (d *targetSolver) getSolutionsForNodeInDirections(
 	var err error
 	pWithEdge1 := prevPartial.puzzle
 
-	for i := 1; i <= int(node.val); i++ {
+	for i := 1; i <= int(node.Value()); i++ {
 		d.numProcessed++
 		endOfEdge1, pWithEdge1, err = pWithEdge1.AddEdge(c1, endOfEdge1)
 		if err != nil {
@@ -277,7 +278,7 @@ func (d *targetSolver) getSolutionsForNodeInDirections(
 		// reset the "end" of the second edge to be at the target
 		endOfEdge2 = targetCoord
 		pWithEdge2 := pWithEdge1
-		for j := 1; i+j <= int(node.val); j++ {
+		for j := 1; i+j <= int(node.Value()); j++ {
 			d.numProcessed++
 			endOfEdge2, pWithEdge2, err = pWithEdge2.AddEdge(c2, endOfEdge2)
 			if err != nil || pWithEdge2 == nil {
@@ -289,7 +290,7 @@ func (d *targetSolver) getSolutionsForNodeInDirections(
 			continue
 		}
 
-		if !isCompleteNode(pWithEdge2, targetCoord) {
+		if !puzzle.IsCompleteNode(pWithEdge2, targetCoord) {
 			// we _should_ have added a number of straight edges that will
 			// complete our target node.
 			// if not, then we don't want to add this to our partials
@@ -303,7 +304,7 @@ func (d *targetSolver) getSolutionsForNodeInDirections(
 		item := &partialSolutionItem{
 			puzzle:         pWithEdge2,
 			numSolvedNodes: prevPartial.numSolvedNodes + 1,
-			looseEnds:      make([]nodeCoord, len(prevPartial.looseEnds)),
+			looseEnds:      make([]model.NodeCoord, len(prevPartial.looseEnds)),
 		}
 		copy(item.looseEnds, prevPartial.looseEnds)
 		item.looseEnds = append(item.looseEnds, endOfEdge1, endOfEdge2)
@@ -316,7 +317,7 @@ func (d *targetSolver) getSolutionsForNodeInDirections(
 	return partials
 }
 
-func (d *targetSolver) getFullSolutionFromLooseEndConnector() *puzzle {
+func (d *targetSolver) getFullSolutionFromLooseEndConnector() *puzzle.Puzzle {
 
 	defer func() {
 		d.numProcessed += d.looseEndConnector.iterations
@@ -336,7 +337,7 @@ func (lec *looseEndConnector) addPartialSolutions(
 	lec.partials = append(lec.partials, partials...)
 }
 
-func (lec *looseEndConnector) solve() *puzzle {
+func (lec *looseEndConnector) solve() *puzzle.Puzzle {
 	// remove duplicate loose ends from all of our solutions
 	for _, partial := range lec.partials {
 		partial.removeDuplicateLooseEnds()
@@ -367,7 +368,7 @@ func (lec *looseEndConnector) solve() *puzzle {
 
 func (lec *looseEndConnector) connectLooseEnds(
 	psi *partialSolutionItem,
-) *puzzle {
+) *puzzle.Puzzle {
 	printPartialSolution(psi, lec.iterations)
 
 	psq := newPartialSolutionQueue()
@@ -388,7 +389,7 @@ func (lec *looseEndConnector) connectLooseEnds(
 
 			for hitGoal, slice := range morePartials {
 				for _, p := range slice {
-					newLooseEnds := make([]nodeCoord, 0, len(partial.looseEnds))
+					newLooseEnds := make([]model.NodeCoord, 0, len(partial.looseEnds))
 					for _, le := range partial.looseEnds {
 						if le != hitGoal && le != start {
 							newLooseEnds = append(newLooseEnds, le)

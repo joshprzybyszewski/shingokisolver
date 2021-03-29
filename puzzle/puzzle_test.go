@@ -3,6 +3,7 @@ package puzzle
 import (
 	"testing"
 
+	"github.com/joshprzybyszewski/shingokisolver/model"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -10,8 +11,8 @@ import (
 func buildGrid(
 	t *testing.T,
 	g *puzzle,
-	startCoord nodeCoord,
-	steps ...cardinal,
+	startCoord model.NodeCoord,
+	steps ...model.Cardinal,
 ) *puzzle {
 	var err error
 	c := startCoord
@@ -24,91 +25,91 @@ func buildGrid(
 }
 
 func TestNumEdgesAndNodes(t *testing.T) {
-	g := newPuzzle(5, nil)
+	g := NewPuzzle(5, nil)
 	assert.Equal(t, 6, g.numNodes())
 
-	g = newPuzzle(3, nil)
+	g = NewPuzzle(3, nil)
 	assert.Equal(t, 4, g.numNodes())
 
-	g = newPuzzle(25, nil)
+	g = NewPuzzle(25, nil)
 	assert.Equal(t, 26, g.numNodes())
 }
 
 func TestIsRangeInvalidWithBoundsCheck(t *testing.T) {
-	g := newPuzzle(5, nil)
+	g := NewPuzzle(5, nil)
 
-	assert.False(t, g.isRangeInvalidWithBoundsCheck(-1, MAX_EDGES+1, -55, MAX_EDGES+1))
-	assert.True(t, g.isRangeInvalid(-1, MAX_EDGES+1, -55, MAX_EDGES+1))
+	assert.False(t, g.IsRangeInvalid(-1, model.MAX_EDGES+1, -55, model.MAX_EDGES+1))
+	assert.True(t, g.isRangeInvalid(-1, model.MAX_EDGES+1, -55, model.MAX_EDGES+1))
 }
 
 func TestIsEdge(t *testing.T) {
-	g := newPuzzle(5, nil)
+	g := NewPuzzle(5, nil)
 
 	g = buildGrid(t, g,
-		nodeCoord{},
-		headRight,
-		headRight,
-		headRight,
-		headDown,
+		model.NodeCoord{},
+		model.HeadRight,
+		model.HeadRight,
+		model.HeadRight,
+		model.HeadDown,
 	)
 
-	assert.True(t, g.IsEdge(headRight, nodeCoord{
-		row: 0,
-		col: 0,
-	}))
-	assert.True(t, g.IsEdge(headRight, nodeCoord{
-		row: 0,
-		col: 1,
-	}))
-	assert.True(t, g.IsEdge(headRight, nodeCoord{
-		row: 0,
-		col: 2,
-	}))
-	assert.True(t, g.IsEdge(headDown, nodeCoord{
-		row: 0,
-		col: 3,
-	}))
+	assert.True(t, g.IsEdge(model.HeadRight, model.NewCoordFromInts(
+		0,
+		0,
+	)))
+	assert.True(t, g.IsEdge(model.HeadRight, model.NewCoordFromInts(
+		0,
+		1,
+	)))
+	assert.True(t, g.IsEdge(model.HeadRight, model.NewCoordFromInts(
+		0,
+		2,
+	)))
+	assert.True(t, g.IsEdge(model.HeadDown, model.NewCoordFromInts(
+		0,
+		3,
+	)))
 }
 
 // defined here as a helper to make unit tests easier
 func (g *puzzle) isInvalid() bool {
-	return g.isRangeInvalid(0, rowIndex(g.numNodes()), 0, colIndex(g.numNodes()))
+	return g.isRangeInvalid(0, model.RowIndex(g.numNodes()), 0, model.ColIndex(g.numNodes()))
 }
 
 func TestIsInvalid(t *testing.T) {
-	g := newPuzzle(2, nil)
+	g := NewPuzzle(2, nil)
 	assert.False(t, g.isInvalid())
 
 	g = buildGrid(t, g,
-		nodeCoord{
-			row: 0,
-			col: 0,
-		},
-		headRight,
+		model.NewCoordFromInts(
+			0,
+			0,
+		),
+		model.HeadRight,
 	)
 	assert.False(t, g.isInvalid())
 
 	g = buildGrid(t, g,
-		nodeCoord{
-			row: 0,
-			col: 1,
-		},
-		headRight,
+		model.NewCoordFromInts(
+			0,
+			1,
+		),
+		model.HeadRight,
 	)
 	assert.False(t, g.isInvalid())
 
 	g = buildGrid(t, g,
-		nodeCoord{
-			row: 0,
-			col: 1,
-		},
-		headDown,
+		model.NewCoordFromInts(
+			0,
+			1,
+		),
+		model.HeadDown,
 	)
 	assert.True(t, g.isInvalid())
 }
 
 func TestIsInvalidBadBlackNode(t *testing.T) {
-	g := newPuzzle(3, []NodeLocation{{
+	g := NewPuzzle(3, []model.NodeLocation{{
 		Row:     1,
 		Col:     1,
 		IsWhite: false,
@@ -116,19 +117,19 @@ func TestIsInvalidBadBlackNode(t *testing.T) {
 	}})
 
 	g = buildGrid(t, g,
-		nodeCoord{
-			row: 1,
-			col: 0,
-		},
-		headRight,
-		headRight,
+		model.NewCoordFromInts(
+			1,
+			0,
+		),
+		model.HeadRight,
+		model.HeadRight,
 	)
 
 	assert.True(t, g.isInvalid())
 }
 
 func TestIsInvalidBadWhiteNode(t *testing.T) {
-	g := newPuzzle(3, []NodeLocation{{
+	g := NewPuzzle(3, []model.NodeLocation{{
 		Row:     1,
 		Col:     1,
 		IsWhite: true,
@@ -136,19 +137,19 @@ func TestIsInvalidBadWhiteNode(t *testing.T) {
 	}})
 
 	g = buildGrid(t, g,
-		nodeCoord{
-			row: 1,
-			col: 0,
-		},
-		headRight,
-		headDown,
+		model.NewCoordFromInts(
+			1,
+			0,
+		),
+		model.HeadRight,
+		model.HeadDown,
 	)
 
 	assert.True(t, g.isInvalid())
 }
 
 func TestIsInvalidBadBlackNodeTooManyLines(t *testing.T) {
-	g := newPuzzle(4, []NodeLocation{{
+	g := NewPuzzle(4, []model.NodeLocation{{
 		Row:     0,
 		Col:     0,
 		IsWhite: false,
@@ -156,26 +157,26 @@ func TestIsInvalidBadBlackNodeTooManyLines(t *testing.T) {
 	}})
 
 	g = buildGrid(t, g,
-		nodeCoord{
-			row: 0,
-			col: 0,
-		},
-		headRight,
-		headDown,
+		model.NewCoordFromInts(
+			0,
+			0,
+		),
+		model.HeadRight,
+		model.HeadDown,
 	)
 	g = buildGrid(t, g,
-		nodeCoord{
-			row: 0,
-			col: 1,
-		},
-		headRight,
+		model.NewCoordFromInts(
+			0,
+			1,
+		),
+		model.HeadRight,
 	)
 
 	assert.True(t, g.isInvalid())
 }
 
 func TestIsInvalidBadWhiteNodeTooManyLines(t *testing.T) {
-	g := newPuzzle(4, []NodeLocation{{
+	g := NewPuzzle(4, []model.NodeLocation{{
 		Row:     0,
 		Col:     1,
 		IsWhite: true,
@@ -183,40 +184,40 @@ func TestIsInvalidBadWhiteNodeTooManyLines(t *testing.T) {
 	}})
 
 	g = buildGrid(t, g,
-		nodeCoord{
-			row: 0,
-			col: 0,
-		},
-		headRight,
-		headRight,
-		headRight,
+		model.NewCoordFromInts(
+			0,
+			0,
+		),
+		model.HeadRight,
+		model.HeadRight,
+		model.HeadRight,
 	)
 
 	assert.True(t, g.isInvalid())
 }
 
 func TestIsInvalidGoodWhiteNodeAllowsTheRowToHaveManyEdges(t *testing.T) {
-	g := newPuzzle(5, []NodeLocation{{
+	g := NewPuzzle(5, []model.NodeLocation{{
 		Row:     0,
 		Col:     1,
 		IsWhite: true,
 		Value:   2,
 	}})
 	g = buildGrid(t, g,
-		nodeCoord{
-			row: 0,
-			col: 0,
-		},
-		headRight,
-		headRight,
-		headRight,
+		model.NewCoordFromInts(
+			0,
+			0,
+		),
+		model.HeadRight,
+		model.HeadRight,
+		model.HeadRight,
 	)
 
 	assert.True(t, g.isInvalid())
 }
 
 func TestGetEdgesFromNode(t *testing.T) {
-	g := newPuzzle(3, []NodeLocation{{
+	g := NewPuzzle(3, []model.NodeLocation{{
 		Row:     1,
 		Col:     1,
 		IsWhite: false,
@@ -224,52 +225,29 @@ func TestGetEdgesFromNode(t *testing.T) {
 	}})
 
 	g = buildGrid(t, g,
-		nodeCoord{
-			row: 0,
-			col: 0,
-		},
-		headRight,
-		headRight,
-		headDown,
-		headDown,
+		model.NewCoordFromInts(0, 0),
+		model.HeadRight,
+		model.HeadRight,
+		model.HeadDown,
+		model.HeadDown,
 	)
 
-	assert.True(t, g.IsEdge(headUp, nodeCoord{
-		row: 1,
-		col: 2,
-	}))
-	assert.False(t, g.IsEdge(headUp, nodeCoord{
-		row: 0,
-		col: 2,
-	}))
+	assert.True(t, g.IsEdge(model.HeadUp, model.NewCoordFromInts(1, 2)))
+	assert.False(t, g.IsEdge(model.HeadUp, model.NewCoordFromInts(0, 2)))
 
-	assert.True(t, g.IsEdge(headLeft, nodeCoord{
-		row: 0,
-		col: 1,
-	}))
-	assert.False(t, g.IsEdge(headLeft, nodeCoord{
-		row: 0,
-		col: 0,
-	}))
+	assert.True(t, g.IsEdge(model.HeadLeft, model.NewCoordFromInts(0, 1)))
+	assert.False(t, g.IsEdge(model.HeadLeft, model.NewCoordFromInts(0, 0)))
 
-	assert.False(t, g.IsEdge(headRight, nodeCoord{
-		row: 1,
-		col: 1,
-	}))
-	assert.False(t, g.IsEdge(headDown, nodeCoord{
-		row: 1,
-		col: 1,
-	}))
+	assert.False(t, g.IsEdge(model.HeadRight, model.NewCoordFromInts(1, 1)))
+	assert.False(t, g.IsEdge(model.HeadDown, model.NewCoordFromInts(1, 1)))
 
-	efn, ok := g.getEdgesFromNode(nodeCoord{
-		row: 1,
-		col: 1,
-	})
+	efn, ok := g.getOutgoingEdgesFrom(model.NewCoordFromInts(1, 1))
 	assert.True(t, ok)
 
-	expEFN := edgesFromNode{
-		above: 1,
-		left:  1,
+	expEFN := model.OutgoingEdges{
+		// TODO
+		// above: 1,
+		// left:  1,
 	}
 	assert.Equal(t, expEFN, efn)
 }

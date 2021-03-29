@@ -1,13 +1,19 @@
-package puzzle
+package solvers
 
 import (
 	"fmt"
 	"time"
+
+	"github.com/joshprzybyszewski/shingokisolver/model"
 )
 
 var (
-	IncludeProgressLogs = false
+	includeProgressLogs = false
 )
+
+func AddProgressLogs() {
+	includeProgressLogs = true
+}
 
 type SolverType int
 
@@ -48,7 +54,7 @@ type Solver interface {
 
 func NewSolver(
 	size int,
-	nl []NodeLocation,
+	nl []model.NodeLocation,
 	st SolverType,
 ) Solver {
 	return newWrapper(newSolver(size, nl, st))

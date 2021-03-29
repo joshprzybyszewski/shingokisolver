@@ -1,18 +1,21 @@
-package puzzle
+package solvers
 
 import (
 	"errors"
 	"time"
+
+	"github.com/joshprzybyszewski/shingokisolver/model"
+	"github.com/joshprzybyszewski/shingokisolver/puzzle"
 )
 
 type solver interface {
-	solve() (*puzzle, bool)
+	solve() (*puzzle.Puzzle, bool)
 	iterations() int
 }
 
 func newSolver(
 	size int,
-	nl []NodeLocation,
+	nl []model.NodeLocation,
 	st SolverType,
 ) solver {
 	switch st {

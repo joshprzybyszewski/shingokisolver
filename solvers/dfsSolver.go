@@ -1,32 +1,35 @@
-package puzzle
+package solvers
 
 import (
 	"fmt"
+
+	"github.com/joshprzybyszewski/shingokisolver/model"
+	"github.com/joshprzybyszewski/shingokisolver/puzzle"
 )
 
 type dfsSolverStep struct {
-	puzzle *puzzle
-	coord  nodeCoord
+	puzzle *puzzle.Puzzle
+	coord  model.NodeCoord
 }
 
 type dfsSolver struct {
-	puzzle *puzzle
+	puzzle *puzzle.Puzzle
 
-	goal *nodeCoord
+	goal *model.NodeCoord
 
 	numProcessed int
 }
 
 func newDFSSolver(
 	size int,
-	nl []NodeLocation,
+	nl []model.NodeLocation,
 ) solver {
 	if len(nl) == 0 {
 		return nil
 	}
 
 	return &dfsSolver{
-		puzzle: newPuzzle(size, nl),
+		puzzle: puzzle.NewPuzzle(size, nl),
 	}
 }
 
@@ -38,31 +41,23 @@ func (d *dfsSolver) iterations() int {
 	return d.numProcessed
 }
 
-func (d *dfsSolver) solve() (*puzzle, bool) {
-	var bestCoord nodeCoord
-	bestVal := int8(-1)
-	for nc, n := range d.puzzle.nodes {
-		if n.val > bestVal {
-			bestCoord = nc
-			bestVal = n.val
-		}
-	}
+func (d *dfsSolver) solve() (*puzzle.Puzzle, bool) {
 	return d.takeNextStepIntoDepth(&dfsSolverStep{
 		puzzle: d.puzzle,
-		coord:  bestCoord,
+		coord:  d.puzzle.GetCoordForHighestValueNode(),
 	})
 }
 
 func (d *dfsSolver) takeNextStepIntoDepth(
 	q *dfsSolverStep,
-) (*puzzle, bool) {
+) (*puzzle.Puzzle, bool) {
 	if q == nil {
 		return nil, false
 	}
 
 	d.numProcessed++
-	if IncludeProgressLogs && (d.numProcessed < 100 || d.numProcessed%1000 == 500) {
-		fmt.Printf("About to process (%d, %d): %d\n%s\n", q.coord.row, q.coord.col, d.numProcessed, q.puzzle.String())
+	if includeProgressLogs && (d.numProcessed < 100 || d.numProcessed%1000 == 500) {
+		fmt.Printf("About to process (%d, %d): %d\n%s\n", q.coord.Row, q.coord.Col, d.numProcessed, q.puzzle.String())
 		fmt.Scanf("hello there")
 	}
 
@@ -73,10 +68,10 @@ func (d *dfsSolver) takeNextStepIntoDepth(
 	}
 
 	for _, step := range []*dfsSolverStep{
-		d.getNextStep(q.puzzle, headUp, q.coord),
-		d.getNextStep(q.puzzle, headRight, q.coord),
-		d.getNextStep(q.puzzle, headDown, q.coord),
-		d.getNextStep(q.puzzle, headLeft, q.coord),
+		d.getNextStep(q.puzzle, model.HeadUp, q.coord),
+		d.getNextStep(q.puzzle, model.HeadRight, q.coord),
+		d.getNextStep(q.puzzle, model.HeadDown, q.coord),
+		d.getNextStep(q.puzzle, model.HeadLeft, q.coord),
 	} {
 		g, isSolved := d.takeNextStepIntoDepth(step)
 		if isSolved {
@@ -88,27 +83,27 @@ func (d *dfsSolver) takeNextStepIntoDepth(
 }
 
 func (d *dfsSolver) getNextStep(
-	g *puzzle,
-	move cardinal,
-	nc nodeCoord,
+	g *puzzle.Puzzle,
+	move model.Cardinal,
+	nc model.NodeCoord,
 ) *dfsSolverStep {
-	newCoord, newPuzzle, err := g.AddEdge(move, nc)
+	newCoord, newP, err := g.AddEdge(move, nc)
 	if err != nil {
 		return nil
 	}
 
-	if newPuzzle.isRangeInvalidWithBoundsCheck(
-		newCoord.row-2,
-		newCoord.row+2,
-		newCoord.col-2,
-		newCoord.col+2,
+	if newP.IsRangeInvalid(
+		newCoord.Row-2,
+		newCoord.Row+2,
+		newCoord.Col-2,
+		newCoord.Col+2,
 	) {
 		// this is a sanity check to reduce the amount of calc we need to do
 		return nil
 	}
 
 	return &dfsSolverStep{
-		puzzle: newPuzzle,
+		puzzle: newP,
 		coord:  newCoord,
 	}
 }
@@ -123,16 +118,16 @@ const (
 )
 
 func (d *dfsSolver) solveForGoals(
-	input *puzzle,
-	start nodeCoord,
-	goals []nodeCoord,
-) (*puzzle, map[nodeCoord][]*puzzle, dfsGoalSolution) {
+	input *puzzle.Puzzle,
+	start model.NodeCoord,
+	goals []model.NodeCoord,
+) (*puzzle.Puzzle, map[model.NodeCoord][]*puzzle.Puzzle, dfsGoalSolution) {
 
 	if input == nil {
 		return nil, nil, badState
 	}
 
-	ret := make(map[nodeCoord][]*puzzle, len(goals))
+	ret := make(map[model.NodeCoord][]*puzzle.Puzzle, len(goals))
 	for _, g := range goals {
 		ret[g] = nil
 	}
@@ -151,9 +146,9 @@ func (d *dfsSolver) solveForGoals(
 }
 
 func (d *dfsSolver) takeNextStepIntoDepthTowardsGoals(
-	found map[nodeCoord][]*puzzle,
+	found map[model.NodeCoord][]*puzzle.Puzzle,
 	q *dfsSolverStep,
-) (*puzzle, dfsGoalSolution) {
+) (*puzzle.Puzzle, dfsGoalSolution) {
 	if isIncomplete, err := q.puzzle.IsIncomplete(q.coord); err != nil {
 		return nil, badState
 	} else if !isIncomplete {
@@ -161,16 +156,16 @@ func (d *dfsSolver) takeNextStepIntoDepthTowardsGoals(
 	}
 
 	d.numProcessed++
-	if IncludeProgressLogs && (d.numProcessed < 100 || d.numProcessed%1000 == 500) {
-		fmt.Printf("About to process (%d, %d): %d\n%s\n", q.coord.row, q.coord.col, d.numProcessed, q.puzzle.String())
+	if includeProgressLogs && (d.numProcessed < 100 || d.numProcessed%1000 == 500) {
+		fmt.Printf("About to process (%d, %d): %d\n%s\n", q.coord.Row, q.coord.Col, d.numProcessed, q.puzzle.String())
 		fmt.Scanf("hello there")
 	}
 
 	for _, step := range []*dfsSolverStep{
-		d.getNextStep(q.puzzle, headUp, q.coord),
-		d.getNextStep(q.puzzle, headRight, q.coord),
-		d.getNextStep(q.puzzle, headDown, q.coord),
-		d.getNextStep(q.puzzle, headLeft, q.coord),
+		d.getNextStep(q.puzzle, model.HeadUp, q.coord),
+		d.getNextStep(q.puzzle, model.HeadRight, q.coord),
+		d.getNextStep(q.puzzle, model.HeadDown, q.coord),
+		d.getNextStep(q.puzzle, model.HeadLeft, q.coord),
 	} {
 		if step == nil {
 			continue

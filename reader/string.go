@@ -5,18 +5,18 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/joshprzybyszewski/shingokisolver/puzzle"
+	"github.com/joshprzybyszewski/shingokisolver/model"
 )
 
 const (
 	emptyNode byte = '.'
-	blackNode byte = 'b'
-	whiteNode byte = 'w'
+	BlackNode byte = 'b'
+	WhiteNode byte = 'w'
 )
 
 type PuzzleDef struct {
 	NumEdges int
-	Nodes    []puzzle.NodeLocation
+	Nodes    []model.NodeLocation
 }
 
 func FromString(input string) (PuzzleDef, error) {
@@ -35,10 +35,10 @@ func FromString(input string) (PuzzleDef, error) {
 			if b == emptyNode {
 				continue
 			}
-			if (b != blackNode) && (b != whiteNode) {
+			if (b != BlackNode) && (b != WhiteNode) {
 				return PuzzleDef{}, errors.New(`unexpected byte: `)
 			}
-			isWhite := b == whiteNode
+			isWhite := b == WhiteNode
 			var value []byte
 			b, err = r.ReadByte()
 			if err != nil {
@@ -47,7 +47,7 @@ func FromString(input string) (PuzzleDef, error) {
 			value = append(value, b)
 			b, err = r.ReadByte()
 			if err == nil {
-				if b == emptyNode || b == blackNode || b == whiteNode {
+				if b == emptyNode || b == BlackNode || b == WhiteNode {
 					err = r.UnreadByte()
 					if err != nil {
 						return PuzzleDef{}, errors.New(`problem on UnreadByte: `)
@@ -61,7 +61,7 @@ func FromString(input string) (PuzzleDef, error) {
 				return PuzzleDef{}, errors.New(`expected value from bytes: `)
 			}
 
-			pd.Nodes = append(pd.Nodes, puzzle.NodeLocation{
+			pd.Nodes = append(pd.Nodes, model.NodeLocation{
 				Row:     lineIndex,
 				Col:     colIndex,
 				IsWhite: isWhite,

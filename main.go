@@ -8,8 +8,8 @@ import (
 	"runtime/pprof"
 	"time"
 
-	"github.com/joshprzybyszewski/shingokisolver/puzzle"
 	"github.com/joshprzybyszewski/shingokisolver/reader"
+	"github.com/joshprzybyszewski/shingokisolver/solvers"
 )
 
 var (
@@ -19,7 +19,9 @@ var (
 
 func main() {
 	flag.Parse()
-	puzzle.IncludeProgressLogs = *includeProgressLogs
+	if *includeProgressLogs {
+		solvers.AddProgressLogs()
+	}
 
 	if *addPprof {
 		log.Printf("Starting a pprof...")
@@ -37,12 +39,12 @@ func main() {
 	t0 := time.Now()
 
 	for _, pd := range reader.DefaultPuzzles() {
-		for _, st := range puzzle.AllSolvers {
-			if st != puzzle.TargetSolverType || pd.NumEdges < 5 {
+		for _, st := range solvers.AllSolvers {
+			if st != solvers.TargetSolverType || pd.NumEdges < 5 {
 				continue
 			}
 			fmt.Printf("Starting to solve with %s...\n", st)
-			s := puzzle.NewSolver(
+			s := solvers.NewSolver(
 				pd.NumEdges,
 				pd.Nodes,
 				st,

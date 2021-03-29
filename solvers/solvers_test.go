@@ -1,8 +1,9 @@
-package puzzle
+package solvers
 
 import (
 	"testing"
 
+	"github.com/joshprzybyszewski/shingokisolver/model"
 	"github.com/stretchr/testify/require"
 )
 
@@ -13,7 +14,7 @@ func TestSolve3x3(t *testing.T) {
 	}
 
 	numEdges := 2
-	nodes := []NodeLocation{{
+	nodes := []model.NodeLocation{{
 		Row:     1,
 		Col:     1,
 		IsWhite: false,
@@ -35,7 +36,7 @@ func TestSolve5x5(t *testing.T) {
 	}
 
 	numEdges := 5
-	nodes := []NodeLocation{{
+	nodes := []model.NodeLocation{{
 		Row:     3,
 		Col:     2,
 		IsWhite: false,
