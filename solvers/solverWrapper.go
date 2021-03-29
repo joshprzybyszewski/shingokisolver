@@ -50,7 +50,7 @@ func (sw *solverWrapper) Solve() (SolvedResults, error) {
 		return SolvedResults{
 			NumIterations: sw.s.iterations(),
 			Duration:      time.Since(t0),
-		}, errors.New(`bfsSolver unsolvable`)
+		}, errors.New(`unsolvable`)
 	}
 
 	return SolvedResults{

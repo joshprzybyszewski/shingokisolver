@@ -4,7 +4,8 @@ import "github.com/joshprzybyszewski/shingokisolver/model"
 
 func DefaultPuzzles() []PuzzleDef {
 	pds := []PuzzleDef{{
-		NumEdges: 2,
+		Description: `contrived single node example`,
+		NumEdges:    2,
 		Nodes: []model.NodeLocation{{
 			Row:     1,
 			Col:     1,
@@ -12,7 +13,8 @@ func DefaultPuzzles() []PuzzleDef {
 			Value:   2,
 		}},
 	}, {
-		NumEdges: 5,
+		Description: `Easy 5x5`,
+		NumEdges:    5,
 		Nodes: []model.NodeLocation{{
 			Row:     3,
 			Col:     2,
@@ -41,24 +43,32 @@ func DefaultPuzzles() []PuzzleDef {
 		}},
 	}}
 
-	puzzles := []string{
-		`.......b11
+	puzzles := []struct {
+		desc string
+		puzz string
+	}{{
+		desc: `easy 7x7`,
+		puzz: `.......b11
 w2..b4w3...
 ..w3.b2...
 ...w4....
 .b3...b4..
 ........
 ...w4.b5..
-b10.w6.....`, // easy 7x7
-		`...b2.b3..
-w4...w2w2..
-...b2..b2b2
-.......b5
-.w4....b2.
-..w3.....
-w2b2.b2.b2..
-........`, // normal 7x7
-		`.b2..b2.....b4
+b10.w6.....`,
+	}, {
+		desc: `normal 7x7`,
+		puzz: `........
+.b2.w3....
+.b6....w2.
+w4w2...w4.b2
+..w2.....
+..b3.....
+........
+..b4....b4`,
+	}, {
+		desc: `normal 10x10`,
+		puzz: `.b2..b2.....b4
 b2..b2......b2
 .b2.b2b2b3....b2
 b2.w2...b4.w4..
@@ -68,11 +78,30 @@ b2.b3b2.....b2.
 ....b4.b2..w2.
 ...w3..w2.b3..
 .......b3b2..
-.b3...b4.b2..b3`, // easy 10x10
-	}
+.b3...b4.b2..b3`,
+	}, {
+		desc: `easy 15x15`,
+		puzz: `.......b3..w2b3b3..b6
+..b4b9..w3.......w4.
+....b2..b4........
+w2....b4..........
+............w4...
+b3.b3w7..w2.w2....b7..
+........b4.......
+......w5...b3.....
+.b2....b2....b4..w4.
+.....b2b3..b3.....b7
+.b2b3b2w3.w2.....w5.b6.
+...b4...b2w2..b3....
+....b4.......b4...
+.w2..w2......b4...w6
+.....w5.......w4w5.
+b12..........w3....`,
+	}}
 	for _, s := range puzzles {
-		pd, err := FromString(s)
+		pd, err := FromString(s.puzz)
 		if err == nil {
+			pd.Description = s.desc
 			pds = append(pds, pd)
 		}
 	}

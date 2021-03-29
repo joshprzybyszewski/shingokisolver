@@ -180,15 +180,14 @@ func (d *targetSolver) getFullSolution(
 	)...)
 
 	for !d.queue.isEmpty() {
-		prev := d.queue.pop()
-
-		partials := d.getPartialSolutionsForNode(targets, prev)
-		if prev.numSolvedNodes < len(targets)-1 {
-			d.queue.push(partials...)
+		item := d.queue.pop()
+		if item.numSolvedNodes >= len(targets) {
+			d.looseEndConnector.addPartialSolutions(item)
 			continue
 		}
 
-		d.looseEndConnector.addPartialSolutions(partials...)
+		partials := d.getPartialSolutionsForNode(targets, item)
+		d.queue.push(partials...)
 	}
 
 	p := d.getFullSolutionFromLooseEndConnector()

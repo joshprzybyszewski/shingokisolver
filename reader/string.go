@@ -2,6 +2,7 @@ package reader
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -15,8 +16,13 @@ const (
 )
 
 type PuzzleDef struct {
-	NumEdges int
-	Nodes    []model.NodeLocation
+	Description string
+	NumEdges    int
+	Nodes       []model.NodeLocation
+}
+
+func (pd PuzzleDef) String() string {
+	return fmt.Sprintf("%s with %d edges", pd.Description, pd.NumEdges)
 }
 
 func FromString(input string) (PuzzleDef, error) {

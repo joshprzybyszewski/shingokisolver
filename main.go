@@ -8,6 +8,7 @@ import (
 	"runtime/pprof"
 	"time"
 
+	"github.com/joshprzybyszewski/shingokisolver/puzzle"
 	"github.com/joshprzybyszewski/shingokisolver/reader"
 	"github.com/joshprzybyszewski/shingokisolver/solvers"
 )
@@ -38,12 +39,9 @@ func main() {
 
 	t0 := time.Now()
 
-	for _, pd := range reader.DefaultPuzzles() {
-		for _, st := range solvers.AllSolvers {
-			if st != solvers.TargetSolverType || pd.NumEdges < 5 {
-				continue
-			}
-			fmt.Printf("Starting to solve with %s...\n", st)
+	for _, st := range solvers.AllSolvers {
+		for _, pd := range reader.DefaultPuzzles() {
+			fmt.Printf("Starting to solve %q with %s...\n", pd.String(), st)
 			s := solvers.NewSolver(
 				pd.NumEdges,
 				pd.Nodes,
@@ -52,7 +50,11 @@ func main() {
 
 			sr, err := s.Solve()
 			if err != nil {
-				fmt.Printf("%s could not solve! %v: %s\n\n\n", st, err, sr)
+				p := puzzle.NewPuzzle(
+					pd.NumEdges,
+					pd.Nodes,
+				)
+				fmt.Printf("%s could not solve! %v: %s\n%s\n\n\n", st, err, sr, p.String())
 				continue
 			}
 
