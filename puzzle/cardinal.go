@@ -26,3 +26,12 @@ func (c cardinal) String() string {
 		return `unknown cardinal`
 	}
 }
+
+var (
+	allDirections = []cardinal{
+		headRight,
+		headUp,
+		headLeft,
+		headDown,
+	}
+)

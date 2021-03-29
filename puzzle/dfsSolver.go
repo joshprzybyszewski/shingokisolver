@@ -24,7 +24,7 @@ func newDFSSolver(
 	}
 
 	return &dfsSolver{
-		puzzle: newGrid(size, nl),
+		puzzle: newPuzzle(size, nl),
 	}
 }
 
@@ -86,12 +86,12 @@ func (d *dfsSolver) getNextStep(
 	move cardinal,
 	nc nodeCoord,
 ) *dfsSolverStep {
-	newCoord, newGrid, err := g.AddEdge(move, nc)
+	newCoord, newPuzzle, err := g.AddEdge(move, nc)
 	if err != nil {
 		return nil
 	}
 
-	if newGrid.isRangeInvalidWithBoundsCheck(
+	if newPuzzle.isRangeInvalidWithBoundsCheck(
 		newCoord.row-2,
 		newCoord.row+2,
 		newCoord.col-2,
@@ -102,7 +102,7 @@ func (d *dfsSolver) getNextStep(
 	}
 
 	return &dfsSolverStep{
-		puzzle: newGrid,
+		puzzle: newPuzzle,
 		coord:  newCoord,
 	}
 }

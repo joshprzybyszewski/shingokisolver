@@ -22,6 +22,8 @@ func newSolver(
 		return newDFSSolver(size, nl)
 	case HeadsAndTailsDFSSolverType:
 		return newHeadsAndTailsDFSSolver(size, nl)
+	case TargetSolverType:
+		return newTargetSolver(size, nl)
 	default:
 		return newDFSSolver(size, nl)
 	}

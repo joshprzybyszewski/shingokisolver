@@ -27,7 +27,7 @@ func newHeadsAndTailsDFSSolver(
 	}
 
 	return &headsAndTailsDFSSolver{
-		puzzle: newGrid(size, nl),
+		puzzle: newPuzzle(size, nl),
 	}
 }
 
@@ -133,12 +133,12 @@ func (d *headsAndTailsDFSSolver) getQueueItem(
 		nodeToUse = q.head
 	}
 
-	newCoord, newGrid, err := g.AddEdge(move, nodeToUse)
+	newCoord, newPuzzle, err := g.AddEdge(move, nodeToUse)
 	if err != nil {
 		return nil, err
 	}
 
-	if newGrid.isRangeInvalidWithBoundsCheck(
+	if newPuzzle.isRangeInvalidWithBoundsCheck(
 		newCoord.row-2,
 		newCoord.row+2,
 		newCoord.col-2,
@@ -157,7 +157,7 @@ func (d *headsAndTailsDFSSolver) getQueueItem(
 	}
 
 	return &headsAndTailsItem{
-		puzzle:  newGrid,
+		puzzle:  newPuzzle,
 		head:    newHead,
 		tail:    newTail,
 		useHead: !useHead,

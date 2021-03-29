@@ -23,7 +23,7 @@ func newBFSSolver(
 		return nil
 	}
 
-	g := newGrid(size, nl)
+	g := newPuzzle(size, nl)
 	var bestCoord nodeCoord
 	bestVal := int8(-1)
 	for nc, n := range g.nodes {
@@ -91,12 +91,12 @@ func (b *bfsSolver) addQueueItem(
 	move cardinal,
 	coord nodeCoord,
 ) {
-	newCoord, newGrid, err := g.AddEdge(move, coord)
+	newCoord, newPuzzle, err := g.AddEdge(move, coord)
 	if err != nil {
 		return
 	}
 
-	if newGrid.isRangeInvalidWithBoundsCheck(
+	if newPuzzle.isRangeInvalidWithBoundsCheck(
 		newCoord.row-2,
 		newCoord.row+2,
 		newCoord.col-2,
@@ -107,7 +107,7 @@ func (b *bfsSolver) addQueueItem(
 	}
 
 	b.queue = append(b.queue, &bfsQueueItem{
-		puzzle: newGrid,
+		puzzle: newPuzzle,
 		coord:  newCoord,
 	})
 }

@@ -29,7 +29,7 @@ type gridNoder interface {
 	gridCopyer
 }
 
-func newGridNoder(numEdges int) gridNoder {
+func newPuzzleNoder(numEdges int) gridNoder {
 	switch numEdges {
 	case 1, 2:
 		return &grid3x3{}

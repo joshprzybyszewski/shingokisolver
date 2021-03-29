@@ -24,25 +24,25 @@ func buildGrid(
 }
 
 func TestNumEdgesAndNodes(t *testing.T) {
-	g := newGrid(5, nil)
+	g := newPuzzle(5, nil)
 	assert.Equal(t, 6, g.numNodes())
 
-	g = newGrid(3, nil)
+	g = newPuzzle(3, nil)
 	assert.Equal(t, 4, g.numNodes())
 
-	g = newGrid(25, nil)
+	g = newPuzzle(25, nil)
 	assert.Equal(t, 26, g.numNodes())
 }
 
 func TestIsRangeInvalidWithBoundsCheck(t *testing.T) {
-	g := newGrid(5, nil)
+	g := newPuzzle(5, nil)
 
 	assert.False(t, g.isRangeInvalidWithBoundsCheck(-1, MAX_EDGES+1, -55, MAX_EDGES+1))
 	assert.True(t, g.isRangeInvalid(-1, MAX_EDGES+1, -55, MAX_EDGES+1))
 }
 
 func TestIsEdge(t *testing.T) {
-	g := newGrid(5, nil)
+	g := newPuzzle(5, nil)
 
 	g = buildGrid(t, g,
 		nodeCoord{},
@@ -76,7 +76,7 @@ func (g *puzzle) isInvalid() bool {
 }
 
 func TestIsInvalid(t *testing.T) {
-	g := newGrid(2, nil)
+	g := newPuzzle(2, nil)
 	assert.False(t, g.isInvalid())
 
 	g = buildGrid(t, g,
@@ -108,7 +108,7 @@ func TestIsInvalid(t *testing.T) {
 }
 
 func TestIsInvalidBadBlackNode(t *testing.T) {
-	g := newGrid(3, []NodeLocation{{
+	g := newPuzzle(3, []NodeLocation{{
 		Row:     1,
 		Col:     1,
 		IsWhite: false,
@@ -128,7 +128,7 @@ func TestIsInvalidBadBlackNode(t *testing.T) {
 }
 
 func TestIsInvalidBadWhiteNode(t *testing.T) {
-	g := newGrid(3, []NodeLocation{{
+	g := newPuzzle(3, []NodeLocation{{
 		Row:     1,
 		Col:     1,
 		IsWhite: true,
@@ -148,7 +148,7 @@ func TestIsInvalidBadWhiteNode(t *testing.T) {
 }
 
 func TestIsInvalidBadBlackNodeTooManyLines(t *testing.T) {
-	g := newGrid(4, []NodeLocation{{
+	g := newPuzzle(4, []NodeLocation{{
 		Row:     0,
 		Col:     0,
 		IsWhite: false,
@@ -175,7 +175,7 @@ func TestIsInvalidBadBlackNodeTooManyLines(t *testing.T) {
 }
 
 func TestIsInvalidBadWhiteNodeTooManyLines(t *testing.T) {
-	g := newGrid(4, []NodeLocation{{
+	g := newPuzzle(4, []NodeLocation{{
 		Row:     0,
 		Col:     1,
 		IsWhite: true,
@@ -196,7 +196,7 @@ func TestIsInvalidBadWhiteNodeTooManyLines(t *testing.T) {
 }
 
 func TestIsInvalidGoodWhiteNodeAllowsTheRowToHaveManyEdges(t *testing.T) {
-	g := newGrid(5, []NodeLocation{{
+	g := newPuzzle(5, []NodeLocation{{
 		Row:     0,
 		Col:     1,
 		IsWhite: true,
@@ -216,7 +216,7 @@ func TestIsInvalidGoodWhiteNodeAllowsTheRowToHaveManyEdges(t *testing.T) {
 }
 
 func TestGetEdgesFromNode(t *testing.T) {
-	g := newGrid(3, []NodeLocation{{
+	g := newPuzzle(3, []NodeLocation{{
 		Row:     1,
 		Col:     1,
 		IsWhite: false,

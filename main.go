@@ -38,7 +38,7 @@ func main() {
 
 	for _, pd := range reader.DefaultPuzzles() {
 		for _, st := range puzzle.AllSolvers {
-			if st != puzzle.DFSSolverType {
+			if st != puzzle.TargetSolverType || pd.NumEdges < 5 {
 				continue
 			}
 			fmt.Printf("Starting to solve with %s...\n", st)

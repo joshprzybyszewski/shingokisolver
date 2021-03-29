@@ -37,7 +37,7 @@ type puzzle struct {
 	outgoingEdges gridNoder
 }
 
-func newGrid(
+func newPuzzle(
 	numEdges int,
 	nodeLocations []NodeLocation,
 ) *puzzle {
@@ -63,7 +63,7 @@ func newGrid(
 	return &puzzle{
 		numEdges:      uint8(numEdges),
 		nodes:         nodes,
-		outgoingEdges: newGridNoder(numEdges),
+		outgoingEdges: newPuzzleNoder(numEdges),
 	}
 }
 
