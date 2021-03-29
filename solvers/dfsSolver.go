@@ -131,6 +131,7 @@ func (d *dfsSolver) solveForGoals(
 	for _, g := range goals {
 		ret[g] = nil
 	}
+	delete(ret, start)
 
 	p, state := d.takeNextStepIntoDepthTowardsGoals(
 		ret,
@@ -139,47 +140,47 @@ func (d *dfsSolver) solveForGoals(
 			coord:  start,
 		},
 	)
-	if state == solvedPuzzle {
-		return p, nil, state
-	}
-	return nil, ret, state
+	return p, ret, state
 }
 
 func (d *dfsSolver) takeNextStepIntoDepthTowardsGoals(
 	found map[model.NodeCoord][]*puzzle.Puzzle,
-	q *dfsSolverStep,
+	step *dfsSolverStep,
 ) (*puzzle.Puzzle, dfsGoalSolution) {
-	if isIncomplete, err := q.puzzle.IsIncomplete(q.coord); err != nil {
+	if step == nil {
+		return nil, mayContinue
+	}
+
+	if isIncomplete, err := step.puzzle.IsIncomplete(step.coord); err != nil {
 		return nil, badState
 	} else if !isIncomplete {
-		return q.puzzle, solvedPuzzle
+		return step.puzzle, solvedPuzzle
+	}
+
+	if step.puzzle != nil {
+		if slice, ok := found[step.coord]; ok {
+			found[step.coord] = append(slice, step.puzzle)
+		}
 	}
 
 	d.numProcessed++
 	if includeProgressLogs && (d.numProcessed < 100 || d.numProcessed%1000 == 500) {
-		fmt.Printf("About to process (%d, %d): %d\n%s\n", q.coord.Row, q.coord.Col, d.numProcessed, q.puzzle.String())
+		fmt.Printf("About to process (%d, %d): %d\n%s\n", step.coord.Row, step.coord.Col, d.numProcessed, step.puzzle.String())
 		fmt.Scanf("hello there")
 	}
 
-	for _, step := range []*dfsSolverStep{
-		d.getNextStep(q.puzzle, model.HeadUp, q.coord),
-		d.getNextStep(q.puzzle, model.HeadRight, q.coord),
-		d.getNextStep(q.puzzle, model.HeadDown, q.coord),
-		d.getNextStep(q.puzzle, model.HeadLeft, q.coord),
+	for _, nextStep := range []*dfsSolverStep{
+		d.getNextStep(step.puzzle, model.HeadUp, step.coord),
+		d.getNextStep(step.puzzle, model.HeadRight, step.coord),
+		d.getNextStep(step.puzzle, model.HeadDown, step.coord),
+		d.getNextStep(step.puzzle, model.HeadLeft, step.coord),
 	} {
-		if step == nil {
-			continue
-		}
-
-		g, sol := d.takeNextStepIntoDepthTowardsGoals(found, step)
+		g, sol := d.takeNextStepIntoDepthTowardsGoals(found, nextStep)
 		switch sol {
 		case solvedPuzzle:
 			return g, sol
 		}
-		if slice, ok := found[step.coord]; ok {
-			found[step.coord] = append(slice, g)
-		}
 	}
 
-	return q.puzzle, mayContinue
+	return nil, mayContinue
 }

@@ -120,9 +120,9 @@ func (p *Puzzle) AddEdge(
 		return model.NodeCoord{}, nil, errors.New(`already had edge`)
 	}
 
-	gCpy := p.DeepCopy()
-	model.UpdateGridConnections(gCpy.nodeGrid, startNode, endNode, move)
-	return endNode, gCpy, nil
+	puzzCopy := p.DeepCopy()
+	model.UpdateGridConnections(puzzCopy.nodeGrid, startNode, endNode, move)
+	return endNode, puzzCopy, nil
 }
 
 func (p *Puzzle) IsRangeInvalid(
@@ -261,6 +261,7 @@ func (p *Puzzle) String() string {
 		return `(*Puzzle)<nil>`
 	}
 	var sb strings.Builder
+	sb.WriteString("\n")
 	for r := 0; r < p.numNodes(); r++ {
 		var below strings.Builder
 		for c := 0; c < p.numNodes(); c++ {
