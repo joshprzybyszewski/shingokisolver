@@ -235,7 +235,7 @@ func (p *Puzzle) IsIncomplete(
 	for nc, n := range p.nodes {
 		if _, ok := seenNodes[nc]; !ok {
 			// node was not seen
-			return true, nil
+			return true, errors.New(`this path made a loop, but didn't see every node`)
 		}
 
 		oe, ok := p.getOutgoingEdgesFrom(nc)
