@@ -7,6 +7,22 @@ type OutgoingEdges struct {
 	right int8
 }
 
+func (oe OutgoingEdges) GetNumInDirection(
+	heading Cardinal,
+) int8 {
+	switch heading {
+	case HeadUp:
+		return oe.above
+	case HeadDown:
+		return oe.below
+	case HeadLeft:
+		return oe.left
+	case HeadRight:
+		return oe.right
+	}
+	return 0
+}
+
 func (oe OutgoingEdges) TotalEdges() int8 {
 	return oe.above + oe.below + oe.left + oe.right
 }

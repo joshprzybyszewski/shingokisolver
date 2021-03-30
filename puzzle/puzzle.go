@@ -153,7 +153,7 @@ func (p *Puzzle) isRangeInvalid(
 		for c := startC; c < stopC; c++ {
 			// check that this point doesn't branch
 			nc := model.NewCoord(r, c)
-			oe, ok := p.getOutgoingEdgesFrom(nc)
+			oe, ok := p.GetOutgoingEdgesFrom(nc)
 			if !ok {
 				// the coordinate must be out of bounds
 				return true
@@ -174,7 +174,7 @@ func (p *Puzzle) isRangeInvalid(
 	return false
 }
 
-func (p *Puzzle) getOutgoingEdgesFrom(
+func (p *Puzzle) GetOutgoingEdgesFrom(
 	coord model.NodeCoord,
 ) (model.OutgoingEdges, bool) {
 	if !p.nodeGrid.IsInBounds(coord) {
@@ -191,7 +191,7 @@ func (p *Puzzle) IsIncomplete(
 		return true, errors.New(`invalid Puzzle`)
 	}
 
-	oe, ok := p.getOutgoingEdgesFrom(coord)
+	oe, ok := p.GetOutgoingEdgesFrom(coord)
 	if !ok {
 		return true, errors.New(`bad input`)
 	}
@@ -238,7 +238,7 @@ func (p *Puzzle) IsIncomplete(
 			return true, errors.New(`this path made a loop, but didn't see every node`)
 		}
 
-		oe, ok := p.getOutgoingEdgesFrom(nc)
+		oe, ok := p.GetOutgoingEdgesFrom(nc)
 		if !ok {
 			return true, errors.New(`bad input`)
 		}

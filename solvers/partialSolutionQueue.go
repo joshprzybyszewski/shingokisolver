@@ -48,6 +48,9 @@ func printPartialSolution(
 		partial.targeting == nil {
 		return
 	}
+	if !(iterations < 10 || iterations%100 == 0) {
+		return
+	}
 
 	log.Printf("printPartialSolution from %s (%d iterations): (targeting %v) %v",
 		caller,

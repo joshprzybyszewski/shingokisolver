@@ -3,7 +3,7 @@ package puzzle
 import "github.com/joshprzybyszewski/shingokisolver/model"
 
 type getEdgesFromNoder interface {
-	getOutgoingEdgesFrom(model.NodeCoord) (model.OutgoingEdges, bool)
+	GetOutgoingEdgesFrom(model.NodeCoord) (model.OutgoingEdges, bool)
 }
 
 type walker interface {
@@ -57,7 +57,7 @@ func (sw *simpleWalker) walkToNextPoint(
 	avoid model.Cardinal,
 ) model.Cardinal {
 
-	efn, ok := sw.provider.getOutgoingEdgesFrom(sw.cur)
+	efn, ok := sw.provider.GetOutgoingEdgesFrom(sw.cur)
 	if !ok {
 		return model.HeadNowhere
 	}

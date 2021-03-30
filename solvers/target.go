@@ -9,7 +9,7 @@ import (
 
 type target struct {
 	coord model.NodeCoord
-	val   int
+	val   int8
 
 	next *target
 }
@@ -20,7 +20,7 @@ func buildTargets(p *puzzle.Puzzle) []*target {
 	for nc, n := range p.NodeTargets() {
 		targets = append(targets, &target{
 			coord: nc,
-			val:   int(n.Value()),
+			val:   int8(n.Value()),
 		})
 	}
 

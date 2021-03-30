@@ -41,7 +41,7 @@ func main() {
 
 	for _, st := range solvers.AllSolvers {
 		for _, pd := range reader.DefaultPuzzles() {
-			if pd.String() != `normal 7x7 with 7 edges` {
+			if pd.String() != `second normal 7x7 with 7 edges` {
 				continue
 			}
 			fmt.Printf("Starting to solve %q with %s...\n", pd.String(), st)

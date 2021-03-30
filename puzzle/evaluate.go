@@ -15,7 +15,11 @@ func IsCompleteNode(
 	p *Puzzle,
 	nc model.NodeCoord,
 ) bool {
-	oe, ok := p.getOutgoingEdgesFrom(nc)
+	if p == nil {
+		return false
+	}
+
+	oe, ok := p.GetOutgoingEdgesFrom(nc)
 	if !ok {
 		// the coordinate must be out of bounds
 		return false

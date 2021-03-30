@@ -63,6 +63,8 @@ func (d *targetSolver) buildAllPartials(
 
 	for !d.queue.isEmpty() {
 		item := d.queue.pop()
+		printPartialSolution(`buildAllPartials`, item, d.iterations())
+
 		if item.targeting == nil {
 			// Since we're not targeting a particular node, it means
 			// we've completed them all. Let's add this as a "completed"
@@ -126,50 +128,36 @@ func (d *targetSolver) getPartialSolutionsForTwoArmedTarget(
 		// accidentally completed it. If so, then let's do a sanity check
 		// on completion, and then add it as a "partial solution" that
 		// has no new loose ends
-		if _, err := item.puzzle.IsIncomplete(t.coord); err != nil {
+
+		oe, inBounds := item.puzzle.GetOutgoingEdgesFrom(t.coord)
+		if !inBounds ||
+			oe.GetNumInDirection(arm1Heading) == 0 ||
+			oe.GetNumInDirection(arm2Heading) == 0 {
+			// The node at the coord t.coord is complete, but it doesn't
+			// have headings in the directions that we want it to. In order
+			// to avoid having duplicate puzzle states, we don't return
+			// anything here.
 			return nil
 		}
 
-		d.numProcessed++
-		psi := &partialSolutionItem{
-			puzzle:    item.puzzle.DeepCopy(),
-			targeting: item.targeting.next,
-			looseEnds: make([]model.NodeCoord, len(item.looseEnds)),
-		}
-		copy(psi.looseEnds, item.looseEnds)
+		item.targeting = item.targeting.next
 		// once we find a completion path, add it to the returned slice
-		partials = append(partials, psi)
-		printPartialSolution(`IsCompleteNode`, psi, d.iterations())
+		partials = append(partials, item)
 		return partials
 	}
 
-	arm1End := t.coord
-	arm2End := t.coord
+	for oneArmLen := int8(1); oneArmLen < t.val; oneArmLen++ {
 
-	var err error
-	oneArmPuzz := item.puzzle
+		printPartialSolution(`getPartialSolutionsForTwoArmedTarget`, item, d.iterations())
 
-	for numArms1 := 1; numArms1 < t.val; numArms1++ {
-		d.numProcessed++
-		arm1End, oneArmPuzz, err = oneArmPuzz.AddEdge(arm1Heading, arm1End)
-		if err != nil {
-			break
-		}
-
-		// reset the "end" of the second edge to be at the target
-		arm2End = t.coord
-		twoArmPuzz := oneArmPuzz
-		for numArms2 := 1; numArms1+numArms2 <= t.val; numArms2++ {
-			d.numProcessed++
-			arm2End, twoArmPuzz, err = twoArmPuzz.AddEdge(arm2Heading, arm2End)
-			if err != nil || twoArmPuzz == nil {
-				break
-			}
-		}
-
-		if twoArmPuzz == nil {
-			continue
-		}
+		twoArmPuzz, arm1End, arm2End := d.sendOutTwoArms(
+			item.puzzle,
+			t.coord,
+			arm1Heading,
+			oneArmLen,
+			arm2Heading,
+			t.val-oneArmLen,
+		)
 
 		if !puzzle.IsCompleteNode(twoArmPuzz, t.coord) {
 			// we _should_ have added a number of straight edges that will
@@ -192,10 +180,49 @@ func (d *targetSolver) getPartialSolutionsForTwoArmedTarget(
 
 		// once we find a completion path, add it to the returned slice
 		partials = append(partials, psi)
-		printPartialSolution(`end of arm building`, psi, d.iterations())
 	}
 
 	return partials
+}
+
+func (d *targetSolver) sendOutTwoArms(
+	puzz *puzzle.Puzzle,
+	start model.NodeCoord,
+	arm1Heading model.Cardinal,
+	arm1Length int8,
+	arm2Heading model.Cardinal,
+	arm2Length int8,
+) (*puzzle.Puzzle, model.NodeCoord, model.NodeCoord) {
+
+	var err error
+
+	arm1End := start
+	for {
+		if oe, inBounds := puzz.GetOutgoingEdgesFrom(start); !inBounds || oe.GetNumInDirection(arm1Heading) >= arm1Length {
+			break
+		}
+
+		d.numProcessed++
+		arm1End, puzz, err = puzz.AddEdge(arm1Heading, arm1End)
+		if err != nil {
+			return nil, model.NodeCoord{}, model.NodeCoord{}
+		}
+	}
+
+	arm2End := start
+	for {
+		if oe, inBounds := puzz.GetOutgoingEdgesFrom(start); !inBounds || oe.GetNumInDirection(arm2Heading) >= arm2Length {
+			break
+		}
+
+		d.numProcessed++
+		arm2End, puzz, err = puzz.AddEdge(arm2Heading, arm2End)
+		if err != nil {
+			return nil, model.NodeCoord{}, model.NodeCoord{}
+		}
+	}
+
+	return puzz, arm1End, arm2End
 }
 
 func (d *targetSolver) getFullSolutionFromLooseEndConnector() *puzzle.Puzzle {
@@ -259,7 +286,6 @@ func (lec *looseEndConnector) attemptAllPartials() *puzzle.Puzzle {
 func (lec *looseEndConnector) queueUpLooseEndConnections(
 	psi *partialSolutionItem,
 ) *puzzle.Puzzle {
-	printPartialSolution(`queueUpLooseEndConnections`, psi, lec.iterations)
 
 	psq := newPartialSolutionQueue()
 	psq.push(psi)

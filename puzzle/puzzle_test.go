@@ -224,7 +224,7 @@ func TestGetEdgesFromNode(t *testing.T) {
 	assert.False(t, p.IsEdge(model.HeadRight, model.NewCoordFromInts(1, 1)))
 	assert.False(t, p.IsEdge(model.HeadDown, model.NewCoordFromInts(1, 1)))
 
-	efn, ok := p.getOutgoingEdgesFrom(model.NewCoordFromInts(1, 1))
+	efn, ok := p.GetOutgoingEdgesFrom(model.NewCoordFromInts(1, 1))
 	assert.True(t, ok)
 
 	expEFN := model.OutgoingEdges{

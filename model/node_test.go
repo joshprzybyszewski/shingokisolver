@@ -123,16 +123,16 @@ func TestNodeCopy(t *testing.T) {
 		val:   4,
 	}, cpy1)
 
-	assert.Equal(t, uint8(4), n.Value())
-	assert.Equal(t, uint8(4), cpy1.Value())
+	assert.Equal(t, int8(4), n.Value())
+	assert.Equal(t, int8(4), cpy1.Value())
 	assert.Equal(t, BlackNode, n.Type())
 	assert.Equal(t, BlackNode, cpy1.Type())
 
 	n.val = 5
 	n.nType = WhiteNode
 
-	assert.Equal(t, uint8(4), n.Value())
-	assert.Equal(t, uint8(4), cpy1.Value())
+	assert.Equal(t, int8(5), n.Value())
+	assert.Equal(t, int8(4), cpy1.Value())
 	assert.Equal(t, WhiteNode, n.Type())
 	assert.Equal(t, BlackNode, cpy1.Type())
 
