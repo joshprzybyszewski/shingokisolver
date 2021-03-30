@@ -1,8 +1,6 @@
 package solvers
 
 import (
-	"sort"
-
 	"github.com/joshprzybyszewski/shingokisolver/model"
 	"github.com/joshprzybyszewski/shingokisolver/puzzle"
 )
@@ -38,53 +36,36 @@ func (d *targetSolver) iterations() int {
 func (d *targetSolver) solve() (*puzzle.Puzzle, bool) {
 	targets := buildTargets(d.puzzle)
 
-	d.buildAllPartials(targets)
+	if len(targets) == 0 {
+		return nil, false
+	}
 
-	p := d.getFullSolutionFromLooseEndConnector()
-
+	p := d.getSolutionFromDepths(
+		&partialSolutionItem{
+			puzzle:    d.puzzle.DeepCopy(),
+			targeting: targets[0],
+		},
+	)
 	return p, p != nil
 }
 
-func (d *targetSolver) buildAllPartials(
-	targets []*target,
-) {
-
-	for i, target := range targets {
-		if i > 0 {
-			break
-		}
-		d.queue.push(d.getAllPartialSolutionsForItem(
-			&partialSolutionItem{
-				puzzle:    d.puzzle.DeepCopy(),
-				targeting: target,
-			},
-		)...)
-	}
-
-	for !d.queue.isEmpty() {
-		item := d.queue.pop()
-		printPartialSolution(`buildAllPartials`, item, d.iterations())
-
-		if item.targeting == nil {
-			// Since we're not targeting a particular node, it means
-			// we've completed them all. Let's add this as a "completed"
-			// partial solution to our loose end connector.
-			d.looseEndConnector.addPartialSolutions(item)
-			continue
-		}
-
-		partials := d.getAllPartialSolutionsForItem(item)
-
-		d.queue.push(partials...)
-	}
-}
-
-func (d *targetSolver) getAllPartialSolutionsForItem(
+func (d *targetSolver) getSolutionFromDepths(
 	item *partialSolutionItem,
-) (partials []*partialSolutionItem) {
+) *puzzle.Puzzle {
 
-	if item == nil || item.targeting == nil {
+	if item == nil {
 		return nil
+	}
+
+	if item.targeting == nil {
+		item.removeDuplicateLooseEnds()
+		printPartialSolution(`getSolutionFromDepths nil target`, item, d.iterations())
+		// this means we've iterated through all of the target nodes
+		lec := &looseEndConnector{}
+		defer func() {
+			d.numProcessed += lec.iterations
+		}()
+		return lec.queueUpLooseEndConnections(item)
 	}
 
 	targetCoord := item.targeting.coord
@@ -106,22 +87,25 @@ func (d *targetSolver) getAllPartialSolutionsForItem(
 			}
 
 			// then, once we find a completion path, add it to the returned slice
-			partials = append(partials, d.getPartialSolutionsForTwoArmedTarget(
+			p := d.buildAllTwoArmsForTraversal(
 				item,
 				*item.targeting,
 				feeler1, feeler2,
-			)...)
+			)
+			if p != nil {
+				return p
+			}
 		}
 	}
 
-	return partials
+	return nil
 }
 
-func (d *targetSolver) getPartialSolutionsForTwoArmedTarget(
+func (d *targetSolver) buildAllTwoArmsForTraversal(
 	item *partialSolutionItem,
 	t target,
 	arm1Heading, arm2Heading model.Cardinal,
-) (partials []*partialSolutionItem) {
+) *puzzle.Puzzle {
 
 	if puzzle.IsCompleteNode(item.puzzle, t.coord) {
 		// the target node is already complete, perhaps a previous node
@@ -141,14 +125,12 @@ func (d *targetSolver) getPartialSolutionsForTwoArmedTarget(
 		}
 
 		item.targeting = item.targeting.next
-		// once we find a completion path, add it to the returned slice
-		partials = append(partials, item)
-		return partials
+		return d.getSolutionFromDepths(item)
 	}
 
 	for oneArmLen := int8(1); oneArmLen < t.val; oneArmLen++ {
 
-		printPartialSolution(`getPartialSolutionsForTwoArmedTarget`, item, d.iterations())
+		printPartialSolution(`buildAllTwoArmsForTraversal`, item, d.iterations())
 
 		twoArmPuzz, arm1End, arm2End := d.sendOutTwoArms(
 			item.puzzle,
@@ -177,12 +159,13 @@ func (d *targetSolver) getPartialSolutionsForTwoArmedTarget(
 		}
 		copy(psi.looseEnds, item.looseEnds)
 		psi.looseEnds = append(psi.looseEnds, arm1End, arm2End)
-
-		// once we find a completion path, add it to the returned slice
-		partials = append(partials, psi)
+		p := d.getSolutionFromDepths(psi)
+		if p != nil {
+			return p
+		}
 	}
 
-	return partials
+	return nil
 }
 
 func (d *targetSolver) sendOutTwoArms(
@@ -225,62 +208,8 @@ func (d *targetSolver) sendOutTwoArms(
 	return puzz, arm1End, arm2End
 }
 
-func (d *targetSolver) getFullSolutionFromLooseEndConnector() *puzzle.Puzzle {
-
-	defer func() {
-		d.numProcessed += d.looseEndConnector.iterations
-	}()
-
-	return d.looseEndConnector.solve()
-}
-
 type looseEndConnector struct {
-	partials   []*partialSolutionItem
 	iterations int
-}
-
-func (lec *looseEndConnector) addPartialSolutions(
-	partials ...*partialSolutionItem,
-) {
-	lec.partials = append(lec.partials, partials...)
-}
-
-func (lec *looseEndConnector) solve() *puzzle.Puzzle {
-	lec.prepPartials()
-
-	return lec.attemptAllPartials()
-}
-
-func (lec *looseEndConnector) prepPartials() {
-	// remove duplicate loose ends from all of our solutions
-	for _, partial := range lec.partials {
-		partial.removeDuplicateLooseEnds()
-	}
-
-	// sort the partial solutions so that the solutions with the most
-	// connections (least number of loose ends) are at the front
-	sort.Slice(lec.partials, func(i, j int) bool {
-		return len(lec.partials[i].looseEnds) < len(lec.partials[j].looseEnds)
-	})
-}
-
-func (lec *looseEndConnector) attemptAllPartials() *puzzle.Puzzle {
-	// iterate through the partial solutions, trying to connect all of their
-	// loose ends.
-	attemptedCache := newPuzzleCache()
-	for _, partial := range lec.partials {
-		if attemptedCache.contains(partial.puzzle) {
-			continue
-		}
-
-		p := lec.queueUpLooseEndConnections(partial)
-		if p != nil {
-			return p
-		}
-
-		attemptedCache.add(partial.puzzle)
-	}
-	return nil
 }
 
 func (lec *looseEndConnector) queueUpLooseEndConnections(
@@ -306,9 +235,21 @@ func (lec *looseEndConnector) connectLooseEnds(
 	psq *partialSolutionQueue,
 	partial *partialSolutionItem,
 ) *puzzle.Puzzle {
-	printPartialSolution(`connectLooseEnds`, partial, 7)
+	printPartialSolution(`connectLooseEnds`, partial, lec.iterations)
+
+	numLooseEndsByNode := make(map[model.NodeCoord]int, len(partial.looseEnds))
+	for _, g := range partial.looseEnds {
+		numLooseEndsByNode[g] += 1
+	}
 
 	for i, start := range partial.looseEnds {
+		if numLooseEndsByNode[start] > 1 {
+			// This means that two nodes have a "loose end" that meets
+			// up at the same point. Let's just skip trying to find this
+			// "loose" end a buddy since it already has one.
+			continue
+		}
+
 		dfs := newDFSSolverForPartialSolution()
 		p, morePartials, sol := dfs.solveForGoals(
 			partial.puzzle,

@@ -41,11 +41,12 @@ func printPartialSolution(
 	partial *partialSolutionItem,
 	iterations int,
 ) {
+
 	if !includeProgressLogs {
 		return
 	}
 	if partial.puzzle == nil ||
-		partial.targeting == nil {
+		partial.targeting != nil {
 		return
 	}
 	if !(iterations < 10 || iterations%10000 == 0) {

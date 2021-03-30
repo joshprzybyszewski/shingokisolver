@@ -25,27 +25,6 @@ w4w2...w4.b2
 	puzz := puzzle.NewPuzzle(pd.NumEdges, pd.Nodes)
 	targets := buildTargets(puzz)
 	expTargets := []*target{{
-		coord: model.NewCoordFromInts(2, 1),
-		val:   6,
-	}, {
-		coord: model.NewCoordFromInts(7, 7),
-		val:   4,
-	}, {
-		coord: model.NewCoordFromInts(3, 0),
-		val:   4,
-	}, {
-		coord: model.NewCoordFromInts(7, 2),
-		val:   4,
-	}, {
-		coord: model.NewCoordFromInts(3, 5),
-		val:   4,
-	}, {
-		coord: model.NewCoordFromInts(1, 3),
-		val:   3,
-	}, {
-		coord: model.NewCoordFromInts(5, 2),
-		val:   3,
-	}, {
 		coord: model.NewCoordFromInts(3, 7),
 		val:   2,
 	}, {
@@ -60,6 +39,27 @@ w4w2...w4.b2
 	}, {
 		coord: model.NewCoordFromInts(4, 2),
 		val:   2,
+	}, {
+		coord: model.NewCoordFromInts(1, 3),
+		val:   3,
+	}, {
+		coord: model.NewCoordFromInts(5, 2),
+		val:   3,
+	}, {
+		coord: model.NewCoordFromInts(7, 7),
+		val:   4,
+	}, {
+		coord: model.NewCoordFromInts(3, 0),
+		val:   4,
+	}, {
+		coord: model.NewCoordFromInts(7, 2),
+		val:   4,
+	}, {
+		coord: model.NewCoordFromInts(3, 5),
+		val:   4,
+	}, {
+		coord: model.NewCoordFromInts(2, 1),
+		val:   6,
 	}}
 
 	assert.Len(t, targets, len(expTargets))

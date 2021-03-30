@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"log"
 	"os"
 	"runtime/pprof"
@@ -41,33 +40,44 @@ func main() {
 
 	for _, st := range solvers.AllSolvers {
 		for _, pd := range reader.DefaultPuzzles() {
-			if pd.NumEdges < 10 {
-				continue
-			}
-			if st != solvers.TargetSolverType {
-				continue
-			}
-			fmt.Printf("Starting to solve %q with %s...\n", pd.String(), st)
-			s := solvers.NewSolver(
-				pd.NumEdges,
-				pd.Nodes,
-				st,
-			)
-
-			sr, err := s.Solve()
-			if err != nil {
-				p := puzzle.NewPuzzle(
-					pd.NumEdges,
-					pd.Nodes,
-				)
-				fmt.Printf("%s could not solve! %v: %s\n%s\n\n\n", st, err, sr, p.String())
-			} else {
-				fmt.Printf("%s solved: %s\n\n\n", st, sr)
-			}
+			runSolver(st, pd)
 
 			if *addPprof && time.Since(t0) > 500*time.Millisecond {
 				return
 			}
 		}
+	}
+}
+
+func runSolver(
+	st solvers.SolverType,
+	pd reader.PuzzleDef,
+) {
+	defer func() {
+		if r := recover(); r != nil {
+			log.Printf("caught panic: %+v", r)
+		}
+	}()
+
+	if st != solvers.TargetSolverType {
+		return
+	}
+
+	log.Printf("Starting to solve %q with %s...\n", pd.String(), st)
+	s := solvers.NewSolver(
+		pd.NumEdges,
+		pd.Nodes,
+		st,
+	)
+
+	sr, err := s.Solve()
+	if err != nil {
+		p := puzzle.NewPuzzle(
+			pd.NumEdges,
+			pd.Nodes,
+		)
+		log.Printf("%s could not solve! %v: %s\n%s\n\n\n", st, err, sr, p.String())
+	} else {
+		log.Printf("%s solved: %s\n\n\n", st, sr)
 	}
 }

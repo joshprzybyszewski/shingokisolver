@@ -105,7 +105,7 @@ func TestNodeTypeIsInvalidEdges(t *testing.T) {
 	}}
 
 	for _, tc := range testCases {
-		assert.Equal(t, tc.expNoNodeOutput, noNode.isInvalidEdges(tc.efn))
+		assert.True(t, noNode.isInvalidEdges(tc.efn))
 		assert.Equal(t, tc.expWhiteNodeOutput, WhiteNode.isInvalidEdges(tc.efn))
 		assert.Equal(t, tc.expBlackNodeOutput, BlackNode.isInvalidEdges(tc.efn))
 	}
