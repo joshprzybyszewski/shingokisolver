@@ -7,6 +7,11 @@ const (
 	belowShift int = 24
 )
 
+const (
+	defaultExpectedOneDirection = 4
+	defaultTotalExpectedUpdates = 2 + defaultExpectedOneDirection + defaultExpectedOneDirection
+)
+
 type gridUpdate struct {
 	coord  NodeCoord
 	newVal OutgoingEdges
@@ -20,7 +25,7 @@ func UpdateGridConnections(
 	start := grid.Get(startCoord)
 	end := grid.Get(endCoord)
 
-	updates := make([]gridUpdate, 0, 2)
+	updates := make([]gridUpdate, 0, defaultTotalExpectedUpdates)
 
 	switch motion {
 	case HeadLeft:
@@ -91,7 +96,7 @@ func getRowConnectionUpdates(
 	leftNode, rightNode NodeCoord,
 	initialLeftVal, initialRightVal OutgoingEdges,
 ) []gridUpdate {
-	var updates []gridUpdate
+	updates := make([]gridUpdate, 0, defaultExpectedOneDirection)
 
 	curCoord := rightNode
 	cur := initialRightVal
@@ -137,7 +142,7 @@ func getColConnectionUpdates(
 	topNode, bottomNode NodeCoord,
 	initialTopVal, initialBottomVal OutgoingEdges,
 ) []gridUpdate {
-	var updates []gridUpdate
+	updates := make([]gridUpdate, 0, defaultExpectedOneDirection)
 
 	curCoord := topNode
 	cur := initialTopVal
