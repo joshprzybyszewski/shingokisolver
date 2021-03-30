@@ -10,15 +10,19 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestGetPartialSolutionsForNode(t *testing.T) {
-	pd, err := reader.FromString(`........
+var (
+	normal7x7 = `........
 .b2.w3....
 .b6....w2.
 w4w2...w4.b2
 ..w2.....
 ..b3.....
 ........
-..b4....b4`)
+..b4....b4`
+)
+
+func TestGetPartialSolutionsForNode(t *testing.T) {
+	pd, err := reader.FromString(normal7x7)
 	require.NoError(t, err)
 
 	s := newTargetSolver(pd.NumEdges, pd.Nodes)
@@ -26,7 +30,7 @@ w4w2...w4.b2
 	require.True(t, ok)
 	puzz := ts.puzzle.DeepCopy()
 
-	actPartials := ts.getPartialSolutionsForNode(
+	actPartials := ts.getAllPartialSolutionsForItem(
 		&partialSolutionItem{
 			puzzle: puzz.DeepCopy(),
 			targeting: &target{
@@ -37,9 +41,8 @@ w4w2...w4.b2
 			looseEnds: nil,
 		},
 	)
-	assert.NotEmpty(t, actPartials)
-	assert.Empty(t, actPartials)
-	assert.Len(t, actPartials, 4)
+	require.NotEmpty(t, actPartials)
+	assert.Len(t, actPartials, 2)
 	var actPuzzles []string
 	for i, p := range actPartials {
 		actStr := p.puzzle.String()
@@ -50,24 +53,9 @@ w4w2...w4.b2
 	var expPuzzles []string
 	for _, expPuzz := range []*puzzle.Puzzle{
 		puzzle.BuildTestPuzzle(t, puzz,
-			model.NewCoordFromInts(4, 2),
-			model.HeadRight,
-			model.HeadRight,
-		),
-		puzzle.BuildTestPuzzle(t, puzz,
 			model.NewCoordFromInts(4, 1),
 			model.HeadRight,
 			model.HeadRight,
-		),
-		puzzle.BuildTestPuzzle(t, puzz,
-			model.NewCoordFromInts(4, 0),
-			model.HeadRight,
-			model.HeadRight,
-		),
-		puzzle.BuildTestPuzzle(t, puzz,
-			model.NewCoordFromInts(4, 2),
-			model.HeadUp,
-			model.HeadUp,
 		),
 		puzzle.BuildTestPuzzle(t, puzz,
 			model.NewCoordFromInts(5, 2),
@@ -77,29 +65,24 @@ w4w2...w4.b2
 	} {
 		expPuzzles = append(expPuzzles, expPuzz.String())
 	}
-	assert.Equal(t, expPuzzles, actPuzzles)
+	assert.ElementsMatch(t, expPuzzles, actPuzzles)
 }
 
-func TestGetSolutionsForNodeInDirections(t *testing.T) {
-	pd, err := reader.FromString(`........
-.b2.w3....
-.b6....w2.
-w4w2...w4.b2
-..w2.....
-..b3.....
-........
-..b4....b4`)
+func TestTargetSolverBuildAllPartials(t *testing.T) {
+	pd, err := reader.FromString(normal7x7)
 	require.NoError(t, err)
 
 	s := newTargetSolver(pd.NumEdges, pd.Nodes)
 	ts, ok := s.(*targetSolver)
 	require.True(t, ok)
 
-	actPartials := ts.getSolutionsForNodeInDirections(
-		nil,
-		model.NewCoordFromInts(4, 2),
-		model.Node{},
-		model.HeadRight, model.HeadLeft,
-	)
-	assert.Empty(t, actPartials)
+	puzz := puzzle.NewPuzzle(pd.NumEdges, pd.Nodes)
+	targets := buildTargets(puzz)
+
+	ts.buildAllPartials(targets)
+	assert.NotEmpty(t, ts.looseEndConnector.partials)
+
+	for i, p := range ts.looseEndConnector.partials {
+		t.Logf("partials[%d] =\n%s\n", i, p.puzzle)
+	}
 }
