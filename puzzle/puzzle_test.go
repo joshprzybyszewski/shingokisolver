@@ -21,7 +21,8 @@ func TestNumEdgesAndNodes(t *testing.T) {
 func TestIsRangeInvalidWithBoundsCheck(t *testing.T) {
 	p := NewPuzzle(5, nil)
 
-	assert.False(t, p.IsRangeInvalid(-1, model.MAX_EDGES+1, -55, model.MAX_EDGES+1))
+	assert.True(t, p.IsRangeInvalid(-1, model.MAX_EDGES+1, -55, model.MAX_EDGES+1))
+	assert.False(t, p.isRangeInvalid(-1, model.MAX_EDGES+1, -55, model.MAX_EDGES+1))
 	assert.True(t, p.isRangeInvalid(-1, model.MAX_EDGES+1, -55, model.MAX_EDGES+1))
 }
 

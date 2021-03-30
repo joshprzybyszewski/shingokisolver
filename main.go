@@ -42,7 +42,7 @@ func main() {
 		for _, pd := range reader.DefaultPuzzles() {
 			runSolver(st, pd)
 
-			if *addPprof && time.Since(t0) > 500*time.Millisecond {
+			if *addPprof && time.Since(t0) > 10*time.Second {
 				return
 			}
 		}
@@ -58,10 +58,6 @@ func runSolver(
 			log.Printf("caught panic: %+v", r)
 		}
 	}()
-
-	if pd.NumEdges != 7 {
-		return
-	}
 
 	if st != solvers.TargetSolverType {
 		return

@@ -52,6 +52,7 @@ func (d *targetSolver) solve() (*puzzle.Puzzle, bool) {
 func (d *targetSolver) getSolutionFromDepths(
 	item *partialSolutionItem,
 ) *puzzle.Puzzle {
+	printPartialSolution(`getSolutionFromDepths`, item, d.iterations())
 
 	if item == nil {
 		return nil
@@ -215,6 +216,7 @@ type looseEndConnector struct {
 func (lec *looseEndConnector) queueUpLooseEndConnections(
 	psi *partialSolutionItem,
 ) *puzzle.Puzzle {
+	printPartialSolution(`queueUpLooseEndConnections`, psi, lec.iterations)
 
 	psq := newPartialSolutionQueue()
 	psq.push(psi)
