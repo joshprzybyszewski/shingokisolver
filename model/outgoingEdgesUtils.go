@@ -7,13 +7,20 @@ const (
 	belowShift int = 24
 )
 
+type gridUpdate struct {
+	coord  NodeCoord
+	newVal OutgoingEdges
+}
+
 func UpdateGridConnections(
-	grid GridSetterAndGetter,
-	startCoord, endCoord NodeCoord,
+	grid Grid,
 	motion Cardinal,
-) {
+	startCoord, endCoord NodeCoord,
+) Grid {
 	start := grid.Get(startCoord)
 	end := grid.Get(endCoord)
+
+	updates := make([]gridUpdate, 0, 2)
 
 	switch motion {
 	case HeadLeft:
@@ -30,27 +37,64 @@ func UpdateGridConnections(
 		end.above = start.above + 1
 	}
 
-	grid.Set(startCoord, start)
-	grid.Set(endCoord, end)
+	updates = append(updates,
+		gridUpdate{
+			coord:  startCoord,
+			newVal: start,
+		},
+		gridUpdate{
+			coord:  endCoord,
+			newVal: end,
+		},
+	)
 
 	switch motion {
 	case HeadLeft:
-		updateRowConnections(grid, endCoord, startCoord)
+		updates = append(updates,
+			getRowConnectionUpdates(
+				grid,
+				endCoord, startCoord,
+				end, start,
+			)...,
+		)
 	case HeadRight:
-		updateRowConnections(grid, startCoord, endCoord)
+		updates = append(updates,
+			getRowConnectionUpdates(
+				grid,
+				startCoord, endCoord,
+				start, end,
+			)...,
+		)
 	case HeadUp:
-		updateColConnections(grid, endCoord, startCoord)
+		updates = append(updates,
+			getColConnectionUpdates(
+				grid,
+				endCoord, startCoord,
+				end, start,
+			)...,
+		)
 	case HeadDown:
-		updateColConnections(grid, startCoord, endCoord)
+		updates = append(updates,
+			getColConnectionUpdates(
+				grid,
+				startCoord, endCoord,
+				start, end,
+			)...,
+		)
 	}
+
+	return grid.withUpdates(updates)
 }
 
-func updateRowConnections(
-	grid GridSetterAndGetter,
+func getRowConnectionUpdates(
+	grid Grid,
 	leftNode, rightNode NodeCoord,
-) {
+	initialLeftVal, initialRightVal OutgoingEdges,
+) []gridUpdate {
+	var updates []gridUpdate
+
 	curCoord := rightNode
-	cur := grid.Get(curCoord)
+	cur := initialRightVal
 	for cur.IsRight() {
 		nextCoord := curCoord.Translate(HeadRight)
 		if !grid.IsInBounds(nextCoord) {
@@ -58,14 +102,17 @@ func updateRowConnections(
 		}
 		next := grid.Get(nextCoord)
 		next.left = cur.left + 1
-		grid.Set(nextCoord, next)
+		updates = append(updates, gridUpdate{
+			coord:  nextCoord,
+			newVal: next,
+		})
 
 		cur = next
 		curCoord = nextCoord
 	}
 
 	curCoord = leftNode
-	cur = grid.Get(curCoord)
+	cur = initialLeftVal
 	for cur.IsLeft() {
 		nextCoord := curCoord.Translate(HeadLeft)
 		if !grid.IsInBounds(nextCoord) {
@@ -73,19 +120,27 @@ func updateRowConnections(
 		}
 		next := grid.Get(nextCoord)
 		next.right = cur.right + 1
-		grid.Set(nextCoord, next)
+		updates = append(updates, gridUpdate{
+			coord:  nextCoord,
+			newVal: next,
+		})
 
 		cur = next
 		curCoord = nextCoord
 	}
+
+	return updates
 }
 
-func updateColConnections(
-	grid GridSetterAndGetter,
+func getColConnectionUpdates(
+	grid Grid,
 	topNode, bottomNode NodeCoord,
-) {
+	initialTopVal, initialBottomVal OutgoingEdges,
+) []gridUpdate {
+	var updates []gridUpdate
+
 	curCoord := topNode
-	cur := grid.Get(curCoord)
+	cur := initialTopVal
 	for cur.IsAbove() {
 		nextCoord := curCoord.Translate(HeadUp)
 		if !grid.IsInBounds(nextCoord) {
@@ -93,14 +148,17 @@ func updateColConnections(
 		}
 		next := grid.Get(nextCoord)
 		next.below = cur.below + 1
-		grid.Set(nextCoord, next)
+		updates = append(updates, gridUpdate{
+			coord:  nextCoord,
+			newVal: next,
+		})
 
 		cur = next
 		curCoord = nextCoord
 	}
 
 	curCoord = bottomNode
-	cur = grid.Get(curCoord)
+	cur = initialBottomVal
 	for cur.IsBelow() {
 		nextCoord := curCoord.Translate(HeadDown)
 		if !grid.IsInBounds(nextCoord) {
@@ -108,11 +166,16 @@ func updateColConnections(
 		}
 		next := grid.Get(nextCoord)
 		next.above = cur.above + 1
-		grid.Set(nextCoord, next)
+		updates = append(updates, gridUpdate{
+			coord:  nextCoord,
+			newVal: next,
+		})
 
 		cur = next
 		curCoord = nextCoord
 	}
+
+	return updates
 }
 
 func newOutgoingEdgesFromInt32(input int32) OutgoingEdges {

@@ -59,6 +59,10 @@ func runSolver(
 		}
 	}()
 
+	if pd.NumEdges != 7 {
+		return
+	}
+
 	if st != solvers.TargetSolverType {
 		return
 	}
