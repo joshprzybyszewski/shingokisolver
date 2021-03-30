@@ -22,7 +22,7 @@ func (nt NodeType) isInvalidEdges(oe OutgoingEdges) bool {
 		// invalid if they have a straight line in them
 		return (oe.IsAbove() && oe.IsBelow()) || (oe.IsLeft() && oe.IsRight())
 	default:
-		return false
+		return true
 	}
 }
 
@@ -82,18 +82,10 @@ func (n Node) IsInvalidMotions(c1, c2 Cardinal) bool {
 func (n Node) IsInvalid(
 	oe OutgoingEdges,
 ) bool {
-	if n.nType == noNode {
-		// no node == not invalid, just dumb
-		return false
-	}
-
 	// check that the node type rules are not broken
-	if n.nType.isInvalidEdges(oe) {
-		return true
-	}
-
-	// check that the num of straight line edges does not exceed the node n.val
-	return oe.TotalEdges() > n.val
+	// and that the num of straight line edges does
+	// not exceed the node n.val
+	return n.nType.isInvalidEdges(oe) || oe.TotalEdges() > n.val
 }
 
 func (n Node) IsComplete(

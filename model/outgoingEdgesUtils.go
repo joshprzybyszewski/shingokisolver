@@ -1,5 +1,12 @@
 package model
 
+const (
+	rightShift int = 0
+	aboveShift int = 8
+	leftShift  int = 16
+	belowShift int = 24
+)
+
 func UpdateGridConnections(
 	grid GridSetterAndGetter,
 	startCoord, endCoord NodeCoord,
@@ -106,4 +113,20 @@ func updateColConnections(
 		cur = next
 		curCoord = nextCoord
 	}
+}
+
+func newOutgoingEdgesFromInt32(input int32) OutgoingEdges {
+	return OutgoingEdges{
+		right: int8(input >> rightShift),
+		above: int8(input >> aboveShift),
+		left:  int8(input >> leftShift),
+		below: int8(input >> belowShift),
+	}
+}
+
+func outgoingEdgesToInt32(oe OutgoingEdges) int32 {
+	return int32(oe.right)<<rightShift |
+		int32(oe.above)<<aboveShift |
+		int32(oe.left)<<leftShift |
+		int32(oe.below)<<belowShift
 }

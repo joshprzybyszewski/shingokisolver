@@ -41,7 +41,10 @@ func main() {
 
 	for _, st := range solvers.AllSolvers {
 		for _, pd := range reader.DefaultPuzzles() {
-			if pd.String() != `second normal 7x7 with 7 edges` {
+			if pd.NumEdges < 10 {
+				continue
+			}
+			if st != solvers.TargetSolverType {
 				continue
 			}
 			fmt.Printf("Starting to solve %q with %s...\n", pd.String(), st)
@@ -62,7 +65,7 @@ func main() {
 				fmt.Printf("%s solved: %s\n\n\n", st, sr)
 			}
 
-			if *addPprof && time.Since(t0) > time.Second {
+			if *addPprof && time.Since(t0) > 500*time.Millisecond {
 				return
 			}
 		}

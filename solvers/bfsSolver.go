@@ -93,10 +93,10 @@ func (b *bfsSolver) addQueueItem(
 	}
 
 	if np.IsRangeInvalid(
-		newCoord.Row-2,
-		newCoord.Row+2,
-		newCoord.Col-2,
-		newCoord.Col+2,
+		newCoord.Row-1,
+		newCoord.Row+1,
+		newCoord.Col-1,
+		newCoord.Col+1,
 	) {
 		// this is a sanity check to reduce the amount of calc we need to do
 		return

@@ -152,22 +152,24 @@ func (p *Puzzle) isRangeInvalid(
 	for r := startR; r < stopR; r++ {
 		for c := startC; c < stopC; c++ {
 			// check that this point doesn't branch
-			nc := model.NewCoord(r, c)
-			oe, ok := p.GetOutgoingEdgesFrom(nc)
-			if !ok {
-				// the coordinate must be out of bounds
-				return true
-			}
-			if oe.GetNumOutgoingDirections() > 2 {
-				// either we can't get the node, or this is a branch.
+			oe, ok := p.GetOutgoingEdgesFrom(model.NewCoord(r, c))
+			if !ok || oe.GetNumOutgoingDirections() > 2 {
+				// either we can't get the node (the coordinate
+				// must be out of bounds or this node branches.
 				// therefore, this Puzzle is invalid
 				return true
 			}
+		}
+	}
 
-			// if this point is a node, check for if it's invalid
-			if isInvalidNode(p, nc, oe) {
-				return true
-			}
+	// it's cheaper for us to just iterate all of the nodes
+	// and check for their validity than it is to check every
+	// (r, c) or filtering out to only be in the range
+	for nc, n := range p.nodes {
+		// if this point is a node, check for if it's invalid
+		oe, ok := p.GetOutgoingEdgesFrom(nc)
+		if !ok || n.IsInvalid(oe) {
+			return true
 		}
 	}
 

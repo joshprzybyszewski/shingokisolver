@@ -48,7 +48,7 @@ func printPartialSolution(
 		partial.targeting == nil {
 		return
 	}
-	if !(iterations < 10 || iterations%100 == 0) {
+	if !(iterations < 10 || iterations%10000 == 0) {
 		return
 	}
 
