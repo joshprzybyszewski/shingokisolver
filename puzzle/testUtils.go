@@ -18,7 +18,7 @@ func BuildTestPuzzle(
 	var err error
 	c := startCoord
 	for _, s := range steps {
-		c, g, err = g.AddEdge(s, c)
+		c, g, err = g.DeepCopy().AddEdge(s, c)
 		require.NoError(t, err, `bad grid! %+v`, g)
 	}
 	t.Logf("BuildTestPuzzle produced: \n%s\n", g)

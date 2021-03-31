@@ -17,11 +17,11 @@ type gridUpdate struct {
 	newVal OutgoingEdges
 }
 
-func UpdateGridConnections(
+func ApplyGridConnections(
 	grid Grid,
 	motion Cardinal,
 	startCoord, endCoord NodeCoord,
-) Grid {
+) {
 	start := grid.Get(startCoord)
 	end := grid.Get(endCoord)
 
@@ -88,7 +88,7 @@ func UpdateGridConnections(
 		)
 	}
 
-	return grid.withUpdates(updates)
+	grid.applyUpdates(updates)
 }
 
 func getRowConnectionUpdates(

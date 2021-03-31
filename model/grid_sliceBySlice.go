@@ -16,13 +16,11 @@ func (mg *maxGrid) Get(nc NodeCoord) OutgoingEdges {
 	return mg[nc.Row][nc.Col]
 }
 
-func (mg *maxGrid) withUpdates(updates []gridUpdate) Grid {
-	mgCpy := mg.Copy().(*maxGrid)
+func (mg *maxGrid) applyUpdates(updates []gridUpdate) {
 	for _, u := range updates {
 		nc := u.coord
-		mgCpy[nc.Row][nc.Col] = u.newVal
+		mg[nc.Row][nc.Col] = u.newVal
 	}
-	return mgCpy
 }
 
 func (mg *maxGrid) Copy() Grid {
@@ -51,13 +49,11 @@ func (g *grid3x3) Get(nc NodeCoord) OutgoingEdges {
 	return g[nc.Row][nc.Col]
 }
 
-func (g *grid3x3) withUpdates(updates []gridUpdate) Grid {
-	gCpy := g.Copy().(*grid3x3)
+func (g *grid3x3) applyUpdates(updates []gridUpdate) {
 	for _, u := range updates {
 		nc := u.coord
-		gCpy[nc.Row][nc.Col] = u.newVal
+		g[nc.Row][nc.Col] = u.newVal
 	}
-	return gCpy
 }
 
 func (g *grid3x3) Copy() Grid {
@@ -86,13 +82,11 @@ func (g *grid6x6) Get(nc NodeCoord) OutgoingEdges {
 	return g[nc.Row][nc.Col]
 }
 
-func (g *grid6x6) withUpdates(updates []gridUpdate) Grid {
-	gCpy := g.Copy().(*grid6x6)
+func (g *grid6x6) applyUpdates(updates []gridUpdate) {
 	for _, u := range updates {
 		nc := u.coord
-		gCpy[nc.Row][nc.Col] = u.newVal
+		g[nc.Row][nc.Col] = u.newVal
 	}
-	return gCpy
 }
 
 func (g *grid6x6) Copy() Grid {
@@ -121,13 +115,11 @@ func (g *grid8x8) Get(nc NodeCoord) OutgoingEdges {
 	return g[nc.Row][nc.Col]
 }
 
-func (g *grid8x8) withUpdates(updates []gridUpdate) Grid {
-	gCpy := g.Copy().(*grid8x8)
+func (g *grid8x8) applyUpdates(updates []gridUpdate) {
 	for _, u := range updates {
 		nc := u.coord
-		gCpy[nc.Row][nc.Col] = u.newVal
+		g[nc.Row][nc.Col] = u.newVal
 	}
-	return gCpy
 }
 
 func (g *grid8x8) Copy() Grid {
@@ -156,13 +148,11 @@ func (g *grid11x11) Get(nc NodeCoord) OutgoingEdges {
 	return g[nc.Row][nc.Col]
 }
 
-func (g *grid11x11) withUpdates(updates []gridUpdate) Grid {
-	gCpy := g.Copy().(*grid11x11)
+func (g *grid11x11) applyUpdates(updates []gridUpdate) {
 	for _, u := range updates {
 		nc := u.coord
-		gCpy[nc.Row][nc.Col] = u.newVal
+		g[nc.Row][nc.Col] = u.newVal
 	}
-	return gCpy
 }
 
 func (g *grid11x11) Copy() Grid {
@@ -191,13 +181,11 @@ func (g *grid16x16) Get(nc NodeCoord) OutgoingEdges {
 	return g[nc.Row][nc.Col]
 }
 
-func (g *grid16x16) withUpdates(updates []gridUpdate) Grid {
-	gCpy := g.Copy().(*grid16x16)
+func (g *grid16x16) applyUpdates(updates []gridUpdate) {
 	for _, u := range updates {
 		nc := u.coord
-		gCpy[nc.Row][nc.Col] = u.newVal
+		g[nc.Row][nc.Col] = u.newVal
 	}
-	return gCpy
 }
 
 func (g *grid16x16) Copy() Grid {
@@ -226,13 +214,11 @@ func (g *grid21x21) Get(nc NodeCoord) OutgoingEdges {
 	return g[nc.Row][nc.Col]
 }
 
-func (g *grid21x21) withUpdates(updates []gridUpdate) Grid {
-	gCpy := g.Copy().(*grid21x21)
+func (g *grid21x21) applyUpdates(updates []gridUpdate) {
 	for _, u := range updates {
 		nc := u.coord
-		gCpy[nc.Row][nc.Col] = u.newVal
+		g[nc.Row][nc.Col] = u.newVal
 	}
-	return gCpy
 }
 
 func (g *grid21x21) Copy() Grid {
@@ -261,13 +247,11 @@ func (g *grid26x26) Get(nc NodeCoord) OutgoingEdges {
 	return g[nc.Row][nc.Col]
 }
 
-func (g *grid26x26) withUpdates(updates []gridUpdate) Grid {
-	gCpy := g.Copy().(*grid26x26)
+func (g *grid26x26) applyUpdates(updates []gridUpdate) {
 	for _, u := range updates {
 		nc := u.coord
-		gCpy[nc.Row][nc.Col] = u.newVal
+		g[nc.Row][nc.Col] = u.newVal
 	}
-	return gCpy
 }
 
 func (g *grid26x26) Copy() Grid {

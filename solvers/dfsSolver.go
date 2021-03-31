@@ -83,11 +83,12 @@ func (d *dfsSolver) takeNextStepIntoDepth(
 }
 
 func (d *dfsSolver) getNextStep(
-	g *puzzle.Puzzle,
+	puzz *puzzle.Puzzle,
 	move model.Cardinal,
 	nc model.NodeCoord,
 ) *dfsSolverStep {
-	newCoord, newP, err := g.AddEdge(move, nc)
+
+	newCoord, newP, err := puzz.DeepCopy().AddEdge(move, nc)
 	if err != nil {
 		return nil
 	}

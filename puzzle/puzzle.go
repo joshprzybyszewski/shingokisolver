@@ -124,25 +124,13 @@ func (p *Puzzle) AddEdge(
 		return model.NodeCoord{}, nil, ErrEdgeAlreadyExists
 	}
 
-	puzzCopy := p.getCopyWithNewEdge(move, startNode, endNode)
-	return endNode, puzzCopy, nil
-}
-
-func (p *Puzzle) getCopyWithNewEdge(
-	move model.Cardinal,
-	startNode, endNode model.NodeCoord,
-) *Puzzle {
-	newGrid := model.UpdateGridConnections(
+	model.ApplyGridConnections(
 		p.nodeGrid,
 		move,
 		startNode, endNode,
 	)
 
-	return &Puzzle{
-		numEdges: p.numEdges,
-		nodes:    p.nodes,
-		nodeGrid: newGrid,
-	}
+	return endNode, p, nil
 }
 
 func (p *Puzzle) IsRangeInvalid(

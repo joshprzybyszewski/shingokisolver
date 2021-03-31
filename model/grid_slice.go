@@ -16,15 +16,13 @@ func (g *arrayBackedGrid8) Get(nc NodeCoord) OutgoingEdges {
 	return newOutgoingEdgesFromInt32(g[index])
 }
 
-func (g *arrayBackedGrid8) withUpdates(updates []gridUpdate) Grid {
-	gCpy := g.Copy().(*arrayBackedGrid8)
+func (g *arrayBackedGrid8) applyUpdates(updates []gridUpdate) {
 	for _, u := range updates {
 		nc := u.coord
 		index := int(nc.Row)*8 + int(nc.Col)
 
-		gCpy[index] = outgoingEdgesToInt32(u.newVal)
+		g[index] = outgoingEdgesToInt32(u.newVal)
 	}
-	return gCpy
 }
 
 func (g *arrayBackedGrid8) Copy() Grid {
@@ -51,15 +49,13 @@ func (g *arrayBackedGrid11) Get(nc NodeCoord) OutgoingEdges {
 	return newOutgoingEdgesFromInt32(g[index])
 }
 
-func (g *arrayBackedGrid11) withUpdates(updates []gridUpdate) Grid {
-	gCpy := g.Copy().(*arrayBackedGrid11)
+func (g *arrayBackedGrid11) applyUpdates(updates []gridUpdate) {
 	for _, u := range updates {
 		nc := u.coord
 		index := int(nc.Row)*11 + int(nc.Col)
 
-		gCpy[index] = outgoingEdgesToInt32(u.newVal)
+		g[index] = outgoingEdgesToInt32(u.newVal)
 	}
-	return gCpy
 }
 
 func (g *arrayBackedGrid11) Copy() Grid {
@@ -91,15 +87,13 @@ func (g maxSliceBackedArray) Get(nc NodeCoord) OutgoingEdges {
 	return newOutgoingEdgesFromInt32(g[index])
 }
 
-func (g maxSliceBackedArray) withUpdates(updates []gridUpdate) Grid {
-	gCpy := g.Copy().(maxSliceBackedArray)
+func (g maxSliceBackedArray) applyUpdates(updates []gridUpdate) {
 	for _, u := range updates {
 		nc := u.coord
 		index := int(nc.Row)<<5 + int(nc.Col)
 
-		gCpy[index] = outgoingEdgesToInt32(u.newVal)
+		g[index] = outgoingEdgesToInt32(u.newVal)
 	}
-	return gCpy
 }
 
 func (g maxSliceBackedArray) Copy() Grid {

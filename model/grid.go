@@ -31,7 +31,7 @@ type Grid interface {
 	GridNodeGetter
 	GridCopyer
 
-	withUpdates([]gridUpdate) Grid
+	applyUpdates([]gridUpdate)
 }
 
 func NewGrid(numEdges int) Grid {

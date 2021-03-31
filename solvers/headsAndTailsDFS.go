@@ -123,7 +123,7 @@ func (d *headsAndTailsDFSSolver) getQueueItem(
 		nodeToUse = q.head
 	}
 
-	newCoord, NewPuzzle, err := g.AddEdge(move, nodeToUse)
+	newCoord, NewPuzzle, err := g.DeepCopy().AddEdge(move, nodeToUse)
 	if err != nil {
 		return nil, err
 	}

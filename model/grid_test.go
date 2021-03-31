@@ -19,7 +19,7 @@ func TestGridGetSetCopy(t *testing.T) {
 			coord:  nc00,
 			newVal: oe00,
 		}}
-		g = g.withUpdates(updates)
+		g.applyUpdates(updates)
 		assert.Equal(t, oe00, g.Get(nc00))
 
 		gCpy := g.Copy()
@@ -46,7 +46,7 @@ func TestGridGetSetCopy(t *testing.T) {
 			coord:  nc11,
 			newVal: oe11,
 		}}
-		g = g.withUpdates(updates)
+		g.applyUpdates(updates)
 		assert.Equal(t, oe00, g.Get(nc00))
 		assert.Equal(t, oe11, g.Get(nc11))
 
@@ -82,7 +82,7 @@ func TestGridGetSetCopy(t *testing.T) {
 			coord:  nc77,
 			newVal: oe77,
 		}}
-		g = g.withUpdates(updates)
+		g.applyUpdates(updates)
 
 		assert.Equal(t, oe00, g.Get(nc00))
 		assert.Equal(t, oe11, g.Get(nc11))

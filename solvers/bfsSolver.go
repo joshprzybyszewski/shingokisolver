@@ -87,7 +87,7 @@ func (b *bfsSolver) addQueueItem(
 	move model.Cardinal,
 	coord model.NodeCoord,
 ) {
-	newCoord, np, err := g.AddEdge(move, coord)
+	newCoord, np, err := g.DeepCopy().AddEdge(move, coord)
 	if err != nil {
 		return
 	}

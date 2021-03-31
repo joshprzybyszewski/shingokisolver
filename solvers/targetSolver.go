@@ -137,7 +137,7 @@ func (d *targetSolver) buildAllTwoArmsForTraversal(
 		printPartialSolution(`buildAllTwoArmsForTraversal`, item, d.iterations())
 
 		twoArmPuzz, arm1End, arm2End := d.sendOutTwoArms(
-			item.puzzle,
+			item.puzzle.DeepCopy(),
 			t.coord,
 			arm1Heading,
 			oneArmLen,
@@ -177,123 +177,6 @@ func (d *targetSolver) buildAllTwoArmsForTraversal(
 		}
 	}
 
-	return nil
-}
-
-func getLooseEnds(
-	prev []model.NodeCoord,
-	start, arm1End, arm2End model.NodeCoord,
-) []model.NodeCoord {
-	ends := make([]model.NodeCoord, len(prev), len(prev)+2)
-	copy(ends, prev)
-
-	ends = append(ends, arm1End, arm2End)
-
-	isBetween := func(val, inclusive, exclusive int) bool {
-		if inclusive < exclusive {
-			return val >= inclusive && val < exclusive
-		}
-		return val <= inclusive && val > exclusive
-	}
-
-	endPoints := []model.NodeCoord{arm1End, arm2End}
-	shouldRemove := func(nc model.NodeCoord) bool {
-		sameRow := nc.Row == start.Row
-		sameCol := nc.Col == start.Col
-		if !sameRow && !sameCol {
-			return false
-		}
-
-		if sameRow {
-			if sameCol {
-				// this looseEnd matches our start node
-				return true
-			}
-
-			for _, end := range endPoints {
-				if end.Row == start.Row && isBetween(int(nc.Col), int(start.Col), int(end.Col)) {
-					return true
-				}
-			}
-			return false
-		}
-
-		for _, end := range endPoints {
-			if end.Col == start.Col && isBetween(int(nc.Row), int(start.Row), int(end.Row)) {
-				return true
-			}
-		}
-
-		return false
-	}
-
-	for i := 0; i < len(ends); i++ {
-		if shouldRemove(ends[i]) {
-			ends = append(ends[:i], ends[i+1:]...)
-			i--
-		}
-	}
-
-	return ends
-}
-
-func (d *targetSolver) buildPerpendicularsOnArms(
-	twoArmPuzz *puzzle.Puzzle,
-	arm1Coord, arm2Coord model.NodeCoord,
-	arm1Heading, arm2Heading model.Cardinal,
-	nextTarget *target,
-	prevLooseEnds []model.NodeCoord,
-) *puzzle.Puzzle {
-	// TODO if our new arm hits a node, then we should just add edges so that node is satisfied...
-
-	// Each of our arms needs a branch that's perpendicular to where it ended.
-	for _, fromArm1 := range model.Perpendiculars(arm1Heading) {
-		for _, fromArm2 := range model.Perpendiculars(arm2Heading) {
-
-			d.numProcessed++
-			arm1ext, twoArmPuzzWithOneBranch, err := twoArmPuzz.AddEdge(fromArm1, arm1Coord)
-			if err != nil {
-				if err != puzzle.ErrEdgeAlreadyExists {
-					continue
-				}
-				arm1ext = arm1Coord
-				twoArmPuzzWithOneBranch = twoArmPuzz
-			}
-
-			if isIncomplete, err := twoArmPuzzWithOneBranch.IsIncomplete(arm1ext); err != nil {
-				continue
-			} else if !isIncomplete {
-				return twoArmPuzzWithOneBranch
-			}
-
-			d.numProcessed++
-			arm2ext, twoArmPuzzWithTwoBranches, err := twoArmPuzzWithOneBranch.AddEdge(fromArm2, arm2Coord)
-			if err != nil {
-				if err != puzzle.ErrEdgeAlreadyExists {
-					continue
-				}
-				arm2ext = arm2Coord
-				twoArmPuzzWithTwoBranches = twoArmPuzzWithOneBranch
-			}
-
-			if isIncomplete, err := twoArmPuzzWithTwoBranches.IsIncomplete(arm2ext); err != nil {
-				continue
-			} else if !isIncomplete {
-				return twoArmPuzzWithTwoBranches
-			}
-
-			looseEnds := make([]model.NodeCoord, len(prevLooseEnds))
-			copy(looseEnds, prevLooseEnds)
-			p := d.getSolutionFromDepths(&partialSolutionItem{
-				puzzle:    twoArmPuzzWithTwoBranches,
-				targeting: nextTarget,
-				looseEnds: append(looseEnds, arm1ext, arm2ext),
-			})
-			if p != nil {
-				return p
-			}
-		}
-	}
 	return nil
 }
 
@@ -355,76 +238,62 @@ func (d *targetSolver) sendOutTwoArms(
 	return puzz, arm1End, arm2End
 }
 
-type looseEndConnector struct {
-	iterations int
-}
-
-func (lec *looseEndConnector) connect(
-	partial *partialSolutionItem,
+func (d *targetSolver) buildPerpendicularsOnArms(
+	twoArmPuzz *puzzle.Puzzle,
+	arm1Coord, arm2Coord model.NodeCoord,
+	arm1Heading, arm2Heading model.Cardinal,
+	nextTarget *target,
+	prevLooseEnds []model.NodeCoord,
 ) *puzzle.Puzzle {
-	printPartialSolution(`connect`, partial, lec.iterations)
+	// TODO if our new arm hits a node, then we should just add edges so that node is satisfied...
 
-	numLooseEndsByNode := make(map[model.NodeCoord]int, len(partial.looseEnds))
-	for _, g := range partial.looseEnds {
-		numLooseEndsByNode[g] += 1
-	}
+	// Each of our arms needs a branch that's perpendicular to where it ended.
+	for _, fromArm1 := range model.Perpendiculars(arm1Heading) {
+		for _, fromArm2 := range model.Perpendiculars(arm2Heading) {
 
-	for i, start := range partial.looseEnds {
-		if numLooseEndsByNode[start] > 1 {
-			// This means that two nodes have a "loose end" that meets
-			// up at the same point. Let's just skip trying to find this
-			// "loose" end a buddy since it already has one.
-			continue
-		}
+			d.numProcessed++
+			arm1ext, twoArmPuzzWithOneBranch, err := twoArmPuzz.DeepCopy().AddEdge(fromArm1, arm1Coord)
+			if err != nil {
+				if err != puzzle.ErrEdgeAlreadyExists {
+					continue
+				}
+				arm1ext = arm1Coord
+				twoArmPuzzWithOneBranch = twoArmPuzz
+			}
 
-		dfs := newDFSSolverForPartialSolution()
-		p, morePartials, sol := dfs.solveForGoals(
-			partial.puzzle,
-			start,
-			partial.looseEnds[i+1:],
-		)
-		lec.iterations += dfs.iterations()
+			if isIncomplete, err := twoArmPuzzWithOneBranch.IsIncomplete(arm1ext); err != nil {
+				continue
+			} else if !isIncomplete {
+				return twoArmPuzzWithOneBranch
+			}
 
-		switch sol {
-		case solvedPuzzle:
-			return p
-		}
+			d.numProcessed++
+			arm2ext, twoArmPuzzWithTwoBranches, err := twoArmPuzzWithOneBranch.DeepCopy().AddEdge(fromArm2, arm2Coord)
+			if err != nil {
+				if err != puzzle.ErrEdgeAlreadyExists {
+					continue
+				}
+				arm2ext = arm2Coord
+				twoArmPuzzWithTwoBranches = twoArmPuzzWithOneBranch
+			}
 
-		// we only need to look at the first loose end in the
-		// puzzle, so we return the following.
-		return lec.iterateMorePartials(partial, start, morePartials)
-	}
+			if isIncomplete, err := twoArmPuzzWithTwoBranches.IsIncomplete(arm2ext); err != nil {
+				continue
+			} else if !isIncomplete {
+				return twoArmPuzzWithTwoBranches
+			}
 
-	return nil
-}
-
-func (lec *looseEndConnector) iterateMorePartials(
-	partial *partialSolutionItem,
-	start model.NodeCoord,
-	morePartials map[model.NodeCoord][]*puzzle.Puzzle,
-) *puzzle.Puzzle {
-	looseEndsWithoutStart := remove(partial.looseEnds, start)
-
-	for hitGoal, slice := range morePartials {
-		for _, nextPuzzle := range slice {
-			puzz := lec.connect(&partialSolutionItem{
-				puzzle:    nextPuzzle,
-				looseEnds: remove(looseEndsWithoutStart, hitGoal),
+			looseEnds := make([]model.NodeCoord, len(prevLooseEnds))
+			copy(looseEnds, prevLooseEnds)
+			p := d.getSolutionFromDepths(&partialSolutionItem{
+				puzzle:    twoArmPuzzWithTwoBranches,
+				targeting: nextTarget,
+				looseEnds: append(looseEnds, arm1ext, arm2ext),
 			})
-			if puzz != nil {
-				return puzz
+			if p != nil {
+				return p
 			}
 		}
 	}
 	return nil
-}
-
-func remove(orig []model.NodeCoord, exclude model.NodeCoord) []model.NodeCoord {
-	cpy := make([]model.NodeCoord, 0, len(orig)-1)
-	for _, le := range orig {
-		if le != exclude {
-			cpy = append(cpy, le)
-		}
-	}
-	return cpy
 }
