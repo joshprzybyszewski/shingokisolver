@@ -67,6 +67,8 @@ func buildTargets(p *puzzle.Puzzle) []*target {
 			return false
 		}
 
+		// TODO put white nodes in front of black nodes
+
 		// at this point, we just want a consistent ordering.
 		// let's put nodes closer to (0,0) higher up in the list
 		if targets[i].coord.Row != targets[j].coord.Row {

@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 )
@@ -79,23 +80,25 @@ func (qtn *quadTreeNode) getValue(nc NodeCoord, maxDepth int) (OutgoingEdges, in
 		return qtn.value, maxDepth
 	}
 
-	c := qtn.toHeading(nc)
-
-	targetNode := qtn.below
-	switch c {
-	case HeadLeft:
-		targetNode = qtn.left
-	case HeadRight:
-		targetNode = qtn.right
+	switch qtn.toHeading(nc) {
 	case HeadUp:
-		targetNode = qtn.above
+		return qtn.above.getValue(nc, maxDepth+1)
+	case HeadLeft:
+		return qtn.left.getValue(nc, maxDepth+1)
+	case HeadRight:
+		return qtn.right.getValue(nc, maxDepth+1)
+	case HeadDown:
+		return qtn.below.getValue(nc, maxDepth+1)
 	}
-	return targetNode.getValue(nc, maxDepth+1)
+	return OutgoingEdges{}, maxDepth
 }
 
 func (qtn *quadTreeNode) toHeading(
 	nc NodeCoord,
 ) Cardinal {
+	if nc.Row < qtn.coord.Row {
+		return HeadUp
+	}
 	if nc.Row == qtn.coord.Row {
 		if nc.Col < qtn.coord.Col {
 			return HeadLeft
@@ -103,16 +106,20 @@ func (qtn *quadTreeNode) toHeading(
 		return HeadRight
 	}
 
-	if nc.Row < qtn.coord.Row {
-		return HeadUp
-	}
 	return HeadDown
 }
 
-func (qtn *quadTreeNode) copy() *quadTreeNode {
+func (qtn *quadTreeNode) copy(
+	hasUpdated map[NodeCoord]struct{},
+) *quadTreeNode {
 	if qtn == nil {
 		return nil
 	}
+
+	if _, ok := hasUpdated[qtn.coord]; ok {
+		return qtn
+	}
+
 	return &quadTreeNode{
 		coord: qtn.coord,
 		value: qtn.value,
@@ -124,6 +131,7 @@ func (qtn *quadTreeNode) copy() *quadTreeNode {
 }
 
 func (qtn *quadTreeNode) applyUpdate(
+	hasUpdated map[NodeCoord]struct{},
 	update gridUpdate,
 	maxDepth int,
 ) (_ *quadTreeNode, maxSeenDepth int, addedChild bool) {
@@ -134,7 +142,7 @@ func (qtn *quadTreeNode) applyUpdate(
 			value: update.newVal,
 		}, maxDepth, true
 	} else if qtn.coord == update.coord {
-		updatedNode := qtn.copy()
+		updatedNode := qtn.copy(hasUpdated)
 		updatedNode.value = update.newVal
 		return updatedNode, maxDepth, false
 	}
@@ -144,7 +152,7 @@ func (qtn *quadTreeNode) applyUpdate(
 	var newChild *quadTreeNode
 	var child *quadTreeNode
 
-	updatedNode := qtn.copy()
+	updatedNode := qtn.copy(hasUpdated)
 
 	switch c {
 	case HeadLeft:
@@ -170,6 +178,7 @@ func (qtn *quadTreeNode) applyUpdate(
 	}
 
 	newChild, maxSeenDepth, addedChild = child.applyUpdate(
+		hasUpdated,
 		update,
 		maxDepth+1,
 	)
@@ -221,12 +230,24 @@ func (t *quadTree) withUpdates(updates []gridUpdate) Grid {
 	newRoot := t.root
 	numNodes := t.numNodes
 	var addedChild bool
+	var maxSeenDepth int
+	hasUpdated := make(map[NodeCoord]struct{}, len(updates))
 
 	for _, update := range updates {
-		newRoot, _, addedChild = newRoot.applyUpdate(update, 0)
+		var maxDepth int
+		newRoot, maxDepth, addedChild = newRoot.applyUpdate(hasUpdated, update, 0)
 		if addedChild {
 			numNodes++
 		}
+		if maxDepth > maxSeenDepth {
+			maxSeenDepth = maxDepth
+		}
+		hasUpdated[update.coord] = struct{}{}
+	}
+
+	if maxSeenDepth >= numNodes/2 {
+		log.Printf("TODO: rebalance (%d maxDepth out of %d nodes)\n", maxSeenDepth, numNodes)
+		newRoot = rebalance(newRoot)
 	}
 
 	return &quadTree{
@@ -236,10 +257,16 @@ func (t *quadTree) withUpdates(updates []gridUpdate) Grid {
 	}
 }
 
+func rebalance(
+	input *quadTreeNode,
+) *quadTreeNode {
+	return input
+}
+
 func (t *quadTree) Copy() Grid {
 	return &quadTree{
 		maxEdgeIndex: t.maxEdgeIndex,
-		root:         t.root.copy(),
+		root:         t.root.copy(nil),
 		numNodes:     t.numNodes,
 	}
 }

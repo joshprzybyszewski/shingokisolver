@@ -44,7 +44,7 @@ func NewGrid(numEdges int) Grid {
 	// However, once we get to 10x10 puzzles, I need a three
 	// dimensional grid structure that will keep pointers around
 	// so I don't have to copy _everything_ on copy
-	return newQuadTree(numEdges)
+	// return newQuadTree(numEdges)
 
 	switch numEdges {
 	case 1, 2:
