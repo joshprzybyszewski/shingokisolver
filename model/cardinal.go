@@ -27,6 +27,16 @@ func (c Cardinal) String() string {
 	}
 }
 
+func Perpendiculars(c Cardinal) []Cardinal {
+	switch c {
+	case HeadRight, HeadLeft:
+		return []Cardinal{HeadUp, HeadDown}
+	case HeadUp, HeadDown:
+		return []Cardinal{HeadRight, HeadLeft}
+	}
+	return nil
+}
+
 var (
 	AllCardinals = []Cardinal{
 		HeadRight,

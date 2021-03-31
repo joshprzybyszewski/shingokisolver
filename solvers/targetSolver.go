@@ -57,7 +57,6 @@ func (d *targetSolver) getSolutionFromDepths(
 	}
 
 	if item.targeting == nil {
-
 		item.removeDuplicateLooseEnds()
 		printPartialSolution(`getSolutionFromDepths nil target`, item, d.iterations())
 
@@ -149,9 +148,20 @@ func (d *targetSolver) buildAllTwoArmsForTraversal(
 			continue
 		}
 
-		if _, err := twoArmPuzz.IsIncomplete(t.coord); err != nil {
+		if isIncomplete, err := twoArmPuzz.IsIncomplete(t.coord); err != nil {
 			continue
+		} else if !isIncomplete {
+			return twoArmPuzz
 		}
+
+		// TODO figure out what's busted with adding perps
+		// p := d.buildPerpendicularsOnArms(
+		// 	twoArmPuzz,
+		// 	arm1End, arm2End,
+		// 	arm1Heading, arm2Heading,
+		// 	item.targeting.next,
+		// 	item.looseEnds,
+		// )
 
 		psi := &partialSolutionItem{
 			puzzle:    twoArmPuzz,
@@ -166,6 +176,66 @@ func (d *targetSolver) buildAllTwoArmsForTraversal(
 		}
 	}
 
+	return nil
+}
+
+func (d *targetSolver) buildPerpendicularsOnArms(
+	twoArmPuzz *puzzle.Puzzle,
+	arm1Coord, arm2Coord model.NodeCoord,
+	arm1Heading, arm2Heading model.Cardinal,
+	nextTarget *target,
+	prevLooseEnds []model.NodeCoord,
+) *puzzle.Puzzle {
+	// TODO if our new arm hits a node, then we should just add edges so that node is satisfied...
+
+	// Each of our arms needs a branch that's perpendicular to where it ended.
+	for _, fromArm1 := range model.Perpendiculars(arm1Heading) {
+		for _, fromArm2 := range model.Perpendiculars(arm2Heading) {
+
+			d.numProcessed++
+			arm1ext, twoArmPuzzWithOneBranch, err := twoArmPuzz.AddEdge(fromArm1, arm1Coord)
+			if err != nil {
+				if err != puzzle.ErrEdgeAlreadyExists {
+					continue
+				}
+				arm1ext = arm1Coord
+				twoArmPuzzWithOneBranch = twoArmPuzz
+			}
+
+			if isIncomplete, err := twoArmPuzzWithOneBranch.IsIncomplete(arm1ext); err != nil {
+				continue
+			} else if !isIncomplete {
+				return twoArmPuzzWithOneBranch
+			}
+
+			d.numProcessed++
+			arm2ext, twoArmPuzzWithTwoBranches, err := twoArmPuzzWithOneBranch.AddEdge(fromArm2, arm2Coord)
+			if err != nil {
+				if err != puzzle.ErrEdgeAlreadyExists {
+					continue
+				}
+				arm2ext = arm2Coord
+				twoArmPuzzWithTwoBranches = twoArmPuzzWithOneBranch
+			}
+
+			if isIncomplete, err := twoArmPuzzWithTwoBranches.IsIncomplete(arm2ext); err != nil {
+				continue
+			} else if !isIncomplete {
+				return twoArmPuzzWithTwoBranches
+			}
+
+			looseEnds := make([]model.NodeCoord, len(prevLooseEnds))
+			copy(looseEnds, prevLooseEnds)
+			p := d.getSolutionFromDepths(&partialSolutionItem{
+				puzzle:    twoArmPuzzWithTwoBranches,
+				targeting: nextTarget,
+				looseEnds: append(looseEnds, arm1ext, arm2ext),
+			})
+			if p != nil {
+				return p
+			}
+		}
+	}
 	return nil
 }
 

@@ -8,6 +8,10 @@ import (
 	"github.com/joshprzybyszewski/shingokisolver/model"
 )
 
+var (
+	ErrEdgeAlreadyExists = errors.New(`already had edge`)
+)
+
 type Puzzle struct {
 	numEdges uint8
 	nodes    map[model.NodeCoord]model.Node
@@ -117,7 +121,7 @@ func (p *Puzzle) AddEdge(
 		return model.NodeCoord{}, nil, errors.New(`invalid input`)
 	}
 	if isEdge {
-		return model.NodeCoord{}, nil, errors.New(`already had edge`)
+		return model.NodeCoord{}, nil, ErrEdgeAlreadyExists
 	}
 
 	puzzCopy := p.getCopyWithNewEdge(move, startNode, endNode)
@@ -167,12 +171,7 @@ func (p *Puzzle) isRangeInvalid(
 ) bool {
 	for r := startR; r < stopR; r++ {
 		for c := startC; c < stopC; c++ {
-			// check that this point doesn't branch
-			oe, ok := p.GetOutgoingEdgesFrom(model.NewCoord(r, c))
-			if !ok || oe.GetNumOutgoingDirections() > 2 {
-				// either we can't get the node (the coordinate
-				// must be out of bounds or this node branches.
-				// therefore, this Puzzle is invalid
+			if p.isCoordInvalid(model.NewCoord(r, c)) {
 				return true
 			}
 		}
@@ -192,6 +191,33 @@ func (p *Puzzle) isRangeInvalid(
 	return false
 }
 
+func (p *Puzzle) isCoordInvalid(
+	coord model.NodeCoord,
+) bool {
+	// check that this point doesn't branch
+	oe, ok := p.GetOutgoingEdgesFrom(coord)
+	// either we can't get the node (the coordinate
+	// must be out of bounds or this node branches.
+	// therefore, this Puzzle is invalid
+	return !ok || oe.GetNumOutgoingDirections() > 2
+}
+
+func (p *Puzzle) checkIsInvalidFrom(
+	coord model.NodeCoord,
+) bool {
+	if p.isCoordInvalid(coord) {
+		return true
+	}
+
+	// TODO iterate out from coord to find out if it's invalid
+	return p.isRangeInvalid(
+		0,
+		model.RowIndex(p.numNodes()),
+		0,
+		model.ColIndex(p.numNodes()),
+	)
+}
+
 func (p *Puzzle) GetOutgoingEdgesFrom(
 	coord model.NodeCoord,
 ) (model.OutgoingEdges, bool) {
@@ -205,12 +231,7 @@ func (p *Puzzle) GetOutgoingEdgesFrom(
 func (p *Puzzle) IsIncomplete(
 	coord model.NodeCoord,
 ) (bool, error) {
-	if p.isRangeInvalid(
-		0,
-		model.RowIndex(p.numNodes()),
-		0,
-		model.ColIndex(p.numNodes()),
-	) {
+	if p.checkIsInvalidFrom(coord) {
 		return true, errors.New(`invalid Puzzle`)
 	}
 
