@@ -128,7 +128,11 @@ func (p *Puzzle) getCopyWithNewEdge(
 	move model.Cardinal,
 	startNode, endNode model.NodeCoord,
 ) *Puzzle {
-	newGrid := model.UpdateGridConnections(p.nodeGrid, move, startNode, endNode)
+	newGrid := model.UpdateGridConnections(
+		p.nodeGrid,
+		move,
+		startNode, endNode,
+	)
 
 	return &Puzzle{
 		numEdges: p.numEdges,

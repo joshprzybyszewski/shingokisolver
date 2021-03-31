@@ -75,30 +75,3 @@ func printPartialSolution(
 	log.Printf(":\n%s\n", partial.puzzle.String())
 	fmt.Scanf("hello there")
 }
-
-type partialSolutionQueue struct {
-	items []*partialSolutionItem
-}
-
-func newPartialSolutionQueue() *partialSolutionQueue {
-	return &partialSolutionQueue{
-		items: make([]*partialSolutionItem, 0),
-	}
-}
-
-func (q *partialSolutionQueue) isEmpty() bool {
-	return len(q.items) == 0
-}
-
-func (q *partialSolutionQueue) pop() *partialSolutionItem {
-	item := q.items[0]
-	q.items = q.items[1:]
-	return item
-}
-
-func (q *partialSolutionQueue) push(items ...*partialSolutionItem) {
-	// TODO for each item, if it already exists in the queue, don't
-	// add it a second time? But how is it non-deterministic? How
-	// can we generate the same partial solution?
-	q.items = append(q.items, items...)
-}

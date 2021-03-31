@@ -1,6 +1,8 @@
 package puzzle
 
-import "github.com/joshprzybyszewski/shingokisolver/model"
+import (
+	"github.com/joshprzybyszewski/shingokisolver/model"
+)
 
 type getEdgesFromNoder interface {
 	GetOutgoingEdgesFrom(model.NodeCoord) (model.OutgoingEdges, bool)

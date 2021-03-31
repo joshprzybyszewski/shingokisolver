@@ -40,9 +40,15 @@ func main() {
 
 	for _, st := range solvers.AllSolvers {
 		for _, pd := range reader.DefaultPuzzles() {
+			if *addPprof && (time.Since(t0) > 10*time.Second ||
+				pd.NumEdges >= 10) {
+				return
+			}
+
 			runSolver(st, pd)
 
-			if *addPprof && time.Since(t0) > 10*time.Second {
+			if *addPprof && (time.Since(t0) > 10*time.Second ||
+				pd.NumEdges >= 10) {
 				return
 			}
 		}

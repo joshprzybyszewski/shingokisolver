@@ -8,7 +8,6 @@ import (
 type targetSolver struct {
 	puzzle *puzzle.Puzzle
 
-	queue             *partialSolutionQueue
 	looseEndConnector *looseEndConnector
 
 	numProcessed int
@@ -24,7 +23,6 @@ func newTargetSolver(
 
 	return &targetSolver{
 		puzzle:            puzzle.NewPuzzle(size, nl),
-		queue:             newPartialSolutionQueue(),
 		looseEndConnector: &looseEndConnector{},
 	}
 }
@@ -59,14 +57,16 @@ func (d *targetSolver) getSolutionFromDepths(
 	}
 
 	if item.targeting == nil {
+
 		item.removeDuplicateLooseEnds()
 		printPartialSolution(`getSolutionFromDepths nil target`, item, d.iterations())
+
 		// this means we've iterated through all of the target nodes
 		lec := &looseEndConnector{}
 		defer func() {
 			d.numProcessed += lec.iterations
 		}()
-		return lec.queueUpLooseEndConnections(item)
+		return lec.connect(item)
 	}
 
 	targetCoord := item.targeting.coord
@@ -213,31 +213,10 @@ type looseEndConnector struct {
 	iterations int
 }
 
-func (lec *looseEndConnector) queueUpLooseEndConnections(
-	psi *partialSolutionItem,
-) *puzzle.Puzzle {
-	printPartialSolution(`queueUpLooseEndConnections`, psi, lec.iterations)
-
-	psq := newPartialSolutionQueue()
-	psq.push(psi)
-
-	for !psq.isEmpty() {
-		partial := psq.pop()
-
-		puzz := lec.connectLooseEnds(psq, partial)
-		if puzz != nil {
-			return puzz
-		}
-	}
-
-	return nil
-}
-
-func (lec *looseEndConnector) connectLooseEnds(
-	psq *partialSolutionQueue,
+func (lec *looseEndConnector) connect(
 	partial *partialSolutionItem,
 ) *puzzle.Puzzle {
-	printPartialSolution(`connectLooseEnds`, partial, lec.iterations)
+	printPartialSolution(`connect`, partial, lec.iterations)
 
 	numLooseEndsByNode := make(map[model.NodeCoord]int, len(partial.looseEnds))
 	for _, g := range partial.looseEnds {
@@ -265,53 +244,41 @@ func (lec *looseEndConnector) connectLooseEnds(
 			return p
 		}
 
-		lec.pushMorePartialSolutions(psq, partial, start, morePartials)
+		// we only need to look at the first loose end in the
+		// puzzle, so we return the following.
+		return lec.iterateMorePartials(partial, start, morePartials)
 	}
 
 	return nil
 }
 
-func (lec *looseEndConnector) pushMorePartialSolutions(
-	psq *partialSolutionQueue,
+func (lec *looseEndConnector) iterateMorePartials(
 	partial *partialSolutionItem,
 	start model.NodeCoord,
 	morePartials map[model.NodeCoord][]*puzzle.Puzzle,
-) {
+) *puzzle.Puzzle {
+	looseEndsWithoutStart := remove(partial.looseEnds, start)
+
 	for hitGoal, slice := range morePartials {
 		for _, nextPuzzle := range slice {
-			newLooseEnds, foundBoth := copyWithout(
-				partial.looseEnds,
-				start, hitGoal,
-			)
-			if !foundBoth {
-				panic(`bad time`)
-			}
-			psq.push(&partialSolutionItem{
+			puzz := lec.connect(&partialSolutionItem{
 				puzzle:    nextPuzzle,
-				looseEnds: newLooseEnds,
+				looseEnds: remove(looseEndsWithoutStart, hitGoal),
 			})
+			if puzz != nil {
+				return puzz
+			}
 		}
 	}
+	return nil
 }
 
-func copyWithout(orig []model.NodeCoord, exclude1, exclude2 model.NodeCoord) ([]model.NodeCoord, bool) {
-	newLooseEnds := make([]model.NodeCoord, 0, len(orig))
-	found1, found2 := false, false
+func remove(orig []model.NodeCoord, exclude model.NodeCoord) []model.NodeCoord {
+	cpy := make([]model.NodeCoord, 0, len(orig)-1)
 	for _, le := range orig {
-		switch le {
-		case exclude1:
-			if found1 {
-				return nil, false // bad state
-			}
-			found1 = true
-		case exclude2:
-			if found2 {
-				return nil, false // bad state
-			}
-			found2 = true
-		default:
-			newLooseEnds = append(newLooseEnds, le)
+		if le != exclude {
+			cpy = append(cpy, le)
 		}
 	}
-	return newLooseEnds, found1 && found2
+	return cpy
 }
