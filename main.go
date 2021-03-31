@@ -7,6 +7,7 @@ import (
 	"runtime/pprof"
 	"time"
 
+	"github.com/joshprzybyszewski/shingokisolver/compete"
 	"github.com/joshprzybyszewski/shingokisolver/puzzle"
 	"github.com/joshprzybyszewski/shingokisolver/reader"
 	"github.com/joshprzybyszewski/shingokisolver/solvers"
@@ -15,6 +16,7 @@ import (
 var (
 	addPprof            = flag.Bool(`includeProfile`, false, `set if you'd like to include a pprof output`)
 	includeProgressLogs = flag.Bool(`includeProcessLogs`, false, `set to see each solver's progress logs`)
+	runCompetitive      = flag.Bool(`competitive`, false, `set to true to get a puzzle from the internet and submit a response`)
 )
 
 func main() {
@@ -34,6 +36,11 @@ func main() {
 			log.Fatal(err)
 		}
 		defer pprof.StopCPUProfile()
+	}
+
+	if *runCompetitive {
+		compete.Run()
+		return
 	}
 
 	t0 := time.Now()
@@ -60,7 +67,7 @@ func runSolver(
 		}
 	}()
 
-	if pd.NumEdges != 10 {
+	if pd.NumEdges != 7 {
 		// return
 	}
 

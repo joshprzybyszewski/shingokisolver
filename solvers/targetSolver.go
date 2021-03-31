@@ -38,10 +38,14 @@ func (d *targetSolver) solve() (*puzzle.Puzzle, bool) {
 		return nil, false
 	}
 
+	puzz, looseEnds, numProcessed := claimGimmes(d.puzzle)
+	d.numProcessed += numProcessed
+
 	p := d.getSolutionFromDepths(
 		&partialSolutionItem{
-			puzzle:    d.puzzle.DeepCopy(),
+			puzzle:    puzz,
 			targeting: targets[0],
+			looseEnds: looseEnds,
 		},
 	)
 	return p, p != nil
@@ -163,20 +167,74 @@ func (d *targetSolver) buildAllTwoArmsForTraversal(
 		// 	item.looseEnds,
 		// )
 
-		psi := &partialSolutionItem{
+		p := d.getSolutionFromDepths(&partialSolutionItem{
 			puzzle:    twoArmPuzz,
 			targeting: item.targeting.next,
-			looseEnds: make([]model.NodeCoord, len(item.looseEnds)),
-		}
-		copy(psi.looseEnds, item.looseEnds)
-		psi.looseEnds = append(psi.looseEnds, arm1End, arm2End)
-		p := d.getSolutionFromDepths(psi)
+			looseEnds: getLooseEnds(item.looseEnds, t.coord, arm1End, arm2End),
+		})
 		if p != nil {
 			return p
 		}
 	}
 
 	return nil
+}
+
+func getLooseEnds(
+	prev []model.NodeCoord,
+	start, arm1End, arm2End model.NodeCoord,
+) []model.NodeCoord {
+	ends := make([]model.NodeCoord, len(prev), len(prev)+2)
+	copy(ends, prev)
+
+	ends = append(ends, arm1End, arm2End)
+
+	isBetween := func(val, inclusive, exclusive int) bool {
+		if inclusive < exclusive {
+			return val >= inclusive && val < exclusive
+		}
+		return val <= inclusive && val > exclusive
+	}
+
+	endPoints := []model.NodeCoord{arm1End, arm2End}
+	shouldRemove := func(nc model.NodeCoord) bool {
+		sameRow := nc.Row == start.Row
+		sameCol := nc.Col == start.Col
+		if !sameRow && !sameCol {
+			return false
+		}
+
+		if sameRow {
+			if sameCol {
+				// this looseEnd matches our start node
+				return true
+			}
+
+			for _, end := range endPoints {
+				if end.Row == start.Row && isBetween(int(nc.Col), int(start.Col), int(end.Col)) {
+					return true
+				}
+			}
+			return false
+		}
+
+		for _, end := range endPoints {
+			if end.Col == start.Col && isBetween(int(nc.Row), int(start.Row), int(end.Row)) {
+				return true
+			}
+		}
+
+		return false
+	}
+
+	for i := 0; i < len(ends); i++ {
+		if shouldRemove(ends[i]) {
+			ends = append(ends[:i], ends[i+1:]...)
+			i--
+		}
+	}
+
+	return ends
 }
 
 func (d *targetSolver) buildPerpendicularsOnArms(
@@ -256,10 +314,19 @@ func (d *targetSolver) sendOutTwoArms(
 			break
 		}
 
+		prevPuzz := puzz
+		prevEnd := arm1End
+
 		d.numProcessed++
 		arm1End, puzz, err = puzz.AddEdge(arm1Heading, arm1End)
 		if err != nil {
-			return nil, model.NodeCoord{}, model.NodeCoord{}
+			if err != puzzle.ErrEdgeAlreadyExists {
+				return nil, model.NodeCoord{}, model.NodeCoord{}
+			}
+			// if the edge already exists, let's allow it
+			// and see if the puzzle will be valid
+			puzz = prevPuzz
+			arm1End = prevEnd.Translate(arm1Heading)
 		}
 	}
 
@@ -269,10 +336,19 @@ func (d *targetSolver) sendOutTwoArms(
 			break
 		}
 
+		prevPuzz := puzz
+		prevEnd := arm2End
+
 		d.numProcessed++
 		arm2End, puzz, err = puzz.AddEdge(arm2Heading, arm2End)
 		if err != nil {
-			return nil, model.NodeCoord{}, model.NodeCoord{}
+			if err != puzzle.ErrEdgeAlreadyExists {
+				return nil, model.NodeCoord{}, model.NodeCoord{}
+			}
+			// if the edge already exists, let's allow it
+			// and see if the puzzle will be valid
+			puzz = prevPuzz
+			arm2End = prevEnd.Translate(arm2Heading)
 		}
 	}
 

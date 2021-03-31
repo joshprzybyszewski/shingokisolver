@@ -13,3 +13,8 @@ debug:
 .PHONY: run
 run:
 	go run main.go
+
+
+.PHONY: compete
+compete:
+	go run main.go -competitive

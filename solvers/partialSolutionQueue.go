@@ -21,9 +21,7 @@ type partialSolutionItem struct {
 // leaves the looseEnds slice in the order that it had previously
 func (partial *partialSolutionItem) removeDuplicateLooseEnds() {
 	looseEndsCpy := make([]model.NodeCoord, len(partial.looseEnds))
-	for i, le := range partial.looseEnds {
-		looseEndsCpy[i] = le
-	}
+	copy(looseEndsCpy, partial.looseEnds)
 	sort.Slice(looseEndsCpy, func(i, j int) bool {
 		if looseEndsCpy[i].Row != looseEndsCpy[j].Row {
 			return looseEndsCpy[i].Row < looseEndsCpy[j].Row
@@ -66,7 +64,7 @@ func printPartialSolution(
 		return
 	}
 
-	log.Printf("printPartialSolution from %s (%d iterations): (targeting %v) %v",
+	log.Printf("printPartialSolution from %s (%d iterations): (targeting %v) looseEnds: %v",
 		caller,
 		iterations,
 		partial.targeting,
