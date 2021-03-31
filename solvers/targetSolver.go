@@ -132,7 +132,7 @@ func (d *targetSolver) buildAllTwoArmsForTraversal(
 		return d.getSolutionFromDepths(item)
 	}
 
-	for oneArmLen := int8(1); oneArmLen < t.val; oneArmLen++ {
+	for oneArmLen := int8(1); oneArmLen < t.node.Value(); oneArmLen++ {
 
 		printPartialSolution(`buildAllTwoArmsForTraversal`, item, d.iterations())
 
@@ -142,7 +142,7 @@ func (d *targetSolver) buildAllTwoArmsForTraversal(
 			arm1Heading,
 			oneArmLen,
 			arm2Heading,
-			t.val-oneArmLen,
+			t.node.Value()-oneArmLen,
 		)
 
 		if !puzzle.IsCompleteNode(twoArmPuzz, t.coord) {

@@ -9,7 +9,7 @@ import (
 
 type target struct {
 	coord model.NodeCoord
-	val   int8
+	node  model.Node
 
 	next *target
 }
@@ -19,8 +19,8 @@ func buildTargets(p *puzzle.Puzzle) []*target {
 
 	for nc, n := range p.NodeTargets() {
 		targets = append(targets, &target{
+			node:  n,
 			coord: nc,
-			val:   int8(n.Value()),
 		})
 	}
 
@@ -39,14 +39,14 @@ func buildTargets(p *puzzle.Puzzle) []*target {
 	}
 	sort.Slice(targets, func(i, j int) bool {
 		// rank _lower_ valued nodes at the start of the target list
-		if targets[i].val != targets[j].val {
+		if targets[i].node.Value() != targets[j].node.Value() {
 			// this is counter-intuitive to me. I would think that I should
 			// solve for "big rocks" first. But it makes sense that a computer
 			// can process all of the "size 2" nodes first, because they have
 			// 2 solutions (for white) or 4 solutions (for black) instead of
 			// the many possible solutions a larger node has. Coupling this with
 			// the DFS search on targeted nodes provides marked improvements.
-			return targets[i].val < targets[j].val
+			return targets[i].node.Value() < targets[j].node.Value()
 		}
 
 		// put nodes with more limitations (i.e. on the sides or
@@ -67,7 +67,13 @@ func buildTargets(p *puzzle.Puzzle) []*target {
 			return false
 		}
 
-		// TODO put white nodes in front of black nodes
+		// put white nodes in front of black nodes
+		// because white nodes are more restrictive than black nodes
+		iIsWhite := targets[i].node.Type() == model.WhiteNode
+		jIsWhite := targets[j].node.Type() == model.WhiteNode
+		if iIsWhite != jIsWhite {
+			return iIsWhite
+		}
 
 		// at this point, we just want a consistent ordering.
 		// let's put nodes closer to (0,0) higher up in the list
