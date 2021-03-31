@@ -59,34 +59,34 @@ func (sw *simpleWalker) walkToNextPoint(
 	avoid model.Cardinal,
 ) model.Cardinal {
 
-	efn, ok := sw.provider.GetOutgoingEdgesFrom(sw.cur)
-	if !ok {
+	oe, ok := sw.provider.GetOutgoingEdgesFrom(sw.cur)
+	if !ok || oe.GetNumOutgoingDirections() > 2 {
 		return model.HeadNowhere
 	}
 
-	if efn.IsAbove() && avoid != model.HeadUp {
-		nextRow := sw.cur.Row - model.RowIndex(efn.Above())
+	if oe.IsAbove() && avoid != model.HeadUp {
+		nextRow := sw.cur.Row - model.RowIndex(oe.Above())
 		sw.markNodesAsSeen(nextRow, sw.cur.Row, sw.cur.Col, sw.cur.Col)
 		sw.cur.Row = nextRow
 		return model.HeadDown
 	}
 
-	if efn.IsLeft() && avoid != model.HeadLeft {
-		nextCol := sw.cur.Col - model.ColIndex(efn.Left())
+	if oe.IsLeft() && avoid != model.HeadLeft {
+		nextCol := sw.cur.Col - model.ColIndex(oe.Left())
 		sw.markNodesAsSeen(sw.cur.Row, sw.cur.Row, nextCol, sw.cur.Col)
 		sw.cur.Col = nextCol
 		return model.HeadRight
 	}
 
-	if efn.IsBelow() && avoid != model.HeadDown {
-		nextRow := sw.cur.Row + model.RowIndex(efn.Below())
+	if oe.IsBelow() && avoid != model.HeadDown {
+		nextRow := sw.cur.Row + model.RowIndex(oe.Below())
 		sw.markNodesAsSeen(sw.cur.Row, nextRow, sw.cur.Col, sw.cur.Col)
 		sw.cur.Row = nextRow
 		return model.HeadUp
 	}
 
-	if efn.IsRight() && avoid != model.HeadRight {
-		nextCol := sw.cur.Col + model.ColIndex(efn.Right())
+	if oe.IsRight() && avoid != model.HeadRight {
+		nextCol := sw.cur.Col + model.ColIndex(oe.Right())
 		sw.markNodesAsSeen(sw.cur.Row, sw.cur.Row, sw.cur.Col, nextCol)
 		sw.cur.Col = nextCol
 		return model.HeadLeft

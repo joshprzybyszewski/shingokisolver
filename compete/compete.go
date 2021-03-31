@@ -8,19 +8,24 @@ import (
 )
 
 func Run() {
-	pd := getPuzzle()
+	wp, err := getPuzzle(5)
+	if err != nil {
+		panic(err)
+	}
+
+	log.Printf("wp: %+v\n", wp)
 
 	s := solvers.NewSolver(
-		pd.NumEdges,
-		pd.Nodes,
+		wp.pd.NumEdges,
+		wp.pd.Nodes,
 		solvers.TargetSolverType,
 	)
 
 	sr, err := s.Solve()
 	if err != nil {
 		p := puzzle.NewPuzzle(
-			pd.NumEdges,
-			pd.Nodes,
+			wp.pd.NumEdges,
+			wp.pd.Nodes,
 		)
 		log.Printf("derp. Couldn't solve. %v\n%s\n", err, p)
 		return

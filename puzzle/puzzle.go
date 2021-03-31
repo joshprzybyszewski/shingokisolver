@@ -288,6 +288,56 @@ func (p *Puzzle) IsIncomplete(
 	return false, nil
 }
 
+func (p *Puzzle) IsComplete(
+	coord model.NodeCoord,
+) (bool, error) {
+
+	oe, ok := p.GetOutgoingEdgesFrom(coord)
+	if !ok {
+		return false, errors.New(`bad input`)
+	}
+
+	if nOutgoingEdges := oe.GetNumOutgoingDirections(); nOutgoingEdges == 0 {
+		return false, errors.New(`bad input`)
+	} else if nOutgoingEdges > 2 {
+		return false, errors.New(`is a branch`)
+	} else if nOutgoingEdges != 2 {
+		// don't need to walk the whole path if we see
+		// from the start that it's not going to complete.
+		return false, nil
+	}
+
+	w := newWalker(p, coord)
+	seenNodes, ok := w.walk()
+	if !ok {
+		// our path did not make it all the way around
+		return false, nil
+	}
+
+	for nc, n := range p.nodes {
+		if _, ok := seenNodes[nc]; !ok {
+			// node was not seen
+			return false, errors.New(`this path made a loop, but didn't see every node`)
+		}
+
+		oe, ok := p.GetOutgoingEdgesFrom(nc)
+		if !ok || n.IsInvalid(oe) {
+			return false, errors.New(`invalid node`)
+		}
+		if oe.TotalEdges() != n.Value() {
+			// previously (in isRangeInvalid) we checked if oe.TotalEdges() > n.val
+			// This check exists to verify we have exactly how many we need.
+			return false, nil
+		}
+
+	}
+
+	// at this point, we have a valid board, our path is a loop,
+	// and we've seen all of the nodes appropriately. Therefore,
+	// our board is not incomplete, and it's a solution.
+	return true, nil
+}
+
 func (p *Puzzle) String() string {
 	// return p.DebugString()
 	if p == nil {

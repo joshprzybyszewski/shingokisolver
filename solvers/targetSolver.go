@@ -152,6 +152,12 @@ func (d *targetSolver) buildAllTwoArmsForTraversal(
 			continue
 		}
 
+		// if isComplete, err := twoArmPuzz.IsComplete(t.coord); err != nil {
+		// 	continue
+		// } else if isComplete {
+		// 	return twoArmPuzz
+		// }
+
 		if isIncomplete, err := twoArmPuzz.IsIncomplete(t.coord); err != nil {
 			continue
 		} else if !isIncomplete {
