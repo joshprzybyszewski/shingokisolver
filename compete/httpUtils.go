@@ -15,7 +15,7 @@ func get(
 ) ([]byte, error) {
 
 	if url == `https://www.puzzle-shingoki.com/` {
-		return ioutil.ReadFile("./compete/samplePuzzleResponse.html")
+		return ioutil.ReadFile("./compete/exampleRequests/samplePuzzleResponse.html")
 	}
 
 	return doRequest(`GET`, url, header, nil)
@@ -24,7 +24,9 @@ func get(
 func post(
 	url string,
 	header http.Header,
+	data io.Reader,
 ) ([]byte, error) {
+	panic(`ahh`)
 
 	return doRequest(`POST`, url, header, nil)
 }

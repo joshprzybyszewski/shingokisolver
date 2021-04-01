@@ -14,6 +14,8 @@ import (
 type websitePuzzle struct {
 	id string
 	pd reader.PuzzleDef
+
+	secret string
 }
 
 func getPuzzle(
@@ -50,9 +52,12 @@ func getPuzzle(
 		return websitePuzzle{}, err
 	}
 
+	secret := doc.Find(`#puzzleForm`).First().Find(`.puzzleButtons input[name='param']`).AttrOr(`param`, `unset`)
+
 	return websitePuzzle{
-		id: puzzID,
-		pd: pd,
+		id:     puzzID,
+		pd:     pd,
+		secret: secret,
 	}, nil
 }
 

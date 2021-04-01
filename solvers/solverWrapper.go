@@ -45,7 +45,7 @@ func newWrapper(s solver) Solver {
 func (sw *solverWrapper) Solve() (SolvedResults, error) {
 	t0 := time.Now()
 
-	g, isSolved := sw.s.solve()
+	puzz, isSolved := sw.s.solve()
 	if !isSolved {
 		return SolvedResults{
 			NumIterations: sw.s.iterations(),
@@ -54,7 +54,7 @@ func (sw *solverWrapper) Solve() (SolvedResults, error) {
 	}
 
 	return SolvedResults{
-		Drawing:       g.String(),
+		Puzzle:        puzz,
 		NumIterations: sw.s.iterations(),
 		Duration:      time.Since(t0),
 	}, nil

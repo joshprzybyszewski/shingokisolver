@@ -16,3 +16,6 @@
 
 solver.out
 solverProfile.pprof
+
+compete/exampleRequests/
+compete/secretSauce.go

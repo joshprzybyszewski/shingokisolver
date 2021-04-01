@@ -31,5 +31,5 @@ func Run() {
 		return
 	}
 
-	submitAnswer(sr)
+	submitAnswer(wp, sr)
 }

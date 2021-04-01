@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/joshprzybyszewski/shingokisolver/model"
+	"github.com/joshprzybyszewski/shingokisolver/puzzle"
 )
 
 var (
@@ -61,14 +62,14 @@ func NewSolver(
 }
 
 type SolvedResults struct {
-	Drawing       string
+	Puzzle        *puzzle.Puzzle
 	NumIterations int
 	Duration      time.Duration
 }
 
 func (sr SolvedResults) String() string {
-	if sr.Drawing == `` {
-		return fmt.Sprintf("(%d iterations in %s) <no drawing>\n", sr.NumIterations, sr.Duration.String())
+	if sr.Puzzle == nil {
+		return fmt.Sprintf("(%d iterations in %s) <no solution>\n", sr.NumIterations, sr.Duration.String())
 	}
-	return fmt.Sprintf("(%d iterations in %s)\n%s\n", sr.NumIterations, sr.Duration.String(), sr.Drawing)
+	return fmt.Sprintf("(%d iterations in %s)\n%s\n", sr.NumIterations, sr.Duration.String(), sr.Puzzle.String())
 }

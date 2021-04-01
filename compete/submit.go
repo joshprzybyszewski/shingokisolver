@@ -7,15 +7,17 @@ import (
 )
 
 func submitAnswer(
+	wp websitePuzzle,
 	res solvers.SolvedResults,
 ) error {
-	// TODO
-	log.Printf("TODO need to submit %s\n", res)
 
-	resp, err := post(`https://www.puzzle-shingoki.com/`, nil)
+	header, data := getPostSolutionData(wp, res)
+
+	resp, err := post(`https://www.puzzle-shingoki.com/`, header, data)
 	if err != nil {
 		return err
 	}
 	log.Printf("resp: %s", resp)
+
 	return nil
 }
