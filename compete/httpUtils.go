@@ -14,13 +14,29 @@ func get(
 	header http.Header,
 ) ([]byte, error) {
 
-	// if url == `https://www.puzzle-shingoki.com/` {
-	// 	return ioutil.ReadFile("./compete/samplePuzzleResponse.html")
-	// }
+	if url == `https://www.puzzle-shingoki.com/` {
+		return ioutil.ReadFile("./compete/samplePuzzleResponse.html")
+	}
 
-	var data io.Reader
+	return doRequest(`GET`, url, header, nil)
+}
 
-	req, err := http.NewRequest(`GET`, url, data)
+func post(
+	url string,
+	header http.Header,
+) ([]byte, error) {
+
+	return doRequest(`POST`, url, header, nil)
+}
+
+func doRequest(
+	method string,
+	url string,
+	header http.Header,
+	data io.Reader,
+) ([]byte, error) {
+
+	req, err := http.NewRequest(method, url, data)
 	if err != nil {
 		return nil, err
 	}

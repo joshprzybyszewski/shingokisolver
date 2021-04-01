@@ -8,7 +8,6 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 
-	"github.com/joshprzybyszewski/shingokisolver/model"
 	"github.com/joshprzybyszewski/shingokisolver/reader"
 )
 
@@ -28,48 +27,46 @@ func getPuzzle(
 		return websitePuzzle{}, err
 	}
 
-	wp := websitePuzzle{
-		pd: reader.PuzzleDef{
-			Description: `WebsitePuzzle`,
-			NumEdges:    size,
-		},
-	}
-
 	doc, err := goquery.NewDocumentFromReader(bytes.NewReader(resp))
 	if err != nil {
 		return websitePuzzle{}, err
 	}
 
-	// Find the review items
-	nodes, err := convertTaskToNodeLocations(
-		wp.pd.NumEdges,
+	puzzID := doc.Find(`#puzzleID`).First().Text()
+
+	taskString, err := getTaskFromScriptText(
 		doc.Find(`#rel`).Find(`script`).Text(),
 	)
 	if err != nil {
 		return websitePuzzle{}, err
 	}
-	wp.pd.Nodes = nodes
 
-	wp.id = doc.Find(`#puzzleID`).First().Text()
-	wp.pd.Description = `PuzzleID: ` + wp.id
+	pd, err := reader.FromWebsiteTask(
+		size,
+		puzzID,
+		taskString,
+	)
+	if err != nil {
+		return websitePuzzle{}, err
+	}
 
-	return wp, nil
+	return websitePuzzle{
+		id: puzzID,
+		pd: pd,
+	}, nil
 }
 
 const (
 	expGameScriptPrefix = ` var Game = {}; var Puzzle = {}; var task = '`
 )
 
-func convertTaskToNodeLocations(
-	numEdges int,
+func getTaskFromScriptText(
 	gameScript string,
-) ([]model.NodeLocation, error) {
+) (string, error) {
 	if gameScript[:len(expGameScriptPrefix)] != expGameScriptPrefix {
-		return nil, fmt.Errorf(`unexpected prefix! %q`, gameScript)
+		return ``, fmt.Errorf(`unexpected prefix! %q`, gameScript)
 	}
 	taskString := gameScript[len(expGameScriptPrefix):]
 	end := strings.Index(taskString, `'`)
-	taskString = taskString[:end]
-
-	return reader.FromWebsiteTask(numEdges, taskString)
+	return taskString[:end], nil
 }

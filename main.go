@@ -45,8 +45,15 @@ func main() {
 
 	t0 := time.Now()
 
+	// puzzles := reader.DefaultPuzzles()
+	puzzles, err := reader.CachedWebsitePuzzles()
+	if err != nil {
+		log.Printf("CachedWebsitePuzzles err: %+v\n", err)
+		return
+	}
+
 	for _, st := range solvers.AllSolvers {
-		for _, pd := range reader.DefaultPuzzles() {
+		for _, pd := range puzzles {
 			runSolver(st, pd)
 
 			if *addPprof && (time.Since(t0) > 10*time.Second ||
@@ -61,11 +68,11 @@ func runSolver(
 	st solvers.SolverType,
 	pd reader.PuzzleDef,
 ) {
-	defer func() {
-		if r := recover(); r != nil {
-			log.Printf("caught panic: %+v", r)
-		}
-	}()
+	// defer func() {
+	// 	if r := recover(); r != nil {
+	// 		log.Printf("caught panic: %+v", r)
+	// 	}
+	// }()
 
 	if pd.NumEdges != 7 {
 		// return

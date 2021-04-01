@@ -1,7 +1,10 @@
 package reader
 
 import (
-	"errors"
+	"fmt"
+	"io"
+	"log"
+	"os"
 	"strconv"
 	"strings"
 
@@ -15,10 +18,43 @@ const (
 	websiteDecodeCharMagicNum byte = 96
 )
 
+const (
+	websiteCachePuzzlesFilename = `./reader/websitecache/puzzles.txt`
+)
+
 func FromWebsiteTask(
 	numEdges int,
+	puzzID string,
 	input string,
-) ([]model.NodeLocation, error) {
+) (PuzzleDef, error) {
+
+	go cacheTaskToFile(numEdges, puzzID, input)
+
+	return fromWebsiteTask(numEdges, puzzID, input)
+}
+
+func cacheTaskToFile(numEdges int, puzzID, input string) {
+	f, err := os.OpenFile(websiteCachePuzzlesFilename,
+		os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		log.Printf("error opening file: %v\n", err)
+		return
+	}
+	defer f.Close()
+
+	line := fmt.Sprintf("%d:%s:%s\n", numEdges, puzzID, input)
+
+	if _, err := f.WriteString(line); err != nil {
+		log.Printf("error WriteString file: %v\n", err)
+		return
+	}
+}
+
+func fromWebsiteTask(
+	numEdges int,
+	puzzID string,
+	input string,
+) (PuzzleDef, error) {
 
 	// This func is based on the following source, grabbed from the js of the website:
 	/*
@@ -38,15 +74,21 @@ func FromWebsiteTask(
 		                }
 	*/
 
-	pd := PuzzleDef{}
-	pd.NumEdges = numEdges
-	maxNodexIndex := numEdges * numEdges
+	pd := PuzzleDef{
+		NumEdges:    numEdges,
+		Description: `PuzzleID: ` + puzzID,
+	}
+	numNodes := numEdges + 1
+	maxNodexIndex := numNodes * numNodes
 
 	reader := strings.NewReader(input)
 	for nodeIndex := 0; nodeIndex <= maxNodexIndex; {
 		b, err := reader.ReadByte()
 		if err != nil {
-			break
+			if err == io.EOF {
+				break
+			}
+			return PuzzleDef{}, fmt.Errorf(`problem on ReadByte: %+v`, err)
 		}
 		if b != websiteWhiteNode && b != websiteBlackNode {
 			// increase
@@ -63,25 +105,29 @@ func FromWebsiteTask(
 			b, err = reader.ReadByte()
 		}
 		if err != nil {
-			return nil, errors.New(`problem on ReadByte`)
+			if err == io.EOF {
+				break
+			}
+			return PuzzleDef{}, fmt.Errorf(`problem on ReadByte: %+v`, err)
 		}
 		err = reader.UnreadByte()
 		if err != nil {
-			return nil, errors.New(`problem on UnreadByte`)
+			return PuzzleDef{}, fmt.Errorf(`problem on UnreadByte: %+v`, err)
 		}
 		val, err := strconv.Atoi(string(value))
 		if err != nil {
-			return nil, errors.New(`expected value from bytes`)
+			return PuzzleDef{}, fmt.Errorf(`expected value from bytes: %+v`, err)
 		}
 
 		// read the next char(s) as an int
 		pd.Nodes = append(pd.Nodes, model.NodeLocation{
-			Row:     nodeIndex / numEdges,
-			Col:     nodeIndex % numEdges,
+			Row:     nodeIndex / numNodes,
+			Col:     nodeIndex % numNodes,
 			IsWhite: isWhite,
 			Value:   int8(val),
 		})
+		nodeIndex++
 	}
 
-	return pd.Nodes, nil
+	return pd, nil
 }

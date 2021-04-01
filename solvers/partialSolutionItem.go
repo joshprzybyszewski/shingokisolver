@@ -47,6 +47,10 @@ func (partial *partialSolutionItem) removeDuplicateLooseEnds() {
 	}
 }
 
+var (
+	seen = map[model.NodeCoord]struct{}{}
+)
+
 func printPartialSolution(
 	caller string,
 	partial *partialSolutionItem,
@@ -56,11 +60,21 @@ func printPartialSolution(
 	if !includeProgressLogs {
 		return
 	}
-	if partial.puzzle == nil ||
-		partial.targeting != nil {
-		return
+	shouldSkip := false
+	if partial.puzzle == nil {
+		shouldSkip = true
 	}
-	if !(iterations < 10 || iterations%10000 == 0) {
+	if partial.targeting != nil {
+		shouldSkip = true
+		if _, ok := seen[partial.targeting.coord]; ok {
+			shouldSkip = false
+			seen[partial.targeting.coord] = struct{}{}
+		}
+	}
+	if iterations < 10 || iterations%10000 == 0 {
+		shouldSkip = false
+	}
+	if shouldSkip {
 		return
 	}
 
@@ -70,6 +84,6 @@ func printPartialSolution(
 		partial.targeting,
 		partial.looseEnds,
 	)
-	log.Printf(":\n%s\n", partial.puzzle.String())
-	fmt.Scanf("hello there")
+	log.Printf(":\n%s\n", partial.puzzle)
+	fmt.Scanf("wait for acknowledgement")
 }
