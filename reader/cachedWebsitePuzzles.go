@@ -13,6 +13,7 @@ func CachedWebsitePuzzles() ([]PuzzleDef, error) {
 		return nil, err
 	}
 	pds := []PuzzleDef{}
+	includedPuzzleIDs := map[string]struct{}{}
 
 	lines := strings.Split(string(file), "\n")
 	for _, l := range lines {
@@ -27,11 +28,16 @@ func CachedWebsitePuzzles() ([]PuzzleDef, error) {
 		puzzID := parts[1]
 		task := parts[2]
 
+		if _, ok := includedPuzzleIDs[puzzID]; ok {
+			continue
+		}
+
 		pd, err := fromWebsiteTask(numEdges, puzzID, task)
 		if err != nil {
 			return nil, err
 		}
 		pds = append(pds, pd)
+		includedPuzzleIDs[puzzID] = struct{}{}
 	}
 	log.Printf("got puzzles: %+v\n", pds)
 

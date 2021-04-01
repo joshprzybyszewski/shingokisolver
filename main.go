@@ -45,12 +45,13 @@ func main() {
 
 	t0 := time.Now()
 
-	// puzzles := reader.DefaultPuzzles()
 	puzzles, err := reader.CachedWebsitePuzzles()
 	if err != nil {
 		log.Printf("CachedWebsitePuzzles err: %+v\n", err)
 		return
 	}
+
+	puzzles = append(puzzles, reader.DefaultPuzzles()...)
 
 	for _, st := range solvers.AllSolvers {
 		for _, pd := range puzzles {

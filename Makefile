@@ -17,4 +17,4 @@ run:
 
 .PHONY: compete
 compete:
-	go run main.go -competitive
+	go run -tags="secretSauce" main.go -competitive

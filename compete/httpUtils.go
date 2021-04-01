@@ -14,9 +14,9 @@ func get(
 	header http.Header,
 ) ([]byte, error) {
 
-	if url == `https://www.puzzle-shingoki.com/` {
-		return ioutil.ReadFile("./compete/exampleRequests/samplePuzzleResponse.html")
-	}
+	// if url == `https://www.puzzle-shingoki.com/` {
+	// 	return ioutil.ReadFile("./compete/exampleRequests/samplePuzzleResponse.html")
+	// }
 
 	return doRequest(`GET`, url, header, nil)
 }
@@ -26,7 +26,10 @@ func post(
 	header http.Header,
 	data io.Reader,
 ) ([]byte, error) {
-	panic(`ahh`)
+
+	// if url == `https://www.puzzle-shingoki.com/` {
+	// 	return ioutil.ReadFile("./compete/exampleRequests/samplePostCompletePuzzleResponse.html")
+	// }
 
 	return doRequest(`POST`, url, header, nil)
 }

@@ -137,7 +137,7 @@ func (d *dfsSolver) solveForGoals(
 	p, state := d.takeNextStepIntoDepthTowardsGoals(
 		ret,
 		&dfsSolverStep{
-			puzzle: input,
+			puzzle: input.DeepCopy(),
 			coord:  start,
 		},
 	)
@@ -145,7 +145,7 @@ func (d *dfsSolver) solveForGoals(
 }
 
 func (d *dfsSolver) takeNextStepIntoDepthTowardsGoals(
-	found map[model.NodeCoord][]*puzzle.Puzzle,
+	puzzlesByTargetedLooseEnd map[model.NodeCoord][]*puzzle.Puzzle,
 	step *dfsSolverStep,
 ) (*puzzle.Puzzle, dfsGoalSolution) {
 	if step == nil {
@@ -159,8 +159,8 @@ func (d *dfsSolver) takeNextStepIntoDepthTowardsGoals(
 	}
 
 	if step.puzzle != nil {
-		if slice, ok := found[step.coord]; ok {
-			found[step.coord] = append(slice, step.puzzle)
+		if slice, ok := puzzlesByTargetedLooseEnd[step.coord]; ok {
+			puzzlesByTargetedLooseEnd[step.coord] = append(slice, step.puzzle.DeepCopy())
 		}
 	}
 
@@ -170,13 +170,12 @@ func (d *dfsSolver) takeNextStepIntoDepthTowardsGoals(
 		fmt.Scanf("hello there")
 	}
 
-	for _, nextStep := range []*dfsSolverStep{
-		d.getNextStep(step.puzzle, model.HeadUp, step.coord),
-		d.getNextStep(step.puzzle, model.HeadRight, step.coord),
-		d.getNextStep(step.puzzle, model.HeadDown, step.coord),
-		d.getNextStep(step.puzzle, model.HeadLeft, step.coord),
-	} {
-		g, sol := d.takeNextStepIntoDepthTowardsGoals(found, nextStep)
+	for _, nextHeading := range model.AllCardinals {
+		g, sol := d.takeNextStepIntoDepthTowardsGoals(
+			puzzlesByTargetedLooseEnd,
+			d.getNextStep(step.puzzle, nextHeading, step.coord),
+		)
+
 		switch sol {
 		case solvedPuzzle:
 			return g, sol

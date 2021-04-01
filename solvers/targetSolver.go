@@ -93,7 +93,7 @@ func (d *targetSolver) getSolutionFromDepths(
 			// then, once we find a completion path, add it to the returned slice
 			p := d.buildAllTwoArmsForTraversal(
 				item,
-				*item.targeting,
+				item.targeting,
 				feeler1, feeler2,
 			)
 			if p != nil {
@@ -107,7 +107,7 @@ func (d *targetSolver) getSolutionFromDepths(
 
 func (d *targetSolver) buildAllTwoArmsForTraversal(
 	item *partialSolutionItem,
-	t target,
+	t *target,
 	arm1Heading, arm2Heading model.Cardinal,
 ) *puzzle.Puzzle {
 
@@ -128,8 +128,13 @@ func (d *targetSolver) buildAllTwoArmsForTraversal(
 			return nil
 		}
 
-		item.targeting = item.targeting.next
-		return d.getSolutionFromDepths(item)
+		leCpy := make([]model.NodeCoord, len(item.looseEnds))
+		copy(leCpy, item.looseEnds)
+		return d.getSolutionFromDepths(&partialSolutionItem{
+			puzzle:    item.puzzle.DeepCopy(),
+			targeting: item.targeting.next,
+			looseEnds: leCpy,
+		})
 	}
 
 	for oneArmLen := int8(1); oneArmLen < t.node.Value(); oneArmLen++ {

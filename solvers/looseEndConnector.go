@@ -53,13 +53,13 @@ func (lec *looseEndConnector) iterateMorePartials(
 	start model.NodeCoord,
 	morePartials map[model.NodeCoord][]*puzzle.Puzzle,
 ) *puzzle.Puzzle {
-	looseEndsWithoutStart := remove(partial.looseEnds, start)
+	looseEndsWithoutStart := copyAndRemove(partial.looseEnds, start)
 
 	for hitGoal, slice := range morePartials {
 		for _, nextPuzzle := range slice {
 			puzz := lec.connect(&partialSolutionItem{
 				puzzle:    nextPuzzle,
-				looseEnds: remove(looseEndsWithoutStart, hitGoal),
+				looseEnds: copyAndRemove(looseEndsWithoutStart, hitGoal),
 			})
 			if puzz != nil {
 				return puzz
@@ -69,7 +69,7 @@ func (lec *looseEndConnector) iterateMorePartials(
 	return nil
 }
 
-func remove(orig []model.NodeCoord, exclude model.NodeCoord) []model.NodeCoord {
+func copyAndRemove(orig []model.NodeCoord, exclude model.NodeCoord) []model.NodeCoord {
 	cpy := make([]model.NodeCoord, 0, len(orig)-1)
 	for _, le := range orig {
 		if le != exclude {
