@@ -19,16 +19,10 @@ func newSolver(
 	st SolverType,
 ) solver {
 	switch st {
-	case BFSSolverType:
-		return newBFSSolver(size, nl)
-	case DFSSolverType:
-		return newDFSSolver(size, nl)
-	case HeadsAndTailsDFSSolverType:
-		return newHeadsAndTailsDFSSolver(size, nl)
 	case TargetSolverType:
 		return newTargetSolver(size, nl)
 	default:
-		return newDFSSolver(size, nl)
+		return newTargetSolver(size, nl)
 	}
 }
 

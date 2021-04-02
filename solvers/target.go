@@ -95,6 +95,8 @@ func buildTargets(p *puzzle.Puzzle) []target {
 func possibleConfigurationsForNode(
 	n model.Node,
 ) int {
+	// TODO once we've got a cache on buildTwoArmOptions, use:
+	// return len(buildTwoArmOptions(n))
 	switch n.Type() {
 	case model.WhiteNode:
 		return int(n.Value()-1) * 2

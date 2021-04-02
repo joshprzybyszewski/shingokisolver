@@ -19,20 +19,11 @@ func AddProgressLogs() {
 type SolverType int
 
 const (
-	BFSSolverType              SolverType = 1
-	DFSSolverType              SolverType = 2
-	HeadsAndTailsDFSSolverType SolverType = 3
-	TargetSolverType           SolverType = 4
+	TargetSolverType SolverType = 4
 )
 
 func (st SolverType) String() string {
 	switch st {
-	case DFSSolverType:
-		return `DFSSolverType`
-	case HeadsAndTailsDFSSolverType:
-		return `HeadsAndTailsDFSSolverType`
-	case BFSSolverType:
-		return `BFSSolverType`
 	case TargetSolverType:
 		return `TargetSolverType`
 	default:
@@ -43,9 +34,6 @@ func (st SolverType) String() string {
 var (
 	AllSolvers = []SolverType{
 		TargetSolverType,
-		DFSSolverType,
-		HeadsAndTailsDFSSolverType,
-		BFSSolverType,
 	}
 )
 

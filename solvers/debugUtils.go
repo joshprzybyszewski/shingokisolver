@@ -8,56 +8,6 @@ import (
 	"github.com/joshprzybyszewski/shingokisolver/puzzle"
 )
 
-type twoArms struct {
-	arm1Len int8
-	arm2Len int8
-
-	arm1Heading model.Cardinal
-	arm2Heading model.Cardinal
-}
-
-func buildTwoArmOptions(n model.Node) []twoArms {
-	var options []twoArms
-
-	for i, feeler1 := range model.AllCardinals {
-		for _, feeler2 := range model.AllCardinals[i+1:] {
-			if n.IsInvalidMotions(feeler1, feeler2) {
-				continue
-			}
-
-			for arm1 := int8(1); arm1 <= n.Value()/2; arm1++ {
-				options = append(options, twoArms{
-					arm1Heading: feeler1,
-					arm2Heading: feeler2,
-					arm1Len:     arm1,
-					arm2Len:     n.Value() - arm1,
-				})
-			}
-		}
-	}
-
-	return options
-}
-
-// eliminates loose ends that don't actually exist
-// leaves the looseEnds slice in the order that it had previously
-func getLooseEndsWithoutDuplicates(looseEnds []model.NodeCoord) []model.NodeCoord {
-
-	numExisting := make(map[model.NodeCoord]int, len(looseEnds))
-	for _, le := range looseEnds {
-		numExisting[le] += 1
-	}
-
-	looseEndsDeduped := make([]model.NodeCoord, 0, len(looseEnds))
-	for _, le := range looseEnds {
-		if existing := numExisting[le]; existing%2 == 0 {
-			looseEndsDeduped = append(looseEndsDeduped, le)
-		}
-	}
-
-	return looseEndsDeduped
-}
-
 var (
 	seen = map[model.NodeCoord]struct{}{}
 )

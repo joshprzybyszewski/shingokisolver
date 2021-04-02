@@ -27,14 +27,9 @@ func (d *targetSolver) connect(
 		return puzz
 	}
 
-	dfs := newDFSSolverForPartialSolution()
-	defer func() {
-		d.numProcessed += dfs.iterations()
-	}()
-
 	start := looseEndsDeduped[0]
 
-	p, morePartials, sol := dfs.solveForGoals(
+	p, morePartials, sol := d.solveForGoals(
 		puzz.DeepCopy(),
 		start,
 		looseEndsDeduped[1:],
@@ -48,6 +43,25 @@ func (d *targetSolver) connect(
 	// we only need to look at the first loose end in the
 	// puzzle, so we return the following.
 	return d.iterateMorePartials(start, looseEndsDeduped[1:], morePartials)
+}
+
+// eliminates loose ends that don't actually exist
+// leaves the looseEnds slice in the order that it had previously
+func getLooseEndsWithoutDuplicates(looseEnds []model.NodeCoord) []model.NodeCoord {
+
+	numExisting := make(map[model.NodeCoord]int, len(looseEnds))
+	for _, le := range looseEnds {
+		numExisting[le] += 1
+	}
+
+	looseEndsDeduped := make([]model.NodeCoord, 0, len(looseEnds))
+	for _, le := range looseEnds {
+		if existing := numExisting[le]; existing%2 == 0 {
+			looseEndsDeduped = append(looseEndsDeduped, le)
+		}
+	}
+
+	return looseEndsDeduped
 }
 
 func (d *targetSolver) iterateMorePartials(
