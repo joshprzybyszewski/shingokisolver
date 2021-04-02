@@ -46,7 +46,7 @@ func (p *Puzzle) DeepCopy() *Puzzle {
 		numEdges: p.numEdges,
 		nodes:    p.nodes,
 		nodeGrid: p.nodeGrid.Copy(),
-		paths:    p.paths.copy(),
+		paths:    p.paths.copy(len(p.nodes) * 2),
 	}
 }
 

@@ -1,9 +1,6 @@
 package solvers
 
 import (
-	"fmt"
-	"log"
-
 	"github.com/joshprzybyszewski/shingokisolver/model"
 	"github.com/joshprzybyszewski/shingokisolver/puzzle"
 )
@@ -13,7 +10,6 @@ func (d *targetSolver) solveFromLooseEnd(
 	start model.NodeCoord,
 ) (*puzzle.Puzzle, model.State) {
 
-	printAllTargetsHit(fmt.Sprintf(`solveFromLooseEnd(%+v)`, start), input, d.iterations())
 	if input == nil {
 		return nil, model.Unexpected
 	}
@@ -32,6 +28,7 @@ func (d *targetSolver) dfsOutFrom(
 	if puzz == nil {
 		return nil, model.Unexpected
 	}
+	printAllTargetsHit(`dfsOutFrom`, puzz, d.iterations())
 
 	switch s := puzz.GetState(); s {
 	case model.Complete:
@@ -42,19 +39,10 @@ func (d *targetSolver) dfsOutFrom(
 		return nil, s
 	}
 
-	d.numProcessed++
-	if includeProgressLogs && (d.numProcessed < 100 || d.numProcessed%1000 == 500) {
-		log.Printf("dfsOutFrom about to process (%+v): %d\n%s\n",
-			fromCoord,
-			d.numProcessed,
-			puzz.String(),
-		)
-		fmt.Scanf("hello there")
-	}
-
 	for _, nextHeading := range model.AllCardinals {
 		nextPuzz := puzz.DeepCopy()
 
+		d.numProcessed++
 		nextCoord, state := nextPuzz.AddEdge(nextHeading, fromCoord)
 		switch state {
 		case model.Violation, model.Unexpected, model.Duplicate:

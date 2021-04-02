@@ -10,6 +10,12 @@ import (
 	"github.com/joshprzybyszewski/shingokisolver/solvers"
 )
 
+func requestNewPuzzle(
+	edges int,
+) (string, http.Header) {
+	return ``, nil
+}
+
 func getPuzzleInfo(
 	doc *goquery.Document,
 ) (string, string, string, error) {

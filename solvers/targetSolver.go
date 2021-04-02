@@ -1,8 +1,6 @@
 package solvers
 
 import (
-	"fmt"
-
 	"github.com/joshprzybyszewski/shingokisolver/model"
 	"github.com/joshprzybyszewski/shingokisolver/puzzle"
 )
@@ -123,8 +121,6 @@ func (d *targetSolver) buildAllTwoArmsForTraversal(
 	ta model.TwoArms,
 ) *puzzle.Puzzle {
 
-	printPuzzleUpdate(fmt.Sprintf(`buildAllTwoArmsForTraversal(%+v)`, ta), depth, puzz, curTarget, d.iterations())
-
 	twoArmPuzz := d.sendOutTwoArms(
 		puzz.DeepCopy(),
 		curTarget.Coord,
@@ -132,7 +128,6 @@ func (d *targetSolver) buildAllTwoArmsForTraversal(
 	)
 
 	if !puzzle.IsCompleteNode(twoArmPuzz, curTarget.Coord) {
-		printPuzzleUpdate(fmt.Sprintf(`!puzzle.IsCompleteNode(twoArmPuzz, %+v)`, curTarget.Coord), depth, twoArmPuzz, curTarget, d.iterations())
 		// we _should_ have added a number of straight edges that will
 		// complete our target node.
 		// if not, then we don't want to add this to our partials
@@ -145,7 +140,6 @@ func (d *targetSolver) buildAllTwoArmsForTraversal(
 	case model.Incomplete:
 		// continue
 	default:
-		printPuzzleUpdate(fmt.Sprintf(`puzz.GetState() = %v`, puzz.GetState()), depth, twoArmPuzz, curTarget, d.iterations())
 		return nil
 	}
 

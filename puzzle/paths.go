@@ -23,8 +23,8 @@ func (p *paths) numLooseEnds() int {
 	return len(p.connections)
 }
 
-func (p *paths) copy() *paths {
-	connCpy := make(map[model.NodeCoord]model.NodeCoord)
+func (p *paths) copy(maxSize int) *paths {
+	connCpy := make(map[model.NodeCoord]model.NodeCoord, maxSize)
 	for k, v := range p.connections {
 		connCpy[k] = v
 	}

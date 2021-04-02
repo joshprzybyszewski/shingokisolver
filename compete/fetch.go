@@ -19,7 +19,9 @@ func getPuzzle(
 	size int,
 ) (websitePuzzle, error) {
 
-	resp, err := get(`https://www.puzzle-shingoki.com/`, nil)
+	url, header := requestNewPuzzle(size)
+
+	resp, err := get(url, header)
 	if err != nil {
 		return websitePuzzle{}, err
 	}
