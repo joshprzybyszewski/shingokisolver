@@ -11,5 +11,18 @@ const (
 )
 
 func (s State) String() string {
-	return `TODO`
+	switch s {
+	case Complete:
+		return `Complete`
+	case Incomplete:
+		return `Incomplete`
+	case Violation:
+		return `Violation`
+	case Unexpected:
+		return `Unexpected`
+	case Duplicate:
+		return `Duplicate`
+	default:
+		return `unknown State`
+	}
 }

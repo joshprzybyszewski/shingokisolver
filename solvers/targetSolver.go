@@ -152,15 +152,17 @@ func (d *targetSolver) buildAllTwoArmsForTraversal(
 		return nil
 	}
 
-	if isIncomplete, err := twoArmPuzz.IsIncomplete(arm1End); err != nil {
-		printPuzzleUpdate(fmt.Sprintf(`twoArmPuzz.IsIncomplete(%+v) = %v`, curTarget.Coord, err), depth, twoArmPuzz, curTarget, looseEnds, d.iterations())
-		return nil
-	} else if !isIncomplete {
-		printPuzzleUpdate(`!isIncomplete`, depth, twoArmPuzz, curTarget, looseEnds, d.iterations())
+	switch puzz.GetState() {
+	case model.Complete:
 		return twoArmPuzz
+	case model.Incomplete:
+		// continue
+	default:
+		printPuzzleUpdate(fmt.Sprintf(`puzz.GetState() = %v`, puzz.GetState()), depth, twoArmPuzz, curTarget, looseEnds, d.iterations())
+		return nil
 	}
 
-	newLooseEnds := getNewLooseEndsForBranches(looseEnds, curTarget.Coord, arm1End, arm2End)
+	newLooseEnds := getLooseEndsNotOnArms(looseEnds, curTarget.Coord, arm1End, arm2End)
 
 	if curTarget.Next == nil {
 		return d.getSolutionByConnectingLooseEnds(

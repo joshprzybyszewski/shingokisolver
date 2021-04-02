@@ -2,6 +2,7 @@ package solvers
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/joshprzybyszewski/shingokisolver/model"
 	"github.com/joshprzybyszewski/shingokisolver/puzzle"
@@ -25,62 +26,47 @@ func (d *targetSolver) getNextStep(
 	return newCoord, newP
 }
 
-type dfsGoalSolution int
-
-const (
-	mayContinue  dfsGoalSolution = 0
-	badState     dfsGoalSolution = 1
-	solvedPuzzle dfsGoalSolution = 2
-	foundGoal    dfsGoalSolution = 3
-)
-
 func (d *targetSolver) solveForGoals(
 	input *puzzle.Puzzle,
 	start model.NodeCoord,
 	goals []model.NodeCoord,
-) (*puzzle.Puzzle, map[model.NodeCoord][]*puzzle.Puzzle, dfsGoalSolution) {
+) (*puzzle.Puzzle, map[model.NodeCoord][]*puzzle.Puzzle, model.State) {
 
 	if input == nil {
-		return nil, nil, badState
+		panic(`da heck`)
+		return nil, nil, model.Unexpected
 	}
 
-	ret := make(map[model.NodeCoord][]*puzzle.Puzzle, len(goals))
+	puzzlesByTargetedLooseEnd := make(map[model.NodeCoord][]*puzzle.Puzzle, len(goals))
 	for _, g := range goals {
-		ret[g] = nil
+		puzzlesByTargetedLooseEnd[g] = nil
 	}
-	delete(ret, start)
+	delete(puzzlesByTargetedLooseEnd, start)
 
 	p, state := d.takeNextStepIntoDepthTowardsGoals(
-		ret,
+		puzzlesByTargetedLooseEnd,
 		input.DeepCopy(),
 		start,
 	)
-	return p, ret, state
+	return p, puzzlesByTargetedLooseEnd, state
 }
 
 func (d *targetSolver) takeNextStepIntoDepthTowardsGoals(
 	puzzlesByTargetedLooseEnd map[model.NodeCoord][]*puzzle.Puzzle,
 	puzz *puzzle.Puzzle,
 	fromCoord model.NodeCoord,
-) (*puzzle.Puzzle, dfsGoalSolution) {
+) (*puzzle.Puzzle, model.State) {
 	if puzz == nil {
-		return nil, mayContinue
+		return nil, model.Unexpected
 	}
 
-	if len(puzzlesByTargetedLooseEnd) <= 1 {
-		// there's only one target node. that means we need to check for violations
-		// and walk the path to verify it's complete
-		if isIncomplete, err := puzz.IsIncomplete(fromCoord); err != nil {
-			return nil, badState
-		} else if !isIncomplete {
-			return puzz, solvedPuzzle
-		}
-	} else {
-		// there's more than 1 possible goal nodes. instead of walking the
-		// whole path, let's just check to see if the puzzle has been violated
-		if violates, err := puzz.IsInViolation(fromCoord); err != nil || violates {
-			return nil, badState
-		}
+	switch s := puzz.GetState(); s {
+	case model.Complete:
+		return puzz, s
+	case model.Incomplete:
+		// continue in the func
+	default:
+		return nil, s
 	}
 
 	if slice, ok := puzzlesByTargetedLooseEnd[fromCoord]; ok {
@@ -89,8 +75,8 @@ func (d *targetSolver) takeNextStepIntoDepthTowardsGoals(
 
 	d.numProcessed++
 	if includeProgressLogs && (d.numProcessed < 100 || d.numProcessed%1000 == 500) {
-		fmt.Printf("About to process (%d, %d): %d\n%s\n",
-			fromCoord.Row, fromCoord.Col,
+		log.Printf("takeNextStepIntoDepthTowardsGoals about to process (%+v): %d\n%s\n",
+			fromCoord,
 			d.numProcessed,
 			puzz.String(),
 		)
@@ -103,17 +89,18 @@ func (d *targetSolver) takeNextStepIntoDepthTowardsGoals(
 			nextHeading,
 			fromCoord,
 		)
-		g, sol := d.takeNextStepIntoDepthTowardsGoals(
+
+		retPuzz, s := d.takeNextStepIntoDepthTowardsGoals(
 			puzzlesByTargetedLooseEnd,
 			nextPuzz,
 			nextCoord,
 		)
 
-		switch sol {
-		case solvedPuzzle:
-			return g, sol
+		switch s {
+		case model.Complete:
+			return retPuzz, s
 		}
 	}
 
-	return nil, mayContinue
+	return nil, model.Incomplete
 }

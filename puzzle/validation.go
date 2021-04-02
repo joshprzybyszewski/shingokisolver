@@ -1,8 +1,6 @@
 package puzzle
 
 import (
-	"errors"
-
 	"github.com/joshprzybyszewski/shingokisolver/model"
 )
 
@@ -42,22 +40,41 @@ func (p *Puzzle) getRangeState(
 	startC, stopC model.ColIndex,
 ) model.State {
 
-	hasIncompleteCoords := false
-	for r := startR; r < stopR; r++ {
-		for c := startC; c < stopC; c++ {
-			switch s := p.getStateForCoord(model.NewCoord(r, c)); s {
-			case model.Violation, model.Unexpected:
-				return s
-			case model.Incomplete:
-				hasIncompleteCoords = true
-			}
+	switch nodeState := p.getStateOfNodes(); nodeState {
+	case model.Incomplete, model.Complete:
+		// keep going through checks...
+	default:
+		return nodeState
+	}
+
+	var coord model.NodeCoord
+	for nc := range p.nodes {
+		// just need a random starting node for the walker
+		coord = nc
+		break
+	}
+
+	w := newWalker(p, coord)
+	seenNodes, walkerState := w.walk()
+	switch walkerState {
+	case model.Complete:
+		// keep going through checks...
+	default:
+		return walkerState
+	}
+
+	for nc := range p.nodes {
+		if _, ok := seenNodes[nc]; !ok {
+			// node was not seen. therefore, we completed a loop that
+			// doesn't see all nodes!
+			return model.Violation
 		}
 	}
 
-	if hasIncompleteCoords {
-		return model.Incomplete
-	}
+	return model.Complete
+}
 
+func (p *Puzzle) getStateOfNodes() model.State {
 	hasIncompleteNodes := false
 	// it's cheaper for us to just iterate all of the nodes
 	// and check for their validity than it is to check every
@@ -66,6 +83,7 @@ func (p *Puzzle) getRangeState(
 		oe, ok := p.GetOutgoingEdgesFrom(nc)
 		if !ok {
 			// something really weird happened
+			panic(`da heck`)
 			return model.Unexpected
 		}
 		switch s := n.GetState(oe); s {
@@ -80,7 +98,7 @@ func (p *Puzzle) getRangeState(
 		return model.Incomplete
 	}
 
-	return model.Incomplete
+	return model.Complete
 }
 
 func (p *Puzzle) getStateForCoord(
@@ -100,131 +118,4 @@ func (p *Puzzle) getStateForCoord(
 	default:
 		return model.Incomplete
 	}
-}
-
-func (p *Puzzle) IsRangeInvalid(
-	startR, stopR model.RowIndex,
-	startC, stopC model.ColIndex,
-) bool {
-	if startR < 0 {
-		startR = 0
-	}
-	if maxR := model.RowIndex(p.numNodes()); stopR > maxR {
-		stopR = maxR
-	}
-	if startC < 0 {
-		startC = 0
-	}
-	if maxC := model.ColIndex(p.numNodes()); stopC > maxC {
-		stopC = maxC
-	}
-
-	return p.isRangeInvalid(startR, stopR, startC, stopC)
-}
-
-func (p *Puzzle) isRangeInvalid(
-	startR, stopR model.RowIndex,
-	startC, stopC model.ColIndex,
-) bool {
-	for r := startR; r < stopR; r++ {
-		for c := startC; c < stopC; c++ {
-			if p.isCoordInvalid(model.NewCoord(r, c)) {
-				return true
-			}
-		}
-	}
-
-	// it's cheaper for us to just iterate all of the nodes
-	// and check for their validity than it is to check every
-	// (r, c) or filtering out to only be in the range
-	for nc, n := range p.nodes {
-		// if this point is a node, check for if it's invalid
-		oe, ok := p.GetOutgoingEdgesFrom(nc)
-		if !ok || n.IsInvalid(oe) {
-			return true
-		}
-	}
-
-	return false
-}
-
-func (p *Puzzle) isCoordInvalid(
-	coord model.NodeCoord,
-) bool {
-	// check that this point doesn't branch
-	oe, ok := p.GetOutgoingEdgesFrom(coord)
-	// either we can't get the node (the coordinate
-	// must be out of bounds or this node branches.
-	// therefore, this Puzzle is invalid
-	return !ok || oe.GetNumOutgoingDirections() > 2
-}
-
-func (p *Puzzle) checkIsInvalidFrom(
-	coord model.NodeCoord,
-) bool {
-	if p.isCoordInvalid(coord) {
-		return true
-	}
-
-	// TODO iterate out from coord to find out if it's invalid
-	return p.isRangeInvalid(
-		0,
-		model.RowIndex(p.numNodes()),
-		0,
-		model.ColIndex(p.numNodes()),
-	)
-}
-
-func (p *Puzzle) IsInViolation(
-	coord model.NodeCoord,
-) (bool, error) {
-	if p.checkIsInvalidFrom(coord) {
-		return true, errors.New(`invalid Puzzle`)
-	}
-
-	oe, ok := p.GetOutgoingEdgesFrom(coord)
-	if !ok {
-		return true, errors.New(`bad input`)
-	}
-
-	return oe.GetNumOutgoingDirections() != 2, nil
-}
-
-func (p *Puzzle) IsIncomplete(
-	coord model.NodeCoord,
-) (bool, error) {
-
-	if violates, err := p.IsInViolation(coord); err != nil || violates {
-		return violates, err
-	}
-
-	w := newWalker(p, coord)
-	seenNodes, ok := w.walk()
-	if !ok {
-		// our path did not make it all the way around
-		return true, nil
-	}
-
-	for nc, n := range p.nodes {
-		if _, ok := seenNodes[nc]; !ok {
-			// node was not seen
-			return true, errors.New(`this path made a loop, but didn't see every node`)
-		}
-
-		oe, ok := p.GetOutgoingEdgesFrom(nc)
-		if !ok {
-			return true, errors.New(`bad input`)
-		}
-		if oe.TotalEdges() != n.Value() {
-			// previously (in isRangeInvalid) we checked if oe.TotalEdges() > n.val
-			// This check exists to verify we have exactly how many we need.
-			return true, nil
-		}
-
-	}
-
-	// at this point, we have a valid board, our path is a loop,
-	// and we've seen all of the nodes appropriately. Therefore,
-	// our board is not incomplete, and it's a solution.
-	return false, nil
 }

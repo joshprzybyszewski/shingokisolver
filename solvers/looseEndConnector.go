@@ -10,21 +10,16 @@ func (d *targetSolver) connect(
 	looseEnds []model.NodeCoord,
 ) *puzzle.Puzzle {
 
-	printAllTargetsHit(
-		`connect`,
-		puzz,
-		looseEnds,
-		d.iterations(),
-	)
+	printAllTargetsHit(`connect`, puzz, looseEnds, d.iterations())
 
-	looseEndsDeduped := getLooseEndsWithoutDuplicates(looseEnds)
+	looseEndsDeduped := dedupeLooseEnds(looseEnds)
 	if len(looseEndsDeduped) == 0 {
-		isIncomplete, err := puzz.IsIncomplete(model.NodeCoord{})
-		if err != nil || isIncomplete {
+		switch puzz.GetState() {
+		case model.Complete:
+			return puzz
+		default:
 			return nil
 		}
-		// otherwise, if we have no loose ends, then we can't do anything!
-		return puzz
 	}
 
 	start := looseEndsDeduped[0]
@@ -36,7 +31,7 @@ func (d *targetSolver) connect(
 	)
 
 	switch sol {
-	case solvedPuzzle:
+	case model.Complete:
 		return p
 	}
 
@@ -47,7 +42,7 @@ func (d *targetSolver) connect(
 
 // eliminates loose ends that don't actually exist
 // leaves the looseEnds slice in the order that it had previously
-func getLooseEndsWithoutDuplicates(looseEnds []model.NodeCoord) []model.NodeCoord {
+func dedupeLooseEnds(looseEnds []model.NodeCoord) []model.NodeCoord {
 
 	numExisting := make(map[model.NodeCoord]int, len(looseEnds))
 	for _, le := range looseEnds {

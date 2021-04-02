@@ -2,7 +2,7 @@ package solvers
 
 import "github.com/joshprzybyszewski/shingokisolver/model"
 
-func getNewLooseEndsForBranches(
+func getLooseEndsNotOnArms(
 	prev []model.NodeCoord,
 	start, arm1End, arm2End model.NodeCoord,
 ) []model.NodeCoord {
