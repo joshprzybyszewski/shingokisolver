@@ -8,7 +8,7 @@ import (
 func claimGimmes(
 	puzz *puzzle.Puzzle,
 ) (*puzzle.Puzzle, []model.NodeCoord, int) {
-	var err error
+	var state model.State
 
 	var looseEnds []model.NodeCoord
 	numProcessed := 0
@@ -23,24 +23,27 @@ func claimGimmes(
 				var end model.NodeCoord
 
 				numProcessed++
-				end, puzz, err = puzz.AddEdge(model.HeadDown, top)
-				if err != nil {
-					panic(`bad dev: ` + err.Error())
+				end, puzz, state = puzz.AddEdge(model.HeadDown, top)
+				switch state {
+				case model.Violation, model.Unexpected:
+					panic(`bad dev: ` + state.String())
 				}
 				looseEnds = append(looseEnds, top, end)
 			case model.WhiteNode:
 				var left, right model.NodeCoord
 
 				numProcessed++
-				left, puzz, err = puzz.AddEdge(model.HeadLeft, top)
-				if err != nil {
-					panic(`bad dev: ` + err.Error())
+				left, puzz, state = puzz.AddEdge(model.HeadLeft, top)
+				switch state {
+				case model.Violation, model.Unexpected:
+					panic(`bad dev: ` + state.String())
 				}
 
 				numProcessed++
-				right, puzz, err = puzz.AddEdge(model.HeadRight, top)
-				if err != nil {
-					panic(`bad dev: ` + err.Error())
+				right, puzz, state = puzz.AddEdge(model.HeadRight, top)
+				switch state {
+				case model.Violation, model.Unexpected:
+					panic(`bad dev: ` + state.String())
 				}
 				looseEnds = append(looseEnds, left, right)
 			}
@@ -54,24 +57,27 @@ func claimGimmes(
 				var end model.NodeCoord
 
 				numProcessed++
-				end, puzz, err = puzz.AddEdge(model.HeadUp, bottom)
-				if err != nil {
-					panic(`bad dev: ` + err.Error())
+				end, puzz, state = puzz.AddEdge(model.HeadUp, bottom)
+				switch state {
+				case model.Violation, model.Unexpected:
+					panic(`bad dev: ` + state.String())
 				}
 				looseEnds = append(looseEnds, bottom, end)
 			case model.WhiteNode:
 				var left, right model.NodeCoord
 
 				numProcessed++
-				left, puzz, err = puzz.AddEdge(model.HeadLeft, bottom)
-				if err != nil {
-					panic(`bad dev: ` + err.Error())
+				left, puzz, state = puzz.AddEdge(model.HeadLeft, bottom)
+				switch state {
+				case model.Violation, model.Unexpected:
+					panic(`bad dev: ` + state.String())
 				}
 
 				numProcessed++
-				right, puzz, err = puzz.AddEdge(model.HeadRight, bottom)
-				if err != nil {
-					panic(`bad dev: ` + err.Error())
+				right, puzz, state = puzz.AddEdge(model.HeadRight, bottom)
+				switch state {
+				case model.Violation, model.Unexpected:
+					panic(`bad dev: ` + state.String())
 				}
 				looseEnds = append(looseEnds, left, right)
 			}
@@ -85,24 +91,27 @@ func claimGimmes(
 				var end model.NodeCoord
 
 				numProcessed++
-				end, puzz, err = puzz.AddEdge(model.HeadRight, left)
-				if err != nil {
-					panic(`bad dev: ` + err.Error())
+				end, puzz, state = puzz.AddEdge(model.HeadRight, left)
+				switch state {
+				case model.Violation, model.Unexpected:
+					panic(`bad dev: ` + state.String())
 				}
 				looseEnds = append(looseEnds, left, end)
 			case model.WhiteNode:
 				var top, bottom model.NodeCoord
 
 				numProcessed++
-				top, puzz, err = puzz.AddEdge(model.HeadUp, left)
-				if err != nil {
-					panic(`bad dev: ` + err.Error())
+				top, puzz, state = puzz.AddEdge(model.HeadUp, left)
+				switch state {
+				case model.Violation, model.Unexpected:
+					panic(`bad dev: ` + state.String())
 				}
 
 				numProcessed++
-				bottom, puzz, err = puzz.AddEdge(model.HeadDown, left)
-				if err != nil {
-					panic(`bad dev: ` + err.Error())
+				bottom, puzz, state = puzz.AddEdge(model.HeadDown, left)
+				switch state {
+				case model.Violation, model.Unexpected:
+					panic(`bad dev: ` + state.String())
 				}
 				looseEnds = append(looseEnds, top, bottom)
 			}
@@ -114,20 +123,23 @@ func claimGimmes(
 			switch n.Type() {
 			case model.BlackNode:
 				var end model.NodeCoord
-				end, puzz, err = puzz.AddEdge(model.HeadLeft, right)
-				if err != nil {
-					panic(`bad dev: ` + err.Error())
+				end, puzz, state = puzz.AddEdge(model.HeadLeft, right)
+				switch state {
+				case model.Violation, model.Unexpected:
+					panic(`bad dev: ` + state.String())
 				}
 				looseEnds = append(looseEnds, right, end)
 			case model.WhiteNode:
 				var top, bottom model.NodeCoord
-				top, puzz, err = puzz.AddEdge(model.HeadUp, right)
-				if err != nil {
-					panic(`bad dev: ` + err.Error())
+				top, puzz, state = puzz.AddEdge(model.HeadUp, right)
+				switch state {
+				case model.Violation, model.Unexpected:
+					panic(`bad dev: ` + state.String())
 				}
-				bottom, puzz, err = puzz.AddEdge(model.HeadDown, right)
-				if err != nil {
-					panic(`bad dev: ` + err.Error())
+				bottom, puzz, state = puzz.AddEdge(model.HeadDown, right)
+				switch state {
+				case model.Violation, model.Unexpected:
+					panic(`bad dev: ` + state.String())
 				}
 				looseEnds = append(looseEnds, top, bottom)
 			}

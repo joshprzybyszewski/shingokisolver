@@ -183,7 +183,7 @@ func (d *targetSolver) sendOutTwoArms(
 	ta model.TwoArms,
 ) (*puzzle.Puzzle, model.NodeCoord, model.NodeCoord) {
 
-	var err error
+	var state model.State
 
 	arm1End := start
 	for {
@@ -195,15 +195,18 @@ func (d *targetSolver) sendOutTwoArms(
 		prevEnd := arm1End
 
 		d.numProcessed++
-		arm1End, puzz, err = puzz.AddEdge(ta.One.Heading, arm1End)
-		if err != nil {
-			if err != puzzle.ErrEdgeAlreadyExists {
-				return nil, model.NodeCoord{}, model.NodeCoord{}
-			}
+		arm1End, puzz, state = puzz.AddEdge(ta.One.Heading, arm1End)
+		switch state {
+		case model.Duplicate:
 			// if the edge already exists, let's allow it
 			// and see if the puzzle will be valid
 			puzz = prevPuzz
 			arm1End = prevEnd.Translate(ta.One.Heading)
+		case model.Incomplete, model.Complete:
+			// these cases are "ok"
+		default:
+			// there was a problem. Early return
+			return nil, model.NodeCoord{}, model.NodeCoord{}
 		}
 	}
 
@@ -217,15 +220,18 @@ func (d *targetSolver) sendOutTwoArms(
 		prevEnd := arm2End
 
 		d.numProcessed++
-		arm2End, puzz, err = puzz.AddEdge(ta.Two.Heading, arm2End)
-		if err != nil {
-			if err != puzzle.ErrEdgeAlreadyExists {
-				return nil, model.NodeCoord{}, model.NodeCoord{}
-			}
+		arm2End, puzz, state = puzz.AddEdge(ta.Two.Heading, arm2End)
+		switch state {
+		case model.Duplicate:
 			// if the edge already exists, let's allow it
 			// and see if the puzzle will be valid
 			puzz = prevPuzz
 			arm2End = prevEnd.Translate(ta.Two.Heading)
+		case model.Incomplete, model.Complete:
+			// these cases are "ok"
+		default:
+			// there was a problem. Early return
+			return nil, model.NodeCoord{}, model.NodeCoord{}
 		}
 	}
 

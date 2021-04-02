@@ -79,6 +79,22 @@ func (n Node) IsInvalidMotions(c1, c2 Cardinal) bool {
 	return n.Type().isInvalidMotions(c1, c2)
 }
 
+func (n Node) GetState(
+	oe OutgoingEdges,
+) State {
+	if n.nType.isInvalidEdges(oe) {
+		return Violation
+	}
+	switch totalEdges := oe.TotalEdges(); {
+	case totalEdges > n.val:
+		return Violation
+	case totalEdges == n.val:
+		return Complete
+	default:
+		return Incomplete
+	}
+}
+
 func (n Node) IsInvalid(
 	oe OutgoingEdges,
 ) bool {

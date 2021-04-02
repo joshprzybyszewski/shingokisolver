@@ -11,24 +11,18 @@ func (d *targetSolver) getNextStep(
 	puzz *puzzle.Puzzle,
 	move model.Cardinal,
 	nc model.NodeCoord,
-) (*puzzle.Puzzle, model.NodeCoord) {
+) (model.NodeCoord, *puzzle.Puzzle) {
 
-	newCoord, newP, err := puzz.AddEdge(move, nc)
-	if err != nil {
-		return nil, model.NodeCoord{}
+	newCoord, newP, nextState := puzz.AddEdge(move, nc)
+
+	switch nextState {
+	case model.Violation, model.Unexpected:
+		return model.NodeCoord{}, nil
+	case model.Duplicate:
+		return model.NodeCoord{}, nil
 	}
 
-	if newP.IsRangeInvalid(
-		newCoord.Row-1,
-		newCoord.Row+1,
-		newCoord.Col-1,
-		newCoord.Col+1,
-	) {
-		// this is a sanity check to reduce the amount of calc we need to do
-		return nil, model.NodeCoord{}
-	}
-
-	return newP, newCoord
+	return newCoord, newP
 }
 
 type dfsGoalSolution int
@@ -104,7 +98,7 @@ func (d *targetSolver) takeNextStepIntoDepthTowardsGoals(
 	}
 
 	for _, nextHeading := range model.AllCardinals {
-		nextPuzz, nextCoord := d.getNextStep(
+		nextCoord, nextPuzz := d.getNextStep(
 			puzz.DeepCopy(),
 			nextHeading,
 			fromCoord,

@@ -11,16 +11,19 @@ import (
 
 func BuildTestPuzzle(
 	t *testing.T,
-	g *Puzzle,
+	p *Puzzle,
 	startCoord model.NodeCoord,
 	steps ...model.Cardinal,
 ) *Puzzle {
-	var err error
+	var state model.State
 	c := startCoord
 	for _, s := range steps {
-		c, g, err = g.DeepCopy().AddEdge(s, c)
-		require.NoError(t, err, `bad grid! %+v`, g)
+		c, p, state = p.DeepCopy().AddEdge(s, c)
+		switch state {
+		case model.Unexpected, model.Violation, model.Duplicate:
+			require.Fail(t, "unexpected state after adding edge: %+v, %+v\n%s\n", s, c, p)
+		}
 	}
-	t.Logf("BuildTestPuzzle produced: \n%s\n", g)
-	return g
+	t.Logf("BuildTestPuzzle produced: \n%s\n", p)
+	return p
 }

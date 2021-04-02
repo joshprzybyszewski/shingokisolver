@@ -39,33 +39,19 @@ func NewGrid(numEdges int) Grid {
 		return nil
 	}
 
-	// I'm seeing array backed grids performing better
-	// for copys and lookups than arrays of arrays locally.
-	// However, once we get to 10x10 puzzles, I need a three
-	// dimensional grid structure that will keep pointers around
-	// so I don't have to copy _everything_ on copy
-	// return newQuadTree(numEdges)
-
 	switch numEdges {
-	case 1, 2:
-		return &grid3x3{}
-	case 3, 4, 5:
-		return &grid6x6{}
-	case 6:
-		return &grid8x8{}
-	case 7:
-		return &arrayBackedGrid8{}
-	case 8, 9:
-		return &grid11x11{}
-	case 10:
-		return &arrayBackedGrid11{}
-	case 11, 12, 13, 14, 15:
-		return &grid16x16{}
-	case 16, 17, 18, 19, 20:
-		return &grid21x21{}
-	case 21, 22, 23, 24, 25:
-		return &grid26x26{}
+	case 1, 2, 3, 4, 5, 6, 7:
+		return &arrayBackedGrid8{
+			n: int8(numEdges) + 1,
+		}
+	case 8, 9, 10:
+		return &arrayBackedGrid11{
+			n: int8(numEdges) + 1,
+		}
 	default:
-		return &maxGrid{}
+		return &maxSliceBackedArray{
+			n:    int8(numEdges) + 1,
+			grid: make([]int32, (numEdges+1)*(numEdges+1)),
+		}
 	}
 }

@@ -8,106 +8,153 @@ import (
 
 func TestNodeTypeIsInvalidEdges(t *testing.T) {
 	testCases := []struct {
-		msg                string
-		efn                OutgoingEdges
-		expNoNodeOutput    bool
-		expWhiteNodeOutput bool
-		expBlackNodeOutput bool
+		msg      string
+		oe       OutgoingEdges
+		expWhite bool
+		expBlack bool
 	}{{
 		msg: `up`,
-		efn: OutgoingEdges{
+		oe: OutgoingEdges{
 			above: 1,
 		},
 	}, {
 		msg: `right`,
-		efn: OutgoingEdges{
+		oe: OutgoingEdges{
 			right: 1,
 		},
 	}, {
 		msg: `down`,
-		efn: OutgoingEdges{
+		oe: OutgoingEdges{
 			below: 1,
 		},
 	}, {
 		msg: `left`,
-		efn: OutgoingEdges{
+		oe: OutgoingEdges{
 			left: 1,
 		},
 	}, {
 		msg: `up and down`,
-		efn: OutgoingEdges{
+		oe: OutgoingEdges{
 			above: 1,
 			below: 1,
 		},
-		expBlackNodeOutput: true,
+		expBlack: true,
 	}, {
 		msg: `left and right`,
-		efn: OutgoingEdges{
+		oe: OutgoingEdges{
 			left:  1,
 			right: 1,
 		},
-		expBlackNodeOutput: true,
+		expBlack: true,
 	}, {
 		msg: `up and right`,
-		efn: OutgoingEdges{
+		oe: OutgoingEdges{
 			above: 1,
 			right: 1,
 		},
-		expWhiteNodeOutput: true,
+		expWhite: true,
 	}, {
 		msg: `right and down`,
-		efn: OutgoingEdges{
+		oe: OutgoingEdges{
 			below: 1,
 			right: 1,
 		},
-		expWhiteNodeOutput: true,
+		expWhite: true,
 	}, {
 		msg: `down and left`,
-		efn: OutgoingEdges{
+		oe: OutgoingEdges{
 			below: 1,
 			left:  1,
 		},
-		expWhiteNodeOutput: true,
+		expWhite: true,
 	}, {
 		msg: `left and up`,
-		efn: OutgoingEdges{
+		oe: OutgoingEdges{
 			above: 1,
 			left:  1,
 		},
-		expWhiteNodeOutput: true,
+		expWhite: true,
 	}, {
 		msg: `up, right, and down`,
-		efn: OutgoingEdges{
+		oe: OutgoingEdges{
 			above: 1,
 			below: 1,
 			right: 1,
 		},
-		expWhiteNodeOutput: true,
-		expBlackNodeOutput: true,
+		expWhite: true,
+		expBlack: true,
 	}, {
 		msg: `up, right, and left`,
-		efn: OutgoingEdges{
+		oe: OutgoingEdges{
 			above: 1,
 			left:  1,
 			right: 1,
 		},
-		expWhiteNodeOutput: true,
-		expBlackNodeOutput: true,
+		expWhite: true,
+		expBlack: true,
 	}, {
 		msg: `up, down, and left`,
-		efn: OutgoingEdges{
+		oe: OutgoingEdges{
 			above: 1,
 			below: 1,
 			left:  1,
 		},
-		expWhiteNodeOutput: true,
-		expBlackNodeOutput: true,
+		expWhite: true,
+		expBlack: true,
 	}}
 
 	for _, tc := range testCases {
-		assert.True(t, noNode.isInvalidEdges(tc.efn))
-		assert.Equal(t, tc.expWhiteNodeOutput, WhiteNode.isInvalidEdges(tc.efn))
-		assert.Equal(t, tc.expBlackNodeOutput, BlackNode.isInvalidEdges(tc.efn))
+		assert.True(t, noNode.isInvalidEdges(tc.oe))
+		assert.Equal(t, tc.expWhite, WhiteNode.isInvalidEdges(tc.oe))
+		assert.Equal(t, tc.expBlack, BlackNode.isInvalidEdges(tc.oe))
+	}
+}
+
+func TestNodeTypeIsInvalidMotions(t *testing.T) {
+	testCases := []struct {
+		c1       Cardinal
+		c2       Cardinal
+		expWhite bool
+		expBlack bool
+	}{{
+		c1:       HeadUp,
+		c2:       HeadRight,
+		expWhite: true,
+		expBlack: false,
+	}, {
+		c1:       HeadUp,
+		c2:       HeadDown,
+		expWhite: false,
+		expBlack: true,
+	}, {
+		c1:       HeadUp,
+		c2:       HeadLeft,
+		expWhite: true,
+		expBlack: false,
+	}, {
+		c1:       HeadRight,
+		c2:       HeadDown,
+		expWhite: true,
+		expBlack: false,
+	}, {
+		c1:       HeadRight,
+		c2:       HeadLeft,
+		expWhite: false,
+		expBlack: true,
+	}, {
+		c1:       HeadDown,
+		c2:       HeadLeft,
+		expWhite: true,
+		expBlack: false,
+	}}
+
+	for _, tc := range testCases {
+		assert.True(t, noNode.isInvalidMotions(tc.c1, tc.c2))
+		assert.True(t, noNode.isInvalidMotions(tc.c2, tc.c1))
+		assert.Equal(t, tc.expWhite, WhiteNode.isInvalidMotions(tc.c1, tc.c2))
+		assert.Equal(t, tc.expWhite, WhiteNode.isInvalidMotions(tc.c2, tc.c1))
+		assert.Equal(t, tc.expBlack, BlackNode.isInvalidMotions(tc.c1, tc.c2))
+		assert.Equal(t, tc.expBlack, BlackNode.isInvalidMotions(tc.c2, tc.c1))
 	}
 }
 

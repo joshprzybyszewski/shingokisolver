@@ -6,6 +6,102 @@ import (
 	"github.com/joshprzybyszewski/shingokisolver/model"
 )
 
+func (p *Puzzle) GetState() model.State {
+	return p.getRangeState(
+		0,
+		model.RowIndex(p.numNodes()),
+		0,
+		model.ColIndex(p.numNodes()),
+	)
+}
+
+func (p *Puzzle) GetRangeState(
+	startR, stopR model.RowIndex,
+	startC, stopC model.ColIndex,
+) model.State {
+	if startR < 0 {
+		startR = 0
+	}
+	if maxR := model.RowIndex(p.numNodes()); stopR > maxR {
+		stopR = maxR
+	}
+	if startC < 0 {
+		startC = 0
+	}
+	if maxC := model.ColIndex(p.numNodes()); stopC > maxC {
+		stopC = maxC
+	}
+
+	return p.getRangeState(
+		startR, stopR, startC, stopC,
+	)
+}
+
+func (p *Puzzle) getRangeState(
+	startR, stopR model.RowIndex,
+	startC, stopC model.ColIndex,
+) model.State {
+
+	hasIncompleteCoords := false
+	for r := startR; r < stopR; r++ {
+		for c := startC; c < stopC; c++ {
+			switch s := p.getStateForCoord(model.NewCoord(r, c)); s {
+			case model.Violation, model.Unexpected:
+				return s
+			case model.Incomplete:
+				hasIncompleteCoords = true
+			}
+		}
+	}
+
+	if hasIncompleteCoords {
+		return model.Incomplete
+	}
+
+	hasIncompleteNodes := false
+	// it's cheaper for us to just iterate all of the nodes
+	// and check for their validity than it is to check every
+	// (r, c) or filtering out to only be in the range
+	for nc, n := range p.nodes {
+		oe, ok := p.GetOutgoingEdgesFrom(nc)
+		if !ok {
+			// something really weird happened
+			return model.Unexpected
+		}
+		switch s := n.GetState(oe); s {
+		case model.Violation, model.Unexpected:
+			return s
+		case model.Incomplete:
+			hasIncompleteNodes = true
+		}
+	}
+
+	if hasIncompleteNodes {
+		return model.Incomplete
+	}
+
+	return model.Incomplete
+}
+
+func (p *Puzzle) getStateForCoord(
+	coord model.NodeCoord,
+) model.State {
+	// check that this point doesn't branch
+	oe, ok := p.GetOutgoingEdgesFrom(coord)
+	if !ok {
+		return model.Violation
+	}
+
+	switch numEdges := oe.GetNumOutgoingDirections(); {
+	case numEdges > 2:
+		return model.Violation
+	case numEdges == 2:
+		return model.Complete
+	default:
+		return model.Incomplete
+	}
+}
+
 func (p *Puzzle) IsRangeInvalid(
 	startR, stopR model.RowIndex,
 	startC, stopC model.ColIndex,

@@ -24,48 +24,43 @@ func (p *Puzzle) IsEdge(
 	move model.Cardinal,
 	nc model.NodeCoord,
 ) bool {
-	isEdge, _ := p.isEdge(move, nc)
-	return isEdge
+	return p.isEdge(move, nc)
 }
 
 func (p *Puzzle) isEdge(
 	move model.Cardinal,
 	nc model.NodeCoord,
-) (bool, bool) {
+) bool {
 	if !p.nodeGrid.IsInBounds(nc) {
-		return false, false
+		return false
 	}
 	maxIndex := p.numEdges
 
 	switch move {
 	case model.HeadLeft:
-		return nc.Col != 0 && p.nodeGrid.Get(nc).IsLeft(), true
+		return nc.Col != 0 && p.nodeGrid.Get(nc).IsLeft()
 	case model.HeadRight:
-		return uint8(nc.Col) != maxIndex && p.nodeGrid.Get(nc).IsRight(), true
+		return uint8(nc.Col) != maxIndex && p.nodeGrid.Get(nc).IsRight()
 	case model.HeadUp:
-		return nc.Row != 0 && p.nodeGrid.Get(nc).IsAbove(), true
+		return nc.Row != 0 && p.nodeGrid.Get(nc).IsAbove()
 	case model.HeadDown:
-		return uint8(nc.Row) != maxIndex && p.nodeGrid.Get(nc).IsBelow(), true
+		return uint8(nc.Row) != maxIndex && p.nodeGrid.Get(nc).IsBelow()
 	default:
-		return false, false
+		return false
 	}
 }
 
 func (p *Puzzle) AddEdge(
 	move model.Cardinal,
 	startNode model.NodeCoord,
-) (model.NodeCoord, *Puzzle, error) {
-	endNode := startNode.Translate(move)
-	if !p.nodeGrid.IsInBounds(endNode) {
-		return model.NodeCoord{}, nil, errors.New(`next point is out of bounds`)
+) (model.NodeCoord, *Puzzle, model.State) {
+	if p.isEdge(move, startNode) {
+		return model.NodeCoord{}, nil, model.Duplicate
 	}
 
-	isEdge, isValid := p.isEdge(move, startNode)
-	if !isValid {
-		return model.NodeCoord{}, nil, errors.New(`invalid input`)
-	}
-	if isEdge {
-		return model.NodeCoord{}, nil, ErrEdgeAlreadyExists
+	endNode := startNode.Translate(move)
+	if !p.nodeGrid.IsInBounds(endNode) {
+		return model.NodeCoord{}, nil, model.Violation
 	}
 
 	model.ApplyGridConnections(
@@ -74,5 +69,16 @@ func (p *Puzzle) AddEdge(
 		startNode, endNode,
 	)
 
-	return endNode, p, nil
+	rangeState := p.GetRangeState(
+		endNode.Row-1,
+		endNode.Row+1,
+		endNode.Col-1,
+		endNode.Col+1,
+	)
+	switch rangeState {
+	case model.Violation, model.Unexpected:
+		return model.NodeCoord{}, nil, rangeState
+	}
+
+	return endNode, p, model.Incomplete
 }
