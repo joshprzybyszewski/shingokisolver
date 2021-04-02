@@ -55,8 +55,12 @@ func (p *Puzzle) GetNode(coord model.NodeCoord) (model.Node, bool) {
 	return n, ok
 }
 
-func (p *Puzzle) LooseEnds() []model.NodeCoord {
-	return p.paths.looseEnds()
+func (p *Puzzle) GetLooseEnd() (model.NodeCoord, bool) {
+	return p.paths.getLooseEnd()
+}
+
+func (p *Puzzle) NumLooseEnds() int {
+	return p.paths.numLooseEnds()
 }
 
 func (p *Puzzle) NumEdges() int {

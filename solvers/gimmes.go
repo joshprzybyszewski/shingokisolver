@@ -20,21 +20,21 @@ func claimGimmes(
 			switch n.Type() {
 			case model.BlackNode:
 				numProcessed++
-				_, puzz, state = puzz.AddEdge(model.HeadDown, top)
+				_, state = puzz.AddEdge(model.HeadDown, top)
 				switch state {
 				case model.Violation, model.Unexpected:
 					panic(`bad dev: ` + state.String())
 				}
 			case model.WhiteNode:
 				numProcessed++
-				_, puzz, state = puzz.AddEdge(model.HeadLeft, top)
+				_, state = puzz.AddEdge(model.HeadLeft, top)
 				switch state {
 				case model.Violation, model.Unexpected:
 					panic(`bad dev: ` + state.String())
 				}
 
 				numProcessed++
-				_, puzz, state = puzz.AddEdge(model.HeadRight, top)
+				_, state = puzz.AddEdge(model.HeadRight, top)
 				switch state {
 				case model.Violation, model.Unexpected:
 					panic(`bad dev: ` + state.String())
@@ -48,21 +48,21 @@ func claimGimmes(
 			switch n.Type() {
 			case model.BlackNode:
 				numProcessed++
-				_, puzz, state = puzz.AddEdge(model.HeadUp, bottom)
+				_, state = puzz.AddEdge(model.HeadUp, bottom)
 				switch state {
 				case model.Violation, model.Unexpected:
 					panic(`bad dev: ` + state.String())
 				}
 			case model.WhiteNode:
 				numProcessed++
-				_, puzz, state = puzz.AddEdge(model.HeadLeft, bottom)
+				_, state = puzz.AddEdge(model.HeadLeft, bottom)
 				switch state {
 				case model.Violation, model.Unexpected:
 					panic(`bad dev: ` + state.String())
 				}
 
 				numProcessed++
-				_, puzz, state = puzz.AddEdge(model.HeadRight, bottom)
+				_, state = puzz.AddEdge(model.HeadRight, bottom)
 				switch state {
 				case model.Violation, model.Unexpected:
 					panic(`bad dev: ` + state.String())
@@ -76,21 +76,21 @@ func claimGimmes(
 			switch n.Type() {
 			case model.BlackNode:
 				numProcessed++
-				_, puzz, state = puzz.AddEdge(model.HeadRight, left)
+				_, state = puzz.AddEdge(model.HeadRight, left)
 				switch state {
 				case model.Violation, model.Unexpected:
 					panic(`bad dev: ` + state.String())
 				}
 			case model.WhiteNode:
 				numProcessed++
-				_, puzz, state = puzz.AddEdge(model.HeadUp, left)
+				_, state = puzz.AddEdge(model.HeadUp, left)
 				switch state {
 				case model.Violation, model.Unexpected:
 					panic(`bad dev: ` + state.String())
 				}
 
 				numProcessed++
-				_, puzz, state = puzz.AddEdge(model.HeadDown, left)
+				_, state = puzz.AddEdge(model.HeadDown, left)
 				switch state {
 				case model.Violation, model.Unexpected:
 					panic(`bad dev: ` + state.String())
@@ -103,18 +103,18 @@ func claimGimmes(
 		if n, ok := puzz.GetNode(right); ok {
 			switch n.Type() {
 			case model.BlackNode:
-				_, puzz, state = puzz.AddEdge(model.HeadLeft, right)
+				_, state = puzz.AddEdge(model.HeadLeft, right)
 				switch state {
 				case model.Violation, model.Unexpected:
 					panic(`bad dev: ` + state.String())
 				}
 			case model.WhiteNode:
-				_, puzz, state = puzz.AddEdge(model.HeadUp, right)
+				_, state = puzz.AddEdge(model.HeadUp, right)
 				switch state {
 				case model.Violation, model.Unexpected:
 					panic(`bad dev: ` + state.String())
 				}
-				_, puzz, state = puzz.AddEdge(model.HeadDown, right)
+				_, state = puzz.AddEdge(model.HeadDown, right)
 				switch state {
 				case model.Violation, model.Unexpected:
 					panic(`bad dev: ` + state.String())

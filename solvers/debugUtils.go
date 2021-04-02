@@ -45,17 +45,12 @@ func printAllTargetsHit(
 		return
 	}
 
-	looseEnds := puzz.LooseEnds()
-
 	log.Printf("printAllTargetsHit")
 	log.Printf("\tcaller:  \t%s",
 		caller,
 	)
 	log.Printf("\titerations:\t%d",
 		iterations,
-	)
-	log.Printf("\tlooseEnds:\t%+v",
-		looseEnds,
 	)
 	log.Printf("\tpuzzle:\n%s\n", puzz)
 	fmt.Scanf("wait for acknowledgement")
@@ -91,8 +86,6 @@ func printPuzzleUpdate(
 		return
 	}
 
-	looseEnds := puzz.LooseEnds()
-
 	log.Printf("printPuzzleUpdate")
 	log.Printf("\tcaller:  \t%s",
 		caller,
@@ -105,9 +98,6 @@ func printPuzzleUpdate(
 	)
 	log.Printf("\ttargeting:\t%+v",
 		targeting,
-	)
-	log.Printf("\tlooseEnds:\t%+v",
-		looseEnds,
 	)
 	log.Printf("\tpuzzle:\n%s\n", puzz)
 	fmt.Scanf("wait for acknowledgement")

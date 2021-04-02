@@ -9,10 +9,10 @@ func (d *targetSolver) connect(
 	puzz *puzzle.Puzzle,
 ) *puzzle.Puzzle {
 
-	looseEnds := puzz.LooseEnds()
+	looseEnd, ok := puzz.GetLooseEnd()
 	printAllTargetsHit(`connect`, puzz, d.iterations())
 
-	if len(looseEnds) == 0 {
+	if !ok {
 		switch puzz.GetState() {
 		case model.Complete:
 			return puzz
@@ -22,37 +22,14 @@ func (d *targetSolver) connect(
 		}
 	}
 
-	start := looseEnds[0]
-
-	p, morePartials, sol := d.solveForGoals(
+	p, sol := d.solveFromLooseEnd(
 		puzz.DeepCopy(),
-		start,
-		looseEnds[1:],
+		looseEnd,
 	)
 
 	switch sol {
 	case model.Complete:
 		return p
-	}
-
-	// we only need to look at the first loose end in the
-	// puzzle, so we return the following.
-	return d.iterateMorePartials(morePartials)
-}
-
-func (d *targetSolver) iterateMorePartials(
-	morePartials map[model.NodeCoord][]*puzzle.Puzzle,
-) *puzzle.Puzzle {
-
-	for _, slice := range morePartials {
-		for _, nextPuzzle := range slice {
-			puzz := d.connect(
-				nextPuzzle,
-			)
-			if puzz != nil {
-				return puzz
-			}
-		}
 	}
 
 	return nil

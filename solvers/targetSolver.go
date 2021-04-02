@@ -180,7 +180,7 @@ func (d *targetSolver) sendOutTwoArms(
 		prevEnd := arm1End
 
 		d.numProcessed++
-		arm1End, puzz, state = puzz.AddEdge(ta.One.Heading, arm1End)
+		arm1End, state = puzz.AddEdge(ta.One.Heading, arm1End)
 		switch state {
 		case model.Duplicate:
 			// if the edge already exists, let's allow it
@@ -205,7 +205,7 @@ func (d *targetSolver) sendOutTwoArms(
 		prevEnd := arm2End
 
 		d.numProcessed++
-		arm2End, puzz, state = puzz.AddEdge(ta.Two.Heading, arm2End)
+		arm2End, state = puzz.AddEdge(ta.Two.Heading, arm2End)
 		switch state {
 		case model.Duplicate:
 			// if the edge already exists, let's allow it

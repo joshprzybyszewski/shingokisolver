@@ -53,14 +53,14 @@ func (p *Puzzle) isEdge(
 func (p *Puzzle) AddEdge(
 	move model.Cardinal,
 	startNode model.NodeCoord,
-) (model.NodeCoord, *Puzzle, model.State) {
+) (model.NodeCoord, model.State) {
 	if p.isEdge(move, startNode) {
-		return model.NodeCoord{}, nil, model.Duplicate
+		return model.NodeCoord{}, model.Duplicate
 	}
 
 	endNode := startNode.Translate(move)
 	if !p.nodeGrid.IsInBounds(endNode) {
-		return model.NodeCoord{}, nil, model.Violation
+		return model.NodeCoord{}, model.Violation
 	}
 
 	model.ApplyGridConnections(
@@ -73,17 +73,17 @@ func (p *Puzzle) AddEdge(
 	case model.Complete, model.Incomplete:
 		// is fine
 	default:
-		return model.NodeCoord{}, nil, snState
+		return model.NodeCoord{}, snState
 	}
 
 	switch enState := p.getStateForCoord(endNode); enState {
 	case model.Complete, model.Incomplete:
 		// is fine
 	default:
-		return model.NodeCoord{}, nil, enState
+		return model.NodeCoord{}, enState
 	}
 
 	p.paths.add(startNode, endNode)
 
-	return endNode, p, model.Incomplete
+	return endNode, model.Incomplete
 }

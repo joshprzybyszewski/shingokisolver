@@ -91,7 +91,7 @@ func (g maxSliceBackedArray) IsInBounds(nc NodeCoord) bool {
 }
 
 func (g maxSliceBackedArray) Get(nc NodeCoord) OutgoingEdges {
-	index := int(nc.Row)<<5 + int(nc.Col)
+	index := int(nc.Row)*int(g.n) + int(nc.Col)
 	return newOutgoingEdgesFromInt32(g.grid[index])
 }
 

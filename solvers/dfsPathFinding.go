@@ -8,51 +8,24 @@ import (
 	"github.com/joshprzybyszewski/shingokisolver/puzzle"
 )
 
-func (d *targetSolver) getNextStep(
-	puzz *puzzle.Puzzle,
-	move model.Cardinal,
-	nc model.NodeCoord,
-) (model.NodeCoord, *puzzle.Puzzle) {
-
-	newCoord, newP, nextState := puzz.AddEdge(move, nc)
-
-	switch nextState {
-	case model.Violation, model.Unexpected:
-		return model.NodeCoord{}, nil
-	case model.Duplicate:
-		return model.NodeCoord{}, nil
-	}
-
-	return newCoord, newP
-}
-
-func (d *targetSolver) solveForGoals(
+func (d *targetSolver) solveFromLooseEnd(
 	input *puzzle.Puzzle,
 	start model.NodeCoord,
-	goals []model.NodeCoord,
-) (*puzzle.Puzzle, map[model.NodeCoord][]*puzzle.Puzzle, model.State) {
+) (*puzzle.Puzzle, model.State) {
 
-	printAllTargetsHit(fmt.Sprintf(`solveForGoals(%+v)`, start), input, d.iterations())
+	printAllTargetsHit(fmt.Sprintf(`solveFromLooseEnd(%+v)`, start), input, d.iterations())
 	if input == nil {
-		return nil, nil, model.Unexpected
+		return nil, model.Unexpected
 	}
 
-	puzzlesByTargetedLooseEnd := make(map[model.NodeCoord][]*puzzle.Puzzle, len(goals))
-	for _, g := range goals {
-		puzzlesByTargetedLooseEnd[g] = nil
-	}
-	delete(puzzlesByTargetedLooseEnd, start)
-
-	p, state := d.takeNextStepIntoDepthTowardsGoals(
-		puzzlesByTargetedLooseEnd,
+	p, state := d.dfsOutFrom(
 		input.DeepCopy(),
 		start,
 	)
-	return p, puzzlesByTargetedLooseEnd, state
+	return p, state
 }
 
-func (d *targetSolver) takeNextStepIntoDepthTowardsGoals(
-	puzzlesByTargetedLooseEnd map[model.NodeCoord][]*puzzle.Puzzle,
+func (d *targetSolver) dfsOutFrom(
 	puzz *puzzle.Puzzle,
 	fromCoord model.NodeCoord,
 ) (*puzzle.Puzzle, model.State) {
@@ -69,13 +42,9 @@ func (d *targetSolver) takeNextStepIntoDepthTowardsGoals(
 		return nil, s
 	}
 
-	if slice, ok := puzzlesByTargetedLooseEnd[fromCoord]; ok {
-		puzzlesByTargetedLooseEnd[fromCoord] = append(slice, puzz.DeepCopy())
-	}
-
 	d.numProcessed++
 	if includeProgressLogs && (d.numProcessed < 100 || d.numProcessed%1000 == 500) {
-		log.Printf("takeNextStepIntoDepthTowardsGoals about to process (%+v): %d\n%s\n",
+		log.Printf("dfsOutFrom about to process (%+v): %d\n%s\n",
 			fromCoord,
 			d.numProcessed,
 			puzz.String(),
@@ -84,21 +53,29 @@ func (d *targetSolver) takeNextStepIntoDepthTowardsGoals(
 	}
 
 	for _, nextHeading := range model.AllCardinals {
-		nextCoord, nextPuzz := d.getNextStep(
-			puzz.DeepCopy(),
-			nextHeading,
-			fromCoord,
-		)
+		nextPuzz := puzz.DeepCopy()
 
-		retPuzz, s := d.takeNextStepIntoDepthTowardsGoals(
-			puzzlesByTargetedLooseEnd,
-			nextPuzz,
-			nextCoord,
-		)
+		nextCoord, state := nextPuzz.AddEdge(nextHeading, fromCoord)
+		switch state {
+		case model.Violation, model.Unexpected, model.Duplicate:
+			continue
+		}
 
-		switch s {
-		case model.Complete:
-			return retPuzz, s
+		if nextPuzz.NumLooseEnds() != puzz.NumLooseEnds() {
+			// iterate down
+			retPuzz := d.connect(nextPuzz)
+			if retPuzz != nil {
+				return retPuzz, model.Complete
+			}
+		} else {
+			retPuzz, s := d.dfsOutFrom(
+				nextPuzz,
+				nextCoord,
+			)
+			switch s {
+			case model.Complete:
+				return retPuzz, s
+			}
 		}
 	}
 

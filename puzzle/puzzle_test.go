@@ -18,14 +18,6 @@ func TestNumEdgesAndNodes(t *testing.T) {
 	assert.Equal(t, 26, p.numNodes())
 }
 
-func TestIsRangeInvalidWithBoundsCheck(t *testing.T) {
-	p := NewPuzzle(5, nil)
-
-	assert.True(t, p.IsRangeInvalid(-1, model.MAX_EDGES+1, -55, model.MAX_EDGES+1))
-	assert.False(t, p.isRangeInvalid(-1, model.MAX_EDGES+1, -55, model.MAX_EDGES+1))
-	assert.True(t, p.isRangeInvalid(-1, model.MAX_EDGES+1, -55, model.MAX_EDGES+1))
-}
-
 func TestIsEdge(t *testing.T) {
 	p := NewPuzzle(5, nil)
 
@@ -57,7 +49,12 @@ func TestIsEdge(t *testing.T) {
 
 // defined here as a helper to make unit tests easier
 func (p *Puzzle) isInvalid() bool {
-	return p.isRangeInvalid(0, model.RowIndex(p.numNodes()), 0, model.ColIndex(p.numNodes()))
+	switch p.GetState() {
+	case model.Incomplete, model.Complete:
+		return false
+	default:
+		return true
+	}
 }
 
 func TestIsInvalid(t *testing.T) {

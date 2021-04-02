@@ -6,6 +6,23 @@ type paths struct {
 	connections map[model.NodeCoord]model.NodeCoord
 }
 
+func (p *paths) getLooseEnd() (model.NodeCoord, bool) {
+	var le model.NodeCoord
+	if p.numLooseEnds() == 0 {
+		return le, false
+	}
+
+	for k := range p.connections {
+		le = k
+		break
+	}
+	return le, true
+}
+
+func (p *paths) numLooseEnds() int {
+	return len(p.connections)
+}
+
 func (p *paths) copy() *paths {
 	connCpy := make(map[model.NodeCoord]model.NodeCoord)
 	for k, v := range p.connections {
@@ -14,14 +31,6 @@ func (p *paths) copy() *paths {
 	return &paths{
 		connections: connCpy,
 	}
-}
-
-func (p *paths) looseEnds() []model.NodeCoord {
-	ends := make([]model.NodeCoord, 0, len(p.connections))
-	for k := range p.connections {
-		ends = append(ends, k)
-	}
-	return ends
 }
 
 func (p *paths) add(start, end model.NodeCoord) {
