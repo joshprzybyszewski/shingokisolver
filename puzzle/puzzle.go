@@ -70,3 +70,7 @@ func (p *Puzzle) NumEdges() int {
 func (p *Puzzle) numNodes() int {
 	return int(p.numEdges) + 1
 }
+
+func (p *Puzzle) Targets() []model.Target {
+	return model.BuildTargets(p.nodes, p.NumEdges())
+}
