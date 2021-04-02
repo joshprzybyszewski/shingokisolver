@@ -47,7 +47,7 @@ func printPuzzleUpdate(
 	caller string,
 	depth int,
 	puzzle *puzzle.Puzzle,
-	targeting target,
+	targeting model.Target,
 	looseEnds []model.NodeCoord,
 	iterations int,
 ) {
@@ -56,9 +56,9 @@ func printPuzzleUpdate(
 		return
 	}
 	shouldSkip := false
-	if _, ok := seen[targeting.coord]; ok {
+	if _, ok := seen[targeting.Coord]; ok {
 		shouldSkip = false
-		seen[targeting.coord] = struct{}{}
+		seen[targeting.Coord] = struct{}{}
 	}
 	if iterations < 10 || iterations%10000 == 0 {
 		shouldSkip = false

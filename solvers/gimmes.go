@@ -17,7 +17,7 @@ func claimGimmes(
 	for i := 0; i < puzz.NumEdges(); i++ {
 		// top (row = 0)
 		top := model.NewCoordFromInts(0, i)
-		if n, ok := puzz.NodeTargets()[top]; ok {
+		if n, ok := puzz.GetNode(top); ok {
 			switch n.Type() {
 			case model.BlackNode:
 				var end model.NodeCoord
@@ -48,7 +48,7 @@ func claimGimmes(
 
 		// bottom (row = puzz.NumEdges() + 1)
 		bottom := model.NewCoordFromInts(puzz.NumEdges()+1, i)
-		if n, ok := puzz.NodeTargets()[bottom]; ok {
+		if n, ok := puzz.GetNode(bottom); ok {
 			switch n.Type() {
 			case model.BlackNode:
 				var end model.NodeCoord
@@ -79,7 +79,7 @@ func claimGimmes(
 
 		// left (col = 0)
 		left := model.NewCoordFromInts(i, 0)
-		if n, ok := puzz.NodeTargets()[left]; ok {
+		if n, ok := puzz.GetNode(left); ok {
 			switch n.Type() {
 			case model.BlackNode:
 				var end model.NodeCoord
@@ -110,7 +110,7 @@ func claimGimmes(
 
 		// right (col = puzz.NumEdges() + 1)
 		right := model.NewCoordFromInts(i, puzz.NumEdges()+1)
-		if n, ok := puzz.NodeTargets()[right]; ok {
+		if n, ok := puzz.GetNode(right); ok {
 			switch n.Type() {
 			case model.BlackNode:
 				var end model.NodeCoord

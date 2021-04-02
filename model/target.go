@@ -1,46 +1,45 @@
-package solvers
+package model
 
 import (
 	"sort"
-
-	"github.com/joshprzybyszewski/shingokisolver/model"
-	"github.com/joshprzybyszewski/shingokisolver/puzzle"
 )
 
-type target struct {
-	coord model.NodeCoord
-	node  model.Node
+type Target struct {
+	Coord NodeCoord
+	Node  Node
 
-	next *target
+	Next *Target
 }
 
-func buildTargets(p *puzzle.Puzzle) []target {
-	targets := make([]target, 0, len(p.NodeTargets()))
+func BuildTargets(
+	nodes map[NodeCoord]Node,
+	numEdges int,
+) []Target {
+	targets := make([]Target, 0, len(nodes))
 
-	for nc, n := range p.NodeTargets() {
-		targets = append(targets, target{
-			node:  n,
-			coord: nc,
+	for nc, n := range nodes {
+		targets = append(targets, Target{
+			Node:  n,
+			Coord: nc,
 		})
 	}
 
-	maxRowColVal := p.NumEdges()
-	isOnTheSide := func(coord model.NodeCoord) bool {
+	isOnTheSide := func(coord NodeCoord) bool {
 		return coord.Row == 0 ||
-			coord.Row == model.RowIndex(maxRowColVal) ||
+			coord.Row == RowIndex(numEdges) ||
 			coord.Col == 0 ||
-			coord.Col == model.ColIndex(maxRowColVal)
+			coord.Col == ColIndex(numEdges)
 	}
-	isACorner := func(coord model.NodeCoord) bool {
+	isACorner := func(coord NodeCoord) bool {
 		return (coord.Row == 0 ||
-			coord.Row == model.RowIndex(maxRowColVal)) &&
+			coord.Row == RowIndex(numEdges)) &&
 			(coord.Col == 0 ||
-				coord.Col == model.ColIndex(maxRowColVal))
+				coord.Col == ColIndex(numEdges))
 	}
 	sort.Slice(targets, func(i, j int) bool {
-		// rank _lower_ valued nodes at the start of the target list
-		iPossibilities := possibleConfigurationsForNode(targets[i].node)
-		jPossibilities := possibleConfigurationsForNode(targets[j].node)
+		// rank _lower_ valued nodes at the start of the Target list
+		iPossibilities := possibleConfigurationsForNode(targets[i].Node)
+		jPossibilities := possibleConfigurationsForNode(targets[j].Node)
 		if iPossibilities != jPossibilities {
 			// this is counter-intuitive to me. I would think that I should
 			// solve for "big rocks" first. But it makes sense that a computer
@@ -53,11 +52,11 @@ func buildTargets(p *puzzle.Puzzle) []target {
 
 		// put nodes with more limitations (i.e. on the sides or
 		// the corners of the graph) higher up on the list
-		iIsEdge := isOnTheSide(targets[i].coord)
-		jIsEdge := isOnTheSide(targets[j].coord)
+		iIsEdge := isOnTheSide(targets[i].Coord)
+		jIsEdge := isOnTheSide(targets[j].Coord)
 		if iIsEdge && jIsEdge {
-			iIsACorner := isACorner(targets[i].coord)
-			jIsACorner := isACorner(targets[j].coord)
+			iIsACorner := isACorner(targets[i].Coord)
+			jIsACorner := isACorner(targets[j].Coord)
 			if iIsACorner && !jIsACorner {
 				return true
 			} else if !iIsACorner && jIsACorner {
@@ -71,36 +70,36 @@ func buildTargets(p *puzzle.Puzzle) []target {
 
 		// put white nodes in front of black nodes
 		// because white nodes are more restrictive than black nodes
-		iIsWhite := targets[i].node.Type() == model.WhiteNode
-		jIsWhite := targets[j].node.Type() == model.WhiteNode
+		iIsWhite := targets[i].Node.Type() == WhiteNode
+		jIsWhite := targets[j].Node.Type() == WhiteNode
 		if iIsWhite != jIsWhite {
 			return iIsWhite
 		}
 
 		// at this point, we just want a consistent ordering.
 		// let's put nodes closer to (0,0) higher up in the list
-		if targets[i].coord.Row != targets[j].coord.Row {
-			return targets[i].coord.Row < targets[j].coord.Row
+		if targets[i].Coord.Row != targets[j].Coord.Row {
+			return targets[i].Coord.Row < targets[j].Coord.Row
 		}
-		return targets[i].coord.Col < targets[j].coord.Col
+		return targets[i].Coord.Col < targets[j].Coord.Col
 	})
 
 	for i := 1; i < len(targets); i++ {
-		targets[i-1].next = &targets[i]
+		targets[i-1].Next = &targets[i]
 	}
 
 	return targets
 }
 
 func possibleConfigurationsForNode(
-	n model.Node,
+	n Node,
 ) int {
 	// TODO once we've got a cache on buildTwoArmOptions, use:
 	// return len(buildTwoArmOptions(n))
 	switch n.Type() {
-	case model.WhiteNode:
+	case WhiteNode:
 		return int(n.Value()-1) * 2
-	case model.BlackNode:
+	case BlackNode:
 		return int(n.Value()-1) * 4
 	}
 

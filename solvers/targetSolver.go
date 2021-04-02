@@ -31,13 +31,13 @@ func (d *targetSolver) iterations() int {
 }
 
 func (d *targetSolver) solve() (*puzzle.Puzzle, bool) {
-	targets := buildTargets(d.puzzle)
+	targets := d.puzzle.Targets()
 
 	if len(targets) == 0 {
 		return nil, false
 	}
 
-	puzz, looseEnds, numProcessed := claimGimmes(d.puzzle)
+	puzz, looseEnds, numProcessed := claimGimmes(d.puzzle.DeepCopy())
 	d.numProcessed += numProcessed
 
 	printPuzzleUpdate(`claimGimmes`, 0, puzz, targets[0], looseEnds, d.iterations())
@@ -54,22 +54,22 @@ func (d *targetSolver) solve() (*puzzle.Puzzle, bool) {
 func (d *targetSolver) getSolutionFromDepths(
 	depth int,
 	puzz *puzzle.Puzzle,
-	targeting target,
+	targeting model.Target,
 	looseEnds []model.NodeCoord,
 ) *puzzle.Puzzle {
 
 	printPuzzleUpdate(`getSolutionFromDepths`, depth, puzz, targeting, looseEnds, d.iterations())
 
-	targetCoord := targeting.coord
+	targetCoord := targeting.Coord
 
-	node, ok := puzz.NodeTargets()[targetCoord]
+	node, ok := puzz.GetNode(targetCoord)
 	if !ok {
 		// this should be returning an error, but really it shouldn't be happening
 		panic(`what?`)
 		// return nil
 	}
 
-	if tCoord := targeting.coord; puzzle.IsCompleteNode(puzz, tCoord) {
+	if tCoord := targeting.Coord; puzzle.IsCompleteNode(puzz, tCoord) {
 		// the target node is already complete, perhaps a previous node
 		// accidentally completed it. If so, then let's do a sanity check
 		// on completion, and then add it as a "partial solution" that
@@ -78,7 +78,7 @@ func (d *targetSolver) getSolutionFromDepths(
 		leCpy := make([]model.NodeCoord, len(looseEnds))
 		copy(leCpy, looseEnds)
 
-		if targeting.next == nil {
+		if targeting.Next == nil {
 			return d.getSolutionByConnectingLooseEnds(
 				puzz.DeepCopy(),
 				leCpy,
@@ -88,7 +88,7 @@ func (d *targetSolver) getSolutionFromDepths(
 		return d.getSolutionFromDepths(
 			depth+1,
 			puzz.DeepCopy(),
-			*targeting.next,
+			*targeting.Next,
 			leCpy,
 		)
 	}
@@ -96,7 +96,7 @@ func (d *targetSolver) getSolutionFromDepths(
 	// go out in all directions from the target
 	// if it's still a valid puzzle, keep going outward
 	// until we "complete" the node.
-	options := buildTwoArmOptions(node)
+	options := model.BuildTwoArmOptions(node)
 	for _, option := range options {
 		leCpy := make([]model.NodeCoord, len(looseEnds))
 		copy(leCpy, looseEnds)
@@ -131,21 +131,21 @@ func (d *targetSolver) getSolutionByConnectingLooseEnds(
 func (d *targetSolver) buildAllTwoArmsForTraversal(
 	depth int,
 	puzz *puzzle.Puzzle,
-	curTarget target,
+	curTarget model.Target,
 	looseEnds []model.NodeCoord,
-	ta twoArms,
+	ta model.TwoArms,
 ) *puzzle.Puzzle {
 
 	printPuzzleUpdate(fmt.Sprintf(`buildAllTwoArmsForTraversal(%+v)`, ta), depth, puzz, curTarget, looseEnds, d.iterations())
 
 	twoArmPuzz, arm1End, arm2End := d.sendOutTwoArms(
 		puzz.DeepCopy(),
-		curTarget.coord,
+		curTarget.Coord,
 		ta,
 	)
 
-	if !puzzle.IsCompleteNode(twoArmPuzz, curTarget.coord) {
-		printPuzzleUpdate(fmt.Sprintf(`!puzzle.IsCompleteNode(twoArmPuzz, %+v)`, curTarget.coord), depth, twoArmPuzz, curTarget, looseEnds, d.iterations())
+	if !puzzle.IsCompleteNode(twoArmPuzz, curTarget.Coord) {
+		printPuzzleUpdate(fmt.Sprintf(`!puzzle.IsCompleteNode(twoArmPuzz, %+v)`, curTarget.Coord), depth, twoArmPuzz, curTarget, looseEnds, d.iterations())
 		// we _should_ have added a number of straight edges that will
 		// complete our target node.
 		// if not, then we don't want to add this to our partials
@@ -153,16 +153,16 @@ func (d *targetSolver) buildAllTwoArmsForTraversal(
 	}
 
 	if isIncomplete, err := twoArmPuzz.IsIncomplete(arm1End); err != nil {
-		printPuzzleUpdate(fmt.Sprintf(`twoArmPuzz.IsIncomplete(%+v) = %v`, curTarget.coord, err), depth, twoArmPuzz, curTarget, looseEnds, d.iterations())
+		printPuzzleUpdate(fmt.Sprintf(`twoArmPuzz.IsIncomplete(%+v) = %v`, curTarget.Coord, err), depth, twoArmPuzz, curTarget, looseEnds, d.iterations())
 		return nil
 	} else if !isIncomplete {
 		printPuzzleUpdate(`!isIncomplete`, depth, twoArmPuzz, curTarget, looseEnds, d.iterations())
 		return twoArmPuzz
 	}
 
-	newLooseEnds := getNewLooseEndsForBranches(looseEnds, curTarget.coord, arm1End, arm2End)
+	newLooseEnds := getNewLooseEndsForBranches(looseEnds, curTarget.Coord, arm1End, arm2End)
 
-	if curTarget.next == nil {
+	if curTarget.Next == nil {
 		return d.getSolutionByConnectingLooseEnds(
 			twoArmPuzz.DeepCopy(),
 			newLooseEnds,
@@ -172,7 +172,7 @@ func (d *targetSolver) buildAllTwoArmsForTraversal(
 	return d.getSolutionFromDepths(
 		depth+1,
 		twoArmPuzz,
-		*curTarget.next,
+		*curTarget.Next,
 		newLooseEnds,
 	)
 }
@@ -180,14 +180,14 @@ func (d *targetSolver) buildAllTwoArmsForTraversal(
 func (d *targetSolver) sendOutTwoArms(
 	puzz *puzzle.Puzzle,
 	start model.NodeCoord,
-	ta twoArms,
+	ta model.TwoArms,
 ) (*puzzle.Puzzle, model.NodeCoord, model.NodeCoord) {
 
 	var err error
 
 	arm1End := start
 	for {
-		if oe, inBounds := puzz.GetOutgoingEdgesFrom(start); !inBounds || oe.GetNumInDirection(ta.arm1Heading) >= ta.arm1Len {
+		if oe, inBounds := puzz.GetOutgoingEdgesFrom(start); !inBounds || oe.GetNumInDirection(ta.One.Heading) >= ta.One.Len {
 			break
 		}
 
@@ -195,7 +195,7 @@ func (d *targetSolver) sendOutTwoArms(
 		prevEnd := arm1End
 
 		d.numProcessed++
-		arm1End, puzz, err = puzz.AddEdge(ta.arm1Heading, arm1End)
+		arm1End, puzz, err = puzz.AddEdge(ta.One.Heading, arm1End)
 		if err != nil {
 			if err != puzzle.ErrEdgeAlreadyExists {
 				return nil, model.NodeCoord{}, model.NodeCoord{}
@@ -203,13 +203,13 @@ func (d *targetSolver) sendOutTwoArms(
 			// if the edge already exists, let's allow it
 			// and see if the puzzle will be valid
 			puzz = prevPuzz
-			arm1End = prevEnd.Translate(ta.arm1Heading)
+			arm1End = prevEnd.Translate(ta.One.Heading)
 		}
 	}
 
 	arm2End := start
 	for {
-		if oe, inBounds := puzz.GetOutgoingEdgesFrom(start); !inBounds || oe.GetNumInDirection(ta.arm2Heading) >= ta.arm2Len {
+		if oe, inBounds := puzz.GetOutgoingEdgesFrom(start); !inBounds || oe.GetNumInDirection(ta.Two.Heading) >= ta.Two.Len {
 			break
 		}
 
@@ -217,7 +217,7 @@ func (d *targetSolver) sendOutTwoArms(
 		prevEnd := arm2End
 
 		d.numProcessed++
-		arm2End, puzz, err = puzz.AddEdge(ta.arm2Heading, arm2End)
+		arm2End, puzz, err = puzz.AddEdge(ta.Two.Heading, arm2End)
 		if err != nil {
 			if err != puzzle.ErrEdgeAlreadyExists {
 				return nil, model.NodeCoord{}, model.NodeCoord{}
@@ -225,7 +225,7 @@ func (d *targetSolver) sendOutTwoArms(
 			// if the edge already exists, let's allow it
 			// and see if the puzzle will be valid
 			puzz = prevPuzz
-			arm2End = prevEnd.Translate(ta.arm2Heading)
+			arm2End = prevEnd.Translate(ta.Two.Heading)
 		}
 	}
 
