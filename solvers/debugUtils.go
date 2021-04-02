@@ -3,10 +3,24 @@ package solvers
 import (
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/joshprzybyszewski/shingokisolver/model"
 	"github.com/joshprzybyszewski/shingokisolver/puzzle"
 )
+
+func include(
+	puzz *puzzle.Puzzle,
+) bool {
+	line2 := `(w 5)         (b 4) 2-> <- 1(XXX) 1-> <- 2(XXX)         (b 4) 1-> <- 1(XXX)`
+	line4 := `(XXX)         (b 3) 1-> <- 1(b 2)         (XXX)         (XXX)         (XXX)`
+	lUpl5 := `  5                          1`
+
+	return strings.Contains(puzz.DebugString(), line2) &&
+		strings.Contains(puzz.DebugString(), line4) &&
+		strings.Contains(puzz.DebugString(), lUpl5)
+
+}
 
 var (
 	seen = map[model.NodeCoord]struct{}{}
@@ -14,8 +28,7 @@ var (
 
 func printAllTargetsHit(
 	caller string,
-	puzzle *puzzle.Puzzle,
-	looseEnds []model.NodeCoord,
+	puzz *puzzle.Puzzle,
 	iterations int,
 ) {
 	if !includeProgressLogs {
@@ -25,9 +38,14 @@ func printAllTargetsHit(
 	if iterations < 10 || iterations%10000 == 0 {
 		shouldSkip = false
 	}
+	if include(puzz) {
+		shouldSkip = false
+	}
 	if shouldSkip {
 		return
 	}
+
+	looseEnds := puzz.LooseEnds()
 
 	log.Printf("printAllTargetsHit")
 	log.Printf("\tcaller:  \t%s",
@@ -39,23 +57,26 @@ func printAllTargetsHit(
 	log.Printf("\tlooseEnds:\t%+v",
 		looseEnds,
 	)
-	log.Printf("\tpuzzle:\n%s\n", puzzle)
+	log.Printf("\tpuzzle:\n%s\n", puzz)
 	fmt.Scanf("wait for acknowledgement")
 }
+
+var (
+	hasSeen = false
+)
 
 func printPuzzleUpdate(
 	caller string,
 	depth int,
-	puzzle *puzzle.Puzzle,
+	puzz *puzzle.Puzzle,
 	targeting model.Target,
-	looseEnds []model.NodeCoord,
 	iterations int,
 ) {
 
 	if !includeProgressLogs {
 		return
 	}
-	shouldSkip := false
+	shouldSkip := true
 	if _, ok := seen[targeting.Coord]; ok {
 		shouldSkip = false
 		seen[targeting.Coord] = struct{}{}
@@ -63,9 +84,14 @@ func printPuzzleUpdate(
 	if iterations < 10 || iterations%10000 == 0 {
 		shouldSkip = false
 	}
+	if include(puzz) {
+		shouldSkip = false
+	}
 	if shouldSkip {
 		return
 	}
+
+	looseEnds := puzz.LooseEnds()
 
 	log.Printf("printPuzzleUpdate")
 	log.Printf("\tcaller:  \t%s",
@@ -83,6 +109,16 @@ func printPuzzleUpdate(
 	log.Printf("\tlooseEnds:\t%+v",
 		looseEnds,
 	)
-	log.Printf("\tpuzzle:\n%s\n", puzzle)
+	log.Printf("\tpuzzle:\n%s\n", puzz)
 	fmt.Scanf("wait for acknowledgement")
+}
+
+func copyAndRemove(orig []model.NodeCoord, exclude model.NodeCoord) []model.NodeCoord {
+	cpy := make([]model.NodeCoord, 0, len(orig)-1)
+	for _, le := range orig {
+		if le != exclude {
+			cpy = append(cpy, le)
+		}
+	}
+	return cpy
 }

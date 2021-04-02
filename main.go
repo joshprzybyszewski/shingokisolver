@@ -83,10 +83,6 @@ func runSolver(
 		return
 	}
 
-	if pd.String() != `PuzzleID: 161,408 with 5 edges` {
-		return
-	}
-
 	log.Printf("Starting to solve %q with %s...\n", pd.String(), st)
 	s := solvers.NewSolver(
 		pd.NumEdges,

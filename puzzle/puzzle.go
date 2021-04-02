@@ -8,6 +8,8 @@ type Puzzle struct {
 	numEdges uint8
 	nodes    map[model.NodeCoord]model.Node
 
+	paths *paths
+
 	nodeGrid model.Grid
 }
 
@@ -29,6 +31,7 @@ func NewPuzzle(
 		numEdges: uint8(numEdges),
 		nodes:    nodes,
 		nodeGrid: model.NewGrid(numEdges),
+		paths:    &paths{},
 	}
 }
 
@@ -43,12 +46,17 @@ func (p *Puzzle) DeepCopy() *Puzzle {
 		numEdges: p.numEdges,
 		nodes:    p.nodes,
 		nodeGrid: p.nodeGrid.Copy(),
+		paths:    p.paths.copy(),
 	}
 }
 
 func (p *Puzzle) GetNode(coord model.NodeCoord) (model.Node, bool) {
 	n, ok := p.nodes[coord]
 	return n, ok
+}
+
+func (p *Puzzle) LooseEnds() []model.NodeCoord {
+	return p.paths.looseEnds()
 }
 
 func (p *Puzzle) NumEdges() int {

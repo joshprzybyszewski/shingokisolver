@@ -69,16 +69,21 @@ func (p *Puzzle) AddEdge(
 		startNode, endNode,
 	)
 
-	rangeState := p.GetRangeState(
-		endNode.Row-1,
-		endNode.Row+1,
-		endNode.Col-1,
-		endNode.Col+1,
-	)
-	switch rangeState {
-	case model.Violation, model.Unexpected:
-		return model.NodeCoord{}, nil, rangeState
+	switch snState := p.getStateForCoord(startNode); snState {
+	case model.Complete, model.Incomplete:
+		// is fine
+	default:
+		return model.NodeCoord{}, nil, snState
 	}
+
+	switch enState := p.getStateForCoord(endNode); enState {
+	case model.Complete, model.Incomplete:
+		// is fine
+	default:
+		return model.NodeCoord{}, nil, enState
+	}
+
+	p.paths.add(startNode, endNode)
 
 	return endNode, p, model.Incomplete
 }

@@ -37,16 +37,15 @@ func (d *targetSolver) solve() (*puzzle.Puzzle, bool) {
 		return nil, false
 	}
 
-	puzz, looseEnds, numProcessed := claimGimmes(d.puzzle.DeepCopy())
+	puzz, numProcessed := claimGimmes(d.puzzle.DeepCopy())
 	d.numProcessed += numProcessed
 
-	printPuzzleUpdate(`claimGimmes`, 0, puzz, targets[0], looseEnds, d.iterations())
+	printPuzzleUpdate(`claimGimmes`, 0, puzz, targets[0], d.iterations())
 
 	p := d.getSolutionFromDepths(
 		0,
 		puzz,
 		targets[0],
-		looseEnds,
 	)
 	return p, p != nil
 }
@@ -55,10 +54,9 @@ func (d *targetSolver) getSolutionFromDepths(
 	depth int,
 	puzz *puzzle.Puzzle,
 	targeting model.Target,
-	looseEnds []model.NodeCoord,
 ) *puzzle.Puzzle {
 
-	printPuzzleUpdate(`getSolutionFromDepths`, depth, puzz, targeting, looseEnds, d.iterations())
+	printPuzzleUpdate(`getSolutionFromDepths`, depth, puzz, targeting, d.iterations())
 
 	targetCoord := targeting.Coord
 
@@ -75,13 +73,9 @@ func (d *targetSolver) getSolutionFromDepths(
 		// on completion, and then add it as a "partial solution" that
 		// has no new loose ends
 
-		leCpy := make([]model.NodeCoord, len(looseEnds))
-		copy(leCpy, looseEnds)
-
 		if targeting.Next == nil {
 			return d.getSolutionByConnectingLooseEnds(
 				puzz.DeepCopy(),
-				leCpy,
 			)
 		}
 
@@ -89,7 +83,6 @@ func (d *targetSolver) getSolutionFromDepths(
 			depth+1,
 			puzz.DeepCopy(),
 			*targeting.Next,
-			leCpy,
 		)
 	}
 
@@ -98,15 +91,11 @@ func (d *targetSolver) getSolutionFromDepths(
 	// until we "complete" the node.
 	options := model.BuildTwoArmOptions(node)
 	for _, option := range options {
-		leCpy := make([]model.NodeCoord, len(looseEnds))
-		copy(leCpy, looseEnds)
-
 		// then, once we find a completion path, add it to the returned slice
 		p := d.buildAllTwoArmsForTraversal(
 			depth,
 			puzz.DeepCopy(),
 			targeting,
-			leCpy,
 			option,
 		)
 		if p != nil {
@@ -119,33 +108,31 @@ func (d *targetSolver) getSolutionFromDepths(
 
 func (d *targetSolver) getSolutionByConnectingLooseEnds(
 	puzz *puzzle.Puzzle,
-	looseEnds []model.NodeCoord,
 ) *puzzle.Puzzle {
 
-	printAllTargetsHit(`getSolutionByConnectingLooseEnds`, puzz, looseEnds, d.iterations())
+	printAllTargetsHit(`getSolutionByConnectingLooseEnds`, puzz, d.iterations())
 
 	// this means we've iterated through all of the target nodes
-	return d.connect(puzz, looseEnds)
+	return d.connect(puzz)
 }
 
 func (d *targetSolver) buildAllTwoArmsForTraversal(
 	depth int,
 	puzz *puzzle.Puzzle,
 	curTarget model.Target,
-	looseEnds []model.NodeCoord,
 	ta model.TwoArms,
 ) *puzzle.Puzzle {
 
-	printPuzzleUpdate(fmt.Sprintf(`buildAllTwoArmsForTraversal(%+v)`, ta), depth, puzz, curTarget, looseEnds, d.iterations())
+	printPuzzleUpdate(fmt.Sprintf(`buildAllTwoArmsForTraversal(%+v)`, ta), depth, puzz, curTarget, d.iterations())
 
-	twoArmPuzz, arm1End, arm2End := d.sendOutTwoArms(
+	twoArmPuzz := d.sendOutTwoArms(
 		puzz.DeepCopy(),
 		curTarget.Coord,
 		ta,
 	)
 
 	if !puzzle.IsCompleteNode(twoArmPuzz, curTarget.Coord) {
-		printPuzzleUpdate(fmt.Sprintf(`!puzzle.IsCompleteNode(twoArmPuzz, %+v)`, curTarget.Coord), depth, twoArmPuzz, curTarget, looseEnds, d.iterations())
+		printPuzzleUpdate(fmt.Sprintf(`!puzzle.IsCompleteNode(twoArmPuzz, %+v)`, curTarget.Coord), depth, twoArmPuzz, curTarget, d.iterations())
 		// we _should_ have added a number of straight edges that will
 		// complete our target node.
 		// if not, then we don't want to add this to our partials
@@ -158,16 +145,13 @@ func (d *targetSolver) buildAllTwoArmsForTraversal(
 	case model.Incomplete:
 		// continue
 	default:
-		printPuzzleUpdate(fmt.Sprintf(`puzz.GetState() = %v`, puzz.GetState()), depth, twoArmPuzz, curTarget, looseEnds, d.iterations())
+		printPuzzleUpdate(fmt.Sprintf(`puzz.GetState() = %v`, puzz.GetState()), depth, twoArmPuzz, curTarget, d.iterations())
 		return nil
 	}
-
-	newLooseEnds := getLooseEndsNotOnArms(looseEnds, curTarget.Coord, arm1End, arm2End)
 
 	if curTarget.Next == nil {
 		return d.getSolutionByConnectingLooseEnds(
 			twoArmPuzz.DeepCopy(),
-			newLooseEnds,
 		)
 	}
 
@@ -175,7 +159,6 @@ func (d *targetSolver) buildAllTwoArmsForTraversal(
 		depth+1,
 		twoArmPuzz,
 		*curTarget.Next,
-		newLooseEnds,
 	)
 }
 
@@ -183,7 +166,7 @@ func (d *targetSolver) sendOutTwoArms(
 	puzz *puzzle.Puzzle,
 	start model.NodeCoord,
 	ta model.TwoArms,
-) (*puzzle.Puzzle, model.NodeCoord, model.NodeCoord) {
+) *puzzle.Puzzle {
 
 	var state model.State
 
@@ -208,7 +191,7 @@ func (d *targetSolver) sendOutTwoArms(
 			// these cases are "ok"
 		default:
 			// there was a problem. Early return
-			return nil, model.NodeCoord{}, model.NodeCoord{}
+			return nil
 		}
 	}
 
@@ -233,9 +216,9 @@ func (d *targetSolver) sendOutTwoArms(
 			// these cases are "ok"
 		default:
 			// there was a problem. Early return
-			return nil, model.NodeCoord{}, model.NodeCoord{}
+			return nil
 		}
 	}
 
-	return puzz, arm1End, arm2End
+	return puzz
 }

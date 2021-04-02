@@ -32,8 +32,8 @@ func (d *targetSolver) solveForGoals(
 	goals []model.NodeCoord,
 ) (*puzzle.Puzzle, map[model.NodeCoord][]*puzzle.Puzzle, model.State) {
 
+	printAllTargetsHit(fmt.Sprintf(`solveForGoals(%+v)`, start), input, d.iterations())
 	if input == nil {
-		panic(`da heck`)
 		return nil, nil, model.Unexpected
 	}
 

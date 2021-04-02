@@ -75,7 +75,7 @@ func (p *Puzzle) getRangeState(
 }
 
 func (p *Puzzle) getStateOfNodes() model.State {
-	hasIncompleteNodes := false
+	allNodesComplete := false
 	// it's cheaper for us to just iterate all of the nodes
 	// and check for their validity than it is to check every
 	// (r, c) or filtering out to only be in the range
@@ -83,22 +83,21 @@ func (p *Puzzle) getStateOfNodes() model.State {
 		oe, ok := p.GetOutgoingEdgesFrom(nc)
 		if !ok {
 			// something really weird happened
-			panic(`da heck`)
 			return model.Unexpected
 		}
 		switch s := n.GetState(oe); s {
 		case model.Violation, model.Unexpected:
 			return s
 		case model.Incomplete:
-			hasIncompleteNodes = true
+			allNodesComplete = false
 		}
 	}
 
-	if hasIncompleteNodes {
-		return model.Incomplete
+	if allNodesComplete {
+		return model.Complete
 	}
 
-	return model.Complete
+	return model.Incomplete
 }
 
 func (p *Puzzle) getStateForCoord(
