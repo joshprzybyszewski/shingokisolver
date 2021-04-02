@@ -39,14 +39,16 @@ func buildTargets(p *puzzle.Puzzle) []*target {
 	}
 	sort.Slice(targets, func(i, j int) bool {
 		// rank _lower_ valued nodes at the start of the target list
-		if targets[i].node.Value() != targets[j].node.Value() {
+		iPossibilities := possibleConfigurationsForNode(targets[i].node)
+		jPossibilities := possibleConfigurationsForNode(targets[j].node)
+		if iPossibilities != jPossibilities {
 			// this is counter-intuitive to me. I would think that I should
 			// solve for "big rocks" first. But it makes sense that a computer
 			// can process all of the "size 2" nodes first, because they have
 			// 2 solutions (for white) or 4 solutions (for black) instead of
 			// the many possible solutions a larger node has. Coupling this with
 			// the DFS search on targeted nodes provides marked improvements.
-			return targets[i].node.Value() < targets[j].node.Value()
+			return iPossibilities < jPossibilities
 		}
 
 		// put nodes with more limitations (i.e. on the sides or
@@ -88,4 +90,17 @@ func buildTargets(p *puzzle.Puzzle) []*target {
 	}
 
 	return targets
+}
+
+func possibleConfigurationsForNode(
+	n model.Node,
+) int {
+	switch n.Type() {
+	case model.WhiteNode:
+		return int(n.Value()-1) * 2
+	case model.BlackNode:
+		return int(n.Value()-1) * 4
+	}
+
+	return 0
 }

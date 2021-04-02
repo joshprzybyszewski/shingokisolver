@@ -8,8 +8,6 @@ import (
 type targetSolver struct {
 	puzzle *puzzle.Puzzle
 
-	looseEndConnector *looseEndConnector
-
 	numProcessed int
 }
 
@@ -22,8 +20,7 @@ func newTargetSolver(
 	}
 
 	return &targetSolver{
-		puzzle:            puzzle.NewPuzzle(size, nl),
-		looseEndConnector: &looseEndConnector{},
+		puzzle: puzzle.NewPuzzle(size, nl),
 	}
 }
 
