@@ -24,22 +24,10 @@ func BuildTargets(
 		})
 	}
 
-	isOnTheSide := func(coord NodeCoord) bool {
-		return coord.Row == 0 ||
-			coord.Row == RowIndex(numEdges) ||
-			coord.Col == 0 ||
-			coord.Col == ColIndex(numEdges)
-	}
-	isACorner := func(coord NodeCoord) bool {
-		return (coord.Row == 0 ||
-			coord.Row == RowIndex(numEdges)) &&
-			(coord.Col == 0 ||
-				coord.Col == ColIndex(numEdges))
-	}
 	sort.Slice(targets, func(i, j int) bool {
 		// rank _lower_ valued nodes at the start of the Target list
-		iPossibilities := possibleConfigurationsForNode(targets[i].Node)
-		jPossibilities := possibleConfigurationsForNode(targets[j].Node)
+		iPossibilities := numPossibleConfigs(targets[i], numEdges)
+		jPossibilities := numPossibleConfigs(targets[j], numEdges)
 		if iPossibilities != jPossibilities {
 			// this is counter-intuitive to me. I would think that I should
 			// solve for "big rocks" first. But it makes sense that a computer
@@ -48,24 +36,6 @@ func BuildTargets(
 			// the many possible solutions a larger node has. Coupling this with
 			// the DFS search on targeted nodes provides marked improvements.
 			return iPossibilities < jPossibilities
-		}
-
-		// put nodes with more limitations (i.e. on the sides or
-		// the corners of the graph) higher up on the list
-		iIsEdge := isOnTheSide(targets[i].Coord)
-		jIsEdge := isOnTheSide(targets[j].Coord)
-		if iIsEdge && jIsEdge {
-			iIsACorner := isACorner(targets[i].Coord)
-			jIsACorner := isACorner(targets[j].Coord)
-			if iIsACorner && !jIsACorner {
-				return true
-			} else if !iIsACorner && jIsACorner {
-				return false
-			}
-		} else if iIsEdge {
-			return true
-		} else if jIsEdge {
-			return false
 		}
 
 		// put white nodes in front of black nodes
@@ -91,17 +61,29 @@ func BuildTargets(
 	return targets
 }
 
-func possibleConfigurationsForNode(
-	n Node,
+func numPossibleConfigs(
+	target Target,
+	numEdges int,
 ) int {
-	// TODO once we've got a cache on buildTwoArmOptions, use:
-	// return len(buildTwoArmOptions(n))
-	switch n.Type() {
-	case WhiteNode:
-		return int(n.Value()-1) * 2
-	case BlackNode:
-		return int(n.Value()-1) * 4
+	twoArmsOptions := len(BuildTwoArmOptions(target.Node))
+
+	if isOnTheSide(target.Coord, numEdges) {
+		if isACorner(target.Coord, numEdges) {
+			twoArmsOptions /= 4
+		} else {
+			twoArmsOptions /= 2
+		}
 	}
 
-	return 0
+	return twoArmsOptions
+}
+
+func isOnTheSide(coord NodeCoord, numEdges int) bool {
+	return coord.Row == 0 || coord.Row == RowIndex(numEdges) ||
+		coord.Col == 0 || coord.Col == ColIndex(numEdges)
+}
+
+func isACorner(coord NodeCoord, numEdges int) bool {
+	return (coord.Row == 0 || coord.Row == RowIndex(numEdges)) &&
+		(coord.Col == 0 || coord.Col == ColIndex(numEdges))
 }

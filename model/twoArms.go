@@ -10,17 +10,24 @@ type TwoArms struct {
 	Two Arm
 }
 
+var (
+	optionsCache = map[Node][]TwoArms{}
+)
+
 func BuildTwoArmOptions(n Node) []TwoArms {
-	// TODO keep a cache around for this...
+	if answer, ok := optionsCache[n]; ok {
+		return answer
+	}
+
 	var options []TwoArms
 
-	for i, feeler1 := range AllCardinals {
-		for _, feeler2 := range AllCardinals[i+1:] {
+	for _, feeler1 := range AllCardinals {
+		for _, feeler2 := range AllCardinals {
 			if n.IsInvalidMotions(feeler1, feeler2) {
 				continue
 			}
 
-			for arm1 := int8(1); arm1 <= n.Value()/2; arm1++ {
+			for arm1 := int8(1); arm1 < n.Value(); arm1++ {
 				options = append(options, TwoArms{
 					One: Arm{
 						Len:     arm1,
@@ -34,6 +41,8 @@ func BuildTwoArmOptions(n Node) []TwoArms {
 			}
 		}
 	}
+
+	optionsCache[n] = options
 
 	return options
 }
