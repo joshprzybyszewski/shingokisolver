@@ -3,57 +3,102 @@ package solvers
 import (
 	"fmt"
 	"log"
-	"sort"
 
 	"github.com/joshprzybyszewski/shingokisolver/model"
 	"github.com/joshprzybyszewski/shingokisolver/puzzle"
 )
 
-type partialSolutionItem struct {
-	puzzle *puzzle.Puzzle
+type twoArms struct {
+	arm1Len int8
+	arm2Len int8
 
-	targeting *target
+	arm1Heading model.Cardinal
+	arm2Heading model.Cardinal
+}
 
-	looseEnds []model.NodeCoord
+func buildTwoArmOptions(n model.Node) []twoArms {
+	var options []twoArms
+
+	for i, feeler1 := range model.AllCardinals {
+		for _, feeler2 := range model.AllCardinals[i+1:] {
+			if n.IsInvalidMotions(feeler1, feeler2) {
+				continue
+			}
+
+			for arm1 := int8(1); arm1 <= n.Value()/2; arm1++ {
+				options = append(options, twoArms{
+					arm1Heading: feeler1,
+					arm2Heading: feeler2,
+					arm1Len:     arm1,
+					arm2Len:     n.Value() - arm1,
+				})
+			}
+		}
+	}
+
+	return options
 }
 
 // eliminates loose ends that don't actually exist
 // leaves the looseEnds slice in the order that it had previously
-func (partial *partialSolutionItem) removeDuplicateLooseEnds() {
-	looseEndsCpy := make([]model.NodeCoord, len(partial.looseEnds))
-	copy(looseEndsCpy, partial.looseEnds)
-	sort.Slice(looseEndsCpy, func(i, j int) bool {
-		if looseEndsCpy[i].Row != looseEndsCpy[j].Row {
-			return looseEndsCpy[i].Row < looseEndsCpy[j].Row
-		}
-		return looseEndsCpy[i].Col < looseEndsCpy[j].Col
-	})
+func getLooseEndsWithoutDuplicates(looseEnds []model.NodeCoord) []model.NodeCoord {
 
-	shouldRemove := make(map[model.NodeCoord]struct{})
-	for i := 0; i < len(looseEndsCpy)-1; i++ {
-		if looseEndsCpy[i] == looseEndsCpy[i+1] {
-			shouldRemove[looseEndsCpy[i]] = struct{}{}
+	numExisting := make(map[model.NodeCoord]int, len(looseEnds))
+	for _, le := range looseEnds {
+		numExisting[le] += 1
+	}
+
+	looseEndsDeduped := make([]model.NodeCoord, 0, len(looseEnds))
+	for _, le := range looseEnds {
+		if existing := numExisting[le]; existing%2 == 0 {
+			looseEndsDeduped = append(looseEndsDeduped, le)
 		}
 	}
 
-	for i := 0; i < len(partial.looseEnds); i++ {
-		if _, ok := shouldRemove[partial.looseEnds[i]]; ok {
-			partial.looseEnds = append(
-				partial.looseEnds[:i],
-				partial.looseEnds[i+1:]...,
-			)
-			i--
-		}
-	}
+	return looseEndsDeduped
 }
 
 var (
 	seen = map[model.NodeCoord]struct{}{}
 )
 
-func printPartialSolution(
+func printAllTargetsHit(
 	caller string,
-	partial *partialSolutionItem,
+	puzzle *puzzle.Puzzle,
+	looseEnds []model.NodeCoord,
+	iterations int,
+) {
+	if !includeProgressLogs {
+		return
+	}
+	shouldSkip := true
+	if iterations < 10 || iterations%10000 == 0 {
+		shouldSkip = false
+	}
+	if shouldSkip {
+		return
+	}
+
+	log.Printf("printAllTargetsHit")
+	log.Printf("\tcaller:  \t%s",
+		caller,
+	)
+	log.Printf("\titerations:\t%d",
+		iterations,
+	)
+	log.Printf("\tlooseEnds:\t%+v",
+		looseEnds,
+	)
+	log.Printf("\tpuzzle:\n%s\n", puzzle)
+	fmt.Scanf("wait for acknowledgement")
+}
+
+func printPuzzleUpdate(
+	caller string,
+	depth int,
+	puzzle *puzzle.Puzzle,
+	targeting target,
+	looseEnds []model.NodeCoord,
 	iterations int,
 ) {
 
@@ -61,15 +106,9 @@ func printPartialSolution(
 		return
 	}
 	shouldSkip := false
-	if partial.puzzle == nil {
-		shouldSkip = true
-	}
-	if partial.targeting != nil {
-		shouldSkip = true
-		if _, ok := seen[partial.targeting.coord]; ok {
-			shouldSkip = false
-			seen[partial.targeting.coord] = struct{}{}
-		}
+	if _, ok := seen[targeting.coord]; ok {
+		shouldSkip = false
+		seen[targeting.coord] = struct{}{}
 	}
 	if iterations < 10 || iterations%10000 == 0 {
 		shouldSkip = false
@@ -78,12 +117,22 @@ func printPartialSolution(
 		return
 	}
 
-	log.Printf("printPartialSolution from %s (%d iterations): (targeting %v) looseEnds: %v",
+	log.Printf("printPuzzleUpdate")
+	log.Printf("\tcaller:  \t%s",
 		caller,
-		iterations,
-		partial.targeting,
-		partial.looseEnds,
 	)
-	log.Printf(":\n%s\n", partial.puzzle)
+	log.Printf("\tdepth:   \t%d",
+		depth,
+	)
+	log.Printf("\titerations:\t%d",
+		iterations,
+	)
+	log.Printf("\ttargeting:\t%+v",
+		targeting,
+	)
+	log.Printf("\tlooseEnds:\t%+v",
+		looseEnds,
+	)
+	log.Printf("\tpuzzle:\n%s\n", puzzle)
 	fmt.Scanf("wait for acknowledgement")
 }

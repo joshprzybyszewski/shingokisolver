@@ -14,11 +14,11 @@ type target struct {
 	next *target
 }
 
-func buildTargets(p *puzzle.Puzzle) []*target {
-	targets := make([]*target, 0, len(p.NodeTargets()))
+func buildTargets(p *puzzle.Puzzle) []target {
+	targets := make([]target, 0, len(p.NodeTargets()))
 
 	for nc, n := range p.NodeTargets() {
-		targets = append(targets, &target{
+		targets = append(targets, target{
 			node:  n,
 			coord: nc,
 		})
@@ -86,7 +86,7 @@ func buildTargets(p *puzzle.Puzzle) []*target {
 	})
 
 	for i := 1; i < len(targets); i++ {
-		targets[i-1].next = targets[i]
+		targets[i-1].next = &targets[i]
 	}
 
 	return targets

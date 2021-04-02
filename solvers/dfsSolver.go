@@ -136,8 +136,8 @@ func (d *dfsSolver) solveForGoals(
 
 	p, state := d.takeNextStepIntoDepthTowardsGoals(
 		ret,
-		&dfsSolverStep{
-			puzzle: input.DeepCopy(),
+		dfsSolverStep{
+			puzzle: input,
 			coord:  start,
 		},
 	)
@@ -146,34 +146,50 @@ func (d *dfsSolver) solveForGoals(
 
 func (d *dfsSolver) takeNextStepIntoDepthTowardsGoals(
 	puzzlesByTargetedLooseEnd map[model.NodeCoord][]*puzzle.Puzzle,
-	step *dfsSolverStep,
+	step dfsSolverStep,
 ) (*puzzle.Puzzle, dfsGoalSolution) {
-	if step == nil {
+	if step.puzzle == nil {
 		return nil, mayContinue
 	}
 
-	if isIncomplete, err := step.puzzle.IsIncomplete(step.coord); err != nil {
-		return nil, badState
-	} else if !isIncomplete {
-		return step.puzzle, solvedPuzzle
+	if len(puzzlesByTargetedLooseEnd) <= 1 {
+		// there's only one target node. that means we need to check for violations
+		// and walk the path to verify it's complete
+		if isIncomplete, err := step.puzzle.IsIncomplete(step.coord); err != nil {
+			return nil, badState
+		} else if !isIncomplete {
+			return step.puzzle, solvedPuzzle
+		}
+	} else {
+		// there's more than 1 possible goal nodes. instead of walking the
+		// whole path, let's just check to see if the puzzle has been violated
+		if violates, err := step.puzzle.IsInViolation(step.coord); err != nil || violates {
+			return nil, badState
+		}
 	}
 
-	if step.puzzle != nil {
-		if slice, ok := puzzlesByTargetedLooseEnd[step.coord]; ok {
-			puzzlesByTargetedLooseEnd[step.coord] = append(slice, step.puzzle.DeepCopy())
-		}
+	if slice, ok := puzzlesByTargetedLooseEnd[step.coord]; ok {
+		puzzlesByTargetedLooseEnd[step.coord] = append(slice, step.puzzle.DeepCopy())
 	}
 
 	d.numProcessed++
 	if includeProgressLogs && (d.numProcessed < 100 || d.numProcessed%1000 == 500) {
-		fmt.Printf("About to process (%d, %d): %d\n%s\n", step.coord.Row, step.coord.Col, d.numProcessed, step.puzzle.String())
+		fmt.Printf("About to process (%d, %d): %d\n%s\n",
+			step.coord.Row, step.coord.Col,
+			d.numProcessed,
+			step.puzzle.String(),
+		)
 		fmt.Scanf("hello there")
 	}
 
 	for _, nextHeading := range model.AllCardinals {
+		nextStep := d.getNextStep(step.puzzle, nextHeading, step.coord)
+		if nextStep == nil {
+			continue
+		}
 		g, sol := d.takeNextStepIntoDepthTowardsGoals(
 			puzzlesByTargetedLooseEnd,
-			d.getNextStep(step.puzzle, nextHeading, step.coord),
+			*nextStep,
 		)
 
 		switch sol {

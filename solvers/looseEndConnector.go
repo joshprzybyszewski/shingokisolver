@@ -5,62 +5,71 @@ import (
 	"github.com/joshprzybyszewski/shingokisolver/puzzle"
 )
 
-type looseEndConnector struct {
-	iterations int
-}
-
-func (lec *looseEndConnector) connect(
-	partial *partialSolutionItem,
+func (d *targetSolver) connect(
+	puzz *puzzle.Puzzle,
+	looseEnds []model.NodeCoord,
 ) *puzzle.Puzzle {
-	printPartialSolution(`connect`, partial, lec.iterations)
 
-	numLooseEndsByNode := make(map[model.NodeCoord]int, len(partial.looseEnds))
-	for _, g := range partial.looseEnds {
-		numLooseEndsByNode[g] += 1
+	printAllTargetsHit(
+		`connect`,
+		puzz,
+		looseEnds,
+		d.iterations(),
+	)
+
+	looseEndsDeduped := getLooseEndsWithoutDuplicates(looseEnds)
+	if len(looseEndsDeduped) == 0 {
+		isIncomplete, err := puzz.IsIncomplete(model.NodeCoord{})
+		if err != nil || isIncomplete {
+			return nil
+		}
+		// otherwise, if we have no loose ends, then we can't do anything!
+		return puzz
 	}
 
-	for i, start := range partial.looseEnds {
-		if numLooseEndsByNode[start] > 1 {
-			// This means that two nodes have a "loose end" that meets
-			// up at the same point. Let's just skip trying to find this
-			// "loose" end a buddy since it already has one.
-			continue
-		}
+	dfs := newDFSSolverForPartialSolution()
+	defer func() {
+		d.numProcessed += dfs.iterations()
+	}()
 
-		dfs := newDFSSolverForPartialSolution()
-		p, morePartials, sol := dfs.solveForGoals(
-			partial.puzzle,
-			start,
-			partial.looseEnds[i+1:],
-		)
-		lec.iterations += dfs.iterations()
+	start := looseEndsDeduped[0]
 
-		switch sol {
-		case solvedPuzzle:
-			return p
-		}
+	p, morePartials, sol := dfs.solveForGoals(
+		puzz.DeepCopy(),
+		start,
+		looseEndsDeduped[1:],
+	)
 
-		// we only need to look at the first loose end in the
-		// puzzle, so we return the following.
-		return lec.iterateMorePartials(partial, start, morePartials)
+	switch sol {
+	case solvedPuzzle:
+		return p
 	}
 
-	return nil
+	// we only need to look at the first loose end in the
+	// puzzle, so we return the following.
+	return d.iterateMorePartials(start, looseEndsDeduped[1:], morePartials)
 }
 
-func (lec *looseEndConnector) iterateMorePartials(
-	partial *partialSolutionItem,
+func (d *targetSolver) iterateMorePartials(
 	start model.NodeCoord,
+	otherLooseEnds []model.NodeCoord,
 	morePartials map[model.NodeCoord][]*puzzle.Puzzle,
 ) *puzzle.Puzzle {
-	looseEndsWithoutStart := copyAndRemove(partial.looseEnds, start)
-
 	for hitGoal, slice := range morePartials {
 		for _, nextPuzzle := range slice {
-			puzz := lec.connect(&partialSolutionItem{
-				puzzle:    nextPuzzle,
-				looseEnds: copyAndRemove(looseEndsWithoutStart, hitGoal),
-			})
+
+			// TODO remove this print
+			printAllTargetsHit(
+				`iterateMorePartials`,
+				nextPuzzle,
+				copyAndRemove(otherLooseEnds, hitGoal),
+				d.iterations(),
+			)
+
+			puzz := d.connect(
+				nextPuzzle,
+				copyAndRemove(otherLooseEnds, hitGoal),
+			)
 			if puzz != nil {
 				return puzz
 			}
