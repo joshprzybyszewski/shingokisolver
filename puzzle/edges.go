@@ -83,7 +83,5 @@ func (p *Puzzle) AddEdge(
 		return model.NodeCoord{}, enState
 	}
 
-	p.paths.add(startNode, endNode)
-
 	return endNode, model.Incomplete
 }

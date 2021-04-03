@@ -8,8 +8,6 @@ type Puzzle struct {
 	numEdges uint8
 	nodes    map[model.NodeCoord]model.Node
 
-	paths *paths
-
 	nodeGrid model.Grid
 }
 
@@ -31,7 +29,6 @@ func NewPuzzle(
 		numEdges: uint8(numEdges),
 		nodes:    nodes,
 		nodeGrid: model.NewGrid(numEdges),
-		paths:    newPaths(2 * len(nodes)),
 	}
 }
 
@@ -46,7 +43,6 @@ func (p *Puzzle) DeepCopy() *Puzzle {
 		numEdges: p.numEdges,
 		nodes:    p.nodes,
 		nodeGrid: p.nodeGrid.Copy(),
-		paths:    p.paths.copy(len(p.nodes) * 2),
 	}
 }
 
@@ -55,12 +51,24 @@ func (p *Puzzle) GetNode(coord model.NodeCoord) (model.Node, bool) {
 	return n, ok
 }
 
-func (p *Puzzle) GetLooseEnd() (model.NodeCoord, bool) {
-	return p.paths.getLooseEnd()
-}
+func (p *Puzzle) GetLooseEnd() (model.NodeCoord, model.State) {
+	for r := model.RowIndex(0); r <= model.RowIndex(p.numEdges); r++ {
+		for c := model.ColIndex(0); c <= model.ColIndex(p.numEdges); c++ {
+			nc := model.NewCoord(r, c)
+			oe, ok := p.GetOutgoingEdgesFrom(nc)
+			if !ok {
+				return model.NodeCoord{}, model.Violation
+			}
 
-func (p *Puzzle) NumLooseEnds() int {
-	return p.paths.numLooseEnds()
+			switch numEdges := oe.GetNumOutgoingDirections(); {
+			case numEdges > 2:
+				return model.NodeCoord{}, model.Violation
+			case numEdges == 1:
+				return nc, model.Incomplete
+			}
+		}
+	}
+	return model.NodeCoord{}, model.NodesComplete
 }
 
 func (p *Puzzle) NumEdges() int {

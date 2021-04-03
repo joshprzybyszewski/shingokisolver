@@ -9,17 +9,22 @@ func (d *targetSolver) connect(
 	puzz *puzzle.Puzzle,
 ) *puzzle.Puzzle {
 
-	looseEnd, ok := puzz.GetLooseEnd()
+	looseEnd, state := puzz.GetLooseEnd()
 	printAllTargetsHit(`connect`, puzz, d.iterations())
 
-	if !ok {
-		switch puzz.GetState() {
-		case model.Complete:
+	switch state {
+	case model.Complete:
+		return puzz
+	case model.NodesComplete:
+		if puzz.GetState() == model.Complete {
 			return puzz
-		default:
-			printAllTargetsHit(`had no loose ends, but not complete`, puzz, d.iterations())
-			return nil
 		}
+		return nil
+	case model.Incomplete:
+		// keep on goin
+	default:
+		printAllTargetsHit(`GetLooseEnd returned a state`, puzz, d.iterations())
+		return nil
 	}
 
 	p, sol := d.solveFromLooseEnd(

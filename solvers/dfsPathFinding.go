@@ -49,8 +49,9 @@ func (d *targetSolver) dfsOutFrom(
 			continue
 		}
 
-		if nextPuzz.NumLooseEnds() != puzz.NumLooseEnds() {
-			// iterate down
+		if oe, ok := nextPuzz.GetOutgoingEdgesFrom(nextCoord); ok && oe.GetNumOutgoingDirections() == 2 {
+			// we connected to an existing path.
+			// iterate down from another loose end
 			retPuzz := d.connect(nextPuzz)
 			if retPuzz != nil {
 				return retPuzz, model.Complete
