@@ -31,7 +31,7 @@ func NewPuzzle(
 		numEdges: uint8(numEdges),
 		nodes:    nodes,
 		nodeGrid: model.NewGrid(numEdges),
-		paths:    &paths{},
+		paths:    newPaths(2 * len(nodes)),
 	}
 }
 

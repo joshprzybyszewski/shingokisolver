@@ -34,7 +34,6 @@ func Run() {
 		return
 	}
 
-	panic(`noooo`)
 	submitAnswer(wp, sr)
 }
 

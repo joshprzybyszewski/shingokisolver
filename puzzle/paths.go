@@ -3,7 +3,13 @@ package puzzle
 import "github.com/joshprzybyszewski/shingokisolver/model"
 
 type paths struct {
-	connections map[model.NodeCoord]model.NodeCoord
+	slice []model.NodeCoord
+}
+
+func newPaths(maxLooseEnds int) *paths {
+	return &paths{
+		slice: make([]model.NodeCoord, 0, maxLooseEnds),
+	}
 }
 
 func (p *paths) getLooseEnd() (model.NodeCoord, bool) {
@@ -12,77 +18,40 @@ func (p *paths) getLooseEnd() (model.NodeCoord, bool) {
 		return le, false
 	}
 
-	for k := range p.connections {
-		le = k
-		break
-	}
-	return le, true
+	return p.slice[0], true
 }
 
 func (p *paths) numLooseEnds() int {
-	return len(p.connections)
+	return len(p.slice)
 }
 
 func (p *paths) copy(maxSize int) *paths {
-	connCpy := make(map[model.NodeCoord]model.NodeCoord, maxSize)
-	for k, v := range p.connections {
-		connCpy[k] = v
-	}
+	sliceCpy := make([]model.NodeCoord, len(p.slice), cap(p.slice))
+	copy(sliceCpy, p.slice)
 	return &paths{
-		connections: connCpy,
+		slice: sliceCpy,
 	}
 }
 
 func (p *paths) add(start, end model.NodeCoord) {
-	startBuddy, hasStart := p.connections[start]
-
-	endBuddy, hasEnd := p.connections[end]
-
-	if hasStart && hasEnd {
-		delete(p.connections, start)
-		delete(p.connections, end)
-		if startBuddy == endBuddy {
-			// we've connected a loop. delete both of the buddies.
-			delete(p.connections, startBuddy)
-			delete(p.connections, endBuddy)
-			return
+	hasStart, hasEnd := false, false
+	for i := 0; i < len(p.slice); i++ {
+		if p.slice[i] != start && p.slice[i] != end {
+			continue
 		}
-
-		// we've connected two disparate paths.
-		// notify the respective ends.
-		p.connections[startBuddy] = endBuddy
-		p.connections[endBuddy] = startBuddy
-		return
-	}
-
-	if hasStart {
-		delete(p.connections, start)
-		if startBuddy == end {
-			// we've connected a loop. delete both of the entries.
-			delete(p.connections, startBuddy)
-			delete(p.connections, end)
-			return
+		if p.slice[i] == start {
+			hasStart = true
+		} else {
+			hasEnd = true
 		}
-
-		p.connections[startBuddy] = end
-		p.connections[end] = startBuddy
-		return
+		p.slice[i] = p.slice[len(p.slice)-1]
+		p.slice = p.slice[:len(p.slice)-1]
+		i--
 	}
-
-	if hasEnd {
-		delete(p.connections, end)
-		if start == endBuddy {
-			// we've connected a loop. delete both of the entries.
-			delete(p.connections, start)
-			delete(p.connections, endBuddy)
-			return
-		}
-
-		p.connections[start] = endBuddy
-		p.connections[endBuddy] = start
-		return
+	if !hasStart {
+		p.slice = append(p.slice, start)
 	}
-
-	p.connections[start] = end
-	p.connections[end] = start
+	if !hasEnd {
+		p.slice = append(p.slice, end)
+	}
 }
