@@ -8,8 +8,7 @@ const (
 )
 
 const (
-	defaultExpectedOneDirection = 4
-	defaultTotalExpectedUpdates = 2 + defaultExpectedOneDirection + defaultExpectedOneDirection
+	defaultTotalExpectedUpdates = 16
 )
 
 type gridUpdate struct {
@@ -60,6 +59,7 @@ func ApplyGridConnections(
 				grid,
 				endCoord, startCoord,
 				end, start,
+				updates,
 			)...,
 		)
 	case HeadRight:
@@ -68,6 +68,7 @@ func ApplyGridConnections(
 				grid,
 				startCoord, endCoord,
 				start, end,
+				updates,
 			)...,
 		)
 	case HeadUp:
@@ -76,6 +77,7 @@ func ApplyGridConnections(
 				grid,
 				endCoord, startCoord,
 				end, start,
+				updates,
 			)...,
 		)
 	case HeadDown:
@@ -84,6 +86,7 @@ func ApplyGridConnections(
 				grid,
 				startCoord, endCoord,
 				start, end,
+				updates,
 			)...,
 		)
 	}
@@ -95,8 +98,8 @@ func getRowConnectionUpdates(
 	grid Grid,
 	leftNode, rightNode NodeCoord,
 	initialLeftVal, initialRightVal OutgoingEdges,
+	updates []gridUpdate,
 ) []gridUpdate {
-	updates := make([]gridUpdate, 0, defaultExpectedOneDirection)
 
 	curCoord := rightNode
 	cur := initialRightVal
@@ -141,8 +144,8 @@ func getColConnectionUpdates(
 	grid Grid,
 	topNode, bottomNode NodeCoord,
 	initialTopVal, initialBottomVal OutgoingEdges,
+	updates []gridUpdate,
 ) []gridUpdate {
-	updates := make([]gridUpdate, 0, defaultExpectedOneDirection)
 
 	curCoord := topNode
 	cur := initialTopVal
