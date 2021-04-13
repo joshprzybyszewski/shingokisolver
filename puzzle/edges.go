@@ -70,7 +70,10 @@ func (p *Puzzle) addEdge(
 		case model.Ok, model.Incomplete:
 			return model.Incomplete
 		default:
-			// here
+			p.printMsg("addEdge(%s) checkRuleset returned %s",
+				ep,
+				state,
+			)
 			return state
 		}
 
@@ -79,6 +82,10 @@ func (p *Puzzle) addEdge(
 		rq.noticeUpdated(ep)
 		return model.Incomplete
 	default:
+		p.printMsg("addEdge(%s) edges.SetEdge returned %s",
+			ep,
+			state,
+		)
 		return state
 	}
 
@@ -126,6 +133,10 @@ func (p *Puzzle) avoidEdge(
 		// see if I'm breaking any rules or I can make any more moves
 		return p.checkRuleset(rq, ep, model.EdgeAvoided)
 	default:
+		p.printMsg("avoidEdge(%s) edges returned %s",
+			ep,
+			state,
+		)
 		return state
 	}
 }
@@ -142,7 +153,19 @@ func (p *Puzzle) runQueue(
 	}
 
 	for ep := range rq.updated {
-		if p.rules.getRules(ep).getEdgeState(p.edges) != p.edges.GetEdge(ep) {
+		eval := p.rules.getRules(ep).getEdgeState(p.edges)
+		if eval == model.EdgeUnknown || eval == model.EdgeOutOfBounds {
+			// this is ok. It means that our algorithm is trying out
+			// edges, and we cannot determine what they are
+			continue
+		}
+		exp := p.edges.GetEdge(ep)
+		if eval != exp {
+			p.printMsg("runQueue(%s) evaled %s but expected %s",
+				ep,
+				eval,
+				exp,
+			)
 			return model.Violation
 		}
 	}

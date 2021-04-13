@@ -205,7 +205,6 @@ func (d *targetSolver) sendOutTwoArms(
 		// these cases are "ok"
 	default:
 		// there was a problem. Early return
-		panic(s)
 		return nil
 	}
 

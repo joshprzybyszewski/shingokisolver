@@ -20,6 +20,12 @@ func (p *Puzzle) checkRuleset(
 	switch newEdge {
 	case model.EdgeAvoided, model.EdgeExists:
 		if expState != newEdge {
+			p.printMsg("checkRuleset(%s, %s) previously was %s, now is %s",
+				ep,
+				expState,
+				expState,
+				newEdge,
+			)
 			return model.Violation
 		}
 	}
