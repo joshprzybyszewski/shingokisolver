@@ -24,12 +24,6 @@ w4w2...w4.b2
 
 	puzz := puzzle.NewPuzzle(pd.NumEdges, pd.Nodes)
 	expTargets := []*model.Target{{
-		Coord: model.NewCoord(3, 7),
-		Node:  model.NewNode(model.NewCoord(3, 7), false, 2),
-	}, {
-		Coord: model.NewCoord(1, 1),
-		Node:  model.NewNode(model.NewCoord(1, 1), false, 2),
-	}, {
 		Coord: model.NewCoord(2, 6),
 		Node:  model.NewNode(model.NewCoord(2, 6), true, 2),
 	}, {
@@ -39,23 +33,29 @@ w4w2...w4.b2
 		Coord: model.NewCoord(4, 2),
 		Node:  model.NewNode(model.NewCoord(4, 2), true, 2),
 	}, {
-		Coord: model.NewCoord(1, 3),
-		Node:  model.NewNode(model.NewCoord(1, 3), true, 3),
-	}, {
-		Coord: model.NewCoord(5, 2),
-		Node:  model.NewNode(model.NewCoord(5, 2), false, 3),
-	}, {
-		Coord: model.NewCoord(7, 7),
-		Node:  model.NewNode(model.NewCoord(7, 7), false, 4),
+		Coord: model.NewCoord(3, 7),
+		Node:  model.NewNode(model.NewCoord(3, 7), false, 2),
 	}, {
 		Coord: model.NewCoord(3, 0),
 		Node:  model.NewNode(model.NewCoord(3, 0), true, 4),
 	}, {
-		Coord: model.NewCoord(7, 2),
-		Node:  model.NewNode(model.NewCoord(7, 2), false, 4),
+		Coord: model.NewCoord(7, 7),
+		Node:  model.NewNode(model.NewCoord(7, 7), false, 4),
+	}, {
+		Coord: model.NewCoord(1, 3),
+		Node:  model.NewNode(model.NewCoord(1, 3), true, 3),
+	}, {
+		Coord: model.NewCoord(1, 1),
+		Node:  model.NewNode(model.NewCoord(1, 1), false, 2),
 	}, {
 		Coord: model.NewCoord(3, 5),
 		Node:  model.NewNode(model.NewCoord(3, 5), true, 4),
+	}, {
+		Coord: model.NewCoord(7, 2),
+		Node:  model.NewNode(model.NewCoord(7, 2), false, 4),
+	}, {
+		Coord: model.NewCoord(5, 2),
+		Node:  model.NewNode(model.NewCoord(5, 2), false, 3),
 	}, {
 		Coord: model.NewCoord(2, 1),
 		Node:  model.NewNode(model.NewCoord(2, 1), false, 6),

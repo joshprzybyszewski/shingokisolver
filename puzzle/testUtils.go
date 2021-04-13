@@ -17,12 +17,12 @@ func BuildTestPuzzle(
 ) *Puzzle {
 	c := startCoord
 	outPuzz := p.DeepCopy()
-	for _, s := range steps {
-		switch outPuzz.AddEdge(c, s) {
+	for _, dir := range steps {
+		switch s := outPuzz.AddEdge(c, dir); s {
 		case model.Unexpected, model.Violation, model.Duplicate:
-			require.Fail(t, "unexpected state after adding edge: %+v, %+v\n%s\n", s, c, p)
+			require.Fail(t, "failure building puzzle", "unexpected state (%s) after adding edge: %+v, %+v\n%s\n", s, dir, c, p)
 		}
-		c = c.Translate(s)
+		c = c.Translate(dir)
 	}
 	t.Logf("BuildTestPuzzle produced: \n%s\n", p)
 	return p
