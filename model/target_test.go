@@ -24,41 +24,41 @@ w4w2...w4.b2
 
 	puzz := puzzle.NewPuzzle(pd.NumEdges, pd.Nodes)
 	expTargets := []*model.Target{{
-		Coord: model.NewCoordFromInts(3, 7),
-		Node:  model.NewNode(NodeCoord{}, false, 2),
+		Coord: model.NewCoord(3, 7),
+		Node:  model.NewNode(model.NewCoord(3, 7), false, 2),
 	}, {
-		Coord: model.NewCoordFromInts(1, 1),
-		Node:  model.NewNode(NodeCoord{}, false, 2),
+		Coord: model.NewCoord(1, 1),
+		Node:  model.NewNode(model.NewCoord(1, 1), false, 2),
 	}, {
-		Coord: model.NewCoordFromInts(2, 6),
-		Node:  model.NewNode(NodeCoord{}, false, 2),
+		Coord: model.NewCoord(2, 6),
+		Node:  model.NewNode(model.NewCoord(2, 6), true, 2),
 	}, {
-		Coord: model.NewCoordFromInts(3, 1),
-		Node:  model.NewNode(NodeCoord{}, false, 2),
+		Coord: model.NewCoord(3, 1),
+		Node:  model.NewNode(model.NewCoord(3, 1), true, 2),
 	}, {
-		Coord: model.NewCoordFromInts(4, 2),
-		Node:  model.NewNode(NodeCoord{}, false, 2),
+		Coord: model.NewCoord(4, 2),
+		Node:  model.NewNode(model.NewCoord(4, 2), true, 2),
 	}, {
-		Coord: model.NewCoordFromInts(1, 3),
-		Node:  model.NewNode(NodeCoord{}, false, 3),
+		Coord: model.NewCoord(1, 3),
+		Node:  model.NewNode(model.NewCoord(1, 3), true, 3),
 	}, {
-		Coord: model.NewCoordFromInts(5, 2),
-		Node:  model.NewNode(NodeCoord{}, false, 3),
+		Coord: model.NewCoord(5, 2),
+		Node:  model.NewNode(model.NewCoord(5, 2), false, 3),
 	}, {
-		Coord: model.NewCoordFromInts(7, 7),
-		Node:  model.NewNode(NodeCoord{}, false, 4),
+		Coord: model.NewCoord(7, 7),
+		Node:  model.NewNode(model.NewCoord(7, 7), false, 4),
 	}, {
-		Coord: model.NewCoordFromInts(3, 0),
-		Node:  model.NewNode(NodeCoord{}, false, 4),
+		Coord: model.NewCoord(3, 0),
+		Node:  model.NewNode(model.NewCoord(3, 0), true, 4),
 	}, {
-		Coord: model.NewCoordFromInts(7, 2),
-		Node:  model.NewNode(NodeCoord{}, false, 4),
+		Coord: model.NewCoord(7, 2),
+		Node:  model.NewNode(model.NewCoord(7, 2), false, 4),
 	}, {
-		Coord: model.NewCoordFromInts(3, 5),
-		Node:  model.NewNode(NodeCoord{}, false, 4),
+		Coord: model.NewCoord(3, 5),
+		Node:  model.NewNode(model.NewCoord(3, 5), true, 4),
 	}, {
-		Coord: model.NewCoordFromInts(2, 1),
-		Node:  model.NewNode(NodeCoord{}, false, 6),
+		Coord: model.NewCoord(2, 1),
+		Node:  model.NewNode(model.NewCoord(2, 1), false, 6),
 	}}
 
 	actTargets := puzz.Targets()
@@ -68,7 +68,7 @@ w4w2...w4.b2
 		if i == len(actTargets)-1 {
 			assert.Nil(t, actTarget.Next, `final target should have a nil next target`)
 		} else {
-			assert.Equal(t, actTarget.Next, actTargets[i+1], `target at index %d did not point to the next target`, i)
+			assert.Equal(t, actTarget.Next, &actTargets[i+1], `target at index %d did not point to the next target`, i)
 		}
 		assert.Equal(t, expTargets[i].Coord, actTarget.Coord, `target at index %d had unexpected coords`, i)
 		assert.Equal(t, expTargets[i].Node, actTarget.Node, `target at index %d had unexpected coords`, i)

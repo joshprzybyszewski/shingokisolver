@@ -14,7 +14,14 @@ debug:
 run:
 	go run main.go
 
-
 .PHONY: compete
 compete:
 	go run -tags="secretSauce" main.go -competitive
+
+.PHONY: test
+test:
+	go test -short ./...
+
+.PHONY: longtest
+longtest:
+	go test ./...

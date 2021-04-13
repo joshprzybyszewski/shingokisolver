@@ -36,7 +36,7 @@ func (p *Puzzle) printMsg(
 
 	log.Println("-- start --")
 	log.Printf(fmtString+"\n%s", append(args, p)...)
-	log.Println("--  end  --\n")
+	log.Println("--  end  --\n ")
 }
 
 func printDebugMsg(
@@ -49,5 +49,5 @@ func printDebugMsg(
 
 	log.Println("== start ==")
 	log.Printf(fmtString, args...)
-	log.Println("==  end  ==\n")
+	log.Println("==  end  ==\n ")
 }

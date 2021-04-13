@@ -7,7 +7,7 @@ func (p *Puzzle) GetLooseEnd() (model.NodeCoord, model.State) {
 		for c := model.ColIndex(0); c <= model.ColIndex(p.numEdges); c++ {
 			nc := model.NewCoord(r, c)
 
-			switch numEdges := p.GetNumOutgoingDirections(nc); {
+			switch numEdges := getNumOutgoingDirections(p.edges, nc); {
 			case numEdges > 2:
 				return model.InvalidNodeCoord, model.Violation
 			case numEdges == 1:
@@ -18,10 +18,10 @@ func (p *Puzzle) GetLooseEnd() (model.NodeCoord, model.State) {
 	return model.InvalidNodeCoord, model.NodesComplete
 }
 
-func (p *Puzzle) GetNumOutgoingDirections(
+func (p *Puzzle) HasTwoOutgoingEdges(
 	coord model.NodeCoord,
-) int8 {
-	return getNumOutgoingDirections(p.edges, coord)
+) bool {
+	return getNumOutgoingDirections(p.edges, coord) == 2
 }
 
 func getNumOutgoingDirections(
