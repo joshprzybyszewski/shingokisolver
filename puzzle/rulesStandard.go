@@ -7,6 +7,10 @@ func getStandardNodeRules(
 	otherStartEdges, otherEndEdges []edgePair,
 ) func(ge getEdger) model.EdgeState {
 
+	if len(otherStartEdges) != 3 || len(otherEndEdges) != 3 {
+		panic(`unexpected input`)
+	}
+
 	return func(ge getEdger) model.EdgeState {
 		numAvoided := 0
 		numOutOfBounds := 0
@@ -26,12 +30,13 @@ func getStandardNodeRules(
 		if numExisting > 2 {
 			return model.EdgeErrored
 		}
-		if numAvoided > 2 {
+
+		shouldAvoid := numExisting == 2 || numAvoided+numOutOfBounds == 3
+		shouldExist := numAvoided+numOutOfBounds == 2 && numExisting == 1
+
+		if shouldAvoid && shouldExist {
 			return model.EdgeErrored
 		}
-
-		shouldAvoid := numExisting == 2
-		shouldExist := numAvoided+numOutOfBounds == 2 && numExisting == 1
 
 		numAvoided = 0
 		numOutOfBounds = 0
@@ -67,6 +72,14 @@ func getStandardNodeRules(
 				return model.EdgeErrored
 			}
 			return model.EdgeExists
+		}
+
+		if shouldExist {
+			return model.EdgeExists
+		}
+
+		if shouldAvoid {
+			return model.EdgeAvoided
 		}
 
 		return model.EdgeUnknown
