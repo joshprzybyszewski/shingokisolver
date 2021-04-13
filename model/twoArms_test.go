@@ -9,7 +9,7 @@ import (
 func TestBuildTwoArmOptions(t *testing.T) {
 
 	for val := int8(2); val <= 50; val++ {
-		blackNode := NewNode(false, val)
+		blackNode := NewNode(NodeCoord{}, false, val)
 		expTwoArms := longBuildTwoArms(blackNode)
 		actTwoArms := BuildTwoArmOptions(blackNode)
 		assert.ElementsMatch(t, expTwoArms, actTwoArms, `failed for node %+v`, blackNode)
@@ -21,7 +21,7 @@ func TestBuildTwoArmOptions(t *testing.T) {
 		assert.Equal(t, expNumOptions, len(expTwoArms), `unexpected num options for a black node: %+v`, blackNode)
 		assert.Equal(t, expNumOptions, len(actTwoArms), `unexpected num options for a black node: %+v`, blackNode)
 
-		whiteNode := NewNode(true, val)
+		whiteNode := NewNode(NodeCoord{}, true, val)
 		expTwoArms = longBuildTwoArms(whiteNode)
 		actTwoArms = BuildTwoArmOptions(whiteNode)
 		assert.ElementsMatch(t, expTwoArms, actTwoArms, `failed for node %+v`, whiteNode)

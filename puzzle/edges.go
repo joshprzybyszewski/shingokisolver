@@ -10,78 +10,142 @@ var (
 	ErrEdgeAlreadyExists = errors.New(`already had edge`)
 )
 
-func (p *Puzzle) GetOutgoingEdgesFrom(
-	coord model.NodeCoord,
-) (model.OutgoingEdges, bool) {
-	if !p.nodeGrid.IsInBounds(coord) {
-		return model.OutgoingEdges{}, false
-	}
-
-	return p.nodeGrid.Get(coord), true
-}
-
 func (p *Puzzle) IsEdge(
 	move model.Cardinal,
 	nc model.NodeCoord,
 ) bool {
-	return p.isEdge(move, nc)
-}
-
-func (p *Puzzle) isEdge(
-	move model.Cardinal,
-	nc model.NodeCoord,
-) bool {
-	if !p.nodeGrid.IsInBounds(nc) {
-		return false
-	}
-	maxIndex := p.numEdges
-
-	switch move {
-	case model.HeadLeft:
-		return nc.Col != 0 && p.nodeGrid.Get(nc).IsLeft()
-	case model.HeadRight:
-		return uint8(nc.Col) != maxIndex && p.nodeGrid.Get(nc).IsRight()
-	case model.HeadUp:
-		return nc.Row != 0 && p.nodeGrid.Get(nc).IsAbove()
-	case model.HeadDown:
-		return uint8(nc.Row) != maxIndex && p.nodeGrid.Get(nc).IsBelow()
-	default:
-		return false
-	}
+	ep, err := standardizeInput(nc, move)
+	return err == nil && p.edges.GetEdge(ep) == model.EdgeExists
 }
 
 func (p *Puzzle) AddEdge(
-	move model.Cardinal,
 	startNode model.NodeCoord,
-) (model.NodeCoord, model.State) {
-	if p.isEdge(move, startNode) {
-		return model.NodeCoord{}, model.Duplicate
-	}
+	move model.Cardinal,
+) model.State {
 
-	endNode := startNode.Translate(move)
-	if !p.nodeGrid.IsInBounds(endNode) {
-		return model.NodeCoord{}, model.Violation
-	}
-
-	model.ApplyGridConnections(
-		p.nodeGrid,
+	p.printMsg("AddEdge(%s, %s)",
+		startNode,
 		move,
-		startNode, endNode,
 	)
 
-	switch snState := p.getStateForCoord(startNode); snState {
-	case model.Complete, model.Incomplete:
-		// is fine
-	default:
-		return model.NodeCoord{}, snState
+	ep, err := standardizeInput(startNode, move)
+
+	if err != nil {
+		return model.Unexpected
+	} else if !p.edges.isInBounds(ep) {
+		return model.Violation
 	}
 
-	switch enState := p.getStateForCoord(endNode); enState {
-	case model.Complete, model.Incomplete:
-		// is fine
+	rq := newRulesQueue()
+
+	switch s := p.addEdge(rq, ep); s {
+	case model.Ok, model.Incomplete, model.Duplicate:
 	default:
-		return model.NodeCoord{}, enState
+		return s
 	}
 
-	return endNode, model.Incomplete
+	switch s := p.runQueue(rq); s {
+	case model.Ok, model.Incomplete, model.Duplicate:
+		return model.Incomplete
+	default:
+		return s
+	}
+}
+
+func (p *Puzzle) addEdge(
+	rq *rulesQueue,
+	ep edgePair,
+) model.State {
+
+	p.printMsg("addEdge(%s)",
+		ep,
+	)
+
+	switch state := p.edges.SetEdge(ep); state {
+	case model.Ok, model.Incomplete, model.Complete:
+		rq.noticeUpdated(ep)
+
+		// see if I'm breaking any rules or I can make any more moves
+		switch state := p.checkRuleset(rq, ep, model.EdgeExists); state {
+		case model.Ok, model.Incomplete:
+			return model.Incomplete
+		default:
+			// here
+			return state
+		}
+
+	case model.Duplicate:
+		// not technically updated, but we tried to.
+		rq.noticeUpdated(ep)
+		return model.Incomplete
+	default:
+		return state
+	}
+
+}
+
+func (p *Puzzle) AvoidEdge(
+	startNode model.NodeCoord,
+	move model.Cardinal,
+) model.State {
+
+	p.printMsg("AvoidEdge(%s, %s)",
+		startNode, move,
+	)
+
+	ep, err := standardizeInput(startNode, move)
+
+	if err != nil {
+		return model.Unexpected
+	}
+
+	rq := newRulesQueue()
+
+	switch s := p.avoidEdge(rq, ep); s {
+	case model.Ok, model.Incomplete, model.Complete:
+		return p.runQueue(rq)
+	default:
+		return s
+	}
+
+}
+
+func (p *Puzzle) avoidEdge(
+	rq *rulesQueue,
+	ep edgePair,
+) model.State {
+
+	p.printMsg("avoidEdge(%s)",
+		ep,
+	)
+
+	switch state := p.edges.AvoidEdge(ep); state {
+	case model.Ok, model.Incomplete, model.Complete:
+		rq.noticeUpdated(ep)
+
+		// see if I'm breaking any rules or I can make any more moves
+		return p.checkRuleset(rq, ep, model.EdgeAvoided)
+	default:
+		return state
+	}
+}
+
+func (p *Puzzle) runQueue(
+	rq *rulesQueue,
+) model.State {
+	for ep, ok := rq.pop(); ok; ep, ok = rq.pop() {
+		switch s := p.updateEdgeFromRules(rq, ep); s {
+		case model.Violation,
+			model.Unexpected:
+			return s
+		}
+	}
+
+	for ep := range rq.updated {
+		if p.rules.getRules(ep).getEdgeState(p.edges) != p.edges.GetEdge(ep) {
+			return model.Violation
+		}
+	}
+
+	return model.Incomplete
 }

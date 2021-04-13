@@ -15,15 +15,14 @@ func BuildTestPuzzle(
 	startCoord model.NodeCoord,
 	steps ...model.Cardinal,
 ) *Puzzle {
-	var state model.State
 	c := startCoord
 	outPuzz := p.DeepCopy()
 	for _, s := range steps {
-		c, state = outPuzz.AddEdge(s, c)
-		switch state {
+		switch outPuzz.AddEdge(c, s) {
 		case model.Unexpected, model.Violation, model.Duplicate:
 			require.Fail(t, "unexpected state after adding edge: %+v, %+v\n%s\n", s, c, p)
 		}
+		c = c.Translate(s)
 	}
 	t.Logf("BuildTestPuzzle produced: \n%s\n", p)
 	return p

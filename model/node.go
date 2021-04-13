@@ -1,5 +1,7 @@
 package model
 
+import "fmt"
+
 type NodeType uint8
 
 const (
@@ -10,6 +12,17 @@ const (
 	// must be turned upon
 	BlackNode NodeType = 2
 )
+
+func (nt NodeType) String() string {
+	switch nt {
+	case WhiteNode:
+		return `w`
+	case BlackNode:
+		return `b`
+	default:
+		return `unknown NodeType`
+	}
+}
 
 func (nt NodeType) isInvalidEdges(oe OutgoingEdges) bool {
 	switch nt {
@@ -48,19 +61,29 @@ func (nt NodeType) isInvalidMotions(c1, c2 Cardinal) bool {
 }
 
 type Node struct {
+	coord NodeCoord
 	nType NodeType
 	val   int8
 }
 
-func NewNode(isWhite bool, v int8) Node {
+func NewNode(coord NodeCoord, isWhite bool, v int8) Node {
 	nt := BlackNode
 	if isWhite {
 		nt = WhiteNode
 	}
 	return Node{
+		coord: coord,
 		nType: nt,
 		val:   v,
 	}
+}
+
+func (n Node) String() string {
+	return fmt.Sprintf("%s%2d @ %+v", n.nType, n.val, n.coord)
+}
+
+func (n Node) Coord() NodeCoord {
+	return n.coord
 }
 
 func (n Node) Type() NodeType {

@@ -8,14 +8,6 @@ import (
 	"github.com/joshprzybyszewski/shingokisolver/puzzle"
 )
 
-var (
-	includeProgressLogs = false
-)
-
-func AddProgressLogs() {
-	includeProgressLogs = true
-}
-
 type SolverType int
 
 const (

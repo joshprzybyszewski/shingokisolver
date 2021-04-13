@@ -43,11 +43,11 @@ func (d *targetSolver) dfsOutFrom(
 		nextPuzz := puzz.DeepCopy()
 
 		d.numProcessed++
-		nextCoord, state := nextPuzz.AddEdge(nextHeading, fromCoord)
-		switch state {
+		switch nextPuzz.AddEdge(fromCoord, nextHeading) {
 		case model.Violation, model.Unexpected, model.Duplicate:
 			continue
 		}
+		nextCoord := fromCoord.Translate(nextHeading)
 
 		if oe, ok := nextPuzz.GetOutgoingEdgesFrom(nextCoord); ok && oe.GetNumOutgoingDirections() == 2 {
 			// we connected to an existing path.

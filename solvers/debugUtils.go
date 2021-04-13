@@ -9,6 +9,19 @@ import (
 	"github.com/joshprzybyszewski/shingokisolver/puzzle"
 )
 
+var (
+	includeProgressLogs = false
+)
+
+func AddProgressLogs() {
+	includeProgressLogs = true
+}
+
+var (
+	allIterationsUnder = 10000
+	iterationsModulo   = 10000
+)
+
 func include(
 	puzz *puzzle.Puzzle,
 ) bool {
@@ -35,7 +48,8 @@ func printAllTargetsHit(
 		return
 	}
 	shouldSkip := true
-	if iterations < 10 || iterations%10000 == 0 {
+	if iterations < allIterationsUnder ||
+		iterations%iterationsModulo == 0 {
 		shouldSkip = false
 	}
 	if include(puzz) {
@@ -52,6 +66,10 @@ func printAllTargetsHit(
 	log.Printf("\titerations:\t%d",
 		iterations,
 	)
+
+	log.Printf("\talpha:\n%+v\n", puzz.Alpha())
+	// log.Printf("\tbeta:\n%+v\n", puzz.Beta())
+
 	log.Printf("\tpuzzle:\n%s\n", puzz)
 	fmt.Scanf("wait for acknowledgement")
 }
@@ -76,7 +94,8 @@ func printPuzzleUpdate(
 		shouldSkip = false
 		seen[targeting.Coord] = struct{}{}
 	}
-	if iterations < 10 || iterations%10000 == 0 {
+	if iterations < allIterationsUnder ||
+		iterations%iterationsModulo == 0 {
 		shouldSkip = false
 	}
 	if include(puzz) {
@@ -99,6 +118,10 @@ func printPuzzleUpdate(
 	log.Printf("\ttargeting:\t%+v",
 		targeting,
 	)
+
+	log.Printf("\talpha:\n%+v\n", puzz.Alpha())
+	// log.Printf("\tbeta:\n%+v\n", puzz.Beta())
+
 	log.Printf("\tpuzzle:\n%s\n", puzz)
 	fmt.Scanf("wait for acknowledgement")
 }

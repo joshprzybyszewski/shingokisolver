@@ -2,6 +2,7 @@ package puzzle
 
 import "github.com/joshprzybyszewski/shingokisolver/model"
 
+// TODO potentially remove this?
 func IsCompleteNode(
 	p *Puzzle,
 	nc model.NodeCoord,

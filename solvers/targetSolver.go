@@ -1,6 +1,8 @@
 package solvers
 
 import (
+	"fmt"
+
 	"github.com/joshprzybyszewski/shingokisolver/model"
 	"github.com/joshprzybyszewski/shingokisolver/puzzle"
 )
@@ -35,10 +37,18 @@ func (d *targetSolver) solve() (*puzzle.Puzzle, bool) {
 		return nil, false
 	}
 
-	puzz, numProcessed := claimGimmes(d.puzzle.DeepCopy())
-	d.numProcessed += numProcessed
+	puzz := d.puzzle.DeepCopy()
 
-	printPuzzleUpdate(`claimGimmes`, 0, puzz, targets[0], d.iterations())
+	switch s := puzz.ClaimGimmes(); s {
+	case model.Incomplete, model.Complete, model.Ok:
+		printPuzzleUpdate(`ClaimGimmes`, 0, puzz, targets[0], d.iterations())
+	default:
+		return nil, false
+	}
+
+	if puzz == nil {
+		return nil, false
+	}
 
 	p := d.getSolutionFromDepths(
 		0,
@@ -160,59 +170,84 @@ func (d *targetSolver) sendOutTwoArms(
 	puzz *puzzle.Puzzle,
 	start model.NodeCoord,
 	ta model.TwoArms,
-) *puzzle.Puzzle {
+) (retPuzz *puzzle.Puzzle) {
 
-	var state model.State
+	defer func() {
+		printAllTargetsHit(
+			// TODO remove these
+			fmt.Sprintf("sendOutTwoArms(%+v, %+v) completed.\nfrom: \n%s\nto: \n%s\n",
+				start,
+				ta,
+				puzz,
+				retPuzz,
+			),
+			retPuzz, d.iterations(),
+		)
+	}()
 
 	arm1End := start
-	for {
-		if oe, inBounds := puzz.GetOutgoingEdgesFrom(start); !inBounds || oe.GetNumInDirection(ta.One.Heading) >= ta.One.Len {
-			break
-		}
-
-		prevPuzz := puzz
-		prevEnd := arm1End
-
-		d.numProcessed++
-		arm1End, state = puzz.AddEdge(ta.One.Heading, arm1End)
-		switch state {
-		case model.Duplicate:
-			// if the edge already exists, let's allow it
-			// and see if the puzzle will be valid
-			puzz = prevPuzz
-			arm1End = prevEnd.Translate(ta.One.Heading)
-		case model.Incomplete, model.Complete:
-			// these cases are "ok"
+	for i := int8(0); i < ta.One.Len; i++ {
+		switch puzz.AddEdge(arm1End, ta.One.Heading) {
+		case model.Duplicate, model.Incomplete, model.Complete, model.Ok:
+			// it's ok
+			d.numProcessed++
 		default:
 			// there was a problem. Early return
 			return nil
 		}
+		arm1End = arm1End.Translate(ta.One.Heading)
 	}
+
+	d.numProcessed++
+	switch s := puzz.AvoidEdge(arm1End, ta.One.Heading); s {
+	case model.Incomplete, model.Complete,
+		model.Duplicate, model.Ok:
+		// these cases are "ok"
+	default:
+		// there was a problem. Early return
+		panic(s)
+		return nil
+	}
+
+	printAllTargetsHit(
+		// TODO remove these
+		fmt.Sprintf("puzz.AvoidEdge(arm1End = %+v, ta.One.Heading = %s)",
+			arm1End,
+			ta.One.Heading,
+		),
+		puzz, d.iterations(),
+	)
 
 	arm2End := start
-	for {
-		if oe, inBounds := puzz.GetOutgoingEdgesFrom(start); !inBounds || oe.GetNumInDirection(ta.Two.Heading) >= ta.Two.Len {
-			break
-		}
-
-		prevPuzz := puzz
-		prevEnd := arm2End
-
-		d.numProcessed++
-		arm2End, state = puzz.AddEdge(ta.Two.Heading, arm2End)
-		switch state {
-		case model.Duplicate:
-			// if the edge already exists, let's allow it
-			// and see if the puzzle will be valid
-			puzz = prevPuzz
-			arm2End = prevEnd.Translate(ta.Two.Heading)
-		case model.Incomplete, model.Complete:
+	for i := int8(0); i < ta.Two.Len; i++ {
+		switch puzz.AddEdge(arm2End, ta.Two.Heading) {
+		case model.Duplicate, model.Incomplete, model.Complete, model.Ok:
 			// these cases are "ok"
+			d.numProcessed++
 		default:
 			// there was a problem. Early return
 			return nil
 		}
+		arm2End = arm2End.Translate(ta.Two.Heading)
 	}
+
+	switch state := puzz.AvoidEdge(arm2End, ta.Two.Heading); state {
+	case model.Incomplete, model.Complete, model.Duplicate, model.Ok:
+		// these cases are "ok"
+		d.numProcessed++
+	default:
+		// there was a problem. Early return
+		return nil
+	}
+
+	printAllTargetsHit(
+		// TODO remove these
+		fmt.Sprintf("puzz.AvoidEdge(arm2End = %+v, ta.Two.Heading = %s)",
+			arm2End,
+			ta.Two.Heading,
+		),
+		puzz, d.iterations(),
+	)
 
 	return puzz
 }

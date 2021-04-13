@@ -7,6 +7,17 @@ type OutgoingEdges struct {
 	right int8
 }
 
+func NewOutgoingEdges(
+	above, below, left, right int8,
+) OutgoingEdges {
+	return OutgoingEdges{
+		above: above,
+		below: below,
+		left:  left,
+		right: right,
+	}
+}
+
 func (oe OutgoingEdges) GetNumInDirection(
 	heading Cardinal,
 ) int8 {

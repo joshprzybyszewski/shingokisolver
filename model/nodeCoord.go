@@ -1,7 +1,14 @@
 package model
 
-type RowIndex int8
-type ColIndex int8
+var (
+	InvalidNodeCoord NodeCoord = NodeCoord{
+		Row: -1,
+		Col: -1,
+	}
+)
+
+type RowIndex int16
+type ColIndex int16
 
 type NodeCoord struct {
 	Row RowIndex

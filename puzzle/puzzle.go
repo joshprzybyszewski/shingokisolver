@@ -8,7 +8,8 @@ type Puzzle struct {
 	numEdges uint8
 	nodes    map[model.NodeCoord]model.Node
 
-	nodeGrid model.Grid
+	edges *edgesTriState
+	rules *ruleSet
 }
 
 func NewPuzzle(
@@ -22,13 +23,14 @@ func NewPuzzle(
 	nodes := map[model.NodeCoord]model.Node{}
 	for _, nl := range nodeLocations {
 		nc := model.NewCoordFromInts(nl.Row, nl.Col)
-		nodes[nc] = model.NewNode(nl.IsWhite, nl.Value)
+		nodes[nc] = model.NewNode(nc, nl.IsWhite, nl.Value)
 	}
 
 	return &Puzzle{
 		numEdges: uint8(numEdges),
 		nodes:    nodes,
-		nodeGrid: model.NewGrid(numEdges),
+		edges:    newEdgesBits(uint8(numEdges)),
+		rules:    newRuleSet(numEdges, nodes),
 	}
 }
 
@@ -42,33 +44,14 @@ func (p *Puzzle) DeepCopy() *Puzzle {
 	return &Puzzle{
 		numEdges: p.numEdges,
 		nodes:    p.nodes,
-		nodeGrid: p.nodeGrid.Copy(),
+		edges:    p.edges.Copy(),
+		rules:    p.rules,
 	}
 }
 
 func (p *Puzzle) GetNode(coord model.NodeCoord) (model.Node, bool) {
 	n, ok := p.nodes[coord]
 	return n, ok
-}
-
-func (p *Puzzle) GetLooseEnd() (model.NodeCoord, model.State) {
-	for r := model.RowIndex(0); r <= model.RowIndex(p.numEdges); r++ {
-		for c := model.ColIndex(0); c <= model.ColIndex(p.numEdges); c++ {
-			nc := model.NewCoord(r, c)
-			oe, ok := p.GetOutgoingEdgesFrom(nc)
-			if !ok {
-				return model.NodeCoord{}, model.Violation
-			}
-
-			switch numEdges := oe.GetNumOutgoingDirections(); {
-			case numEdges > 2:
-				return model.NodeCoord{}, model.Violation
-			case numEdges == 1:
-				return nc, model.Incomplete
-			}
-		}
-	}
-	return model.NodeCoord{}, model.NodesComplete
 }
 
 func (p *Puzzle) NumEdges() int {

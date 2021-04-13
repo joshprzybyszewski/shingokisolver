@@ -28,23 +28,35 @@ func (p *Puzzle) String() string {
 				}
 				sb.WriteString(fmt.Sprintf("%2d", n.Value()))
 			} else {
-				sb.WriteString(`XXX`)
+				sb.WriteString(`(-)`)
 			}
 			sb.WriteString(`)`)
 
 			// now draw an edge
-			if p.IsEdge(model.HeadRight, nc) {
-				sb.WriteString(`---`)
-			} else {
-				sb.WriteString(`   `)
+			ep, err := standardizeInput(nc, model.HeadRight)
+			if err == nil && p.edges.isInBounds(ep) {
+				switch p.edges.GetEdge(ep) {
+				case model.EdgeExists:
+					sb.WriteString(`---`)
+				case model.EdgeAvoided:
+					sb.WriteString(`XXX`)
+				default:
+					sb.WriteString(`   `)
+				}
 			}
 
 			// now draw any edges that are below
 			below.WriteString(`  `)
-			if p.IsEdge(model.HeadDown, nc) {
-				below.WriteString(`|`)
-			} else {
-				below.WriteString(` `)
+			ep, err = standardizeInput(nc, model.HeadDown)
+			if err == nil && p.edges.isInBounds(ep) {
+				switch p.edges.GetEdge(ep) {
+				case model.EdgeExists:
+					below.WriteString(`|`)
+				case model.EdgeAvoided:
+					below.WriteString(`X`)
+				default:
+					below.WriteString(` `)
+				}
 			}
 			below.WriteString(`     `)
 		}

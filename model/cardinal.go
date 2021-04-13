@@ -27,7 +27,21 @@ func (c Cardinal) String() string {
 	}
 }
 
-func Perpendiculars(c Cardinal) []Cardinal {
+func (c Cardinal) Opposite() Cardinal {
+	switch c {
+	case HeadRight:
+		return HeadLeft
+	case HeadLeft:
+		return HeadRight
+	case HeadUp:
+		return HeadDown
+	case HeadDown:
+		return HeadUp
+	}
+	return HeadNowhere
+}
+
+func (c Cardinal) Perpendiculars() []Cardinal {
 	switch c {
 	case HeadRight, HeadLeft:
 		return []Cardinal{HeadUp, HeadDown}

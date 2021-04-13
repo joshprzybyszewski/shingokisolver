@@ -22,6 +22,7 @@ var (
 func main() {
 	flag.Parse()
 	if *includeProgressLogs {
+		puzzle.AddProgressLogs()
 		solvers.AddProgressLogs()
 	}
 

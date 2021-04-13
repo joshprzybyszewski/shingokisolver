@@ -186,7 +186,7 @@ func TestNodeCopy(t *testing.T) {
 }
 
 func TestIsInvalidMotions(t *testing.T) {
-	w5 := NewNode(true, 5)
+	w5 := NewNode(NodeCoord{}, true, 5)
 
 	assert.True(t, w5.IsInvalidMotions(HeadUp, HeadRight))
 	assert.True(t, w5.IsInvalidMotions(HeadUp, HeadLeft))
@@ -202,7 +202,7 @@ func TestIsInvalidMotions(t *testing.T) {
 	assert.False(t, w5.IsInvalidMotions(HeadLeft, HeadRight))
 	assert.False(t, w5.IsInvalidMotions(HeadRight, HeadLeft))
 
-	b7 := NewNode(false, 7)
+	b7 := NewNode(NodeCoord{}, false, 7)
 	assert.False(t, b7.IsInvalidMotions(HeadUp, HeadRight))
 	assert.False(t, b7.IsInvalidMotions(HeadUp, HeadLeft))
 	assert.False(t, b7.IsInvalidMotions(HeadDown, HeadRight))
