@@ -16,7 +16,7 @@ func NewPuzzle(
 	numEdges int,
 	nodeLocations []model.NodeLocation,
 ) *Puzzle {
-	if numEdges > model.MAX_EDGES {
+	if numEdges > MaxEdges {
 		return nil
 	}
 

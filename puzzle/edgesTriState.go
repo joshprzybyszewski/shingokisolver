@@ -4,6 +4,10 @@ import (
 	"github.com/joshprzybyszewski/shingokisolver/model"
 )
 
+const (
+	MaxEdges = 25 // currently, the len(masks)
+)
+
 var _ getEdger = (*edgesTriState)(nil)
 
 var (
