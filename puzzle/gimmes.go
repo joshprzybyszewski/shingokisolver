@@ -9,12 +9,9 @@ func (p *Puzzle) ClaimGimmes() model.State {
 	for r := 0; r <= numEdges; r++ {
 		for c := 0; c <= numEdges; c++ {
 			nc := model.NewCoordFromInts(r, c)
-			ep := edgePair{
-				coord: nc,
-			}
 
 			if c < numEdges {
-				ep.dir = model.HeadRight
+				ep := newEdgePair(nc, model.HeadRight)
 
 				switch s := p.updateEdgeFromRules(rq, ep); s {
 				case model.Violation,
@@ -24,7 +21,7 @@ func (p *Puzzle) ClaimGimmes() model.State {
 			}
 
 			if r < numEdges {
-				ep.dir = model.HeadDown
+				ep := newEdgePair(nc, model.HeadDown)
 
 				switch s := p.updateEdgeFromRules(rq, ep); s {
 				case model.Violation,

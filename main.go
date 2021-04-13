@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"runtime/pprof"
+	"strings"
 	"time"
 
 	"github.com/joshprzybyszewski/shingokisolver/compete"
@@ -56,7 +57,14 @@ func main() {
 
 	for _, st := range solvers.AllSolvers {
 		for _, pd := range puzzles {
-			runSolver(st, pd)
+			if !strings.Contains(pd.String(), `PuzzleID: 1,520,692`) {
+				// this puzzle is tricking me...
+				continue
+			}
+
+			// runSolver(st, pd)
+			go runSolver(st, pd)
+			time.Sleep(11 * time.Second)
 
 			if *addPprof && (time.Since(t0) > 10*time.Second ||
 				pd.NumEdges >= 10) {

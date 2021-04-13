@@ -2,21 +2,17 @@ package puzzle
 
 import "github.com/joshprzybyszewski/shingokisolver/model"
 
-// TODO potentially remove this?
-func IsCompleteNode(
-	p *Puzzle,
+func (p *Puzzle) IsCompleteNode(
 	nc model.NodeCoord,
 ) bool {
 	if p == nil {
 		return false
 	}
 
-	oe, ok := p.GetOutgoingEdgesFrom(nc)
+	n, ok := p.nodes[nc]
 	if !ok {
-		// the coordinate must be out of bounds
 		return false
 	}
 
-	n, ok := p.nodes[nc]
-	return ok && n.IsComplete(oe)
+	return n.Value() == p.GetSumOutgoingStraightLines(n.Coord())
 }

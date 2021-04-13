@@ -51,5 +51,5 @@ func (sr SolvedResults) String() string {
 	if sr.Puzzle == nil {
 		return fmt.Sprintf("(%d iterations in %s) <no solution>\n", sr.NumIterations, sr.Duration.String())
 	}
-	return fmt.Sprintf("(%d iterations in %s)\n%s\n", sr.NumIterations, sr.Duration.String(), sr.Puzzle.String())
+	return fmt.Sprintf("(%d iterations in %s)\n%s\n", sr.NumIterations, sr.Duration.String(), sr.Puzzle.Solution())
 }

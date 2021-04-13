@@ -62,15 +62,15 @@ func newEdgesBits(
 func (eb *edgesTriState) isInBounds(
 	ep edgePair,
 ) bool {
-	if ep.coord.Row < 0 || ep.coord.Col < 0 {
+	if ep.Row < 0 || ep.Col < 0 {
 		// negative coords are bad
 		return false
 	}
-	switch ep.dir {
+	switch ep.Cardinal {
 	case model.HeadRight:
-		return uint8(ep.coord.Row) <= eb.numEdges && uint8(ep.coord.Col) < eb.numEdges
+		return uint8(ep.Row) <= eb.numEdges && uint8(ep.Col) < eb.numEdges
 	case model.HeadDown:
-		return uint8(ep.coord.Row) < eb.numEdges && uint8(ep.coord.Col) <= eb.numEdges
+		return uint8(ep.Row) < eb.numEdges && uint8(ep.Col) <= eb.numEdges
 	default:
 		// unexpected input
 		return false
@@ -85,19 +85,19 @@ func (eb *edgesTriState) GetEdge(
 		return model.EdgeOutOfBounds
 	}
 
-	switch ep.dir {
+	switch ep.Cardinal {
 	case model.HeadRight:
-		if (eb.rows[ep.coord.Row] & masks[ep.coord.Col]) != 0 {
+		if (eb.rows[ep.Row] & masks[ep.Col]) != 0 {
 			return model.EdgeExists
 		}
-		if (eb.avoidRows[ep.coord.Row] & masks[ep.coord.Col]) != 0 {
+		if (eb.avoidRows[ep.Row] & masks[ep.Col]) != 0 {
 			return model.EdgeAvoided
 		}
 	case model.HeadDown:
-		if (eb.cols[ep.coord.Col] & masks[ep.coord.Row]) != 0 {
+		if (eb.cols[ep.Col] & masks[ep.Row]) != 0 {
 			return model.EdgeExists
 		}
-		if (eb.avoidCols[ep.coord.Col] & masks[ep.coord.Row]) != 0 {
+		if (eb.avoidCols[ep.Col] & masks[ep.Row]) != 0 {
 			return model.EdgeAvoided
 		}
 	default:
@@ -120,11 +120,11 @@ func (eb *edgesTriState) SetEdge(
 		return model.Unexpected
 	}
 
-	switch ep.dir {
+	switch ep.Cardinal {
 	case model.HeadRight:
-		eb.rows[ep.coord.Row] |= masks[ep.coord.Col]
+		eb.rows[ep.Row] |= masks[ep.Col]
 	case model.HeadDown:
-		eb.cols[ep.coord.Col] |= masks[ep.coord.Row]
+		eb.cols[ep.Col] |= masks[ep.Row]
 	}
 
 	return model.Ok
@@ -145,11 +145,11 @@ func (eb *edgesTriState) AvoidEdge(
 		return model.Unexpected
 	}
 
-	switch ep.dir {
+	switch ep.Cardinal {
 	case model.HeadRight:
-		eb.avoidRows[ep.coord.Row] |= masks[ep.coord.Col]
+		eb.avoidRows[ep.Row] |= masks[ep.Col]
 	case model.HeadDown:
-		eb.avoidCols[ep.coord.Col] |= masks[ep.coord.Row]
+		eb.avoidCols[ep.Col] |= masks[ep.Row]
 	}
 
 	return model.Ok

@@ -49,7 +49,7 @@ func (d *targetSolver) dfsOutFrom(
 		}
 		nextCoord := fromCoord.Translate(nextHeading)
 
-		if oe, ok := nextPuzz.GetOutgoingEdgesFrom(nextCoord); ok && oe.GetNumOutgoingDirections() == 2 {
+		if nextPuzz.GetNumOutgoingDirections(nextCoord) == 2 {
 			// we connected to an existing path.
 			// iterate down from another loose end
 			retPuzz := d.connect(nextPuzz)

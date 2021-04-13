@@ -8,7 +8,8 @@ type rulesQueue struct {
 
 func newRulesQueue() *rulesQueue {
 	return &rulesQueue{
-		updated: map[edgePair]struct{}{},
+		toCheck: make([]edgePair, 0, 16),
+		updated: make(map[edgePair]struct{}, 16),
 	}
 }
 

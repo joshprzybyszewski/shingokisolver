@@ -3,7 +3,6 @@ package solvers
 import (
 	"fmt"
 	"log"
-	"strings"
 
 	"github.com/joshprzybyszewski/shingokisolver/model"
 	"github.com/joshprzybyszewski/shingokisolver/puzzle"
@@ -22,19 +21,6 @@ var (
 	iterationsModulo   = 10000
 )
 
-func include(
-	puzz *puzzle.Puzzle,
-) bool {
-	line2 := `(w 5)         (b 4) 2-> <- 1(XXX) 1-> <- 2(XXX)         (b 4) 1-> <- 1(XXX)`
-	line4 := `(XXX)         (b 3) 1-> <- 1(b 2)         (XXX)         (XXX)         (XXX)`
-	lUpl5 := `  5                          1`
-
-	return strings.Contains(puzz.DebugString(), line2) &&
-		strings.Contains(puzz.DebugString(), line4) &&
-		strings.Contains(puzz.DebugString(), lUpl5)
-
-}
-
 var (
 	seen = map[model.NodeCoord]struct{}{}
 )
@@ -50,9 +36,6 @@ func printAllTargetsHit(
 	shouldSkip := true
 	if iterations < allIterationsUnder ||
 		iterations%iterationsModulo == 0 {
-		shouldSkip = false
-	}
-	if include(puzz) {
 		shouldSkip = false
 	}
 	if shouldSkip {
@@ -96,9 +79,6 @@ func printPuzzleUpdate(
 	}
 	if iterations < allIterationsUnder ||
 		iterations%iterationsModulo == 0 {
-		shouldSkip = false
-	}
-	if include(puzz) {
 		shouldSkip = false
 	}
 	if shouldSkip {

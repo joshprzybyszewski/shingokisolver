@@ -22,8 +22,8 @@ func newRules(
 		evals:       make(map[string]func(getEdger) model.EdgeState, 2),
 	}
 
-	otherStartEdges := getOtherEdgeInputs(ep.coord, ep.dir)
-	otherEndEdges := getOtherEdgeInputs(ep.coord.Translate(ep.dir), ep.dir.Opposite())
+	otherStartEdges := getOtherEdgeInputs(ep.NodeCoord, ep.Cardinal)
+	otherEndEdges := getOtherEdgeInputs(ep.Translate(ep.Cardinal), ep.Opposite())
 
 	r.couldAffect = append(r.couldAffect, otherStartEdges...)
 	r.couldAffect = append(r.couldAffect, otherEndEdges...)
@@ -73,21 +73,16 @@ func (r *rules) addRulesForNode(
 		return
 	}
 
-	otherSideOfNode, err := standardizeInput(
+	otherSideOfNode := newEdgePair(
 		node.Coord(),
 		dir.Opposite(),
 	)
-	if err != nil {
-		panic(err)
-	}
 
 	perps := make([]edgePair, 0, 2)
 	for _, perpDir := range dir.Perpendiculars() {
-		perpEP, err := standardizeInput(node.Coord(), perpDir)
-		if err != nil {
-			panic(err)
-		}
-		perps = append(perps, perpEP)
+		perps = append(perps,
+			newEdgePair(node.Coord(), perpDir),
+		)
 	}
 
 	r.evals[fmt.Sprintf(`node(%s) edge(%s)`, node, otherSideOfNode)] = getNodeRules(node, otherSideOfNode, perps)
@@ -100,17 +95,10 @@ func getOtherEdgeInputs(
 
 	perps := make([]edgePair, 0, 3)
 	for _, perpDir := range dir.Perpendiculars() {
-		perpEP, err := standardizeInput(coord, perpDir)
-		if err != nil {
-			panic(err)
-		}
-		perps = append(perps, perpEP)
+		perps = append(perps,
+			newEdgePair(coord, perpDir),
+		)
 	}
 
-	otherSideOfNode, err := standardizeInput(coord, dir.Opposite())
-	if err != nil {
-		panic(err)
-	}
-
-	return append(perps, otherSideOfNode)
+	return append(perps, newEdgePair(coord, dir.Opposite()))
 }

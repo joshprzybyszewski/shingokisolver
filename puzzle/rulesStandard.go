@@ -31,10 +31,10 @@ func getStandardNodeRules(
 			return model.EdgeErrored
 		}
 
-		shouldAvoid := numExisting == 2 || numAvoided+numOutOfBounds == 3
-		shouldExist := numAvoided+numOutOfBounds == 2 && numExisting == 1
+		startShouldAvoid := numExisting == 2 || numAvoided+numOutOfBounds == 3
+		startShouldExist := numAvoided+numOutOfBounds == 2 && numExisting == 1
 
-		if shouldAvoid && shouldExist {
+		if startShouldAvoid && startShouldExist {
 			return model.EdgeErrored
 		}
 
@@ -56,30 +56,19 @@ func getStandardNodeRules(
 		if numExisting > 2 {
 			return model.EdgeErrored
 		}
-		if numAvoided > 2 {
-			return model.EdgeErrored
-		}
 
-		if numExisting == 2 {
-			if shouldExist {
+		endShouldAvoid := numExisting == 2 || numAvoided+numOutOfBounds == 3
+		endShouldExist := numAvoided+numOutOfBounds == 2 && numExisting == 1
+
+		if endShouldAvoid || startShouldAvoid {
+			if endShouldExist || startShouldExist {
 				return model.EdgeErrored
 			}
 			return model.EdgeAvoided
 		}
 
-		if numAvoided+numOutOfBounds == 2 && numExisting == 1 {
-			if shouldAvoid {
-				return model.EdgeErrored
-			}
+		if endShouldExist || startShouldExist {
 			return model.EdgeExists
-		}
-
-		if shouldExist {
-			return model.EdgeExists
-		}
-
-		if shouldAvoid {
-			return model.EdgeAvoided
 		}
 
 		return model.EdgeUnknown

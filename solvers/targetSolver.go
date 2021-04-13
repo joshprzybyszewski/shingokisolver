@@ -75,7 +75,7 @@ func (d *targetSolver) getSolutionFromDepths(
 		// return nil
 	}
 
-	if tCoord := targeting.Coord; puzzle.IsCompleteNode(puzz, tCoord) {
+	if tCoord := targeting.Coord; puzz.IsCompleteNode(tCoord) {
 		// the target node is already complete, perhaps a previous node
 		// accidentally completed it. If so, then let's do a sanity check
 		// on completion, and then add it as a "partial solution" that
@@ -137,7 +137,7 @@ func (d *targetSolver) buildAllTwoArmsForTraversal(
 		ta,
 	)
 
-	if !puzzle.IsCompleteNode(twoArmPuzz, curTarget.Coord) {
+	if !twoArmPuzz.IsCompleteNode(curTarget.Coord) {
 		// we _should_ have added a number of straight edges that will
 		// complete our target node.
 		// if not, then we don't want to add this to our partials

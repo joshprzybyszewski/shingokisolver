@@ -14,8 +14,8 @@ func (p *Puzzle) IsEdge(
 	move model.Cardinal,
 	nc model.NodeCoord,
 ) bool {
-	ep, err := standardizeInput(nc, move)
-	return err == nil && p.edges.GetEdge(ep) == model.EdgeExists
+	ep := newEdgePair(nc, move)
+	return p.edges.GetEdge(ep) == model.EdgeExists
 }
 
 func (p *Puzzle) AddEdge(
@@ -28,11 +28,9 @@ func (p *Puzzle) AddEdge(
 		move,
 	)
 
-	ep, err := standardizeInput(startNode, move)
+	ep := newEdgePair(startNode, move)
 
-	if err != nil {
-		return model.Unexpected
-	} else if !p.edges.isInBounds(ep) {
+	if !p.edges.isInBounds(ep) {
 		return model.Violation
 	}
 
@@ -100,13 +98,8 @@ func (p *Puzzle) AvoidEdge(
 		startNode, move,
 	)
 
-	ep, err := standardizeInput(startNode, move)
-
-	if err != nil {
-		return model.Unexpected
-	}
-
 	rq := newRulesQueue()
+	ep := newEdgePair(startNode, move)
 
 	switch s := p.avoidEdge(rq, ep); s {
 	case model.Ok, model.Incomplete, model.Complete:

@@ -4,16 +4,12 @@ import (
 	"github.com/joshprzybyszewski/shingokisolver/model"
 )
 
-type getEdgesFromNoder interface {
-	GetOutgoingEdgesFrom(model.NodeCoord) (model.OutgoingEdges, bool)
-}
-
 type walker interface {
 	walk() (map[model.NodeCoord]struct{}, model.State)
 }
 
 type simpleWalker struct {
-	provider   getEdgesFromNoder
+	provider   getEdger
 	start      model.NodeCoord
 	cur        model.NodeCoord
 	seen       map[model.NodeCoord]struct{}
@@ -21,11 +17,11 @@ type simpleWalker struct {
 }
 
 func newWalker(
-	getEFNer getEdgesFromNoder,
+	ge getEdger,
 	start model.NodeCoord,
 ) walker {
 	return &simpleWalker{
-		provider: getEFNer,
+		provider: ge,
 		start:    start,
 		cur:      start,
 		seen:     map[model.NodeCoord]struct{}{},
@@ -66,63 +62,36 @@ func (sw *simpleWalker) walkToNextPoint(
 	avoid model.Cardinal,
 ) (model.Cardinal, model.State) {
 
-	oe, ok := sw.provider.GetOutgoingEdgesFrom(sw.cur)
-	if !ok {
-		return model.HeadNowhere, model.Unexpected
-	}
-
-	switch nOutgoing := oe.GetNumOutgoingDirections(); {
+	switch nOutgoing := getNumOutgoingDirections(sw.provider, sw.cur); {
 	case nOutgoing > 2:
 		return model.HeadNowhere, model.Violation
 	case nOutgoing < 2:
 		return model.HeadNowhere, model.Incomplete
 	}
 
-	if oe.IsAbove() && avoid != model.HeadUp {
-		nextRow := sw.cur.Row - model.RowIndex(oe.Above())
-		sw.markNodesAsSeen(nextRow, sw.cur.Row, sw.cur.Col, sw.cur.Col)
-		sw.cur.Row = nextRow
-		return model.HeadDown, model.Incomplete
-	}
+	for dir := range model.AllCardinalsMap {
+		if avoid == dir {
+			continue
+		}
 
-	if oe.IsLeft() && avoid != model.HeadLeft {
-		nextCol := sw.cur.Col - model.ColIndex(oe.Left())
-		sw.markNodesAsSeen(sw.cur.Row, sw.cur.Row, nextCol, sw.cur.Col)
-		sw.cur.Col = nextCol
-		return model.HeadRight, model.Incomplete
-	}
+		if sw.provider.GetEdge(newEdgePair(sw.cur, dir)) != model.EdgeExists {
+			continue
+		}
 
-	if oe.IsBelow() && avoid != model.HeadDown {
-		nextRow := sw.cur.Row + model.RowIndex(oe.Below())
-		sw.markNodesAsSeen(sw.cur.Row, nextRow, sw.cur.Col, sw.cur.Col)
-		sw.cur.Row = nextRow
-		return model.HeadUp, model.Incomplete
-	}
-
-	if oe.IsRight() && avoid != model.HeadRight {
-		nextCol := sw.cur.Col + model.ColIndex(oe.Right())
-		sw.markNodesAsSeen(sw.cur.Row, sw.cur.Row, sw.cur.Col, nextCol)
-		sw.cur.Col = nextCol
-		return model.HeadLeft, model.Incomplete
+		sw.markNodesAsSeen(sw.cur)
+		sw.cur = sw.cur.Translate(dir)
+		return dir.Opposite(), model.Incomplete
 	}
 
 	return model.HeadNowhere, model.Unexpected
 }
 
 func (sw *simpleWalker) markNodesAsSeen(
-	minR, maxR model.RowIndex,
-	minC, maxC model.ColIndex,
+	nc model.NodeCoord,
 ) {
-	for r := minR; r <= maxR; r++ {
-		for c := minC; c <= maxC; c++ {
-			nc := model.NewCoord(r, c)
-			if nc == sw.start {
-				if _, ok := sw.seen[nc]; ok {
-					// this means we've seen the starting node before
-					sw.foundStart = true
-				}
-			}
-			sw.seen[nc] = struct{}{}
-		}
+	if _, ok := sw.seen[nc]; ok {
+		// this means we've seen the starting node before
+		sw.foundStart = true
 	}
+	sw.seen[nc] = struct{}{}
 }

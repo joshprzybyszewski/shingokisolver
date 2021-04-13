@@ -1,38 +1,37 @@
 package puzzle
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/joshprzybyszewski/shingokisolver/model"
 )
 
 type edgePair struct {
-	coord model.NodeCoord
-	dir   model.Cardinal
+	model.NodeCoord
+	model.Cardinal
 }
 
 func (ep edgePair) String() string {
-	return fmt.Sprintf("coord: %+v, dir: %s", ep.coord, ep.dir)
+	return fmt.Sprintf("coord: %+v, dir: %s", ep.NodeCoord, ep.Cardinal)
 }
 
-func standardizeInput(
+func newEdgePair(
 	nc model.NodeCoord,
 	dir model.Cardinal,
-) (edgePair, error) {
+) edgePair {
 	switch dir {
 	case model.HeadUp, model.HeadLeft:
 		return edgePair{
-			coord: nc.Translate(dir),
-			dir:   dir.Opposite(),
-		}, nil
+			NodeCoord: nc.Translate(dir),
+			Cardinal:  dir.Opposite(),
+		}
 	case model.HeadRight, model.HeadDown:
 		// this is good.
 		return edgePair{
-			coord: nc,
-			dir:   dir,
-		}, nil
+			NodeCoord: nc,
+			Cardinal:  dir,
+		}
 	default:
-		return edgePair{}, errors.New(`unexpected cardinal`)
+		panic(`unexpected cardinal: ` + dir.String())
 	}
 }

@@ -26,11 +26,7 @@ func newRuleSet(
 		for c := 0; c <= numEdges; c++ {
 			nc := model.NewCoordFromInts(r, c)
 			if c < numEdges {
-				ep := edgePair{
-					coord: nc,
-					dir:   model.HeadRight,
-				}
-
+				ep := newEdgePair(nc, model.HeadRight)
 				rs.rulesByEdges[ep] = newRules(
 					ep,
 					numEdges,
@@ -38,11 +34,7 @@ func newRuleSet(
 			}
 
 			if r < numEdges {
-				ep := edgePair{
-					coord: nc,
-					dir:   model.HeadDown,
-				}
-
+				ep := newEdgePair(nc, model.HeadDown)
 				rs.rulesByEdges[ep] = newRules(
 					ep,
 					numEdges,
@@ -55,12 +47,8 @@ func newRuleSet(
 			}
 
 			for _, dir := range model.AllCardinals {
-				ep, err := standardizeInput(nc, dir)
-				if err != nil {
-					continue
-				}
-
-				rs.rulesByEdges[ep].addRulesForNode(n, dir)
+				rs.rulesByEdges[newEdgePair(nc, dir)].
+					addRulesForNode(n, dir)
 			}
 		}
 	}

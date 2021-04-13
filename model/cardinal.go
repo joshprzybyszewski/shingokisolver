@@ -58,4 +58,10 @@ var (
 		HeadLeft,
 		HeadDown,
 	}
+	AllCardinalsMap = map[Cardinal]struct{}{
+		HeadRight: {},
+		HeadUp:    {},
+		HeadLeft:  {},
+		HeadDown:  {},
+	}
 )

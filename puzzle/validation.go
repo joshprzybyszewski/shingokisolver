@@ -54,7 +54,7 @@ func (p *Puzzle) getRangeState(
 		break
 	}
 
-	w := newWalker(p, coord)
+	w := newWalker(p.edges, coord)
 	seenNodes, walkerState := w.walk()
 	switch walkerState {
 	case model.Complete:
@@ -75,46 +75,14 @@ func (p *Puzzle) getRangeState(
 }
 
 func (p *Puzzle) getStateOfNodes() model.State {
-	allNodesComplete := false
 	// it's cheaper for us to just iterate all of the nodes
 	// and check for their validity than it is to check every
 	// (r, c) or filtering out to only be in the range
-	for nc, n := range p.nodes {
-		oe, ok := p.GetOutgoingEdgesFrom(nc)
-		if !ok {
-			// something really weird happened
-			return model.Unexpected
-		}
-		switch s := n.GetState(oe); s {
-		case model.Violation, model.Unexpected:
-			return s
-		case model.Incomplete:
-			allNodesComplete = false
+	for nc := range p.nodes {
+		if !p.IsCompleteNode(nc) {
+			return model.Incomplete
 		}
 	}
 
-	if allNodesComplete {
-		return model.Complete
-	}
-
-	return model.Incomplete
-}
-
-func (p *Puzzle) getStateForCoord(
-	coord model.NodeCoord,
-) model.State {
-	// check that this point doesn't branch
-	oe, ok := p.GetOutgoingEdgesFrom(coord)
-	if !ok {
-		return model.Violation
-	}
-
-	switch numEdges := oe.GetNumOutgoingDirections(); {
-	case numEdges > 2:
-		return model.Violation
-	case numEdges == 2:
-		return model.Complete
-	default:
-		return model.Incomplete
-	}
+	return model.Complete
 }

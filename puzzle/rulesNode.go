@@ -8,8 +8,7 @@ func getNodeRules(
 	perps []edgePair,
 ) func(ge getEdger) model.EdgeState {
 	return func(ge getEdger) model.EdgeState {
-		numOutgoing := getNumStraightLineOutgoingEdges(ge, node.Coord())
-		if numOutgoing > node.Value() {
+		if getSumOutgoingStraightLines(ge, node.Coord()) > node.Value() {
 			return model.EdgeErrored
 		}
 
