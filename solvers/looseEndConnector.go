@@ -1,8 +1,6 @@
 package solvers
 
 import (
-	"fmt"
-
 	"github.com/joshprzybyszewski/shingokisolver/model"
 	"github.com/joshprzybyszewski/shingokisolver/puzzle"
 )
@@ -12,12 +10,6 @@ func (d *targetSolver) connect(
 ) *puzzle.Puzzle {
 
 	looseEnd, state := puzz.GetLooseEnd()
-	// TODO remove Sprintf
-	printAllTargetsHit(
-		fmt.Sprintf(`connect(%+v, %s)`, looseEnd, state),
-		puzz,
-		d.iterations(),
-	)
 
 	switch state {
 	case model.Complete:

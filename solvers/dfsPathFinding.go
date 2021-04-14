@@ -1,8 +1,6 @@
 package solvers
 
 import (
-	"fmt"
-
 	"github.com/joshprzybyszewski/shingokisolver/model"
 	"github.com/joshprzybyszewski/shingokisolver/puzzle"
 )
@@ -31,12 +29,6 @@ func (d *targetSolver) solveFromLooseEnd(
 	default:
 		return nil, state
 	}
-
-	p, state := d.dfsOutFrom(
-		input.DeepCopy(),
-		start,
-	)
-	return p, state
 }
 
 func (d *targetSolver) sendOutDFSPath(
@@ -72,64 +64,4 @@ func (d *targetSolver) sendOutDFSPath(
 
 	// add all edges
 	return puzz.AddEdges(curPath...)
-}
-
-func (d *targetSolver) dfsOutFrom(
-	puzz *puzzle.Puzzle,
-	fromCoord model.NodeCoord,
-) (*puzzle.Puzzle, model.State) {
-	if puzz == nil {
-		return nil, model.Unexpected
-	}
-	// TODO remove Sprintf
-	printAllTargetsHit(
-		fmt.Sprintf(`dfsOutFrom(%+v)`, fromCoord),
-		puzz,
-		d.iterations(),
-	)
-
-	switch s := puzz.GetState(); s {
-	case model.Complete:
-		return puzz, s
-	case model.Incomplete:
-		// continue in the func
-	default:
-		return nil, s
-	}
-
-	for _, nextHeading := range model.AllCardinals {
-		nextPuzz := puzz.DeepCopy()
-
-		d.numProcessed++
-		shouldContinue := true
-		switch nextPuzz.AddEdge(fromCoord, nextHeading) {
-		case model.Incomplete, model.Complete:
-			shouldContinue = false
-		}
-		if shouldContinue {
-			continue
-		}
-
-		nextCoord := fromCoord.Translate(nextHeading)
-
-		if nextPuzz.HasTwoOutgoingEdges(nextCoord) {
-			// we connected to an existing path.
-			// iterate down from another loose end
-			retPuzz := d.connect(nextPuzz)
-			if retPuzz != nil {
-				return retPuzz, model.Complete
-			}
-		} else {
-			retPuzz, s := d.dfsOutFrom(
-				nextPuzz,
-				nextCoord,
-			)
-			switch s {
-			case model.Complete:
-				return retPuzz, s
-			}
-		}
-	}
-
-	return nil, model.Incomplete
 }
