@@ -1,20 +1,20 @@
 package puzzle
 
 type rulesQueue struct {
-	toCheck []edgePair
+	toCheck []EdgePair
 
-	updated map[edgePair]struct{}
+	updated map[EdgePair]struct{}
 }
 
 func newRulesQueue() *rulesQueue {
 	return &rulesQueue{
-		toCheck: make([]edgePair, 0, 16),
-		updated: make(map[edgePair]struct{}, 16),
+		toCheck: make([]EdgePair, 0, 16),
+		updated: make(map[EdgePair]struct{}, 16),
 	}
 }
 
 func (rq *rulesQueue) push(
-	others ...edgePair,
+	others ...EdgePair,
 ) {
 	for _, other := range others {
 		if !rq.containsEdgeInToCheck(other) {
@@ -24,7 +24,7 @@ func (rq *rulesQueue) push(
 }
 
 func (rq *rulesQueue) containsEdgeInToCheck(
-	ep edgePair,
+	ep EdgePair,
 ) bool {
 	if _, ok := rq.updated[ep]; ok {
 		return true
@@ -39,9 +39,9 @@ func (rq *rulesQueue) containsEdgeInToCheck(
 	return false
 }
 
-func (rq *rulesQueue) pop() (edgePair, bool) {
+func (rq *rulesQueue) pop() (EdgePair, bool) {
 	if len(rq.toCheck) == 0 {
-		return edgePair{}, false
+		return EdgePair{}, false
 	}
 
 	ep := rq.toCheck[0]
@@ -50,7 +50,7 @@ func (rq *rulesQueue) pop() (edgePair, bool) {
 }
 
 func (rq *rulesQueue) noticeUpdated(
-	ep edgePair,
+	ep EdgePair,
 ) {
 	rq.updated[ep] = struct{}{}
 }

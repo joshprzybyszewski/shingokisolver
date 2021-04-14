@@ -7,18 +7,18 @@ import (
 )
 
 type rules struct {
-	couldAffect []edgePair
+	couldAffect []EdgePair
 
 	evals map[string]func(getEdger) model.EdgeState
 }
 
 func newRules(
-	ep edgePair,
+	ep EdgePair,
 	numEdges int,
 ) *rules {
 
 	r := rules{
-		couldAffect: make([]edgePair, 0, 6),
+		couldAffect: make([]EdgePair, 0, 6),
 		evals:       make(map[string]func(getEdger) model.EdgeState, 2),
 	}
 
@@ -33,7 +33,7 @@ func newRules(
 	return &r
 }
 
-func (r *rules) affects() []edgePair {
+func (r *rules) affects() []EdgePair {
 	return r.couldAffect
 }
 
@@ -73,15 +73,15 @@ func (r *rules) addRulesForNode(
 		return
 	}
 
-	otherSideOfNode := newEdgePair(
+	otherSideOfNode := NewEdgePair(
 		node.Coord(),
 		dir.Opposite(),
 	)
 
-	perps := make([]edgePair, 0, 2)
+	perps := make([]EdgePair, 0, 2)
 	for _, perpDir := range dir.Perpendiculars() {
 		perps = append(perps,
-			newEdgePair(node.Coord(), perpDir),
+			NewEdgePair(node.Coord(), perpDir),
 		)
 	}
 
@@ -91,14 +91,40 @@ func (r *rules) addRulesForNode(
 func getOtherEdgeInputs(
 	coord model.NodeCoord,
 	dir model.Cardinal,
-) []edgePair {
+) []EdgePair {
 
-	perps := make([]edgePair, 0, 3)
+	perps := make([]EdgePair, 0, 3)
 	for _, perpDir := range dir.Perpendiculars() {
 		perps = append(perps,
-			newEdgePair(coord, perpDir),
+			NewEdgePair(coord, perpDir),
 		)
 	}
 
-	return append(perps, newEdgePair(coord, dir.Opposite()))
+	return append(perps, NewEdgePair(coord, dir.Opposite()))
+}
+
+func (r *rules) addExtendedEval(
+	node model.Node,
+	ext extendedRules,
+) {
+	if r == nil {
+		// this node is actually out of bounds...
+		return
+	}
+
+	for _, other := range ext.couldAffect {
+		if other.IsIn(r.couldAffect...) {
+			continue
+		}
+		r.couldAffect = append(r.couldAffect, other)
+	}
+
+	for i, eval := range ext.evals {
+		r.evals[fmt.Sprintf(`extEval[%d] from node(%s)`, i, node)] = eval
+	}
+}
+
+type extendedRules struct {
+	couldAffect []EdgePair
+	evals       []func(getEdger) model.EdgeState
 }

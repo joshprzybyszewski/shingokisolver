@@ -64,7 +64,7 @@ func newEdgesBits(
 }
 
 func (eb *edgesTriState) isInBounds(
-	ep edgePair,
+	ep EdgePair,
 ) bool {
 	if ep.Row < 0 || ep.Col < 0 {
 		// negative coords are bad
@@ -82,7 +82,7 @@ func (eb *edgesTriState) isInBounds(
 }
 
 func (eb *edgesTriState) GetEdge(
-	ep edgePair,
+	ep EdgePair,
 ) model.EdgeState {
 
 	if !eb.isInBounds(ep) {
@@ -112,7 +112,7 @@ func (eb *edgesTriState) GetEdge(
 }
 
 func (eb *edgesTriState) SetEdge(
-	ep edgePair,
+	ep EdgePair,
 ) model.State {
 
 	switch eb.GetEdge(ep) {
@@ -131,11 +131,11 @@ func (eb *edgesTriState) SetEdge(
 		eb.cols[ep.Col] |= masks[ep.Row]
 	}
 
-	return model.Ok
+	return model.Incomplete
 }
 
 func (eb *edgesTriState) AvoidEdge(
-	ep edgePair,
+	ep EdgePair,
 ) model.State {
 
 	switch eb.GetEdge(ep) {
@@ -156,7 +156,7 @@ func (eb *edgesTriState) AvoidEdge(
 		eb.avoidCols[ep.Col] |= masks[ep.Row]
 	}
 
-	return model.Ok
+	return model.Incomplete
 }
 
 func (eb *edgesTriState) Copy() *edgesTriState {

@@ -1,6 +1,7 @@
 package puzzle
 
 import (
+	"fmt"
 	"log"
 )
 
@@ -37,6 +38,8 @@ func (p *Puzzle) printMsg(
 	log.Println("-- start --")
 	log.Printf(fmtString+"\n%s", append(args, p)...)
 	log.Println("--  end  --\n ")
+
+	fmt.Scanf("wait")
 }
 
 func printDebugMsg(

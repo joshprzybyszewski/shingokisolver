@@ -6,7 +6,7 @@ import (
 
 func (p *Puzzle) checkRuleset(
 	rq *rulesQueue,
-	ep edgePair,
+	ep EdgePair,
 	expState model.EdgeState,
 ) model.State {
 	p.printMsg("checkRuleset(%s, %s)",
@@ -32,18 +32,13 @@ func (p *Puzzle) checkRuleset(
 
 	// Now let's look at all of the other affected rules
 	rq.push(r.affects()...)
-	p.printMsg("checkRuleset(%s, %s) affects %+v",
-		ep,
-		expState,
-		r.affects(),
-	)
 
 	return model.Incomplete
 }
 
 func (p *Puzzle) updateEdgeFromRules(
 	rq *rulesQueue,
-	ep edgePair,
+	ep EdgePair,
 ) model.State {
 	p.printMsg("updateEdgeFromRules(%s)", ep)
 

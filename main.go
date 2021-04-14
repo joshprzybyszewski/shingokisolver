@@ -57,14 +57,12 @@ func main() {
 
 	for _, st := range solvers.AllSolvers {
 		for _, pd := range puzzles {
-			if !strings.Contains(pd.String(), `PuzzleID: 1,520,692`) {
+			if !strings.Contains(pd.String(), `1,929,002`) {
 				// this puzzle is tricking me...
 				continue
 			}
 
-			// runSolver(st, pd)
-			go runSolver(st, pd)
-			time.Sleep(11 * time.Second)
+			runSolver(st, pd)
 
 			if *addPprof && (time.Since(t0) > 10*time.Second ||
 				pd.NumEdges >= 10) {

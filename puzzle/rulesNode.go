@@ -4,12 +4,15 @@ import "github.com/joshprzybyszewski/shingokisolver/model"
 
 func getNodeRules(
 	node model.Node,
-	otherSideOfNode edgePair,
-	perps []edgePair,
+	otherSideOfNode EdgePair,
+	perps []EdgePair,
 ) func(ge getEdger) model.EdgeState {
 	return func(ge getEdger) model.EdgeState {
-		if getSumOutgoingStraightLines(ge, node.Coord()) > node.Value() {
+		switch sumEdges := getSumOutgoingStraightLines(ge, node.Coord()); {
+		case sumEdges > node.Value():
 			return model.EdgeErrored
+			// case sumEdges == node.Value():
+			// return model.Edge
 		}
 
 		oppState := ge.GetEdge(otherSideOfNode)

@@ -74,7 +74,7 @@ func (sw *simpleWalker) walkToNextPoint(
 			continue
 		}
 
-		if sw.provider.GetEdge(newEdgePair(sw.cur, dir)) != model.EdgeExists {
+		if sw.provider.GetEdge(NewEdgePair(sw.cur, dir)) != model.EdgeExists {
 			continue
 		}
 

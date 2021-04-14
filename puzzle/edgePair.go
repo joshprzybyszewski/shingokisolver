@@ -6,32 +6,43 @@ import (
 	"github.com/joshprzybyszewski/shingokisolver/model"
 )
 
-type edgePair struct {
+type EdgePair struct {
 	model.NodeCoord
 	model.Cardinal
 }
 
-func (ep edgePair) String() string {
-	return fmt.Sprintf("coord: %+v, dir: %s", ep.NodeCoord, ep.Cardinal)
-}
-
-func newEdgePair(
+func NewEdgePair(
 	nc model.NodeCoord,
 	dir model.Cardinal,
-) edgePair {
+) EdgePair {
 	switch dir {
 	case model.HeadUp, model.HeadLeft:
-		return edgePair{
+		return EdgePair{
 			NodeCoord: nc.Translate(dir),
 			Cardinal:  dir.Opposite(),
 		}
 	case model.HeadRight, model.HeadDown:
 		// this is good.
-		return edgePair{
+		return EdgePair{
 			NodeCoord: nc,
 			Cardinal:  dir,
 		}
 	default:
 		panic(`unexpected cardinal: ` + dir.String())
 	}
+}
+
+func (ep EdgePair) String() string {
+	return fmt.Sprintf("coord: %+v, dir: %s", ep.NodeCoord, ep.Cardinal)
+}
+
+func (ep EdgePair) IsIn(
+	others ...EdgePair,
+) bool {
+	for _, o := range others {
+		if o == ep {
+			return true
+		}
+	}
+	return false
 }

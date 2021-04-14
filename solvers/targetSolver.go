@@ -1,8 +1,6 @@
 package solvers
 
 import (
-	"fmt"
-
 	"github.com/joshprzybyszewski/shingokisolver/model"
 	"github.com/joshprzybyszewski/shingokisolver/puzzle"
 )
@@ -40,7 +38,7 @@ func (d *targetSolver) solve() (*puzzle.Puzzle, bool) {
 	puzz := d.puzzle.DeepCopy()
 
 	switch s := puzz.ClaimGimmes(); s {
-	case model.Incomplete, model.Complete, model.Ok:
+	case model.Incomplete, model.Complete:
 		printPuzzleUpdate(`ClaimGimmes`, 0, puzz, targets[0], d.iterations())
 	default:
 		return nil, false
@@ -82,7 +80,7 @@ func (d *targetSolver) getSolutionFromDepths(
 		// has no new loose ends
 
 		if targeting.Next == nil {
-			return d.getSolutionByConnectingLooseEnds(
+			return d.connect(
 				puzz.DeepCopy(),
 			)
 		}
@@ -97,7 +95,7 @@ func (d *targetSolver) getSolutionFromDepths(
 	// go out in all directions from the target
 	// if it's still a valid puzzle, keep going outward
 	// until we "complete" the node.
-	options := model.BuildTwoArmOptions(node)
+	options := model.BuildTwoArmOptions(node, puzz.NumEdges())
 	for _, option := range options {
 		// then, once we find a completion path, add it to the returned slice
 		p := d.buildAllTwoArmsForTraversal(
@@ -114,16 +112,6 @@ func (d *targetSolver) getSolutionFromDepths(
 	return nil
 }
 
-func (d *targetSolver) getSolutionByConnectingLooseEnds(
-	puzz *puzzle.Puzzle,
-) *puzzle.Puzzle {
-
-	printAllTargetsHit(`getSolutionByConnectingLooseEnds`, puzz, d.iterations())
-
-	// this means we've iterated through all of the target nodes
-	return d.connect(puzz)
-}
-
 func (d *targetSolver) buildAllTwoArmsForTraversal(
 	depth int,
 	puzz *puzzle.Puzzle,
@@ -137,14 +125,7 @@ func (d *targetSolver) buildAllTwoArmsForTraversal(
 		ta,
 	)
 
-	if !twoArmPuzz.IsCompleteNode(curTarget.Coord) {
-		// we _should_ have added a number of straight edges that will
-		// complete our target node.
-		// if not, then we don't want to add this to our partials
-		return nil
-	}
-
-	switch puzz.GetState() {
+	switch twoArmPuzz.GetState() {
 	case model.Complete:
 		return twoArmPuzz
 	case model.Incomplete:
@@ -154,7 +135,7 @@ func (d *targetSolver) buildAllTwoArmsForTraversal(
 	}
 
 	if curTarget.Next == nil {
-		return d.getSolutionByConnectingLooseEnds(
+		return d.connect(
 			twoArmPuzz.DeepCopy(),
 		)
 	}
@@ -172,81 +153,28 @@ func (d *targetSolver) sendOutTwoArms(
 	ta model.TwoArms,
 ) (retPuzz *puzzle.Puzzle) {
 
-	defer func() {
-		printAllTargetsHit(
-			// TODO remove these
-			fmt.Sprintf("sendOutTwoArms(%+v, %+v) completed.\nfrom: \n%s\nto: \n%s\n",
-				start,
-				ta,
-				puzz,
-				retPuzz,
-			),
-			retPuzz, d.iterations(),
-		)
-	}()
+	var allEdges []puzzle.EdgePair
 
 	arm1End := start
 	for i := int8(0); i < ta.One.Len; i++ {
-		switch puzz.AddEdge(arm1End, ta.One.Heading) {
-		case model.Duplicate, model.Incomplete, model.Complete, model.Ok:
-			// it's ok
-			d.numProcessed++
-		default:
-			// there was a problem. Early return
-			return nil
-		}
+		allEdges = append(allEdges, puzzle.NewEdgePair(arm1End, ta.One.Heading))
+		d.numProcessed++
+
 		arm1End = arm1End.Translate(ta.One.Heading)
 	}
 
-	d.numProcessed++
-	switch s := puzz.AvoidEdge(arm1End, ta.One.Heading); s {
-	case model.Incomplete, model.Complete,
-		model.Duplicate, model.Ok:
-		// these cases are "ok"
-	default:
-		// there was a problem. Early return
-		return nil
-	}
-
-	printAllTargetsHit(
-		// TODO remove these
-		fmt.Sprintf("puzz.AvoidEdge(arm1End = %+v, ta.One.Heading = %s)",
-			arm1End,
-			ta.One.Heading,
-		),
-		puzz, d.iterations(),
-	)
-
 	arm2End := start
 	for i := int8(0); i < ta.Two.Len; i++ {
-		switch puzz.AddEdge(arm2End, ta.Two.Heading) {
-		case model.Duplicate, model.Incomplete, model.Complete, model.Ok:
-			// these cases are "ok"
-			d.numProcessed++
-		default:
-			// there was a problem. Early return
-			return nil
-		}
+		allEdges = append(allEdges, puzzle.NewEdgePair(arm2End, ta.Two.Heading))
+		d.numProcessed++
+
 		arm2End = arm2End.Translate(ta.Two.Heading)
 	}
 
-	switch state := puzz.AvoidEdge(arm2End, ta.Two.Heading); state {
-	case model.Incomplete, model.Complete, model.Duplicate, model.Ok:
-		// these cases are "ok"
-		d.numProcessed++
+	switch puzz.AddEdges(allEdges...) {
+	case model.Duplicate, model.Incomplete, model.Complete:
+		return puzz
 	default:
-		// there was a problem. Early return
 		return nil
 	}
-
-	printAllTargetsHit(
-		// TODO remove these
-		fmt.Sprintf("puzz.AvoidEdge(arm2End = %+v, ta.Two.Heading = %s)",
-			arm2End,
-			ta.Two.Heading,
-		),
-		puzz, d.iterations(),
-	)
-
-	return puzz
 }

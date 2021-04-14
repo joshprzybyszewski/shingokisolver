@@ -42,14 +42,14 @@ func (p *Puzzle) string(
 			sb.WriteString(`)`)
 
 			// now draw an edge
-			ep := newEdgePair(nc, model.HeadRight)
+			ep := NewEdgePair(nc, model.HeadRight)
 			if p.edges.isInBounds(ep) {
 				switch p.edges.GetEdge(ep) {
 				case model.EdgeExists:
 					sb.WriteString(`---`)
 				case model.EdgeAvoided:
 					if includeXs {
-						sb.WriteString(`XXX`)
+						sb.WriteString(` X `)
 					} else {
 						sb.WriteString(`   `)
 					}
@@ -60,7 +60,7 @@ func (p *Puzzle) string(
 
 			// now draw any edges that are below
 			below.WriteString(`  `)
-			ep = newEdgePair(nc, model.HeadDown)
+			ep = NewEdgePair(nc, model.HeadDown)
 			if p.edges.isInBounds(ep) {
 				switch p.edges.GetEdge(ep) {
 				case model.EdgeExists:

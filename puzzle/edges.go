@@ -14,8 +14,14 @@ func (p *Puzzle) IsEdge(
 	move model.Cardinal,
 	nc model.NodeCoord,
 ) bool {
-	ep := newEdgePair(nc, move)
-	return p.edges.GetEdge(ep) == model.EdgeExists
+	ep := NewEdgePair(nc, move)
+	return p.GetEdgeState(ep) == model.EdgeExists
+}
+
+func (p *Puzzle) GetEdgeState(
+	ep EdgePair,
+) model.EdgeState {
+	return p.edges.GetEdge(ep)
 }
 
 func (p *Puzzle) AddEdge(
@@ -28,31 +34,37 @@ func (p *Puzzle) AddEdge(
 		move,
 	)
 
-	ep := newEdgePair(startNode, move)
+	return p.AddEdges(NewEdgePair(startNode, move))
+}
 
-	if !p.edges.isInBounds(ep) {
-		return model.Violation
-	}
+func (p *Puzzle) AddEdges(
+	pairs ...EdgePair,
+) model.State {
+
+	p.printMsg("AddEdges(%+v)",
+		pairs,
+	)
 
 	rq := newRulesQueue()
 
-	switch s := p.addEdge(rq, ep); s {
-	case model.Ok, model.Incomplete, model.Duplicate:
-	default:
-		return s
+	for _, ep := range pairs {
+		if !p.edges.isInBounds(ep) {
+			return model.Violation
+		}
+
+		switch s := p.addEdge(rq, ep); s {
+		case model.Incomplete, model.Duplicate:
+		default:
+			return s
+		}
 	}
 
-	switch s := p.runQueue(rq); s {
-	case model.Ok, model.Incomplete, model.Duplicate:
-		return model.Incomplete
-	default:
-		return s
-	}
+	return p.runQueue(rq)
 }
 
 func (p *Puzzle) addEdge(
 	rq *rulesQueue,
-	ep edgePair,
+	ep EdgePair,
 ) model.State {
 
 	p.printMsg("addEdge(%s)",
@@ -60,25 +72,15 @@ func (p *Puzzle) addEdge(
 	)
 
 	switch state := p.edges.SetEdge(ep); state {
-	case model.Ok, model.Incomplete, model.Complete:
+	case model.Incomplete, model.Complete:
 		rq.noticeUpdated(ep)
 
-		// see if I'm breaking any rules or I can make any more moves
-		switch state := p.checkRuleset(rq, ep, model.EdgeExists); state {
-		case model.Ok, model.Incomplete:
-			return model.Incomplete
-		default:
-			p.printMsg("addEdge(%s) checkRuleset returned %s",
-				ep,
-				state,
-			)
-			return state
-		}
+		return p.checkRuleset(rq, ep, model.EdgeExists)
 
 	case model.Duplicate:
 		// not technically updated, but we tried to.
 		rq.noticeUpdated(ep)
-		return model.Incomplete
+		return model.Duplicate
 	default:
 		p.printMsg("addEdge(%s) edges.SetEdge returned %s",
 			ep,
@@ -89,30 +91,9 @@ func (p *Puzzle) addEdge(
 
 }
 
-func (p *Puzzle) AvoidEdge(
-	startNode model.NodeCoord,
-	move model.Cardinal,
-) model.State {
-
-	p.printMsg("AvoidEdge(%s, %s)",
-		startNode, move,
-	)
-
-	rq := newRulesQueue()
-	ep := newEdgePair(startNode, move)
-
-	switch s := p.avoidEdge(rq, ep); s {
-	case model.Ok, model.Incomplete, model.Complete:
-		return p.runQueue(rq)
-	default:
-		return s
-	}
-
-}
-
 func (p *Puzzle) avoidEdge(
 	rq *rulesQueue,
-	ep edgePair,
+	ep EdgePair,
 ) model.State {
 
 	p.printMsg("avoidEdge(%s)",
@@ -120,7 +101,7 @@ func (p *Puzzle) avoidEdge(
 	)
 
 	switch state := p.edges.AvoidEdge(ep); state {
-	case model.Ok, model.Incomplete, model.Complete:
+	case model.Incomplete, model.Complete:
 		rq.noticeUpdated(ep)
 
 		// see if I'm breaking any rules or I can make any more moves
@@ -152,6 +133,7 @@ func (p *Puzzle) runQueue(
 			// edges, and we cannot determine what they are
 			continue
 		}
+
 		exp := p.edges.GetEdge(ep)
 		if eval != exp {
 			p.printMsg("runQueue(%s) evaled %s but expected %s",

@@ -5,6 +5,10 @@ import (
 )
 
 func (p *Puzzle) GetState() model.State {
+	if p == nil {
+		return model.Violation
+	}
+
 	return p.getRangeState(
 		0,
 		model.RowIndex(p.numNodes()),

@@ -21,7 +21,13 @@ func (p *Puzzle) GetLooseEnd() (model.NodeCoord, model.State) {
 func (p *Puzzle) HasTwoOutgoingEdges(
 	coord model.NodeCoord,
 ) bool {
-	return getNumOutgoingDirections(p.edges, coord) == 2
+	nOut := getNumOutgoingDirections(p.edges, coord)
+	p.printMsg(
+		"HasTwoOutgoingEdges(%+v) = %d",
+		coord,
+		nOut,
+	)
+	return nOut == 2
 }
 
 func getNumOutgoingDirections(
@@ -31,7 +37,7 @@ func getNumOutgoingDirections(
 	var total int8
 
 	for _, dir := range model.AllCardinals {
-		ep := newEdgePair(coord, dir)
+		ep := NewEdgePair(coord, dir)
 		if ge.GetEdge(ep) == model.EdgeExists {
 			total++
 		}
@@ -54,11 +60,11 @@ func getSumOutgoingStraightLines(
 
 	for _, dir := range model.AllCardinals {
 		c := coord
-		ep := newEdgePair(c, dir)
+		ep := NewEdgePair(c, dir)
 		for ge.GetEdge(ep) == model.EdgeExists {
 			total++
 			c = c.Translate(dir)
-			ep = newEdgePair(c, dir)
+			ep = NewEdgePair(c, dir)
 		}
 	}
 

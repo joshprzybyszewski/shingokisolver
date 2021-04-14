@@ -65,17 +65,8 @@ func numPossibleConfigs(
 	target Target,
 	numEdges int,
 ) int {
-	twoArmsOptions := len(BuildTwoArmOptions(target.Node))
 
-	if isOnTheSide(target.Coord, numEdges) {
-		if isACorner(target.Coord, numEdges) {
-			twoArmsOptions /= 4
-		} else {
-			twoArmsOptions /= 2
-		}
-	}
-
-	return twoArmsOptions
+	return len(BuildTwoArmOptions(target.Node, numEdges))
 }
 
 func isOnTheSide(coord NodeCoord, numEdges int) bool {

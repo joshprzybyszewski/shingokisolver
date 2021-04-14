@@ -3,8 +3,8 @@ package puzzle
 import "github.com/joshprzybyszewski/shingokisolver/model"
 
 func getStandardNodeRules(
-	ep edgePair,
-	otherStartEdges, otherEndEdges []edgePair,
+	ep EdgePair,
+	otherStartEdges, otherEndEdges []EdgePair,
 ) func(ge getEdger) model.EdgeState {
 
 	if len(otherStartEdges) != 3 || len(otherEndEdges) != 3 {
