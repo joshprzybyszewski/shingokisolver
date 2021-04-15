@@ -63,7 +63,7 @@ func main() {
 			}
 
 			if *addPprof && (time.Since(t0) > 10*time.Second ||
-				pd.NumEdges > 10) {
+				pd.NumEdges > 50) {
 				return
 			}
 
@@ -82,8 +82,8 @@ func runSolver(
 	// 	}
 	// }()
 
-	if pd.NumEdges != 7 {
-		// return
+	if pd.NumEdges < 15 {
+		return
 	}
 
 	if st != solvers.TargetSolverType {
