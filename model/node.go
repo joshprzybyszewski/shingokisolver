@@ -64,7 +64,7 @@ func NewNode(coord NodeCoord, isWhite bool, v int8) Node {
 }
 
 func (n Node) String() string {
-	return fmt.Sprintf("%s%2d @ %+v", n.nType, n.val, n.coord)
+	return fmt.Sprintf("Node{%s%2d @ %+v}", n.nType, n.val, n.coord)
 }
 
 func (n Node) Coord() NodeCoord {

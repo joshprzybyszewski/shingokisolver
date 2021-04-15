@@ -58,6 +58,14 @@ func (r *rules) addEvaluations(evals ...func(ge model.GetEdger) model.EdgeState)
 	if r == nil {
 		return
 	}
+
+	printDebugMsg(
+		"%s addEvaluations([%d]evals = %+v)",
+		r.me,
+		len(evals),
+		evals,
+	)
+
 	for _, eval := range evals {
 		if eval == nil {
 			panic(`dev error`)
@@ -124,6 +132,7 @@ func (r *rules) getEdgeState(ge model.GetEdger) model.EdgeState {
 			return model.EdgeErrored
 		}
 	}
+
 	printDebugMsg(
 		"getEdgeState checked %d evals, and chose %s",
 		len(r.evals),

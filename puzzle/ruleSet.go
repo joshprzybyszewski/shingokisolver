@@ -12,7 +12,7 @@ func newRuleSet(
 	numEdges int,
 	nodes map[model.NodeCoord]model.Node,
 ) *ruleSet {
-	rs := ruleSet{
+	rs := &ruleSet{
 		rulesByEdges: make(map[model.EdgePair]*rules, (numEdges-1)*numEdges*2),
 	}
 
@@ -34,21 +34,18 @@ func newRuleSet(
 					numEdges,
 				)
 			}
-
-			n, ok := nodes[nc]
-			if !ok {
-				continue
-			}
-
-			for _, dir := range model.AllCardinals {
-				rs.rulesByEdges[model.NewEdgePair(nc, dir)].addRulesForNode(n, dir)
-			}
-
-			rs.addAllTwoArmRules(n, numEdges)
 		}
 	}
 
-	return &rs
+	for nc, n := range nodes {
+		for _, dir := range model.AllCardinals {
+			rs.rulesByEdges[model.NewEdgePair(nc, dir)].addRulesForNode(n, dir)
+		}
+
+		rs.addAllTwoArmRules(n, numEdges)
+	}
+
+	return rs
 }
 
 func (rs *ruleSet) getRules(

@@ -1,11 +1,18 @@
 package puzzle
 
-import "github.com/joshprzybyszewski/shingokisolver/model"
+import (
+	"github.com/joshprzybyszewski/shingokisolver/model"
+)
 
 func (rs *ruleSet) addAllTwoArmRules(
 	node model.Node,
 	numEdges int,
 ) {
+	printDebugMsg(
+		"addAllTwoArmRules(%s, %d)",
+		node,
+		numEdges,
+	)
 
 	options := model.BuildTwoArmOptions(node, numEdges)
 
@@ -50,6 +57,11 @@ func (rs *ruleSet) addExtendedRulesForAvoidedArm(
 	needToExist []model.EdgePair,
 	thenAvoid model.EdgePair,
 ) {
+	printDebugMsg(
+		"addExtendedRulesForAvoidedArm(%+v, %s)",
+		needToExist,
+		thenAvoid,
+	)
 	rs.rulesByEdges[thenAvoid].addEvaluations(func(ge model.GetEdger) model.EdgeState {
 		printDebugMsg("running check for avoided end-of-arm")
 
@@ -66,18 +78,26 @@ func (rs *ruleSet) addExtendedRulesForAvoidedArm(
 }
 
 func (rs *ruleSet) addExtendedRulesForExistingArm(
-	firstArm []model.EdgePair,
-	endOfFirstArm model.EdgePair,
-	endOfSecondArm model.EdgePair,
-	secondArm []model.EdgePair,
+	needToExist []model.EdgePair,
+	needToAvoid model.EdgePair,
+	needsToNotExist model.EdgePair,
+	thenCanExist []model.EdgePair,
 ) {
-	for i, edge := range secondArm {
+	printDebugMsg(
+		"addExtendedRulesForAvoidedArm(\n\t%+v, \n\t%+v, \n\t%+v, \n\t%+v,\n)",
+		needToExist,
+		needToAvoid,
+		needsToNotExist,
+		thenCanExist,
+	)
+
+	for i, edge := range thenCanExist {
 		rs.rulesByEdges[edge].addEvaluations(
 			getRuleForOppositeArm(
-				firstArm,
-				endOfFirstArm,
-				endOfSecondArm,
-				secondArm,
+				needToExist,
+				needToAvoid,
+				needsToNotExist,
+				thenCanExist,
 				i == 0,
 			),
 		)

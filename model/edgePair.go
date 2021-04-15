@@ -39,7 +39,7 @@ func NewEdgePair(
 }
 
 func (ep EdgePair) String() string {
-	return fmt.Sprintf("coord: %+v, dir: %s", ep.NodeCoord, ep.Cardinal)
+	return fmt.Sprintf("EdgePair{coord: %+v, dir: %s}", ep.NodeCoord, ep.Cardinal)
 }
 
 func (ep EdgePair) IsIn(
