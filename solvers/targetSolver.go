@@ -80,9 +80,17 @@ func (d *targetSolver) getSolutionFromDepths(
 		// has no new loose ends
 
 		if targeting.Next == nil {
-			return d.connect(
-				puzz.DeepCopy(),
-			)
+			//
+			switch puzz.GetState() {
+			case model.Complete:
+				return puzz
+			default:
+				printPuzzleUpdate(`getSolutionFromDepths did not solve!`, depth, puzz, targeting, d.iterations())
+				panic(`what now`)
+			}
+			// return d.connect(
+			// 	puzz.DeepCopy(),
+			// )
 		}
 
 		return d.getSolutionFromDepths(
@@ -135,9 +143,16 @@ func (d *targetSolver) buildAllTwoArmsForTraversal(
 	}
 
 	if curTarget.Next == nil {
-		return d.connect(
-			twoArmPuzz.DeepCopy(),
-		)
+		switch twoArmPuzz.GetState() {
+		case model.Complete:
+			return twoArmPuzz
+		default:
+			printPuzzleUpdate(`buildAllTwoArmsForTraversal did not solve!`, depth, twoArmPuzz, curTarget, d.iterations())
+			panic(`wtf`)
+		}
+		// return d.connect(
+		// 	twoArmPuzz.DeepCopy(),
+		// )
 	}
 
 	return d.getSolutionFromDepths(

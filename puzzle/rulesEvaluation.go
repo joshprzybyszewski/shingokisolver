@@ -5,14 +5,17 @@ import (
 )
 
 func (p *Puzzle) checkRuleset(
-	rq *rulesQueue,
 	ep EdgePair,
 	expState model.EdgeState,
 ) model.State {
-	p.printMsg("checkRuleset(%s, %s)",
-		ep, expState,
-	)
 	r := p.rules.getRules(ep)
+
+	p.printMsg("checkRuleset(%s, %s) will affect\n%+v\ntoCheck %+v\nupdated: %+v\n",
+		ep, expState,
+		r.affects(),
+		p.rq.toCheck,
+		p.rq.updated,
+	)
 
 	// check if the rules for this edge are broken
 	newEdge := r.getEdgeState(p.edges)
@@ -31,25 +34,28 @@ func (p *Puzzle) checkRuleset(
 	}
 
 	// Now let's look at all of the other affected rules
-	rq.push(r.affects()...)
+	p.rq.push(r.affects()...)
+
+	p.printMsg("checkRuleset(%s, %s) completed\ntoCheck %+v\nupdated: %+v\n",
+		ep, expState,
+		p.rq.toCheck,
+		p.rq.updated,
+	)
 
 	return model.Incomplete
 }
 
 func (p *Puzzle) updateEdgeFromRules(
-	rq *rulesQueue,
 	ep EdgePair,
 ) model.State {
 	p.printMsg("updateEdgeFromRules(%s)", ep)
 
 	switch es := p.rules.getRules(ep).getEdgeState(p.edges); es {
 	case model.EdgeAvoided:
-		return p.avoidEdge(rq, ep)
+		return p.avoidEdge(ep)
 	case model.EdgeExists:
-		return p.addEdge(rq, ep)
-	case model.EdgeUnknown:
-		return model.Incomplete
-	case model.EdgeOutOfBounds:
+		return p.addEdge(ep)
+	case model.EdgeUnknown, model.EdgeOutOfBounds:
 		return model.Incomplete
 	default:
 		return model.Unexpected

@@ -8,15 +8,16 @@ import (
 )
 
 func (p *Puzzle) String() string {
-	return p.string(true)
+	return p.string(true, true)
 }
 
 func (p *Puzzle) Solution() string {
-	return p.string(false)
+	return p.string(false, false)
 }
 
 func (p *Puzzle) string(
 	includeXs bool,
+	includeQueue bool,
 ) string {
 	if p == nil {
 		return `(*Puzzle)<nil>`
@@ -44,38 +45,81 @@ func (p *Puzzle) string(
 			// now draw an edge
 			ep := NewEdgePair(nc, model.HeadRight)
 			if p.edges.isInBounds(ep) {
+				enQueued := includeQueue && ep.IsIn(p.rq.toCheck...)
+				if enQueued {
+					sb.WriteString(fmt.Sprintf("%2d", ep.indexOf(p.rq.toCheck...)))
+				}
 				switch p.edges.GetEdge(ep) {
 				case model.EdgeExists:
-					sb.WriteString(`---`)
+					if !enQueued {
+						sb.WriteString(`--`)
+					}
+					sb.WriteString(`-`)
 				case model.EdgeAvoided:
-					if includeXs {
+					if enQueued {
+						if includeXs {
+							sb.WriteString(`X`)
+						} else {
+							sb.WriteString(` `)
+						}
+					} else if includeXs {
 						sb.WriteString(` X `)
 					} else {
 						sb.WriteString(`   `)
 					}
+				case model.EdgeUnknown:
+					if !enQueued {
+						sb.WriteString(`  `)
+					}
+					sb.WriteString(` `)
 				default:
-					sb.WriteString(`   `)
+					if !enQueued {
+						sb.WriteString(`??`)
+					}
+					sb.WriteString(`?`)
 				}
 			}
 
 			// now draw any edges that are below
-			below.WriteString(`  `)
+			below.WriteString(` `)
 			ep = NewEdgePair(nc, model.HeadDown)
 			if p.edges.isInBounds(ep) {
+				enQueued := includeQueue && ep.IsIn(p.rq.toCheck...)
+				if enQueued {
+					below.WriteString(fmt.Sprintf("%2d", ep.indexOf(p.rq.toCheck...)))
+				}
+
 				switch p.edges.GetEdge(ep) {
 				case model.EdgeExists:
+					if !enQueued {
+						below.WriteString(`||`)
+					}
 					below.WriteString(`|`)
 				case model.EdgeAvoided:
-					if includeXs {
-						below.WriteString(`X`)
+					if enQueued {
+						if includeXs {
+							below.WriteString(`X`)
+						} else {
+							below.WriteString(` `)
+						}
+					} else if includeXs {
+						below.WriteString(` X `)
 					} else {
-						below.WriteString(` `)
+						below.WriteString(`   `)
 					}
-				default:
+				case model.EdgeUnknown:
+					if !enQueued {
+						below.WriteString(`  `)
+					}
 					below.WriteString(` `)
+				default:
+					if !enQueued {
+						below.WriteString(`??`)
+					}
+					below.WriteString(`?`)
 				}
 			}
-			below.WriteString(`     `)
+			below.WriteString(`    `)
 		}
 		sb.WriteString("\n")
 		sb.WriteString(below.String())

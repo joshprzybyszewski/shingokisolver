@@ -39,10 +39,16 @@ func (ep EdgePair) String() string {
 func (ep EdgePair) IsIn(
 	others ...EdgePair,
 ) bool {
-	for _, o := range others {
+	return ep.indexOf(others...) >= 0
+}
+
+func (ep EdgePair) indexOf(
+	others ...EdgePair,
+) int {
+	for i, o := range others {
 		if o == ep {
-			return true
+			return i
 		}
 	}
-	return false
+	return -1
 }

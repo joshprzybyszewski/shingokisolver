@@ -24,6 +24,14 @@ func (p *Puzzle) GetEdgeState(
 	return p.edges.GetEdge(ep)
 }
 
+func (p *Puzzle) isEdgeDefined(ep EdgePair) bool {
+	switch p.GetEdgeState(ep) {
+	case model.EdgeAvoided, model.EdgeExists:
+		return true
+	}
+	return false
+}
+
 func (p *Puzzle) AddEdge(
 	startNode model.NodeCoord,
 	move model.Cardinal,
@@ -45,25 +53,22 @@ func (p *Puzzle) AddEdges(
 		pairs,
 	)
 
-	rq := newRulesQueue()
-
 	for _, ep := range pairs {
 		if !p.edges.isInBounds(ep) {
 			return model.Violation
 		}
 
-		switch s := p.addEdge(rq, ep); s {
+		switch s := p.addEdge(ep); s {
 		case model.Incomplete, model.Duplicate:
 		default:
 			return s
 		}
 	}
 
-	return p.runQueue(rq)
+	return p.runQueue()
 }
 
 func (p *Puzzle) addEdge(
-	rq *rulesQueue,
 	ep EdgePair,
 ) model.State {
 
@@ -73,14 +78,12 @@ func (p *Puzzle) addEdge(
 
 	switch state := p.edges.SetEdge(ep); state {
 	case model.Incomplete, model.Complete:
-		rq.noticeUpdated(ep)
+		p.rq.noticeUpdated(ep)
 
-		return p.checkRuleset(rq, ep, model.EdgeExists)
+		return p.checkRuleset(ep, model.EdgeExists)
 
 	case model.Duplicate:
-		// not technically updated, but we tried to.
-		rq.noticeUpdated(ep)
-		return model.Duplicate
+		return state
 	default:
 		p.printMsg("addEdge(%s) edges.SetEdge returned %s",
 			ep,
@@ -92,7 +95,6 @@ func (p *Puzzle) addEdge(
 }
 
 func (p *Puzzle) avoidEdge(
-	rq *rulesQueue,
 	ep EdgePair,
 ) model.State {
 
@@ -102,10 +104,10 @@ func (p *Puzzle) avoidEdge(
 
 	switch state := p.edges.AvoidEdge(ep); state {
 	case model.Incomplete, model.Complete:
-		rq.noticeUpdated(ep)
+		p.rq.noticeUpdated(ep)
 
 		// see if I'm breaking any rules or I can make any more moves
-		return p.checkRuleset(rq, ep, model.EdgeAvoided)
+		return p.checkRuleset(ep, model.EdgeAvoided)
 	default:
 		p.printMsg("avoidEdge(%s) edges returned %s",
 			ep,
@@ -115,18 +117,18 @@ func (p *Puzzle) avoidEdge(
 	}
 }
 
-func (p *Puzzle) runQueue(
-	rq *rulesQueue,
-) model.State {
-	for ep, ok := rq.pop(); ok; ep, ok = rq.pop() {
-		switch s := p.updateEdgeFromRules(rq, ep); s {
+func (p *Puzzle) runQueue() model.State {
+	defer p.rq.clearUpdated()
+
+	for ep, ok := p.rq.pop(); ok; ep, ok = p.rq.pop() {
+		switch s := p.updateEdgeFromRules(ep); s {
 		case model.Violation,
 			model.Unexpected:
 			return s
 		}
 	}
 
-	for ep := range rq.updated {
+	for ep := range p.rq.updated {
 		eval := p.rules.getRules(ep).getEdgeState(p.edges)
 		if eval == model.EdgeUnknown || eval == model.EdgeOutOfBounds {
 			// this is ok. It means that our algorithm is trying out

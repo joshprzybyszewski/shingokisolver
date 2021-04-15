@@ -12,29 +12,18 @@ func (d *targetSolver) connect(
 	looseEnd, state := puzz.GetLooseEnd()
 
 	switch state {
-	case model.Complete:
-		return puzz
 	case model.NodesComplete:
 		if puzz.GetState() == model.Complete {
 			return puzz
 		}
 		return nil
 	case model.Incomplete:
-		// keep on goin
+		return d.solveFromLooseEnd(
+			puzz.DeepCopy(),
+			looseEnd,
+		)
 	default:
 		printAllTargetsHit(`GetLooseEnd returned a state`, puzz, d.iterations())
 		return nil
 	}
-
-	p, sol := d.solveFromLooseEnd(
-		puzz.DeepCopy(),
-		looseEnd,
-	)
-
-	switch sol {
-	case model.Complete:
-		return p
-	}
-
-	return nil
 }

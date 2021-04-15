@@ -8,26 +8,27 @@ import (
 func (d *targetSolver) solveFromLooseEnd(
 	input *puzzle.Puzzle,
 	start model.NodeCoord,
-) (*puzzle.Puzzle, model.State) {
+) *puzzle.Puzzle {
 
 	if input == nil {
-		return nil, model.Unexpected
+		return nil
 	}
-	inputCopy := input.DeepCopy()
 
-	switch state := d.sendOutDFSPath(
-		inputCopy,
+	otherPuzz, state := d.sendOutDFSPath(
+		input.DeepCopy(),
 		start,
 		model.HeadNowhere,
-	); state {
-	case model.Incomplete:
-		retPuzz := d.connect(inputCopy)
-		if retPuzz != nil {
-			return retPuzz, model.Complete
+	)
+	switch state {
+	case model.NodesComplete:
+		if otherPuzz.GetState() == model.Complete {
+			return otherPuzz
 		}
-		return nil, state
+		return nil
+	case model.Incomplete:
+		return d.connect(otherPuzz.DeepCopy())
 	default:
-		return nil, state
+		return nil
 	}
 }
 
@@ -36,32 +37,47 @@ func (d *targetSolver) sendOutDFSPath(
 	fromCoord model.NodeCoord,
 	avoid model.Cardinal,
 	curPath ...puzzle.EdgePair,
-) model.State {
+) (*puzzle.Puzzle, model.State) {
 
 	for _, nextHeading := range model.AllCardinals {
 		if nextHeading == avoid {
 			continue
 		}
+
 		ep := puzzle.NewEdgePair(fromCoord, nextHeading)
-		if puzz.GetEdgeState(ep) != model.EdgeUnknown {
+		switch puzz.GetEdgeState(ep) {
+		case model.EdgeUnknown:
+			// keep going
+		case model.EdgeExists:
+			cur := puzz.DeepCopy()
+
+			switch state := cur.AddEdges(append(curPath, ep)...); state {
+			case model.Complete, model.Incomplete:
+				return cur, state
+			}
+
 			continue
-		} else if ep.IsIn(curPath...) {
+		default:
 			continue
 		}
 
-		switch state := d.sendOutDFSPath(
+		if ep.IsIn(curPath...) {
+			continue
+		}
+
+		otherPuzz, state := d.sendOutDFSPath(
 			puzz.DeepCopy(),
 			fromCoord.Translate(nextHeading),
 			nextHeading.Opposite(),
 			append(curPath, ep)...,
-		); state {
-		case model.Incomplete:
-			// if the puzzle isn't complete, allow it to continue
+		)
+		switch state {
+		case model.Complete, model.Incomplete:
+			return otherPuzz, state
 		default:
-			return state
+			return nil, state
 		}
 	}
 
-	// add all edges
-	return puzz.AddEdges(curPath...)
+	return nil, model.Violation
 }

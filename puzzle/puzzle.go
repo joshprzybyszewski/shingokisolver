@@ -10,6 +10,7 @@ type Puzzle struct {
 
 	edges *edgesTriState
 	rules *ruleSet
+	rq    *rulesQueue
 }
 
 func NewPuzzle(
@@ -26,12 +27,16 @@ func NewPuzzle(
 		nodes[nc] = model.NewNode(nc, nl.IsWhite, nl.Value)
 	}
 
-	return &Puzzle{
+	puzz := &Puzzle{
 		numEdges: uint8(numEdges),
 		nodes:    nodes,
 		edges:    newEdgesBits(uint8(numEdges)),
 		rules:    newRuleSet(numEdges, nodes),
 	}
+
+	puzz.rq = newRulesQueue(puzz.edges, puzz, puzz.NumEdges())
+
+	return puzz
 }
 
 func (p *Puzzle) DeepCopy() *Puzzle {
@@ -41,12 +46,17 @@ func (p *Puzzle) DeepCopy() *Puzzle {
 
 	// I don't think we need to copy nodes because it should only
 	// ever be read from, never written to :#
-	return &Puzzle{
+
+	dc := &Puzzle{
 		numEdges: p.numEdges,
 		nodes:    p.nodes,
 		edges:    p.edges.Copy(),
 		rules:    p.rules,
 	}
+
+	dc.rq = newRulesQueue(dc.edges, dc, dc.NumEdges())
+
+	return dc
 }
 
 func (p *Puzzle) GetNode(coord model.NodeCoord) (model.Node, bool) {

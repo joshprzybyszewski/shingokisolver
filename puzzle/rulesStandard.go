@@ -1,73 +1,51 @@
 package puzzle
 
-import "github.com/joshprzybyszewski/shingokisolver/model"
+import (
+	"fmt"
+
+	"github.com/joshprzybyszewski/shingokisolver/model"
+)
 
 func getStandardNodeRules(
 	ep EdgePair,
-	otherStartEdges, otherEndEdges []EdgePair,
-) func(ge getEdger) model.EdgeState {
-
+	otherStartEdges []EdgePair,
+	otherEndEdges []EdgePair,
+) []func(getEdger) model.EdgeState {
 	if len(otherStartEdges) != 3 || len(otherEndEdges) != 3 {
-		panic(`unexpected input`)
+		panic(fmt.Sprintf(`unexpected input: %+v, %+v`, otherStartEdges, otherEndEdges))
 	}
 
+	return []func(getEdger) model.EdgeState{
+		getStandardEvalFor(otherStartEdges),
+		getStandardEvalFor(otherEndEdges),
+	}
+}
+
+func getStandardEvalFor(otherInputs []EdgePair) func(ge getEdger) model.EdgeState {
 	return func(ge getEdger) model.EdgeState {
-		numAvoided := 0
-		numOutOfBounds := 0
+		numNonExisting := 0
 		numExisting := 0
 
-		for _, otherEP := range otherStartEdges {
+		for _, otherEP := range otherInputs {
 			switch s := ge.GetEdge(otherEP); s {
 			case model.EdgeExists:
 				numExisting++
-			case model.EdgeAvoided:
-				numAvoided++
-			case model.EdgeOutOfBounds:
-				numOutOfBounds++
+			case model.EdgeAvoided, model.EdgeOutOfBounds:
+				numNonExisting++
 			}
 		}
 
-		if numExisting > 2 {
+		switch {
+		case numExisting > 2:
+			// branched!
 			return model.EdgeErrored
-		}
-
-		startShouldAvoid := numExisting == 2 || numAvoided+numOutOfBounds == 3
-		startShouldExist := numAvoided+numOutOfBounds == 2 && numExisting == 1
-
-		if startShouldAvoid && startShouldExist {
-			return model.EdgeErrored
-		}
-
-		numAvoided = 0
-		numOutOfBounds = 0
-		numExisting = 0
-
-		for _, otherEP := range otherEndEdges {
-			switch s := ge.GetEdge(otherEP); s {
-			case model.EdgeExists:
-				numExisting++
-			case model.EdgeAvoided:
-				numAvoided++
-			case model.EdgeOutOfBounds:
-				numOutOfBounds++
-			}
-		}
-
-		if numExisting > 2 {
-			return model.EdgeErrored
-		}
-
-		endShouldAvoid := numExisting == 2 || numAvoided+numOutOfBounds == 3
-		endShouldExist := numAvoided+numOutOfBounds == 2 && numExisting == 1
-
-		if endShouldAvoid || startShouldAvoid {
-			if endShouldExist || startShouldExist {
-				return model.EdgeErrored
-			}
+		case numExisting == 2, numNonExisting == 3:
+			// either the two inputs for this node have been defined,
+			// or we know all three other inputs are not edges
 			return model.EdgeAvoided
-		}
-
-		if endShouldExist || startShouldExist {
+		case numExisting == 1 && numNonExisting == 2:
+			// there exists one input to this node, and nobody else can be its pair
+			// therefore we should be.
 			return model.EdgeExists
 		}
 

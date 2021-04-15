@@ -33,14 +33,6 @@ func BuildTwoArmOptions(
 		optionsCache[numEdges] = make(map[Node][]TwoArms, numEdges*numEdges/4)
 	}
 
-	// if isOnTheSide(target.Coord, numEdges) {
-	// 	if isACorner(target.Coord, numEdges) {
-	// 		twoArmsOptions /= 4
-	// 	} else {
-	// 		twoArmsOptions /= 2
-	// 	}
-	// }
-
 	if answer, ok := optionsCache[numEdges][n]; ok {
 		return answer
 	}
