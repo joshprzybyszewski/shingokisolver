@@ -58,10 +58,10 @@ func (rq *rulesQueue) pop() (model.EdgePair, bool) {
 	ep := rq.toCheck[0]
 
 	// TODO to save on re-allocs, we can move the last item to the front.
-	// rq.toCheck[0] = rq.toCheck[len(rq.toCheck)-1]
-	// rq.toCheck = rq.toCheck[:len(rq.toCheck)-1]
+	rq.toCheck[0] = rq.toCheck[len(rq.toCheck)-1]
+	rq.toCheck = rq.toCheck[:len(rq.toCheck)-1]
 
-	rq.toCheck = rq.toCheck[1:]
+	// rq.toCheck = rq.toCheck[1:]
 
 	return ep, true
 }

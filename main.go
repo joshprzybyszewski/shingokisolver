@@ -61,13 +61,17 @@ func main() {
 				// this puzzle is tricking me...
 				// continue
 			}
+			if pd.NumEdges < 15 {
+				continue
+			}
+
+			go runSolver(st, pd)
+			time.Sleep(11 * time.Second)
 
 			if *addPprof && (time.Since(t0) > 10*time.Second ||
 				pd.NumEdges > 50) {
 				return
 			}
-
-			runSolver(st, pd)
 		}
 	}
 }
@@ -82,9 +86,9 @@ func runSolver(
 	// 	}
 	// }()
 
-	if pd.NumEdges < 15 {
-		return
-	}
+	// if pd.NumEdges < 15 {
+	// 	return
+	// }
 
 	if st != solvers.TargetSolverType {
 		return

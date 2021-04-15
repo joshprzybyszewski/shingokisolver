@@ -8,11 +8,11 @@ func (rs *ruleSet) addAllTwoArmRules(
 	node model.Node,
 	numEdges int,
 ) {
-	printDebugMsg(
-		"addAllTwoArmRules(%s, %d)",
-		node,
-		numEdges,
-	)
+	// printDebugMsg(
+	// 	"addAllTwoArmRules(%s, %d)",
+	// 	node,
+	// 	numEdges,
+	// )
 
 	options := model.BuildTwoArmOptions(node, numEdges)
 
@@ -73,13 +73,13 @@ func (rs *ruleSet) addExtendedRulesForAvoidedArm(
 	needToExist []model.EdgePair,
 	thenAvoid model.EdgePair,
 ) {
-	printDebugMsg(
-		"addExtendedRulesForAvoidedArm(%+v, %s)",
-		needToExist,
-		thenAvoid,
-	)
+	// printDebugMsg(
+	// 	"addExtendedRulesForAvoidedArm(%+v, %s)",
+	// 	needToExist,
+	// 	thenAvoid,
+	// )
 	rs.rulesByEdges[thenAvoid].addEvaluations(func(ge model.GetEdger) model.EdgeState {
-		printDebugMsg("running check for avoided end-of-arm")
+		// printDebugMsg("running check for avoided end-of-arm")
 
 		for _, ep := range needToExist {
 			if ge.GetEdge(ep) != model.EdgeExists {
@@ -99,14 +99,14 @@ func (rs *ruleSet) addExtendedRulesForExistingArm(
 	needsToNotExist model.EdgePair,
 	thenCanExistOpp, thenCanExist []model.EdgePair,
 ) {
-	printDebugMsg(
-		"addExtendedRulesForAvoidedArm(\n\t%+v, \n\t%+v, \n\t%+v, \n\t%+v, \n\t%+v,\n)",
-		needToExist,
-		needToAvoid,
-		needsToNotExist,
-		thenCanExistOpp,
-		thenCanExist,
-	)
+	// printDebugMsg(
+	// 	"addExtendedRulesForAvoidedArm(\n\t%+v, \n\t%+v, \n\t%+v, \n\t%+v, \n\t%+v,\n)",
+	// 	needToExist,
+	// 	needToAvoid,
+	// 	needsToNotExist,
+	// 	thenCanExistOpp,
+	// 	thenCanExist,
+	// )
 
 	for i, edge := range thenCanExist {
 		rs.rulesByEdges[edge].addEvaluations(
@@ -131,33 +131,33 @@ func getRuleForOppositeArm(
 	firstNode bool,
 ) func(ge model.GetEdger) model.EdgeState {
 	return func(ge model.GetEdger) model.EdgeState {
-		printDebugMsg(
-			"running check for opposite arm\n\toppArm: %+v\n\tendOfArm: %s\n\tmyArm: %+v\n\tisFirstNode: %v\n ",
-			needToExist,
-			needToAvoid,
-			thenExists,
-			firstNode,
-		)
+		// printDebugMsg(
+		// 	"running check for opposite arm\n\toppArm: %+v\n\tendOfArm: %s\n\tmyArm: %+v\n\tisFirstNode: %v\n ",
+		// 	needToExist,
+		// 	needToAvoid,
+		// 	thenExists,
+		// 	firstNode,
+		// )
 
 		switch s := ge.GetEdge(needToAvoid); s {
 		case model.EdgeAvoided, model.EdgeOutOfBounds:
 			// the one we need to avoid _is_ in fact avoided
 		default:
-			printDebugMsg(
-				"edge needed to avoid (%s) was not avoided: %s",
-				needToAvoid,
-				s,
-			)
+			// printDebugMsg(
+			// 	"edge needed to avoid (%s) was not avoided: %s",
+			// 	needToAvoid,
+			// 	s,
+			// )
 			return model.EdgeUnknown
 		}
 
 		for _, ep := range needToExist {
 			if s := ge.GetEdge(ep); s != model.EdgeExists {
-				printDebugMsg(
-					"edge needed to exist (%s) was not existing: %s",
-					ep,
-					s,
-				)
+				// printDebugMsg(
+				// 	"edge needed to exist (%s) was not existing: %s",
+				// 	ep,
+				// 	s,
+				// )
 				// one of the edges that needs to exist doesn't. say "we don't know"
 				return model.EdgeUnknown
 			}
@@ -169,20 +169,20 @@ func getRuleForOppositeArm(
 		switch s := ge.GetEdge(needsToNotExist); s {
 		case model.EdgeExists:
 			if firstNode {
-				printDebugMsg(
-					"FIRST NODE: edge that should have NOT existed (%s) was existing",
-					needsToNotExist,
-				)
+				// printDebugMsg(
+				// 	"FIRST NODE: edge that should have NOT existed (%s) was existing",
+				// 	needsToNotExist,
+				// )
 				// this means that the first edge (closest) to the defined
 				// node should be avoided because the whole arm cannot be
 				// completed as desired.
 				return model.EdgeAvoided
 			}
 
-			printDebugMsg(
-				"edge that should have NOT existed (%s) was existing",
-				needsToNotExist,
-			)
+			// printDebugMsg(
+			// 	"edge that should have NOT existed (%s) was existing",
+			// 	needsToNotExist,
+			// )
 			return model.EdgeUnknown
 		}
 
@@ -197,22 +197,22 @@ func getRuleForOppositeArm(
 				// Surprise! one of the edges in this arm is
 				// avoided (or, unexpectedly, out of bounds)
 				if firstNode {
-					printDebugMsg(
-						"FIRST NODE: edge that also should have existed (%s) was not existing: %s",
-						thenExist,
-						s,
-					)
+					// printDebugMsg(
+					// 	"FIRST NODE: edge that also should have existed (%s) was not existing: %s",
+					// 	thenExist,
+					// 	s,
+					// )
 					// this means that the first edge (closest) to the defined
 					// node should be avoided because the whole arm cannot be
 					// completed as desired.
 					return model.EdgeAvoided
 				}
 
-				printDebugMsg(
-					"edge that also should have existed (%s) was not existing: %s",
-					thenExist,
-					s,
-				)
+				// printDebugMsg(
+				// 	"edge that also should have existed (%s) was not existing: %s",
+				// 	thenExist,
+				// 	s,
+				// )
 				// since this isn't the first edge, we don't have enough
 				// info, so we can't claim knowledge
 				return model.EdgeUnknown
@@ -230,10 +230,10 @@ func getRuleForOppositeArm(
 			return model.EdgeExists
 		}
 
-		printDebugMsg(
-			"none of the shouldExists existed: %+v",
-			thenExists,
-		)
+		// printDebugMsg(
+		// 	"none of the shouldExists existed: %+v",
+		// 	thenExists,
+		// )
 
 		return model.EdgeUnknown
 	}

@@ -13,7 +13,7 @@ func Run() {
 
 	defer flushLogs()
 
-	wp, err := getPuzzle(20)
+	wp, err := getPuzzle(10)
 	if err != nil {
 		panic(err)
 	}

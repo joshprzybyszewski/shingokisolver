@@ -36,7 +36,10 @@ func (d *targetSolver) flip(
 		if puzzWithoutEdge.GetState(ep.NodeCoord) == model.Complete {
 			return puzzWithoutEdge
 		}
-		return d.flip(puzzWithoutEdge)
+		res := d.flip(puzzWithoutEdge)
+		if res != nil {
+			return res
+		}
 	}
 
 	return nil

@@ -59,12 +59,12 @@ func (r *rules) addEvaluations(evals ...func(ge model.GetEdger) model.EdgeState)
 		return
 	}
 
-	printDebugMsg(
-		"%s addEvaluations([%d]evals = %+v)",
-		r.me,
-		len(evals),
-		evals,
-	)
+	// printDebugMsg(
+	// 	"%s addEvaluations([%d]evals = %+v)",
+	// 	r.me,
+	// 	len(evals),
+	// 	evals,
+	// )
 
 	for _, eval := range evals {
 		if eval == nil {
@@ -81,13 +81,13 @@ func (r *rules) getEdgeState(ge model.GetEdger) model.EdgeState {
 
 	es := model.EdgeUnknown
 
-	for i, eval := range r.evals {
+	for _, eval := range r.evals {
 		newES := eval(ge)
-		printDebugMsg(
-			"r.evals[%d] chose %s",
-			i,
-			newES,
-		)
+		// printDebugMsg(
+		// 	"r.evals[%d] chose %s",
+		// 	i,
+		// 	newES,
+		// )
 		switch newES {
 		case model.EdgeErrored:
 			return newES
@@ -104,11 +104,11 @@ func (r *rules) getEdgeState(ge model.GetEdger) model.EdgeState {
 		}
 	}
 
-	printDebugMsg(
-		"getEdgeState checked %d evals, and chose %s",
-		len(r.evals),
-		es,
-	)
+	// printDebugMsg(
+	// 	"getEdgeState checked %d evals, and chose %s",
+	// 	len(r.evals),
+	// 	es,
+	// )
 
 	return es
 }

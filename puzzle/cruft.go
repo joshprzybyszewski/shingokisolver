@@ -41,11 +41,11 @@ func (p *Puzzle) HasTwoOutgoingEdges(
 	coord model.NodeCoord,
 ) bool {
 	nOut := getNumOutgoingDirections(p.edges, coord)
-	p.printMsg(
-		"HasTwoOutgoingEdges(%+v) = %d",
-		coord,
-		nOut,
-	)
+	// p.printMsg(
+	// 	"HasTwoOutgoingEdges(%+v) = %d",
+	// 	coord,
+	// 	nOut,
+	// )
 	return nOut == 2
 }
 
