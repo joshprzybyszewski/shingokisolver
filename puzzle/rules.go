@@ -74,44 +74,15 @@ func (r *rules) addEvaluations(evals ...func(ge model.GetEdger) model.EdgeState)
 	}
 }
 
-var _ model.GetEdger = (*edgeStateCache)(nil)
-
-type edgeStateCache struct {
-	ge    model.GetEdger
-	cache map[model.EdgePair]model.EdgeState
-}
-
-func newEdgeStateCache(ge model.GetEdger) *edgeStateCache {
-	return &edgeStateCache{
-		ge:    ge,
-		cache: make(map[model.EdgePair]model.EdgeState, 50),
-	}
-}
-
-func (c *edgeStateCache) GetEdge(
-	ep model.EdgePair,
-) model.EdgeState {
-	s, ok := c.cache[ep]
-	if ok {
-		return s
-	}
-
-	s = c.ge.GetEdge(ep)
-	c.cache[ep] = s
-	return s
-}
-
 func (r *rules) getEdgeState(ge model.GetEdger) model.EdgeState {
 	if r == nil {
 		return model.EdgeOutOfBounds
 	}
 
-	geCache := newEdgeStateCache(ge)
-
 	es := model.EdgeUnknown
 
 	for i, eval := range r.evals {
-		newES := eval(geCache)
+		newES := eval(ge)
 		printDebugMsg(
 			"r.evals[%d] chose %s",
 			i,
