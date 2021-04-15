@@ -19,22 +19,25 @@ func (d *targetSolver) flip(
 		}
 	}
 
-	puzzCpy := puzz.DeepCopy()
-
-	switch puzz.AddEdges(ep) {
+	switch puzzWithEdge := puzz.DeepCopy(); puzzWithEdge.AddEdges(ep) {
 	case model.Complete, model.Incomplete:
-		switch puzzCpy.GetState(ep.NodeCoord) {
-		case model.Complete:
-			return puzzCpy
+		if puzzWithEdge.GetState(ep.NodeCoord) == model.Complete {
+			return puzzWithEdge
+		}
+
+		res := d.flip(puzzWithEdge)
+		if res != nil {
+			return res
 		}
 	}
 
-	switch s := puzz.AvoidEdge(ep); s {
+	switch puzzWithoutEdge := puzz.DeepCopy(); puzzWithoutEdge.AvoidEdge(ep) {
 	case model.Complete, model.Incomplete:
-		if puzz.GetState(ep.NodeCoord) == model.Complete {
-			return puzz
+		if puzzWithoutEdge.GetState(ep.NodeCoord) == model.Complete {
+			return puzzWithoutEdge
 		}
+		return d.flip(puzzWithoutEdge)
 	}
 
-	return d.flip(puzz)
+	return nil
 }

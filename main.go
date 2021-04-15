@@ -59,7 +59,7 @@ func main() {
 		for _, pd := range puzzles {
 			if !strings.Contains(pd.String(), `1,520,692`) {
 				// this puzzle is tricking me...
-				continue
+				// continue
 			}
 
 			runSolver(st, pd)
