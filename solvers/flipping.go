@@ -11,7 +11,7 @@ func (d *targetSolver) flip(
 
 	ep, ok := puzz.GetUnknownEdge()
 	if !ok {
-		switch puzz.GetState() {
+		switch puzz.GetState(model.InvalidNodeCoord) {
 		case model.Complete:
 			return puzz
 		default:
@@ -23,7 +23,7 @@ func (d *targetSolver) flip(
 
 	switch puzz.AddEdges(ep) {
 	case model.Complete, model.Incomplete:
-		switch puzzCpy.GetState() {
+		switch puzzCpy.GetState(ep.NodeCoord) {
 		case model.Complete:
 			return puzzCpy
 		}
@@ -31,7 +31,7 @@ func (d *targetSolver) flip(
 
 	switch s := puzz.AvoidEdge(ep); s {
 	case model.Complete, model.Incomplete:
-		if puzz.GetState() == model.Complete {
+		if puzz.GetState(ep.NodeCoord) == model.Complete {
 			return puzz
 		}
 	}

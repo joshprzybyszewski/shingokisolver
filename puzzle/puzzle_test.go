@@ -49,7 +49,7 @@ func TestIsEdge(t *testing.T) {
 
 // defined here as a helper to make unit tests easier
 func (p *Puzzle) isInvalid() bool {
-	switch p.GetState() {
+	switch p.GetState(model.InvalidNodeCoord) {
 	case model.Incomplete, model.Complete:
 		return false
 	default:

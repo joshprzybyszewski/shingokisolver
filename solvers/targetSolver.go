@@ -50,7 +50,7 @@ func (d *targetSolver) solve() (*puzzle.Puzzle, bool) {
 
 	p := d.getSolutionFromDepths(
 		0,
-		puzz,
+		puzz.DeepCopy(),
 		targets[0],
 	)
 	return p, p != nil
@@ -73,7 +73,7 @@ func (d *targetSolver) getSolutionFromDepths(
 		// return nil
 	}
 
-	switch tCoord := targeting.Coord; puzz.GetNodeState(tCoord) {
+	switch puzz.GetNodeState(targeting.Coord) {
 	case model.Violation:
 		return nil
 
@@ -84,7 +84,7 @@ func (d *targetSolver) getSolutionFromDepths(
 		// has no new loose ends
 
 		if targeting.Next == nil {
-			switch puzz.GetState() {
+			switch puzz.GetState(targeting.Coord) {
 			case model.Complete:
 				return puzz
 			default:
@@ -130,15 +130,18 @@ func (d *targetSolver) buildAllTwoArmsForTraversal(
 	ta model.TwoArms,
 ) *puzzle.Puzzle {
 
-	twoArmPuzz := d.sendOutTwoArms(
-		puzz.DeepCopy(),
+	switch puzz.AddEdges(getTwoArmsEdges(
 		curTarget.Coord,
 		ta,
-	)
+	)...) {
+	case model.Duplicate, model.Incomplete, model.Complete:
+	default:
+		return nil
+	}
 
-	switch twoArmPuzz.GetState() {
+	switch puzz.GetState(curTarget.Coord) {
 	case model.Complete:
-		return twoArmPuzz
+		return puzz
 	case model.Incomplete:
 		// continue
 	default:
@@ -147,45 +150,35 @@ func (d *targetSolver) buildAllTwoArmsForTraversal(
 
 	if curTarget.Next == nil {
 		return d.flip(
-			twoArmPuzz.DeepCopy(),
+			puzz.DeepCopy(),
 		)
 	}
 
 	return d.getSolutionFromDepths(
 		depth+1,
-		twoArmPuzz,
+		puzz.DeepCopy(),
 		*curTarget.Next,
 	)
 }
 
-func (d *targetSolver) sendOutTwoArms(
-	puzz *puzzle.Puzzle,
+func getTwoArmsEdges(
 	start model.NodeCoord,
 	ta model.TwoArms,
-) (retPuzz *puzzle.Puzzle) {
+) []model.EdgePair {
 
-	var allEdges []model.EdgePair
+	allEdges := make([]model.EdgePair, 0, ta.One.Len+ta.Two.Len)
 
 	arm1End := start
 	for i := int8(0); i < ta.One.Len; i++ {
 		allEdges = append(allEdges, model.NewEdgePair(arm1End, ta.One.Heading))
-		d.numProcessed++
-
 		arm1End = arm1End.Translate(ta.One.Heading)
 	}
 
 	arm2End := start
 	for i := int8(0); i < ta.Two.Len; i++ {
 		allEdges = append(allEdges, model.NewEdgePair(arm2End, ta.Two.Heading))
-		d.numProcessed++
-
 		arm2End = arm2End.Translate(ta.Two.Heading)
 	}
 
-	switch puzz.AddEdges(allEdges...) {
-	case model.Duplicate, model.Incomplete, model.Complete:
-		return puzz
-	default:
-		return nil
-	}
+	return allEdges
 }

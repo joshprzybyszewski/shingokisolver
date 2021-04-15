@@ -4,7 +4,9 @@ import (
 	"github.com/joshprzybyszewski/shingokisolver/model"
 )
 
-func (p *Puzzle) GetState() model.State {
+func (p *Puzzle) GetState(
+	coord model.NodeCoord,
+) model.State {
 	if p == nil {
 		return model.Violation
 	}
@@ -17,11 +19,12 @@ func (p *Puzzle) GetState() model.State {
 		return nodeState
 	}
 
-	var coord model.NodeCoord
-	for nc := range p.nodes {
-		// just need a random starting node for the walker
-		coord = nc
-		break
+	if coord == model.InvalidNodeCoord {
+		for nc := range p.nodes {
+			// just need a random starting node for the walker
+			coord = nc
+			break
+		}
 	}
 
 	w := newWalker(p.edges, coord)

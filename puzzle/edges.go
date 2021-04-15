@@ -59,7 +59,7 @@ func (p *Puzzle) AddEdges(
 		}
 
 		switch s := p.addEdge(ep); s {
-		case model.Incomplete, model.Duplicate:
+		case model.Incomplete, model.Complete, model.Duplicate:
 		default:
 			return s
 		}
@@ -91,7 +91,6 @@ func (p *Puzzle) addEdge(
 		)
 		return state
 	}
-
 }
 
 func (p *Puzzle) AvoidEdge(
