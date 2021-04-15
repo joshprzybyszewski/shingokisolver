@@ -5,7 +5,7 @@ import (
 )
 
 func (p *Puzzle) checkRuleset(
-	ep EdgePair,
+	ep model.EdgePair,
 	expState model.EdgeState,
 ) model.State {
 	r := p.rules.getRules(ep)
@@ -46,7 +46,7 @@ func (p *Puzzle) checkRuleset(
 }
 
 func (p *Puzzle) updateEdgeFromRules(
-	ep EdgePair,
+	ep model.EdgePair,
 ) model.State {
 	p.printMsg("updateEdgeFromRules(%s)", ep)
 

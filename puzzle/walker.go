@@ -9,7 +9,7 @@ type walker interface {
 }
 
 type simpleWalker struct {
-	provider   getEdger
+	provider   model.GetEdger
 	start      model.NodeCoord
 	cur        model.NodeCoord
 	seen       map[model.NodeCoord]struct{}
@@ -17,7 +17,7 @@ type simpleWalker struct {
 }
 
 func newWalker(
-	ge getEdger,
+	ge model.GetEdger,
 	start model.NodeCoord,
 ) walker {
 	return &simpleWalker{
@@ -74,7 +74,7 @@ func (sw *simpleWalker) walkToNextPoint(
 			continue
 		}
 
-		if sw.provider.GetEdge(NewEdgePair(sw.cur, dir)) != model.EdgeExists {
+		if sw.provider.GetEdge(model.NewEdgePair(sw.cur, dir)) != model.EdgeExists {
 			continue
 		}
 

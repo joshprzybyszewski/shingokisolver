@@ -36,7 +36,7 @@ func (d *targetSolver) sendOutDFSPath(
 	puzz *puzzle.Puzzle,
 	fromCoord model.NodeCoord,
 	avoid model.Cardinal,
-	curPath ...puzzle.EdgePair,
+	curPath ...model.EdgePair,
 ) (*puzzle.Puzzle, model.State) {
 
 	for _, nextHeading := range model.AllCardinals {
@@ -44,7 +44,7 @@ func (d *targetSolver) sendOutDFSPath(
 			continue
 		}
 
-		ep := puzzle.NewEdgePair(fromCoord, nextHeading)
+		ep := model.NewEdgePair(fromCoord, nextHeading)
 		switch puzz.GetEdgeState(ep) {
 		case model.EdgeUnknown:
 			// keep going

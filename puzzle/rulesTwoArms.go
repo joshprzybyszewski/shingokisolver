@@ -13,7 +13,7 @@ func (rs *ruleSet) addAllTwoArmRules(
 		arm1Edges, afterArm1 := getArmEdgesAndEnd(node.Coord(), o.One)
 		arm2Edges, afterArm2 := getArmEdgesAndEnd(node.Coord(), o.Two)
 
-		allExistingArms := make([]EdgePair, 0, len(arm1Edges)+len(arm2Edges))
+		allExistingArms := make([]model.EdgePair, 0, len(arm1Edges)+len(arm2Edges))
 		allExistingArms = append(allExistingArms, arm1Edges...)
 		allExistingArms = append(allExistingArms, arm2Edges...)
 
@@ -22,33 +22,35 @@ func (rs *ruleSet) addAllTwoArmRules(
 
 		rs.addExtendedRulesForExistingArm(arm1Edges, afterArm1, afterArm2, arm2Edges)
 		rs.addExtendedRulesForExistingArm(arm2Edges, afterArm2, afterArm1, arm1Edges)
+
+		// now _ensure_ that every arm and the off-arm are affecting each other!
+		allEdges := make([]model.EdgePair, len(allExistingArms), len(allExistingArms)+2)
+		copy(allEdges, allExistingArms)
+		allEdges = append(allEdges, afterArm1, afterArm2)
+		for _, e := range allEdges {
+			rs.rulesByEdges[e].addAffected(allEdges...)
+		}
 	}
 }
 
 func getArmEdgesAndEnd(
 	start model.NodeCoord,
 	arm model.Arm,
-) ([]EdgePair, EdgePair) {
-	armEdges := make([]EdgePair, 0, arm.Len)
+) ([]model.EdgePair, model.EdgePair) {
+	armEdges := make([]model.EdgePair, 0, arm.Len)
 	arm1End := start
 	for i := int8(0); i < arm.Len; i++ {
-		armEdges = append(armEdges, NewEdgePair(arm1End, arm.Heading))
+		armEdges = append(armEdges, model.NewEdgePair(arm1End, arm.Heading))
 		arm1End = arm1End.Translate(arm.Heading)
 	}
-	return armEdges, NewEdgePair(arm1End, arm.Heading)
+	return armEdges, model.NewEdgePair(arm1End, arm.Heading)
 }
 
 func (rs *ruleSet) addExtendedRulesForAvoidedArm(
-	needToExist []EdgePair,
-	thenAvoid EdgePair,
+	needToExist []model.EdgePair,
+	thenAvoid model.EdgePair,
 ) {
-	avoidExt := rs.rulesByEdges[thenAvoid]
-	if avoidExt == nil {
-		// nothing to do!
-		return
-	}
-
-	avoidExt.addEvaluations(func(ge getEdger) model.EdgeState {
+	rs.rulesByEdges[thenAvoid].addEvaluations(func(ge model.GetEdger) model.EdgeState {
 		printDebugMsg("running check for avoided end-of-arm")
 
 		for _, ep := range needToExist {
@@ -61,46 +63,35 @@ func (rs *ruleSet) addExtendedRulesForAvoidedArm(
 		return model.EdgeAvoided
 	})
 
-	for _, ep := range needToExist {
-		rs.rulesByEdges[ep].addAffected(thenAvoid)
-	}
 }
 
 func (rs *ruleSet) addExtendedRulesForExistingArm(
-	firstArm []EdgePair,
-	endOfFirstArm EdgePair,
-	endOfSecondArm EdgePair,
-	secondArm []EdgePair,
+	firstArm []model.EdgePair,
+	endOfFirstArm model.EdgePair,
+	endOfSecondArm model.EdgePair,
+	secondArm []model.EdgePair,
 ) {
-	rs.rulesByEdges[endOfFirstArm].addAffected(secondArm...)
-	for _, ep := range firstArm {
-		rs.rulesByEdges[ep].addAffected(secondArm...)
-	}
-
-	for _, ep := range secondArm {
-		rs.rulesByEdges[ep].addAffected(firstArm...)
-		rs.rulesByEdges[ep].addAffected(endOfFirstArm)
-	}
-
 	for i, edge := range secondArm {
-		rs.rulesByEdges[edge].addEvaluations(getRuleForOppositeArm(
-			firstArm,
-			endOfFirstArm,
-			endOfSecondArm,
-			secondArm,
-			i == 0,
-		))
+		rs.rulesByEdges[edge].addEvaluations(
+			getRuleForOppositeArm(
+				firstArm,
+				endOfFirstArm,
+				endOfSecondArm,
+				secondArm,
+				i == 0,
+			),
+		)
 	}
 }
 
 func getRuleForOppositeArm(
-	needToExist []EdgePair,
-	needToAvoid EdgePair,
-	needsToNotExist EdgePair,
-	thenExists []EdgePair,
+	needToExist []model.EdgePair,
+	needToAvoid model.EdgePair,
+	needsToNotExist model.EdgePair,
+	thenExists []model.EdgePair,
 	firstNode bool,
-) func(ge getEdger) model.EdgeState {
-	return func(ge getEdger) model.EdgeState {
+) func(ge model.GetEdger) model.EdgeState {
+	return func(ge model.GetEdger) model.EdgeState {
 		printDebugMsg(
 			"running check for opposite arm\n\toppArm: %+v\n\tendOfArm: %s\n\tmyArm: %+v\n\tisFirstNode: %v\n ",
 			needToExist,
@@ -133,6 +124,9 @@ func getRuleForOppositeArm(
 			}
 		}
 
+		// at this point, all of the opposite arm exists, with the edge at the
+		// end being avoided.
+
 		switch s := ge.GetEdge(needsToNotExist); s {
 		case model.EdgeExists:
 			if firstNode {
@@ -152,9 +146,6 @@ func getRuleForOppositeArm(
 			)
 			return model.EdgeUnknown
 		}
-
-		// all of the opposite arm exists, with the edge at the
-		// end being avoided.
 
 		shouldExist := false
 		for _, thenExist := range thenExists {

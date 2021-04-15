@@ -43,11 +43,11 @@ func (p *Puzzle) string(
 			sb.WriteString(`)`)
 
 			// now draw an edge
-			ep := NewEdgePair(nc, model.HeadRight)
+			ep := model.NewEdgePair(nc, model.HeadRight)
 			if p.edges.isInBounds(ep) {
 				enQueued := includeQueue && ep.IsIn(p.rq.toCheck...)
 				if enQueued {
-					sb.WriteString(fmt.Sprintf("%2d", ep.indexOf(p.rq.toCheck...)))
+					sb.WriteString(fmt.Sprintf("%2d", ep.IndexOf(p.rq.toCheck...)))
 				}
 				switch p.edges.GetEdge(ep) {
 				case model.EdgeExists:
@@ -82,11 +82,11 @@ func (p *Puzzle) string(
 
 			// now draw any edges that are below
 			below.WriteString(` `)
-			ep = NewEdgePair(nc, model.HeadDown)
+			ep = model.NewEdgePair(nc, model.HeadDown)
 			if p.edges.isInBounds(ep) {
 				enQueued := includeQueue && ep.IsIn(p.rq.toCheck...)
 				if enQueued {
-					below.WriteString(fmt.Sprintf("%2d", ep.indexOf(p.rq.toCheck...)))
+					below.WriteString(fmt.Sprintf("%2d", ep.IndexOf(p.rq.toCheck...)))
 				}
 
 				switch p.edges.GetEdge(ep) {

@@ -1,32 +1,38 @@
-package puzzle
+package model
 
 import (
 	"fmt"
-
-	"github.com/joshprzybyszewski/shingokisolver/model"
 )
 
+type GetEdger interface {
+	GetEdge(
+		ep EdgePair,
+	) EdgeState
+}
+
 type EdgePair struct {
-	model.NodeCoord
-	model.Cardinal
+	NodeCoord
+	Cardinal
 }
 
 func NewEdgePair(
-	nc model.NodeCoord,
-	dir model.Cardinal,
+	nc NodeCoord,
+	dir Cardinal,
 ) EdgePair {
 	switch dir {
-	case model.HeadUp, model.HeadLeft:
+	case HeadUp, HeadLeft:
 		return EdgePair{
 			NodeCoord: nc.Translate(dir),
 			Cardinal:  dir.Opposite(),
 		}
-	case model.HeadRight, model.HeadDown:
+
+	case HeadRight, HeadDown:
 		// this is good.
 		return EdgePair{
 			NodeCoord: nc,
 			Cardinal:  dir,
 		}
+
 	default:
 		panic(`unexpected cardinal: ` + dir.String())
 	}
@@ -39,10 +45,10 @@ func (ep EdgePair) String() string {
 func (ep EdgePair) IsIn(
 	others ...EdgePair,
 ) bool {
-	return ep.indexOf(others...) >= 0
+	return ep.IndexOf(others...) >= 0
 }
 
-func (ep EdgePair) indexOf(
+func (ep EdgePair) IndexOf(
 	others ...EdgePair,
 ) int {
 	for i, o := range others {

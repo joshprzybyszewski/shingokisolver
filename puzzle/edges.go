@@ -14,17 +14,17 @@ func (p *Puzzle) IsEdge(
 	move model.Cardinal,
 	nc model.NodeCoord,
 ) bool {
-	ep := NewEdgePair(nc, move)
+	ep := model.NewEdgePair(nc, move)
 	return p.GetEdgeState(ep) == model.EdgeExists
 }
 
 func (p *Puzzle) GetEdgeState(
-	ep EdgePair,
+	ep model.EdgePair,
 ) model.EdgeState {
 	return p.edges.GetEdge(ep)
 }
 
-func (p *Puzzle) isEdgeDefined(ep EdgePair) bool {
+func (p *Puzzle) isEdgeDefined(ep model.EdgePair) bool {
 	switch p.GetEdgeState(ep) {
 	case model.EdgeAvoided, model.EdgeExists:
 		return true
@@ -42,11 +42,11 @@ func (p *Puzzle) AddEdge(
 		move,
 	)
 
-	return p.AddEdges(NewEdgePair(startNode, move))
+	return p.AddEdges(model.NewEdgePair(startNode, move))
 }
 
 func (p *Puzzle) AddEdges(
-	pairs ...EdgePair,
+	pairs ...model.EdgePair,
 ) model.State {
 
 	p.printMsg("AddEdges(%+v)",
@@ -69,7 +69,7 @@ func (p *Puzzle) AddEdges(
 }
 
 func (p *Puzzle) addEdge(
-	ep EdgePair,
+	ep model.EdgePair,
 ) model.State {
 
 	p.printMsg("addEdge(%s)",
@@ -94,8 +94,28 @@ func (p *Puzzle) addEdge(
 
 }
 
+func (p *Puzzle) AvoidEdge(
+	ep model.EdgePair,
+) model.State {
+	p.printMsg("AvoidEdge(%+v)",
+		ep,
+	)
+
+	if !p.edges.isInBounds(ep) {
+		return model.Violation
+	}
+
+	switch s := p.avoidEdge(ep); s {
+	case model.Incomplete, model.Duplicate:
+	default:
+		return s
+	}
+
+	return p.runQueue()
+}
+
 func (p *Puzzle) avoidEdge(
-	ep EdgePair,
+	ep model.EdgePair,
 ) model.State {
 
 	p.printMsg("avoidEdge(%s)",

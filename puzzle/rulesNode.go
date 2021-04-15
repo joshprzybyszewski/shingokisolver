@@ -4,11 +4,11 @@ import "github.com/joshprzybyszewski/shingokisolver/model"
 
 func getNodeRules(
 	node model.Node,
-	otherSideOfNode EdgePair,
-	perps []EdgePair,
-) []func(ge getEdger) model.EdgeState {
-	return []func(ge getEdger) model.EdgeState{
-		func(ge getEdger) model.EdgeState {
+	otherSideOfNode model.EdgePair,
+	perps []model.EdgePair,
+) []func(ge model.GetEdger) model.EdgeState {
+	return []func(ge model.GetEdger) model.EdgeState{
+		func(ge model.GetEdger) model.EdgeState {
 			oppState := ge.GetEdge(otherSideOfNode)
 			switch node.Type() {
 			case model.WhiteNode:

@@ -8,7 +8,7 @@ const (
 	MaxEdges = 25 // currently, the len(masks)
 )
 
-var _ getEdger = (*edgesTriState)(nil)
+var _ model.GetEdger = (*edgesTriState)(nil)
 
 var (
 	masks = []uint64{
@@ -64,7 +64,7 @@ func newEdgesBits(
 }
 
 func (eb *edgesTriState) isInBounds(
-	ep EdgePair,
+	ep model.EdgePair,
 ) bool {
 	if ep.Row < 0 || ep.Col < 0 {
 		// negative coords are bad
@@ -82,7 +82,7 @@ func (eb *edgesTriState) isInBounds(
 }
 
 func (eb *edgesTriState) GetEdge(
-	ep EdgePair,
+	ep model.EdgePair,
 ) model.EdgeState {
 
 	if !eb.isInBounds(ep) {
@@ -112,7 +112,7 @@ func (eb *edgesTriState) GetEdge(
 }
 
 func (eb *edgesTriState) SetEdge(
-	ep EdgePair,
+	ep model.EdgePair,
 ) model.State {
 
 	switch eb.GetEdge(ep) {
@@ -135,7 +135,7 @@ func (eb *edgesTriState) SetEdge(
 }
 
 func (eb *edgesTriState) AvoidEdge(
-	ep EdgePair,
+	ep model.EdgePair,
 ) model.State {
 
 	switch eb.GetEdge(ep) {

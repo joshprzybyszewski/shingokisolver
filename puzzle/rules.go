@@ -5,22 +5,22 @@ import (
 )
 
 type rules struct {
-	me EdgePair
+	me model.EdgePair
 
-	couldAffect []EdgePair
+	couldAffect []model.EdgePair
 
-	evals []func(ge getEdger) model.EdgeState
+	evals []func(ge model.GetEdger) model.EdgeState
 }
 
 func newRules(
-	ep EdgePair,
+	ep model.EdgePair,
 	numEdges int,
 ) *rules {
 
 	r := rules{
 		me:          ep,
-		couldAffect: make([]EdgePair, 0, 6),
-		evals:       make([]func(ge getEdger) model.EdgeState, 0, 2),
+		couldAffect: make([]model.EdgePair, 0, 6),
+		evals:       make([]func(ge model.GetEdger) model.EdgeState, 0, 2),
 	}
 
 	otherStartEdges := getOtherEdgeInputs(ep.NodeCoord, ep.Cardinal)
@@ -38,11 +38,11 @@ func newRules(
 	return &r
 }
 
-func (r *rules) affects() []EdgePair {
+func (r *rules) affects() []model.EdgePair {
 	return r.couldAffect
 }
 
-func (r *rules) addAffected(couldAffect ...EdgePair) {
+func (r *rules) addAffected(couldAffect ...model.EdgePair) {
 	if r == nil {
 		return
 	}
@@ -54,7 +54,7 @@ func (r *rules) addAffected(couldAffect ...EdgePair) {
 	}
 }
 
-func (r *rules) addEvaluations(evals ...func(ge getEdger) model.EdgeState) {
+func (r *rules) addEvaluations(evals ...func(ge model.GetEdger) model.EdgeState) {
 	if r == nil {
 		return
 	}
@@ -66,22 +66,22 @@ func (r *rules) addEvaluations(evals ...func(ge getEdger) model.EdgeState) {
 	}
 }
 
-var _ getEdger = (*edgeStateCache)(nil)
+var _ model.GetEdger = (*edgeStateCache)(nil)
 
 type edgeStateCache struct {
-	ge    getEdger
-	cache map[EdgePair]model.EdgeState
+	ge    model.GetEdger
+	cache map[model.EdgePair]model.EdgeState
 }
 
-func newEdgeStateCache(ge getEdger) *edgeStateCache {
+func newEdgeStateCache(ge model.GetEdger) *edgeStateCache {
 	return &edgeStateCache{
 		ge:    ge,
-		cache: make(map[EdgePair]model.EdgeState, 50),
+		cache: make(map[model.EdgePair]model.EdgeState, 50),
 	}
 }
 
 func (c *edgeStateCache) GetEdge(
-	ep EdgePair,
+	ep model.EdgePair,
 ) model.EdgeState {
 	s, ok := c.cache[ep]
 	if ok {
@@ -93,7 +93,7 @@ func (c *edgeStateCache) GetEdge(
 	return s
 }
 
-func (r *rules) getEdgeState(ge getEdger) model.EdgeState {
+func (r *rules) getEdgeState(ge model.GetEdger) model.EdgeState {
 	if r == nil {
 		return model.EdgeOutOfBounds
 	}
@@ -142,15 +142,15 @@ func (r *rules) addRulesForNode(
 		return
 	}
 
-	otherSideOfNode := NewEdgePair(
+	otherSideOfNode := model.NewEdgePair(
 		node.Coord(),
 		dir.Opposite(),
 	)
 
-	perps := make([]EdgePair, 0, 2)
+	perps := make([]model.EdgePair, 0, 2)
 	for _, perpDir := range dir.Perpendiculars() {
 		perps = append(perps,
-			NewEdgePair(node.Coord(), perpDir),
+			model.NewEdgePair(node.Coord(), perpDir),
 		)
 	}
 
@@ -165,14 +165,14 @@ func (r *rules) addRulesForNode(
 func getOtherEdgeInputs(
 	coord model.NodeCoord,
 	dir model.Cardinal,
-) []EdgePair {
+) []model.EdgePair {
 
-	perps := make([]EdgePair, 0, 3)
+	perps := make([]model.EdgePair, 0, 3)
 	for _, perpDir := range dir.Perpendiculars() {
 		perps = append(perps,
-			NewEdgePair(coord, perpDir),
+			model.NewEdgePair(coord, perpDir),
 		)
 	}
 
-	return append(perps, NewEdgePair(coord, dir.Opposite()))
+	return append(perps, model.NewEdgePair(coord, dir.Opposite()))
 }

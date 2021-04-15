@@ -7,22 +7,22 @@ import (
 )
 
 func getStandardNodeRules(
-	ep EdgePair,
-	otherStartEdges []EdgePair,
-	otherEndEdges []EdgePair,
-) []func(getEdger) model.EdgeState {
+	ep model.EdgePair,
+	otherStartEdges []model.EdgePair,
+	otherEndEdges []model.EdgePair,
+) []func(model.GetEdger) model.EdgeState {
 	if len(otherStartEdges) != 3 || len(otherEndEdges) != 3 {
 		panic(fmt.Sprintf(`unexpected input: %+v, %+v`, otherStartEdges, otherEndEdges))
 	}
 
-	return []func(getEdger) model.EdgeState{
+	return []func(model.GetEdger) model.EdgeState{
 		getStandardEvalFor(otherStartEdges),
 		getStandardEvalFor(otherEndEdges),
 	}
 }
 
-func getStandardEvalFor(otherInputs []EdgePair) func(ge getEdger) model.EdgeState {
-	return func(ge getEdger) model.EdgeState {
+func getStandardEvalFor(otherInputs []model.EdgePair) func(ge model.GetEdger) model.EdgeState {
+	return func(ge model.GetEdger) model.EdgeState {
 		numNonExisting := 0
 		numExisting := 0
 

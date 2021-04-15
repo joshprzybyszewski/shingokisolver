@@ -73,24 +73,27 @@ func (d *targetSolver) getSolutionFromDepths(
 		// return nil
 	}
 
-	if tCoord := targeting.Coord; puzz.IsCompleteNode(tCoord) {
+	switch tCoord := targeting.Coord; puzz.GetNodeState(tCoord) {
+	case model.Violation:
+		return nil
+
+	case model.Complete:
 		// the target node is already complete, perhaps a previous node
 		// accidentally completed it. If so, then let's do a sanity check
 		// on completion, and then add it as a "partial solution" that
 		// has no new loose ends
 
 		if targeting.Next == nil {
-			//
 			switch puzz.GetState() {
 			case model.Complete:
 				return puzz
 			default:
 				printPuzzleUpdate(`getSolutionFromDepths did not solve!`, depth, puzz, targeting, d.iterations())
-				panic(`what now`)
 			}
-			// return d.connect(
-			// 	puzz.DeepCopy(),
-			// )
+
+			return d.flip(
+				puzz.DeepCopy(),
+			)
 		}
 
 		return d.getSolutionFromDepths(
@@ -143,16 +146,9 @@ func (d *targetSolver) buildAllTwoArmsForTraversal(
 	}
 
 	if curTarget.Next == nil {
-		switch twoArmPuzz.GetState() {
-		case model.Complete:
-			return twoArmPuzz
-		default:
-			printPuzzleUpdate(`buildAllTwoArmsForTraversal did not solve!`, depth, twoArmPuzz, curTarget, d.iterations())
-			panic(`wtf`)
-		}
-		// return d.connect(
-		// 	twoArmPuzz.DeepCopy(),
-		// )
+		return d.flip(
+			twoArmPuzz.DeepCopy(),
+		)
 	}
 
 	return d.getSolutionFromDepths(
@@ -168,11 +164,11 @@ func (d *targetSolver) sendOutTwoArms(
 	ta model.TwoArms,
 ) (retPuzz *puzzle.Puzzle) {
 
-	var allEdges []puzzle.EdgePair
+	var allEdges []model.EdgePair
 
 	arm1End := start
 	for i := int8(0); i < ta.One.Len; i++ {
-		allEdges = append(allEdges, puzzle.NewEdgePair(arm1End, ta.One.Heading))
+		allEdges = append(allEdges, model.NewEdgePair(arm1End, ta.One.Heading))
 		d.numProcessed++
 
 		arm1End = arm1End.Translate(ta.One.Heading)
@@ -180,7 +176,7 @@ func (d *targetSolver) sendOutTwoArms(
 
 	arm2End := start
 	for i := int8(0); i < ta.Two.Len; i++ {
-		allEdges = append(allEdges, puzzle.NewEdgePair(arm2End, ta.Two.Heading))
+		allEdges = append(allEdges, model.NewEdgePair(arm2End, ta.Two.Heading))
 		d.numProcessed++
 
 		arm2End = arm2End.Translate(ta.Two.Heading)

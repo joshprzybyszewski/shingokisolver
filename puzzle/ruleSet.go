@@ -4,14 +4,8 @@ import (
 	"github.com/joshprzybyszewski/shingokisolver/model"
 )
 
-type getEdger interface {
-	GetEdge(
-		ep EdgePair,
-	) model.EdgeState
-}
-
 type ruleSet struct {
-	rulesByEdges map[EdgePair]*rules
+	rulesByEdges map[model.EdgePair]*rules
 }
 
 func newRuleSet(
@@ -19,14 +13,14 @@ func newRuleSet(
 	nodes map[model.NodeCoord]model.Node,
 ) *ruleSet {
 	rs := ruleSet{
-		rulesByEdges: make(map[EdgePair]*rules, (numEdges-1)*numEdges*2),
+		rulesByEdges: make(map[model.EdgePair]*rules, (numEdges-1)*numEdges*2),
 	}
 
 	for r := 0; r <= numEdges; r++ {
 		for c := 0; c <= numEdges; c++ {
 			nc := model.NewCoordFromInts(r, c)
 			if c < numEdges {
-				ep := NewEdgePair(nc, model.HeadRight)
+				ep := model.NewEdgePair(nc, model.HeadRight)
 				rs.rulesByEdges[ep] = newRules(
 					ep,
 					numEdges,
@@ -34,7 +28,7 @@ func newRuleSet(
 			}
 
 			if r < numEdges {
-				ep := NewEdgePair(nc, model.HeadDown)
+				ep := model.NewEdgePair(nc, model.HeadDown)
 				rs.rulesByEdges[ep] = newRules(
 					ep,
 					numEdges,
@@ -47,7 +41,7 @@ func newRuleSet(
 			}
 
 			for _, dir := range model.AllCardinals {
-				rs.rulesByEdges[NewEdgePair(nc, dir)].addRulesForNode(n, dir)
+				rs.rulesByEdges[model.NewEdgePair(nc, dir)].addRulesForNode(n, dir)
 			}
 
 			rs.addAllTwoArmRules(n, numEdges)
@@ -58,7 +52,7 @@ func newRuleSet(
 }
 
 func (rs *ruleSet) getRules(
-	ep EdgePair,
+	ep model.EdgePair,
 ) *rules {
 	return rs.rulesByEdges[ep]
 }
