@@ -45,7 +45,7 @@ func (rs *ruleSet) addAllTwoArmRules(
 		copy(allEdges, allExistingArms)
 		allEdges = append(allEdges, afterArm1, afterArm2)
 		for _, e := range allEdges {
-			rs.rulesByEdges[e].addAffected(allEdges...)
+			rs.getRules(e).addAffected(allEdges...)
 		}
 	}
 }
@@ -78,7 +78,7 @@ func (rs *ruleSet) addExtendedRulesForAvoidedArm(
 	// 	needToExist,
 	// 	thenAvoid,
 	// )
-	rs.rulesByEdges[thenAvoid].addEvaluations(func(ge model.GetEdger) model.EdgeState {
+	rs.getRules(thenAvoid).addEvaluations(func(ge model.GetEdger) model.EdgeState {
 		// printDebugMsg("running check for avoided end-of-arm")
 
 		for _, ep := range needToExist {
@@ -109,7 +109,7 @@ func (rs *ruleSet) addExtendedRulesForExistingArm(
 	// )
 
 	for i, edge := range thenCanExist {
-		rs.rulesByEdges[edge].addEvaluations(
+		rs.getRules(edge).addEvaluations(
 			getRuleForOppositeArm(
 				needToExist,
 				needToAvoid,

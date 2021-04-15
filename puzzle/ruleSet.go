@@ -5,7 +5,8 @@ import (
 )
 
 type ruleSet struct {
-	rulesByEdges map[model.EdgePair]*rules
+	rows [][]*rules
+	cols [][]*rules
 }
 
 func newRuleSet(
@@ -13,15 +14,20 @@ func newRuleSet(
 	nodes map[model.NodeCoord]model.Node,
 ) *ruleSet {
 	rs := &ruleSet{
-		rulesByEdges: make(map[model.EdgePair]*rules, (numEdges-1)*numEdges*2),
+		rows: make([][]*rules, numEdges+1),
+		cols: make([][]*rules, numEdges),
 	}
 
 	for r := 0; r <= numEdges; r++ {
+		rs.rows[r] = make([]*rules, numEdges)
+		if r < numEdges {
+			rs.cols[r] = make([]*rules, numEdges+1)
+		}
 		for c := 0; c <= numEdges; c++ {
 			nc := model.NewCoordFromInts(r, c)
 			if c < numEdges {
 				ep := model.NewEdgePair(nc, model.HeadRight)
-				rs.rulesByEdges[ep] = newRules(
+				rs.rows[r][c] = newRules(
 					ep,
 					numEdges,
 				)
@@ -29,7 +35,7 @@ func newRuleSet(
 
 			if r < numEdges {
 				ep := model.NewEdgePair(nc, model.HeadDown)
-				rs.rulesByEdges[ep] = newRules(
+				rs.cols[r][c] = newRules(
 					ep,
 					numEdges,
 				)
@@ -39,7 +45,7 @@ func newRuleSet(
 
 	for nc, n := range nodes {
 		for _, dir := range model.AllCardinals {
-			rs.rulesByEdges[model.NewEdgePair(nc, dir)].addRulesForNode(n, dir)
+			rs.getRules(model.NewEdgePair(nc, dir)).addRulesForNode(n, dir)
 		}
 
 		rs.addAllTwoArmRules(n, numEdges)
@@ -51,5 +57,23 @@ func newRuleSet(
 func (rs *ruleSet) getRules(
 	ep model.EdgePair,
 ) *rules {
-	return rs.rulesByEdges[ep]
+	// copied from isInBounds:#
+	if ep.Row < 0 || ep.Col < 0 {
+		// negative coords are bad
+		return nil
+	}
+
+	switch ep.Cardinal {
+	case model.HeadRight:
+		if int(ep.Row) < len(rs.rows) && int(ep.Col) < len(rs.rows[0]) {
+			return rs.rows[ep.Row][ep.Col]
+		}
+	case model.HeadDown:
+		if int(ep.Row) < len(rs.cols) && int(ep.Col) < len(rs.cols[0]) {
+			return rs.cols[ep.Row][ep.Col]
+		}
+	default:
+		// unexpected input
+	}
+	return nil
 }
