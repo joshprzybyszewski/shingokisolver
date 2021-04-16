@@ -5,9 +5,10 @@ import (
 )
 
 type GetEdger interface {
-	GetEdge(
-		ep EdgePair,
-	) EdgeState
+	GetEdge(EdgePair) EdgeState
+
+	AllExist(NodeCoord, Arm) bool
+	Any(NodeCoord, Arm) (bool, bool)
 }
 
 type EdgePair struct {

@@ -1,5 +1,7 @@
 package model
 
+import "fmt"
+
 var (
 	InvalidNodeCoord NodeCoord = NodeCoord{
 		Row: -1,
@@ -22,6 +24,10 @@ func NewCoord(r RowIndex, c ColIndex) NodeCoord {
 	}
 }
 
+func (nc NodeCoord) String() string {
+	return fmt.Sprintf("NodeCoord{Row: %d, Col: %d}", nc.Row, nc.Col)
+}
+
 func NewCoordFromInts(r, c int) NodeCoord {
 	return NodeCoord{
 		Row: RowIndex(r),
@@ -41,6 +47,23 @@ func (nc NodeCoord) Translate(
 		nc.Col--
 	case HeadRight:
 		nc.Col++
+	}
+	return nc
+}
+
+func (nc NodeCoord) TranslateN(
+	move Cardinal,
+	n int,
+) NodeCoord {
+	switch move {
+	case HeadUp:
+		nc.Row -= RowIndex(n)
+	case HeadDown:
+		nc.Row += RowIndex(n)
+	case HeadLeft:
+		nc.Col -= ColIndex(n)
+	case HeadRight:
+		nc.Col += ColIndex(n)
 	}
 	return nc
 }

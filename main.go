@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 	"runtime/pprof"
-	"strings"
 	"time"
 
 	"github.com/joshprzybyszewski/shingokisolver/compete"
@@ -57,16 +56,7 @@ func main() {
 
 	for _, st := range solvers.AllSolvers {
 		for _, pd := range puzzles {
-			if !strings.Contains(pd.String(), `1,520,692`) {
-				// this puzzle is tricking me...
-				// continue
-			}
-			if pd.NumEdges < 15 {
-				continue
-			}
-
-			go runSolver(st, pd)
-			time.Sleep(11 * time.Second)
+			runSolver(st, pd)
 
 			if *addPprof && (time.Since(t0) > 10*time.Second ||
 				pd.NumEdges > 50) {
@@ -85,10 +75,6 @@ func runSolver(
 	// 		log.Printf("caught panic: %+v", r)
 	// 	}
 	// }()
-
-	// if pd.NumEdges < 15 {
-	// 	return
-	// }
 
 	if st != solvers.TargetSolverType {
 		return

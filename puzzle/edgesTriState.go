@@ -10,60 +10,121 @@ const (
 
 var _ model.GetEdger = (*edgesTriState)(nil)
 
+type bitData uint32
+
 var (
-	masks = []uint64{
-		1 << 0,
-		1 << 1,
-		1 << 2,
-		1 << 3,
-		1 << 4,
-		1 << 5,
-		1 << 6,
-		1 << 7,
-		1 << 8,
-		1 << 9,
-		1 << 10,
-		1 << 11,
-		1 << 12,
-		1 << 13,
-		1 << 14,
-		1 << 15,
-		1 << 16,
-		1 << 17,
-		1 << 18,
-		1 << 19,
-		1 << 20,
-		1 << 21,
-		1 << 22,
-		1 << 23,
-		1 << 24,
-		1 << 25,
-	}
+	masks       = make([]bitData, MaxEdges)
+	armLenMasks = make([]bitData, MaxEdges+1)
 )
 
-type edgesTriState struct {
-	numEdges uint8
-
-	rows []uint64
-	cols []uint64
-
-	avoidRows []uint64
-	avoidCols []uint64
+func init() {
+	buildMasks()
+	buildArmLenMasks()
 }
 
-func newEdgesBits(
-	numEdges uint8,
-) *edgesTriState {
-	return &edgesTriState{
-		numEdges:  numEdges,
-		rows:      make([]uint64, numEdges+1),
-		cols:      make([]uint64, numEdges+1),
-		avoidRows: make([]uint64, numEdges+1),
-		avoidCols: make([]uint64, numEdges+1),
+func buildMasks() {
+	for i := 0; i < MaxEdges; i++ {
+		masks[i] = 1 << i
 	}
 }
 
-func (eb *edgesTriState) isInBounds(
+func buildArmLenMasks() {
+	for i := 0; i < len(armLenMasks); i++ {
+		var lenMask bitData
+		for mi := 0; mi < i; mi++ {
+			lenMask |= masks[mi]
+		}
+		armLenMasks[i] = lenMask
+	}
+}
+
+func getMask(
+	start model.NodeCoord,
+	arm model.Arm,
+) bitData {
+	switch arm.Heading {
+	case model.HeadRight:
+		return armLenMasks[arm.Len] << start.Col
+
+	case model.HeadDown:
+		return armLenMasks[arm.Len] << start.Row
+
+	case model.HeadLeft:
+		lmi := int(arm.Len)
+		shift := start.Col - model.ColIndex(arm.Len)
+		if shift < 0 {
+			lmi += int(shift)
+			if lmi < 0 {
+				return 0
+			}
+			shift = 0
+		}
+		return armLenMasks[lmi] << shift
+
+	case model.HeadUp:
+		lmi := int(arm.Len)
+		shift := start.Row - model.RowIndex(arm.Len)
+		if shift < 0 {
+			lmi += int(shift)
+			if lmi < 0 {
+				return 0
+			}
+			shift = 0
+		}
+		return armLenMasks[lmi] << shift
+
+	default:
+		return 0
+	}
+}
+
+type edgesTriState struct {
+	numEdges uint16
+
+	rows []bitData
+	cols []bitData
+
+	avoidRows []bitData
+	avoidCols []bitData
+}
+
+func newEdgesStates(
+	numEdges int,
+) *edgesTriState {
+	return &edgesTriState{
+		numEdges:  uint16(numEdges),
+		rows:      make([]bitData, numEdges+1),
+		cols:      make([]bitData, numEdges+1),
+		avoidRows: make([]bitData, numEdges+1),
+		avoidCols: make([]bitData, numEdges+1),
+	}
+}
+
+func (ets *edgesTriState) isArmInBounds(
+	start model.NodeCoord,
+	arm model.Arm,
+) bool {
+	if start.Row < 0 ||
+		start.Col < 0 ||
+		start.Row > model.RowIndex(ets.numEdges) ||
+		start.Col > model.ColIndex(ets.numEdges) {
+		return false
+	}
+	switch arm.Heading {
+	case model.HeadUp:
+		return start.Row-model.RowIndex(arm.Len) >= 0
+	case model.HeadDown:
+		return start.Row+model.RowIndex(arm.Len) <= model.RowIndex(ets.numEdges)
+	case model.HeadLeft:
+		return start.Col-model.ColIndex(arm.Len) >= 0
+	case model.HeadRight:
+		return start.Col+model.ColIndex(arm.Len) <= model.ColIndex(ets.numEdges)
+	}
+
+	return false
+}
+
+func (ets *edgesTriState) isInBounds(
 	ep model.EdgePair,
 ) bool {
 	if ep.Row < 0 || ep.Col < 0 {
@@ -72,36 +133,109 @@ func (eb *edgesTriState) isInBounds(
 	}
 	switch ep.Cardinal {
 	case model.HeadRight:
-		return uint8(ep.Row) <= eb.numEdges && uint8(ep.Col) < eb.numEdges
+		return ep.Row <= model.RowIndex(ets.numEdges) && ep.Col < model.ColIndex(ets.numEdges)
 	case model.HeadDown:
-		return uint8(ep.Row) < eb.numEdges && uint8(ep.Col) <= eb.numEdges
+		return ep.Row < model.RowIndex(ets.numEdges) && ep.Col <= model.ColIndex(ets.numEdges)
 	default:
 		// unexpected input
 		return false
 	}
 }
 
-func (eb *edgesTriState) GetEdge(
+func (ets *edgesTriState) AllExist(
+	start model.NodeCoord,
+	arm model.Arm,
+) bool {
+	if !ets.isArmInBounds(start, arm) {
+		// the arm goes out of bounds, so we know it can't be all in
+		return false
+	}
+	mask := getMask(start, arm)
+
+	switch arm.Heading {
+	case model.HeadRight:
+		return ets.rows[start.Row]&mask == mask
+
+	case model.HeadDown:
+		return ets.cols[start.Col]&mask == mask
+
+	case model.HeadLeft:
+		return ets.rows[start.Row]&mask == mask
+
+	case model.HeadUp:
+		return ets.cols[start.Col]&mask == mask
+
+	default:
+		return false
+	}
+}
+
+func (ets *edgesTriState) Any(
+	start model.NodeCoord,
+	arm model.Arm,
+) (bool, bool) {
+	goesOutOfBounds := !ets.isArmInBounds(start, arm)
+	// if !ets.isArmInBounds(start, arm) {
+	// 	// the arm goes out of bounds, so we know it can't be all in
+	// 	return false, true
+	// }
+	mask := getMask(start, arm)
+
+	switch arm.Heading {
+	case model.HeadRight:
+		return ets.rows[start.Row]&mask != 0, goesOutOfBounds || ets.avoidRows[start.Row]&mask != 0
+
+	case model.HeadDown:
+		return ets.cols[start.Col]&mask != 0, goesOutOfBounds || ets.avoidCols[start.Col]&mask != 0
+
+	case model.HeadLeft:
+		return ets.rows[start.Row]&mask != 0, goesOutOfBounds || ets.avoidRows[start.Row]&mask != 0
+
+	case model.HeadUp:
+		return ets.cols[start.Col]&mask != 0, goesOutOfBounds || ets.avoidCols[start.Col]&mask != 0
+
+	default:
+		return false, false
+	}
+
+	// // TODO we can speed this up
+	// anyExists, anyAvoided := false, false
+	// arm1End := start
+
+	// for i := int8(0); i < arm.Len; i++ {
+	// 	switch ets.GetEdge(model.NewEdgePair(arm1End, arm.Heading)) {
+	// 	case model.EdgeExists:
+	// 		anyExists = true
+	// 	case model.EdgeAvoided, model.EdgeOutOfBounds:
+	// 		anyAvoided = true
+	// 	}
+	// 	arm1End = arm1End.Translate(arm.Heading)
+	// }
+
+	// return anyExists, anyAvoided
+}
+
+func (ets *edgesTriState) GetEdge(
 	ep model.EdgePair,
 ) model.EdgeState {
 
-	if !eb.isInBounds(ep) {
+	if !ets.isInBounds(ep) {
 		return model.EdgeOutOfBounds
 	}
 
 	switch ep.Cardinal {
 	case model.HeadRight:
-		if (eb.rows[ep.Row] & masks[ep.Col]) != 0 {
+		if (ets.rows[ep.Row] & masks[ep.Col]) != 0 {
 			return model.EdgeExists
 		}
-		if (eb.avoidRows[ep.Row] & masks[ep.Col]) != 0 {
+		if (ets.avoidRows[ep.Row] & masks[ep.Col]) != 0 {
 			return model.EdgeAvoided
 		}
 	case model.HeadDown:
-		if (eb.cols[ep.Col] & masks[ep.Row]) != 0 {
+		if (ets.cols[ep.Col] & masks[ep.Row]) != 0 {
 			return model.EdgeExists
 		}
-		if (eb.avoidCols[ep.Col] & masks[ep.Row]) != 0 {
+		if (ets.avoidCols[ep.Col] & masks[ep.Row]) != 0 {
 			return model.EdgeAvoided
 		}
 	default:
@@ -111,11 +245,11 @@ func (eb *edgesTriState) GetEdge(
 	return model.EdgeUnknown
 }
 
-func (eb *edgesTriState) SetEdge(
+func (ets *edgesTriState) SetEdge(
 	ep model.EdgePair,
 ) model.State {
 
-	switch eb.GetEdge(ep) {
+	switch ets.GetEdge(ep) {
 	case model.EdgeExists:
 		return model.Duplicate
 	case model.EdgeAvoided, model.EdgeOutOfBounds:
@@ -126,19 +260,19 @@ func (eb *edgesTriState) SetEdge(
 
 	switch ep.Cardinal {
 	case model.HeadRight:
-		eb.rows[ep.Row] |= masks[ep.Col]
+		ets.rows[ep.Row] |= masks[ep.Col]
 	case model.HeadDown:
-		eb.cols[ep.Col] |= masks[ep.Row]
+		ets.cols[ep.Col] |= masks[ep.Row]
 	}
 
 	return model.Incomplete
 }
 
-func (eb *edgesTriState) AvoidEdge(
+func (ets *edgesTriState) AvoidEdge(
 	ep model.EdgePair,
 ) model.State {
 
-	switch eb.GetEdge(ep) {
+	switch ets.GetEdge(ep) {
 	case model.EdgeAvoided, model.EdgeOutOfBounds:
 		// we can avoid edges that are out of bounds
 		// we just know that they're out of bounds!
@@ -151,27 +285,27 @@ func (eb *edgesTriState) AvoidEdge(
 
 	switch ep.Cardinal {
 	case model.HeadRight:
-		eb.avoidRows[ep.Row] |= masks[ep.Col]
+		ets.avoidRows[ep.Row] |= masks[ep.Col]
 	case model.HeadDown:
-		eb.avoidCols[ep.Col] |= masks[ep.Row]
+		ets.avoidCols[ep.Col] |= masks[ep.Row]
 	}
 
 	return model.Incomplete
 }
 
-func (eb *edgesTriState) Copy() *edgesTriState {
+func (ets *edgesTriState) Copy() *edgesTriState {
 	cpy := &edgesTriState{
-		numEdges:  eb.numEdges,
-		rows:      make([]uint64, len(eb.rows)),
-		cols:      make([]uint64, len(eb.cols)),
-		avoidRows: make([]uint64, len(eb.avoidRows)),
-		avoidCols: make([]uint64, len(eb.avoidCols)),
+		numEdges:  ets.numEdges,
+		rows:      make([]bitData, len(ets.rows)),
+		cols:      make([]bitData, len(ets.cols)),
+		avoidRows: make([]bitData, len(ets.avoidRows)),
+		avoidCols: make([]bitData, len(ets.avoidCols)),
 	}
 
-	copy(cpy.rows, eb.rows)
-	copy(cpy.cols, eb.cols)
-	copy(cpy.avoidRows, eb.avoidRows)
-	copy(cpy.avoidCols, eb.avoidCols)
+	copy(cpy.rows, ets.rows)
+	copy(cpy.cols, ets.cols)
+	copy(cpy.avoidRows, ets.avoidRows)
+	copy(cpy.avoidCols, ets.avoidCols)
 
 	return cpy
 }

@@ -30,7 +30,7 @@ func NewPuzzle(
 	puzz := &Puzzle{
 		numEdges: uint8(numEdges),
 		nodes:    nodes,
-		edges:    newEdgesBits(uint8(numEdges)),
+		edges:    newEdgesStates(numEdges),
 		rules:    newRuleSet(numEdges, nodes),
 	}
 

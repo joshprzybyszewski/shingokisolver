@@ -17,32 +17,46 @@ func (rs *ruleSet) addAllTwoArmRules(
 	options := model.BuildTwoArmOptions(node, numEdges)
 
 	for _, o := range options {
-		arm1Edges, arm1OppEdges, afterArm1 := getArmEdgesAndEnd(node.Coord(), o.One)
-		arm2Edges, arm2OppEdges, afterArm2 := getArmEdgesAndEnd(node.Coord(), o.Two)
+		afterArm1 := model.NewEdgePair(
+			node.Coord().TranslateN(o.One.Heading, int(o.One.Len)),
+			o.One.Heading,
+		)
 
-		allExistingArms := make([]model.EdgePair, 0, len(arm1Edges)+len(arm2Edges))
-		allExistingArms = append(allExistingArms, arm1Edges...)
-		allExistingArms = append(allExistingArms, arm2Edges...)
+		afterArm2 := model.NewEdgePair(
+			node.Coord().TranslateN(o.Two.Heading, int(o.Two.Len)),
+			o.Two.Heading,
+		)
 
-		rs.addExtendedRulesForAvoidedArm(allExistingArms, afterArm1)
-		rs.addExtendedRulesForAvoidedArm(allExistingArms, afterArm2)
+		rs.addExtendedRulesForAvoidedArm(
+			node.Coord(),
+			o,
+			afterArm1,
+		)
+		rs.addExtendedRulesForAvoidedArm(
+			node.Coord(),
+			o,
+			afterArm2,
+		)
 
 		rs.addExtendedRulesForExistingArm(
-			arm1Edges,
+			node,
+			o.One,
 			afterArm1, afterArm2,
-			arm2OppEdges,
-			arm2Edges,
+			o.Two,
 		)
 		rs.addExtendedRulesForExistingArm(
-			arm2Edges,
+			node,
+			o.Two,
 			afterArm2, afterArm1,
-			arm1OppEdges,
-			arm1Edges,
+			o.One,
 		)
 
 		// now _ensure_ that every arm and the off-arm are affecting each other!
-		allEdges := make([]model.EdgePair, len(allExistingArms), len(allExistingArms)+2)
-		copy(allEdges, allExistingArms)
+		arm1Edges := getArmEdgesAndEnd(node.Coord(), o.One)
+		arm2Edges := getArmEdgesAndEnd(node.Coord(), o.Two)
+		allEdges := make([]model.EdgePair, 0, len(arm1Edges)+len(arm2Edges)+2)
+		allEdges = append(allEdges, arm1Edges...)
+		allEdges = append(allEdges, arm2Edges...)
 		allEdges = append(allEdges, afterArm1, afterArm2)
 		for _, e := range allEdges {
 			rs.getRules(e).addAffected(allEdges...)
@@ -53,69 +67,45 @@ func (rs *ruleSet) addAllTwoArmRules(
 func getArmEdgesAndEnd(
 	start model.NodeCoord,
 	arm model.Arm,
-) ([]model.EdgePair, []model.EdgePair, model.EdgePair) {
+) []model.EdgePair {
 	armEdges := make([]model.EdgePair, 0, arm.Len)
-	oppEdges := make([]model.EdgePair, 0, arm.Len)
 	arm1End := start
-	oppEnd := start
 	for i := int8(0); i < arm.Len; i++ {
 		armEdges = append(armEdges, model.NewEdgePair(arm1End, arm.Heading))
 		arm1End = arm1End.Translate(arm.Heading)
-
-		oppEdges = append(oppEdges, model.NewEdgePair(oppEnd, arm.Heading.Opposite()))
-		oppEnd = oppEnd.Translate(arm.Heading.Opposite())
-
 	}
-	return armEdges, oppEdges, model.NewEdgePair(arm1End, arm.Heading)
+	return armEdges
 }
 
 func (rs *ruleSet) addExtendedRulesForAvoidedArm(
-	needToExist []model.EdgePair,
+	nc model.NodeCoord,
+	ta model.TwoArms,
 	thenAvoid model.EdgePair,
 ) {
-	// printDebugMsg(
-	// 	"addExtendedRulesForAvoidedArm(%+v, %s)",
-	// 	needToExist,
-	// 	thenAvoid,
-	// )
 	rs.getRules(thenAvoid).addEvaluations(func(ge model.GetEdger) model.EdgeState {
-		// printDebugMsg("running check for avoided end-of-arm")
-
-		for _, ep := range needToExist {
-			if ge.GetEdge(ep) != model.EdgeExists {
-				// one of the edges that needs to exist doesn't
-				// therefore we can't know for sure
-				return model.EdgeUnknown
-			}
+		if ge.AllExist(nc, ta.One) && ge.AllExist(nc, ta.Two) {
+			return model.EdgeAvoided
 		}
-		return model.EdgeAvoided
+
+		return model.EdgeUnknown
 	})
 
 }
 
 func (rs *ruleSet) addExtendedRulesForExistingArm(
-	needToExist []model.EdgePair,
-	needToAvoid model.EdgePair,
-	needsToNotExist model.EdgePair,
-	thenCanExistOpp, thenCanExist []model.EdgePair,
+	node model.Node,
+	otherArm model.Arm,
+	needToAvoid, needsToNotExist model.EdgePair,
+	myArm model.Arm,
 ) {
-	// printDebugMsg(
-	// 	"addExtendedRulesForAvoidedArm(\n\t%+v, \n\t%+v, \n\t%+v, \n\t%+v, \n\t%+v,\n)",
-	// 	needToExist,
-	// 	needToAvoid,
-	// 	needsToNotExist,
-	// 	thenCanExistOpp,
-	// 	thenCanExist,
-	// )
-
-	for i, edge := range thenCanExist {
+	for i, edge := range getArmEdgesAndEnd(node.Coord(), myArm) {
 		rs.getRules(edge).addEvaluations(
 			getRuleForOppositeArm(
-				needToExist,
+				node,
+				otherArm,
 				needToAvoid,
 				needsToNotExist,
-				thenCanExistOpp,
-				thenCanExist,
+				myArm,
 				i == 0,
 			),
 		)
@@ -123,44 +113,23 @@ func (rs *ruleSet) addExtendedRulesForExistingArm(
 }
 
 func getRuleForOppositeArm(
-	needToExist []model.EdgePair,
+	node model.Node,
+	otherArm model.Arm,
 	needToAvoid model.EdgePair,
 	needsToNotExist model.EdgePair,
-	oneMustNotExist []model.EdgePair,
-	thenExists []model.EdgePair,
+	myArm model.Arm,
 	firstNode bool,
 ) func(ge model.GetEdger) model.EdgeState {
 	return func(ge model.GetEdger) model.EdgeState {
-		// printDebugMsg(
-		// 	"running check for opposite arm\n\toppArm: %+v\n\tendOfArm: %s\n\tmyArm: %+v\n\tisFirstNode: %v\n ",
-		// 	needToExist,
-		// 	needToAvoid,
-		// 	thenExists,
-		// 	firstNode,
-		// )
+		if !ge.AllExist(node.Coord(), otherArm) {
+			return model.EdgeUnknown
+		}
 
 		switch s := ge.GetEdge(needToAvoid); s {
 		case model.EdgeAvoided, model.EdgeOutOfBounds:
 			// the one we need to avoid _is_ in fact avoided
 		default:
-			// printDebugMsg(
-			// 	"edge needed to avoid (%s) was not avoided: %s",
-			// 	needToAvoid,
-			// 	s,
-			// )
 			return model.EdgeUnknown
-		}
-
-		for _, ep := range needToExist {
-			if s := ge.GetEdge(ep); s != model.EdgeExists {
-				// printDebugMsg(
-				// 	"edge needed to exist (%s) was not existing: %s",
-				// 	ep,
-				// 	s,
-				// )
-				// one of the edges that needs to exist doesn't. say "we don't know"
-				return model.EdgeUnknown
-			}
 		}
 
 		// at this point, all of the opposite arm exists, with the edge at the
@@ -169,72 +138,39 @@ func getRuleForOppositeArm(
 		switch s := ge.GetEdge(needsToNotExist); s {
 		case model.EdgeExists:
 			if firstNode {
-				// printDebugMsg(
-				// 	"FIRST NODE: edge that should have NOT existed (%s) was existing",
-				// 	needsToNotExist,
-				// )
 				// this means that the first edge (closest) to the defined
 				// node should be avoided because the whole arm cannot be
 				// completed as desired.
 				return model.EdgeAvoided
 			}
 
-			// printDebugMsg(
-			// 	"edge that should have NOT existed (%s) was existing",
-			// 	needsToNotExist,
-			// )
 			return model.EdgeUnknown
 		}
 
-		shouldExist := false
-		for _, thenExist := range thenExists {
-			switch s := ge.GetEdge(thenExist); s {
-			case model.EdgeExists:
-				// and at least one node in this arm
-				// exists, so we can say this entire arm exists.
-				shouldExist = true
-			case model.EdgeAvoided, model.EdgeOutOfBounds:
-				// Surprise! one of the edges in this arm is
-				// avoided (or, unexpectedly, out of bounds)
-				if firstNode {
-					// printDebugMsg(
-					// 	"FIRST NODE: edge that also should have existed (%s) was not existing: %s",
-					// 	thenExist,
-					// 	s,
-					// )
-					// this means that the first edge (closest) to the defined
-					// node should be avoided because the whole arm cannot be
-					// completed as desired.
-					return model.EdgeAvoided
-				}
+		anyExist, anyAvoided := ge.Any(node.Coord(), myArm)
+		if anyAvoided {
+			if firstNode {
+				return model.EdgeAvoided
+			}
+			return model.EdgeUnknown
+		}
 
-				// printDebugMsg(
-				// 	"edge that also should have existed (%s) was not existing: %s",
-				// 	thenExist,
-				// 	s,
-				// )
-				// since this isn't the first edge, we don't have enough
-				// info, so we can't claim knowledge
+		if !anyExist {
+			return model.EdgeUnknown
+		}
+
+		if node.Type() == model.BlackNode {
+			// for black nodes, we need to check the arm that could be on the opposite side
+			oppArm := myArm
+			oppArm.Heading = myArm.Heading.Opposite()
+			_, anyAvoided = ge.Any(node.Coord(), oppArm)
+			if !anyAvoided {
+				// we need to know that at _least_ one of the opposite arms is avoided
+				// otherwise, we can't claim to know that this one works
 				return model.EdgeUnknown
 			}
 		}
 
-		if shouldExist {
-			// if all of the opposite arm are existing or unknown, then shouldExist=false
-			for _, e := range oneMustNotExist {
-				switch s := ge.GetEdge(e); s {
-				case model.EdgeExists, model.EdgeUnknown, model.EdgeOutOfBounds:
-					return model.EdgeUnknown
-				}
-			}
-			return model.EdgeExists
-		}
-
-		// printDebugMsg(
-		// 	"none of the shouldExists existed: %+v",
-		// 	thenExists,
-		// )
-
-		return model.EdgeUnknown
+		return model.EdgeExists
 	}
 }

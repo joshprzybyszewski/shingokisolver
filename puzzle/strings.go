@@ -38,7 +38,7 @@ func (p *Puzzle) string(
 				}
 				sb.WriteString(fmt.Sprintf("%2d", n.Value()))
 			} else {
-				sb.WriteString(`(-)`)
+				sb.WriteString(`   `)
 			}
 			sb.WriteString(`)`)
 
@@ -92,9 +92,12 @@ func (p *Puzzle) string(
 				switch p.edges.GetEdge(ep) {
 				case model.EdgeExists:
 					if !enQueued {
-						below.WriteString(`||`)
+						below.WriteString(` `)
 					}
 					below.WriteString(`|`)
+					if !enQueued {
+						below.WriteString(` `)
+					}
 				case model.EdgeAvoided:
 					if enQueued {
 						if includeXs {
