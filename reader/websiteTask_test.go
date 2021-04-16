@@ -111,3 +111,15 @@ func TestFromWebsiteTask(t *testing.T) {
 		assert.Equal(t, tc.expPD, actPD)
 	}
 }
+
+func TestFromWebsiteTaskEdgeCase(t *testing.T) {
+	actPD, err := fromWebsiteTask(7, `6,483,955`, `fB3dB4cW4B3cB2B2hB3aB6bB4eB4dB2gB2bW2eB3`)
+	require.NoError(t, err)
+	assert.Contains(t, actPD.Nodes, model.NodeLocation{
+		// b 3 at 7,7
+		Row:     7,
+		Col:     7,
+		IsWhite: false,
+		Value:   3,
+	})
+}

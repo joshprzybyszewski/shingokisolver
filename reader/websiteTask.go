@@ -59,19 +59,23 @@ func fromWebsiteTask(
 	// This func is based on the following source, grabbed from the js of the website:
 	/*
 		for (var t = [], e = 0, r = 0; r < i.task.length; r++)
-		                    "W" == i.task[r] ? (t[e] = parseInt(i.task.substring(r + 1)),
-		                    e++) : "B" == i.task[r] ? (t[e] = -parseInt(i.task.substring(r + 1)),
-		                    e++) : i.task[r] >= "0" && i.task[r] <= "9" || (e += this.decodeChar(i.task[r]));
-		                for (var r = 0; r < i.puzzleHeight + 1; r++) {
-		                    this.task[r] = [],
-		                    this.currentState.taskStatus[r] = [],
-		                    this.currentState.cellHatch[r] = [];
-		                    for (var e = 0; e < i.puzzleWidth + 1; e++) {
-		                        var s = r * (i.puzzleWidth + 1) + e;
-		                        this.currentState.taskStatus[r][e] = !1,
-		                        "undefined" == typeof t[s] ? this.task[r][e] = 0 : this.task[r][e] = t[s]
-		                    }
-		                }
+			"W" == i.task[r] ?
+			(t[e] = parseInt(i.task.substring(r + 1)), e++) :
+			"B" == i.task[r] ?
+				(t[e] = -parseInt(i.task.substring(r + 1)), e++) :
+				i.task[r] >= "0" && i.task[r] <= "9" ||
+					(e += this.decodeChar(i.task[r]));
+
+		for (var r = 0; r < i.puzzleHeight + 1; r++) {
+			this.task[r] = [],
+			this.currentState.taskStatus[r] = [],
+			this.currentState.cellHatch[r] = [];
+			for (var e = 0; e < i.puzzleWidth + 1; e++) {
+				var s = r * (i.puzzleWidth + 1) + e;
+				this.currentState.taskStatus[r][e] = !1,
+				"undefined" == typeof t[s] ? this.task[r][e] = 0 : this.task[r][e] = t[s]
+			}
+		}
 	*/
 
 	pd := PuzzleDef{
@@ -90,6 +94,7 @@ func fromWebsiteTask(
 			}
 			return PuzzleDef{}, fmt.Errorf(`problem on ReadByte: %+v`, err)
 		}
+
 		if b != websiteWhiteNode && b != websiteBlackNode {
 			// increase
 			nodeIndex += int(b - websiteDecodeCharMagicNum)
@@ -99,21 +104,30 @@ func fromWebsiteTask(
 		isWhite := b == websiteWhiteNode
 
 		var value []byte
+		shouldBreak := false
+
 		b, err = reader.ReadByte()
 		for err == nil && b >= '0' && b <= '9' {
 			value = append(value, b)
 			b, err = reader.ReadByte()
+			if err == io.EOF {
+				shouldBreak = true
+				break
+			}
 		}
 		if err != nil {
 			if err == io.EOF {
-				break
+				shouldBreak = true
+			} else {
+				return PuzzleDef{}, fmt.Errorf(`problem on ReadByte: %+v`, err)
 			}
-			return PuzzleDef{}, fmt.Errorf(`problem on ReadByte: %+v`, err)
 		}
+
 		err = reader.UnreadByte()
 		if err != nil {
 			return PuzzleDef{}, fmt.Errorf(`problem on UnreadByte: %+v`, err)
 		}
+
 		val, err := strconv.Atoi(string(value))
 		if err != nil {
 			return PuzzleDef{}, fmt.Errorf(`expected value from bytes: %+v`, err)
@@ -127,6 +141,10 @@ func fromWebsiteTask(
 			Value:   int8(val),
 		})
 		nodeIndex++
+
+		if shouldBreak {
+			break
+		}
 	}
 
 	return pd, nil
