@@ -14,7 +14,8 @@ type rulesQueue struct {
 	bc isInBoundser
 	ed isEdgeDefineder
 
-	toCheck []model.EdgePair
+	// toCheck []model.EdgePair
+	toCheck map[model.EdgePair]struct{}
 
 	updated map[model.EdgePair]struct{}
 }
@@ -25,9 +26,10 @@ func newRulesQueue(
 	numEdges int,
 ) *rulesQueue {
 	return &rulesQueue{
-		bc:      bc,
-		ed:      ed,
-		toCheck: make([]model.EdgePair, 0, 2*numEdges*(numEdges-1)),
+		bc: bc,
+		ed: ed,
+		// toCheck: make([]model.EdgePair, 0, 2*numEdges*(numEdges-1)),
+		toCheck: make(map[model.EdgePair]struct{}, 2*numEdges*(numEdges-1)),
 		updated: make(map[model.EdgePair]struct{}, 2*numEdges*(numEdges-1)),
 	}
 }
@@ -42,11 +44,11 @@ func (rq *rulesQueue) push(
 		if rq.ed.isEdgeDefined(other) {
 			continue
 		}
-		if other.IsIn(rq.toCheck...) {
-			continue
-		}
-		rq.toCheck = append(rq.toCheck, other)
-
+		rq.toCheck[other] = struct{}{}
+		// if other.IsIn(rq.toCheck...) {
+		// 	continue
+		// }
+		// rq.toCheck = append(rq.toCheck, other)
 	}
 }
 
@@ -55,11 +57,16 @@ func (rq *rulesQueue) pop() (model.EdgePair, bool) {
 		return model.EdgePair{}, false
 	}
 
-	ep := rq.toCheck[0]
+	var ep model.EdgePair
+	for ep = range rq.toCheck {
+		break
+	}
+	delete(rq.toCheck, ep)
+	// ep := rq.toCheck[0]
 
 	// TODO to save on re-allocs, we can move the last item to the front.
-	rq.toCheck[0] = rq.toCheck[len(rq.toCheck)-1]
-	rq.toCheck = rq.toCheck[:len(rq.toCheck)-1]
+	// rq.toCheck[0] = rq.toCheck[len(rq.toCheck)-1]
+	// rq.toCheck = rq.toCheck[:len(rq.toCheck)-1]
 
 	// rq.toCheck = rq.toCheck[1:]
 

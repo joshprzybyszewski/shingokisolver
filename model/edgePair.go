@@ -5,6 +5,7 @@ import (
 )
 
 type GetEdger interface {
+	// TODO add nuanced methods instead
 	GetEdge(EdgePair) EdgeState
 
 	AllExist(NodeCoord, Arm) bool

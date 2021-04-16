@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"runtime/pprof"
+	"strings"
 	"time"
 
 	"github.com/joshprzybyszewski/shingokisolver/compete"
@@ -75,6 +76,9 @@ func runSolver(
 	// 		log.Printf("caught panic: %+v", r)
 	// 	}
 	// }()
+	if !strings.Contains(pd.String(), `2,589,287`) {
+		// return
+	}
 
 	if st != solvers.TargetSolverType {
 		return

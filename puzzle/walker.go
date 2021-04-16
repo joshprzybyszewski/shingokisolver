@@ -86,6 +86,22 @@ func (sw *simpleWalker) walkToNextPoint(
 	return model.HeadNowhere, model.Unexpected
 }
 
+func getNumOutgoingDirections(
+	ge model.GetEdger,
+	coord model.NodeCoord,
+) int8 {
+	var total int8
+
+	for _, dir := range model.AllCardinals {
+		ep := model.NewEdgePair(coord, dir)
+		if ge.GetEdge(ep) == model.EdgeExists {
+			total++
+		}
+	}
+
+	return total
+}
+
 func (sw *simpleWalker) markNodesAsSeen(
 	nc model.NodeCoord,
 ) {

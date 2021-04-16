@@ -26,3 +26,28 @@ func (p *Puzzle) GetNodeState(
 		return model.Incomplete
 	}
 }
+
+func (p *Puzzle) GetSumOutgoingStraightLines(
+	coord model.NodeCoord,
+) (int8, bool) {
+	var total int8
+	numAvoids := 0
+
+	for _, dir := range model.AllCardinals {
+		c := coord
+		ep := model.NewEdgePair(c, dir)
+		for p.edges.GetEdge(ep) == model.EdgeExists {
+			total++
+			c = c.Translate(dir)
+			ep = model.NewEdgePair(c, dir)
+		}
+		if c != coord {
+			switch p.edges.GetEdge(ep) {
+			case model.EdgeAvoided, model.EdgeOutOfBounds:
+				numAvoids++
+			}
+		}
+	}
+
+	return total, numAvoids >= 2
+}

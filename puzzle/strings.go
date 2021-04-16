@@ -45,9 +45,12 @@ func (p *Puzzle) string(
 			// now draw an edge
 			ep := model.NewEdgePair(nc, model.HeadRight)
 			if p.edges.isInBounds(ep) {
-				enQueued := includeQueue && ep.IsIn(p.rq.toCheck...)
+				// enQueued := includeQueue && ep.IsIn(p.rq.toCheck...)
+				_, ok := p.rq.toCheck[ep]
+				enQueued := includeQueue && ok
 				if enQueued {
-					sb.WriteString(fmt.Sprintf("%2d", ep.IndexOf(p.rq.toCheck...)))
+					sb.WriteString(`qq`)
+					// sb.WriteString(fmt.Sprintf("%2d", ep.IndexOf(p.rq.toCheck...)))
 				}
 				switch p.edges.GetEdge(ep) {
 				case model.EdgeExists:
@@ -84,9 +87,12 @@ func (p *Puzzle) string(
 			below.WriteString(` `)
 			ep = model.NewEdgePair(nc, model.HeadDown)
 			if p.edges.isInBounds(ep) {
-				enQueued := includeQueue && ep.IsIn(p.rq.toCheck...)
+				// enQueued := includeQueue && ep.IsIn(p.rq.toCheck...)
+				_, ok := p.rq.toCheck[ep]
+				enQueued := includeQueue && ok
 				if enQueued {
-					below.WriteString(fmt.Sprintf("%2d", ep.IndexOf(p.rq.toCheck...)))
+					below.WriteString(`qq`)
+					// below.WriteString(fmt.Sprintf("%2d", ep.IndexOf(p.rq.toCheck...)))
 				}
 
 				switch p.edges.GetEdge(ep) {

@@ -73,9 +73,11 @@ func printPuzzleUpdate(
 		return
 	}
 	shouldSkip := true
-	if _, ok := seen[targeting.Node.Coord()]; ok {
-		shouldSkip = false
-		seen[targeting.Node.Coord()] = struct{}{}
+	if targeting != nil {
+		if _, ok := seen[targeting.Node.Coord()]; ok {
+			shouldSkip = false
+			seen[targeting.Node.Coord()] = struct{}{}
+		}
 	}
 	if iterations < allIterationsUnder ||
 		iterations%iterationsModulo == 0 {
