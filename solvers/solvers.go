@@ -45,9 +45,11 @@ func NewSolver(
 }
 
 type SolvedResults struct {
-	Puzzle        *puzzle.Puzzle
+	Puzzle *puzzle.Puzzle
+	// TODO remove NumIterations
 	NumIterations int
-	Duration      time.Duration
+
+	Duration time.Duration
 }
 
 func (sr SolvedResults) String() string {

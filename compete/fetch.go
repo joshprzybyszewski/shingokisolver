@@ -17,6 +17,19 @@ const (
 	hard   difficulty = 2
 )
 
+func (d difficulty) String() string {
+	switch d {
+	case easy:
+		return `easy`
+	case medium:
+		return `medium`
+	case hard:
+		return `hard`
+	default:
+		return `unknown difficulty`
+	}
+}
+
 type websitePuzzle struct {
 	id string
 	pd reader.PuzzleDef

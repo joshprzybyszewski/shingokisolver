@@ -30,12 +30,12 @@ func getPostSolutionData(
 	res solvers.SolvedResults,
 ) (http.Header, io.Reader) {
 	panic(`public sauce: getPostSolutionData`)
-	return nil, nil
+	return ``, nil, nil
 }
 
 func getHallOfFameSubmission(
+	wp websitePuzzle,
 	doc *goquery.Document,
-) (string, http.Header, io.Reader) {
-	panic(`public sauce: getHallOfFameSubmission`)
-	return nil, nil
+) (string, http.Header, io.Reader, error) {
+	return ``, nil, nil, errors.New(`public sauce: getHallOfFameSubmission`)
 }

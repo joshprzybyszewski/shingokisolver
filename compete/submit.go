@@ -14,16 +14,17 @@ func submitAnswer(
 ) error {
 
 	defer func() {
-		writeToFile(`./temp/answer.txt`, []byte(res.Puzzle.String()))
+		writeToFile(`./temp/answer.txt`, []byte(res.Puzzle.Solution()))
 	}()
 
-	header, data := getPostSolutionData(wp, res)
+	postURL, header, data := getPostSolutionData(wp, res)
 
-	resp, respHeaders, err := post(`https://www.puzzle-shingoki.com/`, header, data)
+	resp, respHeaders, err := post(postURL, header, data)
 	if err != nil {
 		return err
 	}
 	writeToFile(`./temp/postAnswer.html`, resp)
+	writeToFile(`./temp/postRequestHeaders.txt`, []byte(fmt.Sprintf("%+v", header)))
 	writeToFile(`./temp/postAnswerHeaders.txt`, []byte(fmt.Sprintf("%+v", respHeaders)))
 
 	doc, err := goquery.NewDocumentFromReader(bytes.NewReader(resp))
@@ -31,7 +32,10 @@ func submitAnswer(
 		return err
 	}
 
-	hallUrl, header, data := getHallOfFameSubmission(doc)
+	hallUrl, header, data, err := getHallOfFameSubmission(wp, doc)
+	if err != nil {
+		return err
+	}
 	resp, respHeaders, err = post(hallUrl, header, data)
 	if err != nil {
 		return err

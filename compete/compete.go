@@ -2,20 +2,40 @@ package compete
 
 import (
 	"log"
-	"os"
-	"sync"
+	"time"
 
 	"github.com/joshprzybyszewski/shingokisolver/puzzle"
 	"github.com/joshprzybyszewski/shingokisolver/solvers"
 )
 
 func Run() {
+	for _, s := range []int{
+		5, 7, 10, 15, 20, 25,
+	} {
+		for _, d := range []difficulty{
+			easy, medium, hard,
+		} {
+			log.Printf("starting competition for %s %d edges", d, s)
 
+			getAndSubmitPuzzle(s, d)
+
+			// wait 10 seconds between runs so we don't overwhelm
+			// their servers or our machine accidentally:#
+			time.Sleep(10 * time.Second)
+		}
+	}
+}
+
+func getAndSubmitPuzzle(
+	size int,
+	diff difficulty,
+) {
+	initLogs()
 	defer flushLogs()
 
 	wp, err := getPuzzle(
-		5,
-		easy,
+		size,
+		diff,
 	)
 	if err != nil {
 		panic(err)
@@ -37,39 +57,10 @@ func Run() {
 		return
 	}
 
-	submitAnswer(wp, sr)
-}
+	err = submitAnswer(wp, sr)
+	if err != nil {
+		log.Printf("submitAnswer errored: %v", err)
+	}
 
-var (
-	flushLogsChan = make(chan struct{}, 0)
-	logsWritten   sync.WaitGroup
-)
-
-func flushLogs() {
-	close(flushLogsChan)
-	logsWritten.Wait()
-}
-
-func writeToFile(
-	filename string,
-	bytes []byte,
-) {
-	logsWritten.Add(1)
-
-	go func() {
-		defer logsWritten.Done()
-
-		f, err := os.OpenFile(filename,
-			os.O_CREATE|os.O_WRONLY, 0644)
-		if err != nil {
-			log.Printf("error opening file: %v\n", err)
-			return
-		}
-		defer f.Close()
-
-		if _, err := f.Write(bytes); err != nil {
-			log.Printf("error WriteString file: %v\n", err)
-			return
-		}
-	}()
+	log.Printf("Solved in %s:\n%s\n ", sr.Duration, sr.Puzzle.Solution())
 }
