@@ -9,6 +9,7 @@ type GetEdger interface {
 
 	AllExist(NodeCoord, Arm) bool
 	Any(NodeCoord, Arm) (bool, bool)
+	AnyAvoided(NodeCoord, Arm) bool
 }
 
 type EdgePair struct {

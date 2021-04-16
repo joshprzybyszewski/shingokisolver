@@ -65,7 +65,7 @@ func printPuzzleUpdate(
 	caller string,
 	depth int,
 	puzz *puzzle.Puzzle,
-	targeting model.Target,
+	targeting *model.Target,
 	iterations int,
 ) {
 
@@ -73,9 +73,9 @@ func printPuzzleUpdate(
 		return
 	}
 	shouldSkip := true
-	if _, ok := seen[targeting.Coord]; ok {
+	if _, ok := seen[targeting.Node.Coord()]; ok {
 		shouldSkip = false
-		seen[targeting.Coord] = struct{}{}
+		seen[targeting.Node.Coord()] = struct{}{}
 	}
 	if iterations < allIterationsUnder ||
 		iterations%iterationsModulo == 0 {

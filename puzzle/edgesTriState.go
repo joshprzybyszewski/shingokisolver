@@ -170,15 +170,38 @@ func (ets *edgesTriState) AllExist(
 	}
 }
 
+func (ets *edgesTriState) AnyAvoided(
+	start model.NodeCoord,
+	arm model.Arm,
+) bool {
+	if !ets.isArmInBounds(start, arm) {
+		return true
+	}
+	mask := getMask(start, arm)
+
+	switch arm.Heading {
+	case model.HeadRight:
+		return ets.avoidRows[start.Row]&mask != 0
+
+	case model.HeadDown:
+		return ets.avoidCols[start.Col]&mask != 0
+
+	case model.HeadLeft:
+		return ets.avoidRows[start.Row]&mask != 0
+
+	case model.HeadUp:
+		return ets.avoidCols[start.Col]&mask != 0
+
+	default:
+		return false
+	}
+}
+
 func (ets *edgesTriState) Any(
 	start model.NodeCoord,
 	arm model.Arm,
 ) (bool, bool) {
 	goesOutOfBounds := !ets.isArmInBounds(start, arm)
-	// if !ets.isArmInBounds(start, arm) {
-	// 	// the arm goes out of bounds, so we know it can't be all in
-	// 	return false, true
-	// }
 	mask := getMask(start, arm)
 
 	switch arm.Heading {
@@ -197,22 +220,6 @@ func (ets *edgesTriState) Any(
 	default:
 		return false, false
 	}
-
-	// // TODO we can speed this up
-	// anyExists, anyAvoided := false, false
-	// arm1End := start
-
-	// for i := int8(0); i < arm.Len; i++ {
-	// 	switch ets.GetEdge(model.NewEdgePair(arm1End, arm.Heading)) {
-	// 	case model.EdgeExists:
-	// 		anyExists = true
-	// 	case model.EdgeAvoided, model.EdgeOutOfBounds:
-	// 		anyAvoided = true
-	// 	}
-	// 	arm1End = arm1End.Translate(arm.Heading)
-	// }
-
-	// return anyExists, anyAvoided
 }
 
 func (ets *edgesTriState) GetEdge(

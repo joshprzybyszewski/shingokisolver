@@ -72,6 +72,39 @@ func (p *Puzzle) numNodes() int {
 	return int(p.numEdges) + 1
 }
 
-func (p *Puzzle) Targets() []model.Target {
-	return model.BuildTargets(p.nodes, p.NumEdges())
+func (p *Puzzle) GetPossibleTwoArms(
+	node model.Node,
+) []model.TwoArms {
+	options := model.BuildTwoArmOptions(node, p.NumEdges())
+	filteredOptions := make([]model.TwoArms, 0, len(options))
+
+	nc := node.Coord()
+	for _, o := range options {
+		if p.edges.AnyAvoided(nc, o.One) || p.edges.AnyAvoided(nc, o.Two) {
+			continue
+		}
+		filteredOptions = append(filteredOptions, o)
+	}
+
+	return filteredOptions
+}
+
+func (p *Puzzle) GetNextTarget(
+	cur *model.Target,
+) (*model.Target, model.State) {
+	t, ok, err := model.GetNextTarget(
+		cur,
+		p.nodes,
+		func(n model.Node) int {
+			return len(p.GetPossibleTwoArms(n))
+		},
+	)
+
+	if err != nil {
+		return nil, model.Violation
+	}
+	if !ok {
+		return nil, model.NodesComplete
+	}
+	return &t, model.Incomplete
 }

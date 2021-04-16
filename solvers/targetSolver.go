@@ -29,17 +29,12 @@ func (d *targetSolver) iterations() int {
 }
 
 func (d *targetSolver) solve() (*puzzle.Puzzle, bool) {
-	targets := d.puzzle.Targets()
-
-	if len(targets) == 0 {
-		return nil, false
-	}
 
 	puzz := d.puzzle.DeepCopy()
 
 	switch s := puzz.ClaimGimmes(); s {
 	case model.Incomplete, model.Complete:
-		printPuzzleUpdate(`ClaimGimmes`, 0, puzz, targets[0], d.iterations())
+		printPuzzleUpdate(`ClaimGimmes`, 0, puzz, nil, d.iterations())
 	default:
 		return nil, false
 	}
@@ -48,10 +43,18 @@ func (d *targetSolver) solve() (*puzzle.Puzzle, bool) {
 		return nil, false
 	}
 
+	target, state := d.puzzle.GetNextTarget(nil)
+	switch state {
+	case model.Incomplete, model.Complete:
+		printPuzzleUpdate(`GetNextTarget`, 0, puzz, target, d.iterations())
+	default:
+		return nil, false
+	}
+
 	p := d.getSolutionFromDepths(
 		0,
 		puzz.DeepCopy(),
-		targets[0],
+		target,
 	)
 	return p, p != nil
 }
@@ -59,21 +62,19 @@ func (d *targetSolver) solve() (*puzzle.Puzzle, bool) {
 func (d *targetSolver) getSolutionFromDepths(
 	depth int,
 	puzz *puzzle.Puzzle,
-	targeting model.Target,
+	targeting *model.Target,
 ) *puzzle.Puzzle {
 
 	printPuzzleUpdate(`getSolutionFromDepths`, depth, puzz, targeting, d.iterations())
 
-	targetCoord := targeting.Coord
-
-	node, ok := puzz.GetNode(targetCoord)
+	node, ok := puzz.GetNode(targeting.Node.Coord())
 	if !ok {
 		// this should be returning an error, but really it shouldn't be happening
 		panic(`what?`)
 		// return nil
 	}
 
-	switch puzz.GetNodeState(targeting.Coord) {
+	switch puzz.GetNodeState(targeting.Node.Coord()) {
 	case model.Violation:
 		return nil
 
@@ -82,13 +83,14 @@ func (d *targetSolver) getSolutionFromDepths(
 		// accidentally completed it. If so, then let's do a sanity check
 		// on completion, and then add it as a "partial solution" that
 		// has no new loose ends
-
-		if targeting.Next == nil {
-			switch puzz.GetState(targeting.Coord) {
+		nextTarget, state := puzz.GetNextTarget(targeting)
+		switch state {
+		case model.Violation:
+			return nil
+		case model.NodesComplete:
+			switch puzz.GetState(targeting.Node.Coord()) {
 			case model.Complete:
 				return puzz
-			default:
-				printPuzzleUpdate(`getSolutionFromDepths did not solve!`, depth, puzz, targeting, d.iterations())
 			}
 
 			return d.flip(
@@ -99,15 +101,14 @@ func (d *targetSolver) getSolutionFromDepths(
 		return d.getSolutionFromDepths(
 			depth+1,
 			puzz.DeepCopy(),
-			*targeting.Next,
+			nextTarget,
 		)
 	}
 
 	// go out in all directions from the target
 	// if it's still a valid puzzle, keep going outward
 	// until we "complete" the node.
-	options := model.BuildTwoArmOptions(node, puzz.NumEdges())
-	for _, option := range options {
+	for _, option := range puzz.GetPossibleTwoArms(node) {
 		// then, once we find a completion path, add it to the returned slice
 		p := d.buildAllTwoArmsForTraversal(
 			depth,
@@ -126,12 +127,12 @@ func (d *targetSolver) getSolutionFromDepths(
 func (d *targetSolver) buildAllTwoArmsForTraversal(
 	depth int,
 	puzz *puzzle.Puzzle,
-	curTarget model.Target,
+	curTarget *model.Target,
 	ta model.TwoArms,
 ) *puzzle.Puzzle {
 
 	switch puzz.AddEdges(getTwoArmsEdges(
-		curTarget.Coord,
+		curTarget.Node.Coord(),
 		ta,
 	)...) {
 	case model.Duplicate, model.Incomplete, model.Complete:
@@ -139,7 +140,7 @@ func (d *targetSolver) buildAllTwoArmsForTraversal(
 		return nil
 	}
 
-	switch puzz.GetState(curTarget.Coord) {
+	switch puzz.GetState(curTarget.Node.Coord()) {
 	case model.Complete:
 		return puzz
 	case model.Incomplete:
@@ -148,7 +149,16 @@ func (d *targetSolver) buildAllTwoArmsForTraversal(
 		return nil
 	}
 
-	if curTarget.Next == nil {
+	nextTarget, state := puzz.GetNextTarget(curTarget)
+	switch state {
+	case model.Violation:
+		return nil
+	case model.NodesComplete:
+		switch puzz.GetState(curTarget.Node.Coord()) {
+		case model.Complete:
+			return puzz
+		}
+
 		return d.flip(
 			puzz.DeepCopy(),
 		)
@@ -157,7 +167,7 @@ func (d *targetSolver) buildAllTwoArmsForTraversal(
 	return d.getSolutionFromDepths(
 		depth+1,
 		puzz.DeepCopy(),
-		*curTarget.Next,
+		nextTarget,
 	)
 }
 
