@@ -2,37 +2,52 @@ package compete
 
 import (
 	"bytes"
+	"fmt"
 
 	"github.com/PuerkitoBio/goquery"
 
 	"github.com/joshprzybyszewski/shingokisolver/reader"
 )
 
+type difficulty int
+
+const (
+	easy   difficulty = 0
+	medium difficulty = 1
+	hard   difficulty = 2
+)
+
 type websitePuzzle struct {
 	id string
 	pd reader.PuzzleDef
 
-	secret string
+	secret map[string]string
 }
 
 func getPuzzle(
 	size int,
+	diff difficulty,
 ) (websitePuzzle, error) {
 
-	url, header := requestNewPuzzle(size)
+	secret := map[string]string{}
+	url, header := requestNewPuzzle(size, diff, secret)
 
-	resp, err := get(url, header)
+	resp, respHeaders, err := get(url, header)
 	if err != nil {
 		return websitePuzzle{}, err
 	}
 	writeToFile(`./temp/getPuzzleResp.html`, resp)
+	writeToFile(`./temp/getPuzzleRespHeaders.txt`, []byte(fmt.Sprintf("%+v", respHeaders)))
 
 	doc, err := goquery.NewDocumentFromReader(bytes.NewReader(resp))
 	if err != nil {
 		return websitePuzzle{}, err
 	}
 
-	puzzID, taskString, secret, err := getPuzzleInfo(doc)
+	puzzID, taskString, err := getPuzzleInfo(doc, secret)
+	if err != nil {
+		return websitePuzzle{}, err
+	}
 
 	pd, err := reader.FromWebsiteTask(
 		size,

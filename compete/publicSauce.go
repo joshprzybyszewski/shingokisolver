@@ -12,13 +12,16 @@ import (
 
 func requestNewPuzzle(
 	edges int,
+	diff difficulty,
+	secretMeta map[string]string,
 ) (string, http.Header) {
 	return ``, nil
 }
 
 func getPuzzleInfo(
 	doc *goquery.Document,
-) (string, string, string, error) {
+	secretMeta map[string]string,
+) (string, string, error) {
 	return ``, ``, ``, errors.New(`getPuzzleInfo public sauce`)
 }
 

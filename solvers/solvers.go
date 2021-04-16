@@ -38,6 +38,9 @@ func NewSolver(
 	nl []model.NodeLocation,
 	st SolverType,
 ) Solver {
+	if len(nl) == 0 {
+		panic(`cannot solve a puzzle with no nodes!`)
+	}
 	return newWrapper(newSolver(size, nl, st))
 }
 
