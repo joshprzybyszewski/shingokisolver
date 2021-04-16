@@ -10,7 +10,6 @@ import (
 
 type solver interface {
 	solve() (*puzzle.Puzzle, bool)
-	iterations() int
 }
 
 func newSolver(
@@ -42,14 +41,12 @@ func (sw *solverWrapper) Solve() (SolvedResults, error) {
 	puzz, isSolved := sw.s.solve()
 	if !isSolved {
 		return SolvedResults{
-			NumIterations: sw.s.iterations(),
-			Duration:      time.Since(t0),
+			Duration: time.Since(t0),
 		}, errors.New(`unsolvable`)
 	}
 
 	return SolvedResults{
-		Puzzle:        puzz,
-		NumIterations: sw.s.iterations(),
-		Duration:      time.Since(t0),
+		Puzzle:   puzz,
+		Duration: time.Since(t0),
 	}, nil
 }

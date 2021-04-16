@@ -4,15 +4,6 @@ import (
 	"fmt"
 )
 
-type GetEdger interface {
-	// TODO add nuanced methods instead
-	GetEdge(EdgePair) EdgeState
-
-	AllExist(NodeCoord, Arm) bool
-	Any(NodeCoord, Arm) (bool, bool)
-	AnyAvoided(NodeCoord, Arm) bool
-}
-
 type EdgePair struct {
 	NodeCoord
 	Cardinal
@@ -48,16 +39,10 @@ func (ep EdgePair) String() string {
 func (ep EdgePair) IsIn(
 	others ...EdgePair,
 ) bool {
-	return ep.IndexOf(others...) >= 0
-}
-
-func (ep EdgePair) IndexOf(
-	others ...EdgePair,
-) int {
-	for i, o := range others {
+	for _, o := range others {
 		if o == ep {
-			return i
+			return true
 		}
 	}
-	return -1
+	return false
 }

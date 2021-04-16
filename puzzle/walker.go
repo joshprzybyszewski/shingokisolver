@@ -62,6 +62,9 @@ func (sw *simpleWalker) walkToNextPoint(
 	avoid model.Cardinal,
 ) (model.Cardinal, model.State) {
 
+	// TODO I think I can remove this switch because the rules
+	// will freak out before we get to this point
+	// that means I can stop returning a state from this walker too
 	switch nOutgoing := getNumOutgoingDirections(sw.provider, sw.cur); {
 	case nOutgoing > 2:
 		return model.HeadNowhere, model.Violation
@@ -83,7 +86,7 @@ func (sw *simpleWalker) walkToNextPoint(
 		return dir.Opposite(), model.Incomplete
 	}
 
-	return model.HeadNowhere, model.Unexpected
+	return model.HeadNowhere, model.Incomplete
 }
 
 func getNumOutgoingDirections(

@@ -47,24 +47,18 @@ func (r *rules) addAffected(couldAffect ...model.EdgePair) {
 		return
 	}
 	for _, other := range couldAffect {
-		if other.IsIn(r.couldAffect...) || other == r.me {
+		if other == r.me || other.IsIn(r.couldAffect...) {
 			continue
 		}
 		r.couldAffect = append(r.couldAffect, other)
 	}
 }
 
+// TODO consider having a separate set of evals for node changes:#
 func (r *rules) addEvaluations(evals ...func(ge model.GetEdger) model.EdgeState) {
 	if r == nil {
 		return
 	}
-
-	// printDebugMsg(
-	// 	"%s addEvaluations([%d]evals = %+v)",
-	// 	r.me,
-	// 	len(evals),
-	// 	evals,
-	// )
 
 	for _, eval := range evals {
 		if eval == nil {
@@ -83,11 +77,6 @@ func (r *rules) getEdgeState(ge model.GetEdger) model.EdgeState {
 
 	for _, eval := range r.evals {
 		newES := eval(ge)
-		// printDebugMsg(
-		// 	"r.evals[%d] chose %s",
-		// 	i,
-		// 	newES,
-		// )
 		switch newES {
 		case model.EdgeErrored:
 			return newES
@@ -99,16 +88,11 @@ func (r *rules) getEdgeState(ge model.GetEdger) model.EdgeState {
 		case model.EdgeOutOfBounds, model.EdgeUnknown:
 			// ok
 		default:
+			// TODO case model.EdgeOutOfBounds is actually a dev error!
 			// unsupported response
 			return model.EdgeErrored
 		}
 	}
-
-	// printDebugMsg(
-	// 	"getEdgeState checked %d evals, and chose %s",
-	// 	len(r.evals),
-	// 	es,
-	// )
 
 	return es
 }
@@ -138,7 +122,7 @@ func (r *rules) addRulesForNode(
 	r.addAffected(perps...)
 
 	r.addEvaluations(
-		getNodeRules(node, otherSideOfNode, perps)...,
+		getSimpleNodeRule(node, otherSideOfNode, perps),
 	)
 }
 

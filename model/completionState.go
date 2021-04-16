@@ -9,7 +9,6 @@ const (
 	Violation     State = 4
 	Unexpected    State = 5
 	Duplicate     State = 6
-	Ok            State = 7
 )
 
 func (s State) String() string {
@@ -24,8 +23,6 @@ func (s State) String() string {
 		return `Unexpected`
 	case Duplicate:
 		return `Duplicate`
-	case Ok:
-		return `Ok`
 	default:
 		return `unknown State`
 	}

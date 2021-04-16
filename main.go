@@ -76,8 +76,8 @@ func runSolver(
 	// 		log.Printf("caught panic: %+v", r)
 	// 	}
 	// }()
-	if !strings.Contains(pd.String(), `2,589,287`) {
-		// return
+	if !strings.Contains(pd.String(), `6,483,955`) {
+		return
 	}
 
 	if st != solvers.TargetSolverType {

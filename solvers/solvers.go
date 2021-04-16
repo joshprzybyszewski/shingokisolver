@@ -46,15 +46,13 @@ func NewSolver(
 
 type SolvedResults struct {
 	Puzzle *puzzle.Puzzle
-	// TODO remove NumIterations
-	NumIterations int
 
 	Duration time.Duration
 }
 
 func (sr SolvedResults) String() string {
 	if sr.Puzzle == nil {
-		return fmt.Sprintf("(%d iterations in %s) <no solution>\n", sr.NumIterations, sr.Duration.String())
+		return fmt.Sprintf("Took %s. <no solution>\n", sr.Duration)
 	}
-	return fmt.Sprintf("(%d iterations in %s)\n%s\n", sr.NumIterations, sr.Duration.String(), sr.Puzzle.Solution())
+	return fmt.Sprintf("Took %s\n%s\n", sr.Duration, sr.Puzzle.Solution())
 }

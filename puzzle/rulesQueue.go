@@ -53,24 +53,13 @@ func (rq *rulesQueue) push(
 }
 
 func (rq *rulesQueue) pop() (model.EdgePair, bool) {
-	if len(rq.toCheck) == 0 {
-		return model.EdgePair{}, false
+	for ep := range rq.toCheck {
+		// Delete this edge from the map, and return it
+		delete(rq.toCheck, ep)
+		return ep, true
 	}
 
-	var ep model.EdgePair
-	for ep = range rq.toCheck {
-		break
-	}
-	delete(rq.toCheck, ep)
-	// ep := rq.toCheck[0]
-
-	// TODO to save on re-allocs, we can move the last item to the front.
-	// rq.toCheck[0] = rq.toCheck[len(rq.toCheck)-1]
-	// rq.toCheck = rq.toCheck[:len(rq.toCheck)-1]
-
-	// rq.toCheck = rq.toCheck[1:]
-
-	return ep, true
+	return model.EdgePair{}, false
 }
 
 func (rq *rulesQueue) noticeUpdated(

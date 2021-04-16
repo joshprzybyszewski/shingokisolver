@@ -1,25 +1,5 @@
 package model
 
-import "fmt"
-
-type Arm struct {
-	Len     int8
-	Heading Cardinal
-}
-
-func (a Arm) String() string {
-	return fmt.Sprintf("Arm{Len: %d, Heading: %s}", a.Len, a.Heading)
-}
-
-func (a Arm) EndFrom(
-	start NodeCoord,
-) NodeCoord {
-	for i := int8(0); i < a.Len; i++ {
-		start = start.Translate(a.Heading)
-	}
-	return start
-}
-
 type TwoArms struct {
 	One Arm
 	Two Arm
@@ -30,6 +10,8 @@ var (
 	optionsCache map[int]map[Node][]TwoArms = make(map[int]map[Node][]TwoArms, 25)
 )
 
+// TODO add a wrapper around this that will also filter out two-arm
+// options that would run into another node in an invalid way:#
 func BuildTwoArmOptions(
 	n Node,
 	numEdges int,

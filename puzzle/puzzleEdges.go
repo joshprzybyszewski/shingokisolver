@@ -1,14 +1,30 @@
 package puzzle
 
 import (
-	"errors"
-
 	"github.com/joshprzybyszewski/shingokisolver/model"
 )
 
-var (
-	ErrEdgeAlreadyExists = errors.New(`already had edge`)
-)
+func (p *Puzzle) GetUnknownEdge() (model.EdgePair, bool) {
+	// TODO find a loose end instead
+	// we can do that by choosing a random node, then walking to the end
+	// of it's path.
+	for r := 0; r <= p.NumEdges(); r++ {
+		for c := 0; c <= p.NumEdges(); c++ {
+			nc := model.NewCoordFromInts(r, c)
+
+			ep := model.NewEdgePair(nc, model.HeadRight)
+			if p.GetEdgeState(ep) == model.EdgeUnknown {
+				return ep, true
+			}
+
+			ep = model.NewEdgePair(nc, model.HeadDown)
+			if p.GetEdgeState(ep) == model.EdgeUnknown {
+				return ep, true
+			}
+		}
+	}
+	return model.EdgePair{}, false
+}
 
 func (p *Puzzle) IsEdge(
 	move model.Cardinal,
@@ -36,23 +52,12 @@ func (p *Puzzle) AddEdge(
 	startNode model.NodeCoord,
 	move model.Cardinal,
 ) model.State {
-
-	// p.printMsg("AddEdge(%s, %s)",
-	// 	startNode,
-	// 	move,
-	// )
-
 	return p.AddEdges(model.NewEdgePair(startNode, move))
 }
 
 func (p *Puzzle) AddEdges(
 	pairs ...model.EdgePair,
 ) model.State {
-
-	// p.printMsg("AddEdges(%+v)",
-	// 	pairs,
-	// )
-
 	for _, ep := range pairs {
 		if !p.edges.isInBounds(ep) {
 			return model.Violation
@@ -71,24 +76,13 @@ func (p *Puzzle) AddEdges(
 func (p *Puzzle) addEdge(
 	ep model.EdgePair,
 ) model.State {
-
-	// p.printMsg("addEdge(%s)",
-	// 	ep,
-	// )
-
 	switch state := p.edges.SetEdge(ep); state {
 	case model.Incomplete, model.Complete:
 		p.rq.noticeUpdated(ep)
 
 		return p.checkRuleset(ep, model.EdgeExists)
 
-	case model.Duplicate:
-		return state
 	default:
-		// p.printMsg("addEdge(%s) edges.SetEdge returned %s",
-		// 	ep,
-		// 	state,
-		// )
 		return state
 	}
 }
@@ -96,10 +90,6 @@ func (p *Puzzle) addEdge(
 func (p *Puzzle) AvoidEdge(
 	ep model.EdgePair,
 ) model.State {
-	// p.printMsg("AvoidEdge(%+v)",
-	// 	ep,
-	// )
-
 	if !p.edges.isInBounds(ep) {
 		return model.Violation
 	}
@@ -117,10 +107,6 @@ func (p *Puzzle) avoidEdge(
 	ep model.EdgePair,
 ) model.State {
 
-	// p.printMsg("avoidEdge(%s)",
-	// 	ep,
-	// )
-
 	switch state := p.edges.AvoidEdge(ep); state {
 	case model.Incomplete, model.Complete:
 		p.rq.noticeUpdated(ep)
@@ -128,10 +114,6 @@ func (p *Puzzle) avoidEdge(
 		// see if I'm breaking any rules or I can make any more moves
 		return p.checkRuleset(ep, model.EdgeAvoided)
 	default:
-		// p.printMsg("avoidEdge(%s) edges returned %s",
-		// 	ep,
-		// 	state,
-		// )
 		return state
 	}
 }
@@ -157,11 +139,6 @@ func (p *Puzzle) runQueue() model.State {
 
 		exp := p.edges.GetEdge(ep)
 		if eval != exp {
-			// p.printMsg("runQueue(%s) evaled %s but expected %s",
-			// 	ep,
-			// 	eval,
-			// 	exp,
-			// )
 			return model.Violation
 		}
 	}

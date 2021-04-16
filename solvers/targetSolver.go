@@ -24,17 +24,13 @@ func newTargetSolver(
 	}
 }
 
-func (d *targetSolver) iterations() int {
-	return d.numProcessed
-}
-
 func (d *targetSolver) solve() (*puzzle.Puzzle, bool) {
 
 	puzz := d.puzzle.DeepCopy()
 
 	switch s := puzz.ClaimGimmes(); s {
 	case model.Incomplete, model.Complete:
-		printPuzzleUpdate(`ClaimGimmes`, 0, puzz, nil, d.iterations())
+		// printPuzzleUpdate(`ClaimGimmes`, 0, puzz, nil)
 	default:
 		return nil, false
 	}
@@ -46,7 +42,7 @@ func (d *targetSolver) solve() (*puzzle.Puzzle, bool) {
 	target, state := d.puzzle.GetNextTarget(nil)
 	switch state {
 	case model.Incomplete, model.Complete:
-		printPuzzleUpdate(`GetNextTarget`, 0, puzz, target, d.iterations())
+		// printPuzzleUpdate(`GetNextTarget`, 0, puzz, target)
 	default:
 		return nil, false
 	}
@@ -65,16 +61,18 @@ func (d *targetSolver) getSolutionFromDepths(
 	targeting *model.Target,
 ) *puzzle.Puzzle {
 
-	printPuzzleUpdate(`getSolutionFromDepths`, depth, puzz, targeting, d.iterations())
+	nc := targeting.Node.Coord()
 
-	node, ok := puzz.GetNode(targeting.Node.Coord())
+	// printPuzzleUpdate(`getSolutionFromDepths`, depth, puzz, targeting)
+
+	node, ok := puzz.GetNode(nc)
 	if !ok {
 		// this should be returning an error, but really it shouldn't be happening
 		panic(`what?`)
 		// return nil
 	}
 
-	switch puzz.GetNodeState(targeting.Node.Coord()) {
+	switch puzz.GetNodeState(nc) {
 	case model.Violation:
 		return nil
 
@@ -88,7 +86,7 @@ func (d *targetSolver) getSolutionFromDepths(
 		case model.Violation:
 			return nil
 		case model.NodesComplete:
-			switch puzz.GetState(targeting.Node.Coord()) {
+			switch puzz.GetState(nc) {
 			case model.Complete:
 				return puzz
 			}
