@@ -47,8 +47,6 @@ func newRuleSet(
 		for _, dir := range model.AllCardinals {
 			rs.getRules(model.NewEdgePair(nc, dir)).addRulesForNode(n, dir)
 		}
-
-		rs.addAllTwoArmRules(n, numEdges)
 	}
 
 	return rs

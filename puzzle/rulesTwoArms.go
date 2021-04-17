@@ -4,18 +4,10 @@ import (
 	"github.com/joshprzybyszewski/shingokisolver/model"
 )
 
-// TODO clean up how we add all of the two arm rules.
 func (rs *ruleSet) addAllTwoArmRules(
 	node model.Node,
-	numEdges int,
+	options []model.TwoArms,
 ) {
-
-	// TODO consider ways that we can make this set of rules
-	// faster/smarter/better/stronger
-	// I think we can by dynamically assessin the the "current option" o
-	// is still viable or not. If not, then skip the
-	// corresponding rule for the node.
-	options := model.BuildTwoArmOptions(node, numEdges)
 
 	for _, o := range options {
 		afterArm1 := model.NewEdgePair(
