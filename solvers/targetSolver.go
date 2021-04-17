@@ -1,20 +1,21 @@
 package solvers
 
 import (
+	"fmt"
+	"time"
+
 	"github.com/joshprzybyszewski/shingokisolver/model"
 	"github.com/joshprzybyszewski/shingokisolver/puzzle"
 )
 
 type targetSolver struct {
 	puzzle *puzzle.Puzzle
-
-	numProcessed int
 }
 
 func newTargetSolver(
 	size int,
 	nl []model.NodeLocation,
-) solver {
+) Solver {
 	if len(nl) == 0 {
 		return nil
 	}
@@ -24,8 +25,23 @@ func newTargetSolver(
 	}
 }
 
-func (d *targetSolver) solve() (*puzzle.Puzzle, bool) {
+func (d *targetSolver) Solve() (SolvedResults, error) {
+	t0 := time.Now()
 
+	puzz, isSolved := d.solve()
+	if !isSolved {
+		return SolvedResults{
+			Duration: time.Since(t0),
+		}, fmt.Errorf("puzzle unsolvable: %s", d.puzzle.String())
+	}
+
+	return SolvedResults{
+		Puzzle:   puzz,
+		Duration: time.Since(t0),
+	}, nil
+}
+
+func (d *targetSolver) solve() (*puzzle.Puzzle, bool) {
 	puzz := d.puzzle.DeepCopy()
 
 	switch s := puzz.ClaimGimmes(); s {

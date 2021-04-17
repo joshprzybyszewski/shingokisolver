@@ -18,8 +18,9 @@ const (
 	websiteDecodeCharMagicNum byte = 96
 )
 
-const (
-	websiteCachePuzzlesFilename = `./reader/websitecache/puzzles.txt`
+var (
+	pwd                         = os.Getenv(`GOPATH`) + `/src/github.com/joshprzybyszewski/shingokisolver`
+	websiteCachePuzzlesFilename = pwd + `/reader/websitecache/puzzles.txt`
 )
 
 func FromWebsiteTask(

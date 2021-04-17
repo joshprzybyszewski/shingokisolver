@@ -45,7 +45,6 @@ func getAndSubmitPuzzle(
 	s := solvers.NewSolver(
 		wp.pd.NumEdges,
 		wp.pd.Nodes,
-		solvers.TargetSolverType,
 	)
 
 	sr, err := s.Solve()

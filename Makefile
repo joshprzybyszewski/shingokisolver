@@ -25,3 +25,7 @@ test:
 .PHONY: longtest
 longtest:
 	go test ./...
+
+.PHONY: bench
+bench:
+	go test -benchmem -run="^$$" -bench "^(BenchmarkSolve)$$" ./solvers/...

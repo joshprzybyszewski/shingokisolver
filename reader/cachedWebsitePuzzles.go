@@ -2,7 +2,6 @@ package reader
 
 import (
 	"io/ioutil"
-	"log"
 	"strconv"
 	"strings"
 )
@@ -39,7 +38,6 @@ func CachedWebsitePuzzles() ([]PuzzleDef, error) {
 		pds = append(pds, pd)
 		includedPuzzleIDs[puzzID] = struct{}{}
 	}
-	log.Printf("got puzzles: %+v\n", pds)
 
 	return pds, nil
 }

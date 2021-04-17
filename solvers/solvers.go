@@ -8,27 +8,6 @@ import (
 	"github.com/joshprzybyszewski/shingokisolver/puzzle"
 )
 
-type SolverType int
-
-const (
-	TargetSolverType SolverType = 4
-)
-
-func (st SolverType) String() string {
-	switch st {
-	case TargetSolverType:
-		return `TargetSolverType`
-	default:
-		return `Unknown Solver`
-	}
-}
-
-var (
-	AllSolvers = []SolverType{
-		TargetSolverType,
-	}
-)
-
 type Solver interface {
 	Solve() (SolvedResults, error)
 }
@@ -36,12 +15,12 @@ type Solver interface {
 func NewSolver(
 	size int,
 	nl []model.NodeLocation,
-	st SolverType,
 ) Solver {
 	if len(nl) == 0 {
 		panic(`cannot solve a puzzle with no nodes!`)
 	}
-	return newWrapper(newSolver(size, nl, st))
+
+	return newTargetSolver(size, nl)
 }
 
 type SolvedResults struct {
