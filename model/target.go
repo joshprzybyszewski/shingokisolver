@@ -13,7 +13,7 @@ type Target struct {
 
 func GetNextTarget(
 	curTarget *Target,
-	nodes map[NodeCoord]Node,
+	nodes []Node,
 	getOptions func(Node) []TwoArms,
 ) (Target, bool, error) {
 	seenNodes := make(map[NodeCoord]struct{}, len(nodes))
@@ -21,11 +21,11 @@ func GetNextTarget(
 		seenNodes[t.Node.Coord()] = struct{}{}
 	}
 
-	bestCoord := InvalidNodeCoord
+	var bestNode Node
 	var bestOptions []TwoArms
 
-	for nc, n := range nodes {
-		if _, ok := seenNodes[nc]; ok {
+	for _, n := range nodes {
+		if _, ok := seenNodes[n.Coord()]; ok {
 			continue
 		}
 		options := getOptions(n)
@@ -35,18 +35,18 @@ func GetNextTarget(
 		}
 
 		if len(options) < len(bestOptions) || bestOptions == nil {
-			bestCoord = nc
+			bestNode = n
 			bestOptions = options
 		}
 	}
 
-	if bestCoord == InvalidNodeCoord {
+	if bestOptions == nil {
 		// all of the nodes have been satisfied.
 		return Target{}, false, nil
 	}
 
 	return Target{
-		Node:    nodes[bestCoord],
+		Node:    bestNode,
 		Options: bestOptions,
 		Parent:  curTarget,
 	}, true, nil

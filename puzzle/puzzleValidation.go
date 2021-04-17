@@ -20,9 +20,9 @@ func (p *Puzzle) GetState(
 	}
 
 	if coord == model.InvalidNodeCoord {
-		for nc := range p.nodes {
+		for _, n := range p.nodes {
 			// just need a random starting node for the walker
-			coord = nc
+			coord = n.Coord()
 			break
 		}
 	}
@@ -33,8 +33,8 @@ func (p *Puzzle) GetState(
 		return model.Incomplete
 	}
 
-	for nc := range p.nodes {
-		if _, ok := seenNodes[nc]; !ok {
+	for _, n := range p.nodes {
+		if _, ok := seenNodes[n.Coord()]; !ok {
 			// node was not seen. therefore, we completed a loop that
 			// doesn't see all nodes!
 			return model.Violation
@@ -48,8 +48,8 @@ func (p *Puzzle) getStateOfNodes() model.State {
 	// it's cheaper for us to just iterate all of the nodes
 	// and check for their validity than it is to check every
 	// (r, c) or filtering out to only be in the range
-	for nc := range p.nodes {
-		switch s := p.GetNodeState(nc); s {
+	for _, n := range p.nodes {
+		switch s := p.GetNodeState(n.Coord()); s {
 		case model.Complete:
 
 		default:

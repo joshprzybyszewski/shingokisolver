@@ -13,12 +13,14 @@ func Run() {
 		// 5,
 		// 7,
 		// 10,
-		15,
-		20,
+		// 15,
+		// 20,
 		25,
 	} {
 		for _, d := range []difficulty{
-			easy, medium, hard,
+			// easy,
+			// medium,
+			hard,
 		} {
 			log.Printf("starting competition for %s %d edges", d, s)
 

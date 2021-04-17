@@ -30,7 +30,7 @@ func (p *Puzzle) string(
 			nc := model.NewCoordFromInts(r, c)
 			// write a node
 			sb.WriteString(`(`)
-			if n, ok := p.nodes[nc]; ok {
+			if n, ok := p.getNode(nc); ok {
 				if n.Type() == model.WhiteNode {
 					sb.WriteString(`w`)
 				} else {

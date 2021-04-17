@@ -9,7 +9,8 @@ func (p *Puzzle) GetUnknownEdge() (model.EdgePair, bool) {
 	// start from a point that is guaranteed to have an edge.
 	// so we choose a node!
 	var nc model.NodeCoord
-	for nc = range p.nodes {
+	for _, n := range p.nodes {
+		nc = n.Coord()
 		break
 	}
 

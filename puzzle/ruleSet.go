@@ -11,7 +11,7 @@ type ruleSet struct {
 
 func newRuleSet(
 	numEdges int,
-	nodes map[model.NodeCoord]model.Node,
+	nodes []model.Node,
 ) *ruleSet {
 	rs := &ruleSet{
 		rows: make([][]*rules, numEdges+1),
@@ -43,7 +43,8 @@ func newRuleSet(
 		}
 	}
 
-	for nc, n := range nodes {
+	for _, n := range nodes {
+		nc := n.Coord()
 		for _, dir := range model.AllCardinals {
 			rs.getRules(model.NewEdgePair(nc, dir)).addRulesForNode(n, dir)
 		}

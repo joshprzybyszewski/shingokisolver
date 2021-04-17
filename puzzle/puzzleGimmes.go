@@ -8,7 +8,8 @@ func (p *Puzzle) ClaimGimmes() model.State {
 
 	// first we're going to claim any of the gimmes from the "standard"
 	// node rules.
-	for nc := range p.nodes {
+	for _, n := range p.nodes {
+		nc := n.Coord()
 		for _, dir := range model.AllCardinals {
 			ep := model.NewEdgePair(nc, dir)
 
@@ -27,7 +28,8 @@ func (p *Puzzle) ClaimGimmes() model.State {
 
 	// at this point, let's double check the edges surrounding the nodes
 	// so that they can catch the extended rules that now apply to them.
-	for nc := range p.nodes {
+	for _, n := range p.nodes {
+		nc := n.Coord()
 		for _, dir := range model.AllCardinals {
 			ep := model.NewEdgePair(nc, dir)
 

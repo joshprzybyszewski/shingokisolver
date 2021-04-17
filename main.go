@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"runtime/pprof"
+	"strings"
 	"time"
 
 	"github.com/joshprzybyszewski/shingokisolver/compete"
@@ -47,7 +48,11 @@ func main() {
 	t0 := time.Now()
 
 	for _, pd := range reader.GetAllPuzzles() {
-		runSolver(pd)
+		if !strings.Contains(pd.String(), `5,434,778`) {
+			continue
+		}
+		go runSolver(pd)
+		time.Sleep(30 * time.Second)
 
 		if *addPprof && (time.Since(t0) > 10*time.Second ||
 			pd.NumEdges > 50) {

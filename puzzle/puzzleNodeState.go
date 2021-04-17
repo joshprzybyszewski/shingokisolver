@@ -9,7 +9,7 @@ func (p *Puzzle) GetNodeState(
 		return model.Incomplete
 	}
 
-	n, ok := p.nodes[nc]
+	n, ok := p.getNode(nc)
 	if !ok {
 		return model.Incomplete
 	}
