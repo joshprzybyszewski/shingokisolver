@@ -76,7 +76,7 @@ func (p *Puzzle) numNodes() int {
 	return int(p.numEdges) + 1
 }
 
-func (p *Puzzle) GetPossibleTwoArms(
+func (p *Puzzle) getPossibleTwoArms(
 	node model.Node,
 ) []model.TwoArms {
 
@@ -187,9 +187,7 @@ func (p *Puzzle) GetNextTarget(
 	t, ok, err := model.GetNextTarget(
 		cur,
 		p.nodes,
-		func(n model.Node) int {
-			return len(p.GetPossibleTwoArms(n))
-		},
+		p.getPossibleTwoArms,
 	)
 
 	if err != nil {

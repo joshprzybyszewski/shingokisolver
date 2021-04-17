@@ -5,7 +5,8 @@ import (
 )
 
 type Target struct {
-	Node Node
+	Node    Node
+	Options []TwoArms
 
 	Parent *Target
 }
@@ -13,7 +14,7 @@ type Target struct {
 func GetNextTarget(
 	curTarget *Target,
 	nodes map[NodeCoord]Node,
-	getNumOptions func(Node) int,
+	getOptions func(Node) []TwoArms,
 ) (Target, bool, error) {
 	seenNodes := make(map[NodeCoord]struct{}, len(nodes))
 	for t := curTarget; t != nil; t = t.Parent {
@@ -21,20 +22,21 @@ func GetNextTarget(
 	}
 
 	bestCoord := InvalidNodeCoord
-	bestVal := -1
+	var bestOptions []TwoArms
 
 	for nc, n := range nodes {
 		if _, ok := seenNodes[nc]; ok {
 			continue
 		}
-		nOptions := getNumOptions(n)
-		if nOptions == 0 {
+		options := getOptions(n)
+		if len(options) == 0 {
 			// this means that there's a node with literally zero options
 			return Target{}, false, errors.New(`invalid node!`)
 		}
 
-		if nOptions < bestVal || bestVal == -1 {
+		if len(options) < len(bestOptions) || bestOptions == nil {
 			bestCoord = nc
+			bestOptions = options
 		}
 	}
 
@@ -44,7 +46,8 @@ func GetNextTarget(
 	}
 
 	return Target{
-		Node:   nodes[bestCoord],
-		Parent: curTarget,
+		Node:    nodes[bestCoord],
+		Options: bestOptions,
+		Parent:  curTarget,
 	}, true, nil
 }

@@ -22,7 +22,7 @@ func (p *Puzzle) ClaimGimmes() model.State {
 
 	// now we're going to add all of the extended rules
 	for _, n := range p.nodes {
-		p.rules.addAllTwoArmRules(n, p.GetPossibleTwoArms(n))
+		p.rules.addAllTwoArmRules(n, p.getPossibleTwoArms(n))
 	}
 
 	// at this point, let's double check the edges surrounding the nodes

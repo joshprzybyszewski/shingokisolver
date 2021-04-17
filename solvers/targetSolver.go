@@ -81,13 +81,6 @@ func (d *targetSolver) getSolutionFromDepths(
 
 	// printPuzzleUpdate(`getSolutionFromDepths`, depth, puzz, targeting)
 
-	node, ok := puzz.GetNode(nc)
-	if !ok {
-		// this should be returning an error, but really it shouldn't be happening
-		panic(`what?`)
-		// return nil
-	}
-
 	switch puzz.GetNodeState(nc) {
 	case model.Violation:
 		return nil
@@ -122,7 +115,7 @@ func (d *targetSolver) getSolutionFromDepths(
 	// go out in all directions from the target
 	// if it's still a valid puzzle, keep going outward
 	// until we "complete" the node.
-	for _, option := range puzz.GetPossibleTwoArms(node) {
+	for _, option := range targeting.Options {
 		// then, once we find a completion path, add it to the returned slice
 		p := d.buildAllTwoArmsForTraversal(
 			depth,
