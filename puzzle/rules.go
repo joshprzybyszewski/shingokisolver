@@ -85,10 +85,9 @@ func (r *rules) getEdgeState(ge model.GetEdger) model.EdgeState {
 				return model.EdgeErrored
 			}
 			es = newES
-		case model.EdgeOutOfBounds, model.EdgeUnknown:
+		case model.EdgeUnknown:
 			// ok
 		default:
-			// TODO case model.EdgeOutOfBounds is actually a dev error!
 			// unsupported response
 			return model.EdgeErrored
 		}
