@@ -30,11 +30,10 @@ func NewPuzzle(
 	}
 
 	puzz := &Puzzle{
-		numEdges:      uint8(numEdges),
-		nodes:         nodes,
-		twoArmOptions: make(map[model.NodeCoord][]model.TwoArms, len(nodes)),
-		edges:         newEdgesStates(numEdges),
-		rules:         newRuleSet(numEdges, nodes),
+		numEdges: uint8(numEdges),
+		nodes:    nodes,
+		edges:    newEdgesStates(numEdges),
+		rules:    newRuleSet(numEdges, nodes),
 	}
 
 	puzz.rq = newRulesQueue(puzz.edges, puzz, puzz.NumEdges())
@@ -80,10 +79,11 @@ func (p *Puzzle) getPossibleTwoArms(
 	node model.Node,
 ) []model.TwoArms {
 
-	options, ok := p.twoArmOptions[node.Coord()]
-	if !ok {
+	if p.twoArmOptions == nil {
 		return p.getTwoArmsForNode(node)
 	}
+
+	options := p.twoArmOptions[node.Coord()]
 	filteredOptions := make([]model.TwoArms, 0, len(options))
 
 	for _, o := range options {
@@ -96,6 +96,7 @@ func (p *Puzzle) getPossibleTwoArms(
 }
 
 func (p *Puzzle) populateTwoArmsCache() {
+	p.twoArmOptions = make(map[model.NodeCoord][]model.TwoArms, len(p.nodes))
 	for _, node := range p.nodes {
 		p.twoArmOptions[node.Coord()] = p.getTwoArmsForNode(node)
 	}

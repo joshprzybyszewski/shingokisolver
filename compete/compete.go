@@ -10,7 +10,11 @@ import (
 
 func Run() {
 	for _, s := range []int{
-		// 5, 7, 10, 15, 20,
+		// 5,
+		// 7,
+		// 10,
+		15,
+		20,
 		25,
 	} {
 		for _, d := range []difficulty{
