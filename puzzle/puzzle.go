@@ -78,15 +78,70 @@ func (p *Puzzle) GetPossibleTwoArms(
 	options := model.BuildTwoArmOptions(node, p.NumEdges())
 	filteredOptions := make([]model.TwoArms, 0, len(options))
 
-	nc := node.Coord()
 	for _, o := range options {
-		if p.edges.AnyAvoided(nc, o.One) || p.edges.AnyAvoided(nc, o.Two) {
+		if !p.isTwoArmsPossible(node, o) {
 			continue
 		}
 		filteredOptions = append(filteredOptions, o)
 	}
 
 	return filteredOptions
+}
+
+func (p *Puzzle) isTwoArmsPossible(
+	node model.Node,
+	ta model.TwoArms,
+) bool {
+
+	nc := node.Coord()
+	if p.edges.AnyAvoided(nc, ta.One) || p.edges.AnyAvoided(nc, ta.Two) {
+		return false
+	}
+
+	a1StraightLineVal := ta.One.Len
+	a2StraightLineVal := ta.Two.Len
+	if node.Type() == model.WhiteNode {
+		a1StraightLineVal = ta.One.Len + ta.Two.Len
+		a2StraightLineVal = ta.One.Len + ta.Two.Len
+	}
+
+	for i, a1 := 1, nc; i < int(ta.One.Len); i++ {
+		a1 = a1.Translate(ta.One.Heading)
+		otherNode, ok := p.nodes[a1]
+		if !ok {
+			continue
+		}
+		if otherNode.Type() == model.BlackNode {
+			// this arm would pass through this node in a straight line
+			// that makes this arm impossible.
+			return false
+		}
+		if otherNode.Value() != a1StraightLineVal {
+			// this arm would pass through the other node
+			// in a straight line, and the value would not be tenable
+			return false
+		}
+	}
+
+	for i, a2 := 1, nc; i < int(ta.Two.Len); i++ {
+		a2 = a2.Translate(ta.Two.Heading)
+		otherNode, ok := p.nodes[a2]
+		if !ok {
+			continue
+		}
+		if otherNode.Type() == model.BlackNode {
+			// this arm would pass through this node in a straight line
+			// that makes this arm impossible.
+			return false
+		}
+		if otherNode.Value() != a2StraightLineVal {
+			// this arm would pass through the other node
+			// in a straight line, and the value would not be tenable
+			return false
+		}
+	}
+
+	return true
 }
 
 func (p *Puzzle) GetNextTarget(
