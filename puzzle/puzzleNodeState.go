@@ -35,17 +35,16 @@ func (p *Puzzle) GetSumOutgoingStraightLines(
 
 	for _, dir := range model.AllCardinals {
 		c := coord
+
 		ep := model.NewEdgePair(c, dir)
-		for p.edges.GetEdge(ep) == model.EdgeExists {
+		for p.edges.IsEdge(ep) {
 			total++
 			c = c.Translate(dir)
 			ep = model.NewEdgePair(c, dir)
 		}
-		if c != coord {
-			switch p.edges.GetEdge(ep) {
-			case model.EdgeAvoided, model.EdgeOutOfBounds:
-				numAvoids++
-			}
+
+		if c != coord && p.edges.IsAvoided(ep) {
+			numAvoids++
 		}
 	}
 

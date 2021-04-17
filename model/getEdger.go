@@ -1,9 +1,9 @@
 package model
 
 type GetEdger interface {
-	// TODO add nuanced methods instead
-	// like IsEdge, IsAvoided, IsDefined
 	GetEdge(EdgePair) EdgeState
+	IsEdge(EdgePair) bool
+	IsAvoided(EdgePair) bool
 
 	AllExist(NodeCoord, Arm) bool
 	Any(NodeCoord, Arm) (bool, bool)

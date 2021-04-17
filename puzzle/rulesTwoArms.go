@@ -12,6 +12,9 @@ func (rs *ruleSet) addAllTwoArmRules(
 
 	// TODO consider ways that we can make this set of rules
 	// faster/smarter/better/stronger
+	// I think we can by dynamically assessin the the "current option" o
+	// is still viable or not. If not, then skip the
+	// corresponding rule for the node.
 	options := model.BuildTwoArmOptions(node, numEdges)
 
 	for _, o := range options {
@@ -123,18 +126,14 @@ func getRuleForOppositeArm(
 			return model.EdgeUnknown
 		}
 
-		switch s := ge.GetEdge(needToAvoid); s {
-		case model.EdgeAvoided, model.EdgeOutOfBounds:
-			// the one we need to avoid _is_ in fact avoided
-		default:
+		if !ge.IsAvoided(needToAvoid) {
 			return model.EdgeUnknown
 		}
 
 		// at this point, all of the opposite arm exists, with the edge at the
 		// end being avoided.
 
-		switch s := ge.GetEdge(needsToNotExist); s {
-		case model.EdgeExists:
+		if ge.IsEdge(needsToNotExist) {
 			if firstNode {
 				// this means that the first edge (closest) to the defined
 				// node should be avoided because the whole arm cannot be

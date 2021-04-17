@@ -28,12 +28,9 @@ func (p *Puzzle) GetState(
 	}
 
 	w := newWalker(p.edges, coord)
-	seenNodes, walkerState := w.walk()
-	switch walkerState {
-	case model.Complete:
-		// keep going through checks...
-	default:
-		return walkerState
+	seenNodes, isLoop := w.walk()
+	if !isLoop {
+		return model.Incomplete
 	}
 
 	for nc := range p.nodes {

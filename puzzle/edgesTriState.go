@@ -222,6 +222,41 @@ func (ets *edgesTriState) Any(
 	}
 }
 
+func (ets *edgesTriState) IsEdge(ep model.EdgePair) bool {
+	if !ets.isInBounds(ep) {
+		return false
+	}
+
+	switch ep.Cardinal {
+	case model.HeadRight:
+		return (ets.rows[ep.Row] & masks[ep.Col]) != 0
+	case model.HeadDown:
+		return (ets.cols[ep.Col] & masks[ep.Row]) != 0
+	}
+
+	// unexpected!
+	return false
+}
+
+func (ets *edgesTriState) IsAvoided(ep model.EdgePair) bool {
+	if !ets.isInBounds(ep) {
+		return true
+	}
+
+	switch ep.Cardinal {
+	case model.HeadRight:
+		return (ets.avoidRows[ep.Row] & masks[ep.Col]) != 0
+	case model.HeadDown:
+		return (ets.avoidCols[ep.Col] & masks[ep.Row]) != 0
+	}
+
+	return false
+}
+
+func (ets *edgesTriState) IsDefined(ep model.EdgePair) bool {
+	return ets.IsAvoided(ep) || ets.IsEdge(ep)
+}
+
 func (ets *edgesTriState) GetEdge(
 	ep model.EdgePair,
 ) model.EdgeState {

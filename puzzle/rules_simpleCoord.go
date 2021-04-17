@@ -27,12 +27,17 @@ func getStandardEvalFor(otherInputs []model.EdgePair) func(ge model.GetEdger) mo
 		numExisting := 0
 
 		for _, otherEP := range otherInputs {
-			switch s := ge.GetEdge(otherEP); s {
-			case model.EdgeExists:
+			if ge.IsEdge(otherEP) {
 				numExisting++
-			case model.EdgeAvoided, model.EdgeOutOfBounds:
+			} else if ge.IsAvoided(otherEP) {
 				numNonExisting++
 			}
+			// switch s := ge.GetEdge(otherEP); s {
+			// case model.EdgeExists:
+			// 	numExisting++
+			// case model.EdgeAvoided, model.EdgeOutOfBounds:
+			// 	numNonExisting++
+			// }
 		}
 
 		switch {

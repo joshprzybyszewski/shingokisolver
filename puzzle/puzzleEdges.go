@@ -5,24 +5,33 @@ import (
 )
 
 func (p *Puzzle) GetUnknownEdge() (model.EdgePair, bool) {
-	// TODO find a loose end instead
-	// we can do that by choosing a random node, then walking to the end
-	// of it's path.
-	for r := 0; r <= p.NumEdges(); r++ {
-		for c := 0; c <= p.NumEdges(); c++ {
-			nc := model.NewCoordFromInts(r, c)
 
-			ep := model.NewEdgePair(nc, model.HeadRight)
-			if p.GetEdgeState(ep) == model.EdgeUnknown {
-				return ep, true
-			}
+	// start from a point that is guaranteed to have an edge.
+	// so we choose a node!
+	var nc model.NodeCoord
+	for nc = range p.nodes {
+		break
+	}
 
-			ep = model.NewEdgePair(nc, model.HeadDown)
-			if p.GetEdgeState(ep) == model.EdgeUnknown {
-				return ep, true
-			}
+	// now let's walk to the end of the line
+	w := newWalker(p.edges, nc)
+	nc, isLoop := w.walkToTheEndOfThePath()
+	if isLoop {
+		// This is an error case. We made a loop, but we weren't expecting to.
+		return model.EdgePair{}, false
+	}
+
+	// now from this end of the path, choose a random edge
+	// off of it that is unknown.
+	for dir := range model.AllCardinalsMap {
+		ep := model.NewEdgePair(nc, dir)
+		if !p.edges.IsDefined(ep) {
+			return ep, true
 		}
 	}
+
+	// we walked to the end of the path and did not find an unknown edge.
+	// this is an error case.
 	return model.EdgePair{}, false
 }
 
@@ -41,11 +50,7 @@ func (p *Puzzle) GetEdgeState(
 }
 
 func (p *Puzzle) isEdgeDefined(ep model.EdgePair) bool {
-	switch p.GetEdgeState(ep) {
-	case model.EdgeAvoided, model.EdgeExists:
-		return true
-	}
-	return false
+	return p.edges.IsDefined(ep)
 }
 
 func (p *Puzzle) AddEdge(

@@ -77,8 +77,11 @@ func runSolver(
 	// 	}
 	// }()
 	if !strings.Contains(pd.String(), `6,483,955`) {
-		return
+		// return
 	}
+	// if strings.Contains(pd.String(), `2,589,287`) || pd.NumEdges > 20 {
+	// 	return
+	// }
 
 	if st != solvers.TargetSolverType {
 		return

@@ -45,10 +45,6 @@ func (rq *rulesQueue) push(
 			continue
 		}
 		rq.toCheck[other] = struct{}{}
-		// if other.IsIn(rq.toCheck...) {
-		// 	continue
-		// }
-		// rq.toCheck = append(rq.toCheck, other)
 	}
 }
 
