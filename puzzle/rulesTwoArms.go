@@ -160,7 +160,7 @@ func getRuleForOppositeArm(
 			// for black nodes, we need to check the arm that could be on the opposite side
 			oppArm := myArm
 			oppArm.Heading = myArm.Heading.Opposite()
-			_, anyAvoided = ge.Any(node.Coord(), oppArm)
+			anyAvoided = ge.AnyAvoided(node.Coord(), oppArm)
 			if !anyAvoided {
 				// we need to know that at _least_ one of the opposite arms is avoided
 				// otherwise, we can't claim to know that this one works
