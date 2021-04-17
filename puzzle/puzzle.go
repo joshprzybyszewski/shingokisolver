@@ -6,7 +6,9 @@ import (
 
 type Puzzle struct {
 	numEdges uint8
-	nodes    map[model.NodeCoord]model.Node
+
+	nodes         map[model.NodeCoord]model.Node
+	twoArmOptions map[model.NodeCoord][]model.TwoArms
 
 	edges *edgesTriState
 	rules *ruleSet
@@ -28,10 +30,11 @@ func NewPuzzle(
 	}
 
 	puzz := &Puzzle{
-		numEdges: uint8(numEdges),
-		nodes:    nodes,
-		edges:    newEdgesStates(numEdges),
-		rules:    newRuleSet(numEdges, nodes),
+		numEdges:      uint8(numEdges),
+		nodes:         nodes,
+		twoArmOptions: make(map[model.NodeCoord][]model.TwoArms, len(nodes)),
+		edges:         newEdgesStates(numEdges),
+		rules:         newRuleSet(numEdges, nodes),
 	}
 
 	puzz.rq = newRulesQueue(puzz.edges, puzz, puzz.NumEdges())
@@ -48,10 +51,11 @@ func (p *Puzzle) DeepCopy() *Puzzle {
 	// ever be read from, never written to :#
 
 	dc := &Puzzle{
-		numEdges: p.numEdges,
-		nodes:    p.nodes,
-		edges:    p.edges.Copy(),
-		rules:    p.rules,
+		numEdges:      p.numEdges,
+		nodes:         p.nodes,
+		twoArmOptions: p.twoArmOptions,
+		edges:         p.edges.Copy(),
+		rules:         p.rules,
 	}
 
 	dc.rq = newRulesQueue(dc.edges, dc, dc.NumEdges())
@@ -75,11 +79,37 @@ func (p *Puzzle) numNodes() int {
 func (p *Puzzle) GetPossibleTwoArms(
 	node model.Node,
 ) []model.TwoArms {
+
+	options, ok := p.twoArmOptions[node.Coord()]
+	if !ok {
+		return p.getTwoArmsForNode(node)
+	}
+	filteredOptions := make([]model.TwoArms, 0, len(options))
+
+	for _, o := range options {
+		if isTwoArmsPossible(node, o, p.edges) {
+			filteredOptions = append(filteredOptions, o)
+		}
+	}
+
+	return filteredOptions
+}
+
+func (p *Puzzle) populateTwoArmsCache() {
+	for _, node := range p.nodes {
+		p.twoArmOptions[node.Coord()] = p.getTwoArmsForNode(node)
+	}
+}
+
+func (p *Puzzle) getTwoArmsForNode(node model.Node) []model.TwoArms {
 	options := model.BuildTwoArmOptions(node, p.NumEdges())
 	filteredOptions := make([]model.TwoArms, 0, len(options))
 
 	for _, o := range options {
-		if !p.isTwoArmsPossible(node, o) {
+		if !isTwoArmsPossible(node, o, p.edges) {
+			continue
+		}
+		if p.isInTheWayOfOtherNodes(node, o) {
 			continue
 		}
 		filteredOptions = append(filteredOptions, o)
@@ -88,15 +118,22 @@ func (p *Puzzle) GetPossibleTwoArms(
 	return filteredOptions
 }
 
-func (p *Puzzle) isTwoArmsPossible(
+func isTwoArmsPossible(
+	node model.Node,
+	ta model.TwoArms,
+	ge model.GetEdger,
+) bool {
+
+	nc := node.Coord()
+	return !ge.AnyAvoided(nc, ta.One) && !ge.AnyAvoided(nc, ta.Two)
+}
+
+func (p *Puzzle) isInTheWayOfOtherNodes(
 	node model.Node,
 	ta model.TwoArms,
 ) bool {
 
 	nc := node.Coord()
-	if p.edges.AnyAvoided(nc, ta.One) || p.edges.AnyAvoided(nc, ta.Two) {
-		return false
-	}
 
 	a1StraightLineVal := ta.One.Len
 	a2StraightLineVal := ta.Two.Len
@@ -114,12 +151,12 @@ func (p *Puzzle) isTwoArmsPossible(
 		if otherNode.Type() == model.BlackNode {
 			// this arm would pass through this node in a straight line
 			// that makes this arm impossible.
-			return false
+			return true
 		}
 		if otherNode.Value() != a1StraightLineVal {
 			// this arm would pass through the other node
 			// in a straight line, and the value would not be tenable
-			return false
+			return true
 		}
 	}
 
@@ -132,16 +169,16 @@ func (p *Puzzle) isTwoArmsPossible(
 		if otherNode.Type() == model.BlackNode {
 			// this arm would pass through this node in a straight line
 			// that makes this arm impossible.
-			return false
+			return true
 		}
 		if otherNode.Value() != a2StraightLineVal {
 			// this arm would pass through the other node
 			// in a straight line, and the value would not be tenable
-			return false
+			return true
 		}
 	}
 
-	return true
+	return false
 }
 
 func (p *Puzzle) GetNextTarget(
