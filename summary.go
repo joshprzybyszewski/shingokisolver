@@ -69,7 +69,7 @@ func buildLatestResultsOutput(
 		if allSummaries[i].NumEdges != allSummaries[j].NumEdges {
 			return allSummaries[i].NumEdges < allSummaries[j].NumEdges
 		}
-		return strings.Compare(allSummaries[i].Name, allSummaries[j].Name) < 0
+		return allSummaries[i].Duration > allSummaries[j].Duration
 	})
 
 	sb.WriteString(resultsStartString)
@@ -91,7 +91,20 @@ func buildLatestResultsOutput(
 </tr>
 `)
 	var unsolvedCell, solutionCell string
+
+	size := 0
+	nWritten := 0
+
 	for _, s := range allSummaries {
+		if size != s.NumEdges {
+			size = s.NumEdges
+			nWritten = 0
+		} else if nWritten > 10 {
+			// only write the top 10 longest per "num edges"
+			continue
+		} else {
+			nWritten++
+		}
 		unsolvedCell = fmt.Sprintf(
 			"<details><summary>Puzzle</summary>\n\n```\n%s\n```\n</details>\n",
 			s.Unsolved,
