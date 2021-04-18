@@ -1,6 +1,7 @@
 package compete
 
 import (
+	"fmt"
 	"log"
 	"runtime"
 	"time"
@@ -35,8 +36,8 @@ func Run() {
 	// debug.SetGCPercent(-1)
 
 	for _, s := range []int{
-		// 5,
-		// 7,
+		5,
+		7,
 		// 10,
 		// 15,
 		// 20,
@@ -65,7 +66,10 @@ func getAndSubmitPuzzle(
 	size int,
 	diff difficulty,
 ) {
-	initLogs()
+	err := initLogs(fmt.Sprintf("%s_%dx%d/", diff, size, size))
+	if err != nil {
+		panic(err)
+	}
 	defer flushLogs()
 
 	wp, err := getPuzzle(

@@ -14,7 +14,7 @@ func submitAnswer(
 ) error {
 
 	defer func() {
-		writeToFile(`./temp/answer.txt`, []byte(res.Puzzle.Solution()))
+		writeToFile(`answer.txt`, []byte(res.Puzzle.Solution()))
 	}()
 
 	postURL, header, data := getPostSolutionData(wp, res)
@@ -23,9 +23,9 @@ func submitAnswer(
 	if err != nil {
 		return err
 	}
-	writeToFile(`./temp/postAnswer.html`, resp)
-	writeToFile(`./temp/postRequestHeaders.txt`, []byte(fmt.Sprintf("%+v", header)))
-	writeToFile(`./temp/postAnswerHeaders.txt`, []byte(fmt.Sprintf("%+v", respHeaders)))
+	writeToFile(`postAnswer.html`, resp)
+	writeToFile(`postRequestHeaders.txt`, []byte(fmt.Sprintf("%+v", header)))
+	writeToFile(`postAnswerHeaders.txt`, []byte(fmt.Sprintf("%+v", respHeaders)))
 
 	doc, err := goquery.NewDocumentFromReader(bytes.NewReader(resp))
 	if err != nil {
@@ -40,9 +40,9 @@ func submitAnswer(
 	if err != nil {
 		return err
 	}
-	writeToFile(`./temp/postHallOfFame.html`, resp)
-	writeToFile(`./temp/postHallOfFameRequestHeaders.txt`, []byte(fmt.Sprintf("%+v", header)))
-	writeToFile(`./temp/postHallOfFameResponseHeaders.txt`, []byte(fmt.Sprintf("%+v", respHeaders)))
+	writeToFile(`postHallOfFame.html`, resp)
+	writeToFile(`postHallOfFameRequestHeaders.txt`, []byte(fmt.Sprintf("%+v", header)))
+	writeToFile(`postHallOfFameResponseHeaders.txt`, []byte(fmt.Sprintf("%+v", respHeaders)))
 
 	return nil
 }

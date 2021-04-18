@@ -49,8 +49,8 @@ func getPuzzle(
 	if err != nil {
 		return websitePuzzle{}, err
 	}
-	writeToFile(`./temp/getPuzzleResp.html`, resp)
-	writeToFile(`./temp/getPuzzleRespHeaders.txt`, []byte(fmt.Sprintf("%+v", respHeaders)))
+	writeToFile(`getPuzzleResp.html`, resp)
+	writeToFile(`getPuzzleRespHeaders.txt`, []byte(fmt.Sprintf("%+v", respHeaders)))
 
 	doc, err := goquery.NewDocumentFromReader(bytes.NewReader(resp))
 	if err != nil {

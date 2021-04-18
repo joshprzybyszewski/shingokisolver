@@ -20,6 +20,7 @@ results:
 
 .PHONY: compete
 compete:
+	rm -rf temp/*
 	go run -tags="secretSauce" . -competitive
 
 .PHONY: test
