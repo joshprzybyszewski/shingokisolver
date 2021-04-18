@@ -8,15 +8,19 @@ profile:
 
 .PHONY: debug
 debug:
-	go run main.go -includeProcessLogs
+	go run . -includeProcessLogs
 
 .PHONY: run
 run:
-	go run main.go 
+	go run . 
+
+.PHONY: results
+results:
+	go run . -results
 
 .PHONY: compete
 compete:
-	go run -tags="secretSauce" main.go -competitive
+	go run -tags="secretSauce" . -competitive
 
 .PHONY: test
 test:
