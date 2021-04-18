@@ -1,6 +1,8 @@
 package reader
 
-import "log"
+import (
+	"log"
+)
 
 func GetAllPuzzles() []PuzzleDef {
 	allPuzzles, err := CachedWebsitePuzzles()

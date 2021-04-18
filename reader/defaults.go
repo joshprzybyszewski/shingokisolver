@@ -4,7 +4,7 @@ import "github.com/joshprzybyszewski/shingokisolver/model"
 
 func DefaultPuzzles() []PuzzleDef {
 	pds := []PuzzleDef{{
-		Description: `contrived single node example`,
+		Description: `Manual 2x2 (contrived example)`,
 		NumEdges:    2,
 		Nodes: []model.NodeLocation{{
 			Row:     1,
@@ -13,7 +13,7 @@ func DefaultPuzzles() []PuzzleDef {
 			Value:   2,
 		}},
 	}, {
-		Description: `Easy 5x5`,
+		Description: `Manual Easy`,
 		NumEdges:    5,
 		Nodes: []model.NodeLocation{{
 			Row:     3,
@@ -47,7 +47,7 @@ func DefaultPuzzles() []PuzzleDef {
 		desc string
 		puzz string
 	}{{
-		desc: `easy 7x7`,
+		desc: `Manual Easy 7x7`,
 		puzz: `.......b11
 w2..b4w3...
 ..w3.b2...
@@ -57,7 +57,7 @@ w2..b4w3...
 ...w4.b5..
 b10.w6.....`,
 	}, {
-		desc: `normal 7x7`,
+		desc: `Manual normal 7x7`,
 		puzz: `........
 .b2.w3....
 .b6....w2.
@@ -67,7 +67,7 @@ w4w2...w4.b2
 ........
 ..b4....b4`,
 	}, {
-		desc: `second normal 7x7`,
+		desc: `Manual second normal 7x7`,
 		puzz: `.w3......
 ...b2..w2w3
 ....b3...
@@ -77,7 +77,7 @@ b6.b3w2....
 ....b3...
 ..b3..b5..`,
 	}, {
-		desc: `hard 7x7`,
+		desc: `Manual hard 7x7`,
 		puzz: `b8.....b2.
 .w6b6..w2..
 ...b3.b5..
@@ -87,7 +87,7 @@ b6.b3w2....
 ........
 .......b3`,
 	}, {
-		desc: `normal 10x10`,
+		desc: `Manual normal 10x10`,
 		puzz: `.b2..b2.....b4
 b2..b2......b2
 .b2.b2b2b3....b2
@@ -100,7 +100,7 @@ b2.b3b2.....b2.
 .......b3b2..
 .b3...b4.b2..b3`,
 	}, {
-		desc: `easy 15x15`,
+		desc: `Manual easy 15x15`,
 		puzz: `.......b3..w2b3b3..b6
 ..b4b9..w3.......w4.
 ....b2..b4........

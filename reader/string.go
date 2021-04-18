@@ -22,7 +22,7 @@ type PuzzleDef struct {
 }
 
 func (pd PuzzleDef) String() string {
-	return fmt.Sprintf("%s with %d edges", pd.Description, pd.NumEdges)
+	return fmt.Sprintf("%dx%d (%s)", pd.NumEdges, pd.NumEdges, pd.Description)
 }
 
 func FromString(input string) (PuzzleDef, error) {

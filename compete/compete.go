@@ -2,6 +2,7 @@ package compete
 
 import (
 	"log"
+	"runtime"
 	"time"
 
 	"github.com/joshprzybyszewski/shingokisolver/puzzle"
@@ -9,6 +10,11 @@ import (
 )
 
 func Run() {
+	// TODO figure out GC
+	// disable garbage collection entirely.
+	// dangerous, I know.
+	// debug.SetGCPercent(-1)
+
 	for _, s := range []int{
 		// 5,
 		// 7,
@@ -29,6 +35,9 @@ func Run() {
 			// wait 10 seconds between runs so we don't overwhelm
 			// their servers or our machine accidentally:#
 			time.Sleep(10 * time.Second)
+
+			// collect garbage now, which should be that entire puzzle that we solved:#
+			runtime.GC()
 		}
 	}
 }

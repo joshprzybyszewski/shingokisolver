@@ -2,9 +2,19 @@
 
 ![Travis challenged me](https://user-images.githubusercontent.com/23204038/112846696-f1f1fb00-906b-11eb-9693-3130ce4e78d7.png)
 
-|Name|Duration|Allocations|Puzzle|Solution|
-|-|-|-|-|-|
-|2x2 (Manual 2x2 (contrived example))|107.78µs|0|<details><summary>Solution</summary>
+</startResults>
+<tr>
+	<th>Name</th>
+	<th>Duration</th>
+	<th>Allocations</th>
+	<th>Puzzle</th>
+	<th>Solution</th>
+</tr>
+<tr>
+	<td>2x2 (Manual 2x2 (contrived example))</td>
+	<td>92.39µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
 
 ```
 
@@ -17,8 +27,8 @@
 
 ```
 </details>
-
-|<details><summary>Solution</summary>
+</td>
+	<td><details><summary>Solution</summary>
 
 ```
 
@@ -31,111 +41,5775 @@
 
 ```
 </details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (Manual Easy)</td>
+	<td>437.533µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
 
-|
-|5x5 (Manual Easy)|341.981µs|0|TODO|TODO|
-|5x5 (PuzzleID: 1,125,014)|218.166µs|0|TODO|TODO|
-|5x5 (PuzzleID: 1,208,094)|204.141µs|0|TODO|TODO|
-|5x5 (PuzzleID: 1,239,516)|243.709µs|0|TODO|TODO|
-|5x5 (PuzzleID: 1,413,095)|221.811µs|0|TODO|TODO|
-|5x5 (PuzzleID: 1,471,690)|262.405µs|0|TODO|TODO|
-|5x5 (PuzzleID: 1,492,616)|290.375µs|0|TODO|TODO|
-|5x5 (PuzzleID: 1,520,692)|190.907µs|0|TODO|TODO|
-|5x5 (PuzzleID: 1,678,415)|179.684µs|0|TODO|TODO|
-|5x5 (PuzzleID: 1,737,679)|272.597µs|0|TODO|TODO|
-|5x5 (PuzzleID: 1,802,467)|504.841µs|0|TODO|TODO|
-|5x5 (PuzzleID: 1,868,052)|276.706µs|0|TODO|TODO|
-|5x5 (PuzzleID: 1,929,002)|206.142µs|0|TODO|TODO|
-|5x5 (PuzzleID: 1,931,395)|320.719µs|0|TODO|TODO|
-|5x5 (PuzzleID: 1,952,465)|227.307µs|0|TODO|TODO|
-|5x5 (PuzzleID: 1,994,369)|275.602µs|0|TODO|TODO|
-|5x5 (PuzzleID: 161,408)|206.58µs|0|TODO|TODO|
-|5x5 (PuzzleID: 2,340,433)|253.416µs|0|TODO|TODO|
-|5x5 (PuzzleID: 2,414,694)|191.413µs|0|TODO|TODO|
-|5x5 (PuzzleID: 2,459,150)|266.678µs|0|TODO|TODO|
-|5x5 (PuzzleID: 2,771,023)|259.448µs|0|TODO|TODO|
-|5x5 (PuzzleID: 2,772,537)|295.928µs|0|TODO|TODO|
-|5x5 (PuzzleID: 2,802,541)|202.294µs|0|TODO|TODO|
-|5x5 (PuzzleID: 3,048,908)|246.803µs|0|TODO|TODO|
-|5x5 (PuzzleID: 3,136,306)|277.56µs|0|TODO|TODO|
-|5x5 (PuzzleID: 3,253,085)|246.658µs|0|TODO|TODO|
-|5x5 (PuzzleID: 3,289,102)|214.961µs|0|TODO|TODO|
-|5x5 (PuzzleID: 3,700,670)|200.157µs|0|TODO|TODO|
-|5x5 (PuzzleID: 3,799,599)|409.589µs|0|TODO|TODO|
-|5x5 (PuzzleID: 4,033,904)|219.998µs|0|TODO|TODO|
-|5x5 (PuzzleID: 4,070,768)|208.669µs|0|TODO|TODO|
-|5x5 (PuzzleID: 4,148,488)|282.465µs|0|TODO|TODO|
-|5x5 (PuzzleID: 4,619,472)|243.085µs|0|TODO|TODO|
-|5x5 (PuzzleID: 4,645,634)|197.462µs|0|TODO|TODO|
-|5x5 (PuzzleID: 4,741,522)|322.602µs|0|TODO|TODO|
-|5x5 (PuzzleID: 432,119)|309.255µs|0|TODO|TODO|
-|5x5 (PuzzleID: 5,253,364)|289.299µs|0|TODO|TODO|
-|5x5 (PuzzleID: 5,313,969)|178.164µs|0|TODO|TODO|
-|5x5 (PuzzleID: 5,763,376)|373.113µs|0|TODO|TODO|
-|5x5 (PuzzleID: 5,911,022)|354.519µs|0|TODO|TODO|
-|5x5 (PuzzleID: 5,937,602)|306.07µs|0|TODO|TODO|
-|5x5 (PuzzleID: 530,864)|260.056µs|0|TODO|TODO|
-|5x5 (PuzzleID: 6,280,084)|199.172µs|0|TODO|TODO|
-|5x5 (PuzzleID: 6,431,411)|325.07µs|0|TODO|TODO|
-|5x5 (PuzzleID: 6,830,559)|256.858µs|0|TODO|TODO|
-|5x5 (PuzzleID: 610,131)|247.665µs|0|TODO|TODO|
-|5x5 (PuzzleID: 7,184,597)|348.934µs|0|TODO|TODO|
-|5x5 (PuzzleID: 7,793,947)|228.46µs|0|TODO|TODO|
-|5x5 (PuzzleID: 7,887,988)|261.65µs|0|TODO|TODO|
-|5x5 (PuzzleID: 7,928,469)|336.302µs|0|TODO|TODO|
-|5x5 (PuzzleID: 7,970,361)|234.908µs|0|TODO|TODO|
-|5x5 (PuzzleID: 8,277,486)|448.876µs|0|TODO|TODO|
-|5x5 (PuzzleID: 8,500,075)|237.123µs|0|TODO|TODO|
-|5x5 (PuzzleID: 8,967,122)|429.061µs|0|TODO|TODO|
-|5x5 (PuzzleID: 824,905)|514.241µs|0|TODO|TODO|
-|5x5 (PuzzleID: 9,536,268)|182.796µs|0|TODO|TODO|
-|5x5 (PuzzleID: 9,761,419)|257.802µs|0|TODO|TODO|
-|5x5 (PuzzleID: 975,117)|309.72µs|0|TODO|TODO|
-|5x5 (PuzzleID: 985,091)|443.153µs|0|TODO|TODO|
-|7x7 (Manual Easy 7x7)|1.092537ms|0|TODO|TODO|
-|7x7 (Manual hard 7x7)|2.738744ms|0|TODO|TODO|
-|7x7 (Manual normal 7x7)|912.139µs|0|TODO|TODO|
-|7x7 (Manual second normal 7x7)|1.437225ms|0|TODO|TODO|
-|7x7 (PuzzleID: 1,305,103)|671.242µs|0|TODO|TODO|
-|7x7 (PuzzleID: 1,401,786)|899.376µs|0|TODO|TODO|
-|7x7 (PuzzleID: 1,845,873)|1.047926ms|0|TODO|TODO|
-|7x7 (PuzzleID: 1,891,848)|1.097387ms|0|TODO|TODO|
-|7x7 (PuzzleID: 3,213,310)|597.904µs|0|TODO|TODO|
-|7x7 (PuzzleID: 5,197,088)|1.518785ms|0|TODO|TODO|
-|7x7 (PuzzleID: 6,483,955)|849.268µs|0|TODO|TODO|
-|7x7 (PuzzleID: 713,557)|978.412µs|0|TODO|TODO|
-|7x7 (PuzzleID: 8,156,383)|638.091µs|0|TODO|TODO|
-|7x7 (PuzzleID: 8,189,111)|1.510247ms|0|TODO|TODO|
-|7x7 (PuzzleID: 8,498,922)|1.371347ms|0|TODO|TODO|
-|10x10 (Manual normal 10x10)|1.877254ms|0|TODO|TODO|
-|10x10 (PuzzleID: 1,366,434)|10.413064ms|0|TODO|TODO|
-|10x10 (PuzzleID: 1,897,766)|17.195343ms|0|TODO|TODO|
-|10x10 (PuzzleID: 176,186)|7.792413ms|0|TODO|TODO|
-|10x10 (PuzzleID: 2,209,059)|1.605261ms|0|TODO|TODO|
-|10x10 (PuzzleID: 2,430,834)|2.026376ms|0|TODO|TODO|
-|10x10 (PuzzleID: 2,760,173)|4.480427ms|0|TODO|TODO|
-|10x10 (PuzzleID: 210,686)|11.341169ms|0|TODO|TODO|
-|10x10 (PuzzleID: 3,515,465)|3.398235ms|0|TODO|TODO|
-|10x10 (PuzzleID: 4,050,348)|2.65162ms|0|TODO|TODO|
-|10x10 (PuzzleID: 4,162,883)|10.950874ms|0|TODO|TODO|
-|10x10 (PuzzleID: 551,246)|7.444201ms|0|TODO|TODO|
-|10x10 (PuzzleID: 6,217,369)|23.283027ms|0|TODO|TODO|
-|10x10 (PuzzleID: 6,593,963)|43.972313ms|0|TODO|TODO|
-|10x10 (PuzzleID: 6,959,600)|2.537679ms|0|TODO|TODO|
-|10x10 (PuzzleID: 7,153,011)|4.275939ms|0|TODO|TODO|
-|10x10 (PuzzleID: 7,585,613)|17.509041ms|0|TODO|TODO|
-|10x10 (PuzzleID: 8,132,183)|1.936257ms|0|TODO|TODO|
-|10x10 (PuzzleID: 8,416,278)|11.058314ms|0|TODO|TODO|
-|10x10 (PuzzleID: 8,528,975)|2.009762ms|0|TODO|TODO|
-|15x15 (Manual easy 15x15)|18.912555ms|0|TODO|TODO|
-|15x15 (PuzzleID: 1,169,504)|511.55243ms|0|TODO|TODO|
-|15x15 (PuzzleID: 421,495)|23.967798ms|0|TODO|TODO|
-|15x15 (PuzzleID: 5,395,284)|174.4311ms|0|TODO|TODO|
-|15x15 (PuzzleID: 6,688,261)|59.040566ms|0|TODO|TODO|
-|15x15 (PuzzleID: 608,117)|91.283085ms|0|TODO|TODO|
-|15x15 (PuzzleID: 7,510,233)|25.869975ms|0|TODO|TODO|
-|15x15 (PuzzleID: 8,867,306)|79.391155ms|0|TODO|TODO|
-|15x15 (PuzzleID: 875,381)|62.629448ms|0|TODO|TODO|
-|15x15 (PuzzleID: 9,157,787)|59.692566ms|0|TODO|TODO|
-|15x15 (PuzzleID: 9,183,977)|12.224367ms|0|TODO|TODO|
-|15x15 (PuzzleID: 9,337,598)|47.223671ms|0|TODO|TODO|
+```
+
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (b 4)   (   )   (   )   (w 5)
+                                                
+(w 5)   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (b 2)   (   )   (b 5)   (   )   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )   (   )---(   )---(   )---(   )
+  |       |       |                       |     
+(   )   (   )   (   )   (   )---(   )   (   )
+  |       |       |       |       |       |     
+(   )   (   )   (   )   (   )   (   )   (   )
+  |       |       |       |       |       |     
+(   )   (   )---(b 4)   (   )   (   )   (w 5)
+  |                       |       |       |     
+(w 5)   (   )---(   )   (   )   (   )   (   )
+  |       |       |       |       |       |     
+(   )---(b 2)   (   )---(b 5)   (   )---(   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 1,125,014)</td>
+	<td>257.614µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (b 2)   (b 2)   (   )
+                                                
+(   )   (   )   (b 2)   (   )   (   )   (w 3)
+                                                
+(   )   (   )   (   )   (   )   (b 3)   (   )
+                                                
+(   )   (   )   (w 2)   (   )   (   )   (   )
+                                                
+(   )   (b 3)   (   )   (   )   (   )   (   )
+                                                
+(   )   (w 5)   (   )   (   )   (   )   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )   (   )---(b 2)   (b 2)---(   )
+  |       |       |       |       |       |     
+(   )   (   )---(b 2)   (   )---(   )   (w 3)
+  |                                       |     
+(   )---(   )   (   )---(   )---(b 3)   (   )
+          |       |               |       |     
+(   )   (   )   (w 2)   (   )   (   )---(   )
+          |       |                             
+(   )---(b 3)   (   )---(   )---(   )---(   )
+  |                                       |     
+(   )---(w 5)---(   )---(   )---(   )---(   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 1,208,094)</td>
+	<td>271.854µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (b 4)   (   )   (b 3)
+                                                
+(w 3)   (   )   (b 3)   (   )   (   )   (   )
+                                                
+(b 4)   (   )   (b 2)   (   )   (   )   (w 3)
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (w 5)   (   )   (   )   (   )   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )   (   )---(   )---(   )---(   )
+  |       |       |                       |     
+(   )   (   )   (   )   (b 4)---(   )---(b 3)
+  |       |       |       |                     
+(w 3)   (   )---(b 3)   (   )   (   )---(   )
+  |                       |       |       |     
+(b 4)---(   )   (b 2)---(   )   (   )   (w 3)
+          |       |               |       |     
+(   )---(   )   (   )---(   )---(   )   (   )
+  |                                       |     
+(   )---(w 5)---(   )---(   )---(   )---(   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 1,239,516)</td>
+	<td>308.46µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (w 5)   (   )   (   )   (   )
+                                                
+(   )   (   )   (w 2)   (   )   (b 2)   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (b 2)   (b 3)   (   )   (   )
+                                                
+(   )   (   )   (   )   (b 2)   (b 2)   (   )
+                                                
+(   )   (b 5)   (   )   (   )   (w 2)   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )---(w 5)---(   )---(   )---(   )
+  |                                       |     
+(   )   (   )---(w 2)---(   )   (b 2)---(   )
+  |       |               |       |             
+(   )   (   )   (   )   (   )   (   )---(   )
+  |       |               |               |     
+(   )   (   )   (b 2)---(b 3)   (   )---(   )
+  |       |       |               |             
+(   )   (   )   (   )---(b 2)   (b 2)---(   )
+  |       |               |               |     
+(   )---(b 5)   (   )   (   )---(w 2)---(   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 1,413,095)</td>
+	<td>247.116µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(b 6)   (   )   (   )   (   )   (w 2)   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (b 2)
+                                                
+(   )   (   )   (   )   (b 3)   (   )   (b 3)
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(w 5)   (b 3)   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (b 3)   (   )   (   )   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(b 6)---(   )   (   )   (   )---(w 2)---(   )
+  |       |               |               |     
+(   )   (   )---(   )---(   )   (   )---(b 2)
+  |                               |             
+(   )   (   )---(   )---(b 3)   (   )---(b 3)
+  |       |               |               |     
+(   )   (   )   (   )   (   )---(   )   (   )
+  |       |                       |       |     
+(w 5)   (b 3)---(   )   (   )   (   )---(   )
+  |               |                             
+(   )---(   )---(b 3)   (   )   (   )   (   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 1,471,690)</td>
+	<td>400.065µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (b 2)   (   )   (w 2)
+                                                
+(   )   (   )   (   )   (b 4)   (w 2)   (   )
+                                                
+(   )   (b 3)   (w 3)   (   )   (b 2)   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (w 5)   (   )   (   )   (   )   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )---(   )---(   )   (   )---(   )
+  |                       |       |       |     
+(   )   (   )---(   )   (b 2)---(   )   (w 2)
+  |       |       |                       |     
+(   )   (   )   (   )   (b 4)---(w 2)---(   )
+  |       |       |       |                     
+(   )---(b 3)   (w 3)   (   )   (b 2)---(   )
+                  |       |       |       |     
+(   )---(   )---(   )   (   )---(   )   (   )
+  |                                       |     
+(   )---(w 5)---(   )---(   )---(   )---(   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 1,492,616)</td>
+	<td>359.745µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (b 3)   (   )   (   )   (b 3)   (b 4)
+                                                
+(   )   (   )   (w 3)   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (w 2)   (   )   (   )
+                                                
+(   )   (   )   (   )   (w 3)   (   )   (   )
+                                                
+(   )   (b 2)   (   )   (   )   (   )   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )---(   )   (   )   (   )   (   )
+  |               |                             
+(   )---(b 3)   (   )   (   )   (b 3)---(b 4)
+          |       |               |       |     
+(   )   (   )   (w 3)   (   )   (   )   (   )
+          |       |               |       |     
+(   )---(   )   (   )---(w 2)---(   )   (   )
+  |                                       |     
+(   )---(   )   (   )---(w 3)---(   )---(   )
+          |       |                             
+(   )   (b 2)---(   )   (   )   (   )   (   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 1,520,692)</td>
+	<td>324.243µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(b 3)   (   )   (b 3)   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (w 3)   (w 5)
+                                                
+(   )   (   )   (w 2)   (   )   (b 4)   (   )
+                                                
+(w 2)   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (w 3)   (   )   (   )   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(b 3)---(   )---(b 3)   (   )   (   )---(   )
+  |               |               |       |     
+(   )---(   )   (   )---(   )   (   )   (   )
+          |               |       |       |     
+(   )   (   )---(   )   (   )   (w 3)   (w 5)
+                  |       |       |       |     
+(   )---(   )   (w 2)   (   )---(b 4)   (   )
+  |       |       |                       |     
+(w 2)   (   )---(   )   (   )---(   )   (   )
+  |                       |       |       |     
+(   )---(   )---(w 3)---(   )   (   )---(   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 1,678,415)</td>
+	<td>319.333µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(b 4)   (   )   (   )   (   )   (   )   (   )
+                                                
+(b 3)   (   )   (   )   (   )   (   )   (w 2)
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(b 2)   (   )   (   )   (   )   (   )   (b 4)
+                                                
+(b 2)   (   )   (   )   (w 2)   (   )   (   )
+                                                
+(b 3)   (   )   (   )   (   )   (   )   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(b 4)---(   )---(   )---(   )   (   )---(   )
+  |                       |       |       |     
+(b 3)---(   )---(   )   (   )---(   )   (w 2)
+                  |                       |     
+(   )---(   )---(   )   (   )---(   )---(   )
+  |                       |                     
+(b 2)---(   )   (   )   (   )---(   )---(b 4)
+          |                               |     
+(b 2)---(   )   (   )---(w 2)---(   )   (   )
+  |               |               |       |     
+(b 3)---(   )---(   )   (   )   (   )---(   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 1,737,679)</td>
+	<td>356.521µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(b 6)   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (b 2)   (   )   (b 2)   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (b 3)   (w 5)
+                                                
+(   )   (   )   (b 2)   (   )   (   )   (   )
+                                                
+(   )   (   )   (w 3)   (   )   (b 2)   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(b 6)---(   )   (   )   (   )   (   )---(   )
+  |       |                       |       |     
+(   )   (   )---(b 2)   (   )---(b 2)   (   )
+  |               |       |               |     
+(   )   (   )---(   )   (   )---(   )   (   )
+  |       |                       |       |     
+(   )   (   )   (   )---(   )---(b 3)   (w 5)
+  |       |       |                       |     
+(   )   (   )---(b 2)   (   )---(   )   (   )
+  |                       |       |       |     
+(   )---(   )---(w 3)---(   )   (b 2)---(   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 1,802,467)</td>
+	<td>284.448µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (b 5)   (b 3)   (   )
+                                                
+(   )   (b 3)   (   )   (   )   (   )   (   )
+                                                
+(w 3)   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (w 2)   (b 5)
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (w 5)   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )---(   )---(b 5)   (b 3)---(   )
+  |                       |       |       |     
+(   )   (b 3)---(   )   (   )   (   )   (   )
+  |       |       |       |       |       |     
+(w 3)   (   )   (   )   (   )---(   )   (   )
+  |       |       |                       |     
+(   )---(   )   (   )   (   )---(w 2)---(b 5)
+                  |       |                     
+(   )---(   )---(   )   (   )---(   )---(   )
+  |                                       |     
+(   )---(   )---(   )---(   )---(w 5)---(   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 1,868,052)</td>
+	<td>288.455µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(b10)   (   )   (   )   (   )   (   )   (b 6)
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (w 2)   (   )   (   )   (   )   (   )
+                                                
+(   )   (b 4)   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (w 2)
+                                                
+(   )   (   )   (   )   (b 2)   (   )   (b 3)
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(b10)---(   )---(   )---(   )---(   )---(b 6)
+  |                                       |     
+(   )   (   )---(   )---(   )---(   )---(   )
+  |       |                                     
+(   )   (w 2)   (   )   (   )---(   )   (   )
+  |       |               |       |             
+(   )   (b 4)---(   )---(   )   (   )---(   )
+  |                                       |     
+(   )   (   )---(   )   (   )---(   )   (w 2)
+  |       |       |       |       |       |     
+(   )---(   )   (   )---(b 2)   (   )---(b 3)
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 1,929,002)</td>
+	<td>291.269µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (w 4)   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(w 4)   (b 3)   (   )   (   )   (b 2)   (b 3)
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (b 3)   (   )   (b 2)
+                                                
+(   )   (   )   (   )   (   )   (w 5)   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )---(   )---(   )---(w 4)---(   )
+          |                               |     
+(   )---(   )   (   )---(   )---(   )   (   )
+  |               |               |       |     
+(w 4)   (b 3)---(   )   (   )   (b 2)---(b 3)
+  |       |                                     
+(   )   (   )   (   )   (   )---(   )   (   )
+  |       |               |       |             
+(   )   (   )---(   )---(b 3)   (   )---(b 2)
+  |                                       |     
+(   )---(   )---(   )---(   )---(w 5)---(   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 1,931,395)</td>
+	<td>649.738µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (b 2)   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (w 3)   (   )   (b 3)   (   )   (   )
+                                                
+(   )   (   )   (b 3)   (   )   (   )   (w 3)
+                                                
+(b 5)   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (b 2)   (   )   (   )   (   )   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )   (   )   (b 2)---(   )   (   )
+  |       |               |       |             
+(   )   (   )   (   )---(   )   (   )---(   )
+  |       |       |                       |     
+(   )   (w 3)   (   )   (b 3)---(   )   (   )
+  |       |       |       |       |       |     
+(   )   (   )---(b 3)   (   )   (   )   (w 3)
+  |                       |       |       |     
+(b 5)---(   )   (   )---(   )   (   )---(   )
+          |       |                             
+(   )   (b 2)---(   )   (   )   (   )   (   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 1,952,465)</td>
+	<td>350.3µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(b 6)   (b 2)   (   )   (   )   (   )   (b 6)
+                                                
+(   )   (   )   (   )   (b 2)   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (b 5)   (   )
+                                                
+(   )   (b 2)   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (b 2)   (   )   (   )   (   )   (b 7)
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(b 6)---(b 2)   (   )---(   )   (   )---(b 6)
+  |       |       |       |       |       |     
+(   )   (   )---(   )   (b 2)---(   )   (   )
+  |                                       |     
+(   )   (   )---(   )---(   )---(b 5)   (   )
+  |       |                       |       |     
+(   )   (b 2)---(   )   (   )   (   )   (   )
+  |               |               |       |     
+(   )   (   )---(   )   (   )---(   )   (   )
+  |       |               |               |     
+(   )---(b 2)   (   )   (   )---(   )---(b 7)
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 1,994,369)</td>
+	<td>355.283µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (w 4)   (   )   (b 6)
+                                                
+(   )   (b 2)   (   )   (   )   (   )   (   )
+                                                
+(b 2)   (   )   (   )   (   )   (b 2)   (   )
+                                                
+(   )   (   )   (   )   (b 2)   (   )   (b 3)
+                                                
+(b 2)   (   )   (b 3)   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (w 5)   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )---(   )---(w 4)---(   )---(b 6)
+          |                               |     
+(   )---(b 2)   (   )---(   )---(   )   (   )
+  |               |               |       |     
+(b 2)---(   )   (   )---(   )   (b 2)---(   )
+          |               |                     
+(   )   (   )   (   )---(b 2)   (   )---(b 3)
+          |       |               |       |     
+(b 2)---(   )   (b 3)---(   )---(   )   (   )
+  |                                       |     
+(   )---(   )---(   )---(   )---(w 5)---(   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 161,408)</td>
+	<td>343.658µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (b 5)   (   )   (   )   (   )   (   )
+                                                
+(w 5)   (b 4)   (   )   (   )   (b 4)   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (b 3)   (b 2)   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )   (   )   (   )   (   )   (   )
+  |       |                                     
+(   )   (b 5)---(   )---(   )---(   )---(   )
+  |                                       |     
+(w 5)   (b 4)---(   )---(   )   (b 4)---(   )
+  |       |               |       |             
+(   )   (   )   (   )   (   )   (   )   (   )
+  |       |               |       |             
+(   )   (b 3)---(b 2)   (   )   (   )   (   )
+  |               |       |       |             
+(   )---(   )---(   )   (   )---(   )   (   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 2,340,433)</td>
+	<td>378.921µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (b 3)   (   )   (w 3)   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (b 2)   (   )
+                                                
+(   )   (   )   (w 2)   (   )   (b 2)   (   )
+                                                
+(   )   (b 2)   (b 3)   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (b 2)   (b 2)
+                                                
+(   )   (w 2)   (   )   (   )   (w 2)   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(b 3)   (   )---(w 3)---(   )---(   )
+  |       |       |                       |     
+(   )   (   )   (   )---(   )   (b 2)---(   )
+  |       |               |       |             
+(   )   (   )---(w 2)---(   )   (b 2)---(   )
+  |                                       |     
+(   )---(b 2)   (b 3)---(   )   (   )---(   )
+          |       |       |       |             
+(   )---(   )   (   )   (   )   (b 2)---(b 2)
+  |               |       |               |     
+(   )---(w 2)---(   )   (   )---(w 2)---(   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 2,414,694)</td>
+	<td>247.479µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (b 2)   (   )
+                                                
+(w 5)   (w 4)   (w 3)   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (w 2)   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (w 5)
+                                                
+(   )   (w 5)   (   )   (   )   (   )   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )   (   )---(   )   (   )---(   )
+  |       |       |       |       |       |     
+(   )   (   )   (   )   (   )---(b 2)   (   )
+  |       |       |                       |     
+(w 5)   (w 4)   (w 3)   (   )---(   )   (   )
+  |       |       |       |       |       |     
+(   )   (   )   (   )---(   )   (w 2)   (   )
+  |       |                       |       |     
+(   )   (   )---(   )---(   )---(   )   (w 5)
+  |                                       |     
+(   )---(w 5)---(   )---(   )---(   )---(   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 2,459,150)</td>
+	<td>333.955µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (w 4)   (   )   (   )   (b 5)
+                                                
+(b 3)   (   )   (b 2)   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (w 2)
+                                                
+(b 4)   (   )   (   )   (   )   (   )   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )---(w 4)---(   )---(   )---(b 5)
+          |                               |     
+(b 3)---(   )   (b 2)---(   )   (   )---(   )
+  |               |       |       |             
+(   )   (   )---(   )   (   )   (   )   (   )
+  |       |               |       |             
+(   )---(   )   (   )---(   )   (   )---(   )
+                  |                       |     
+(   )---(   )---(   )   (   )---(   )   (w 2)
+  |                       |       |       |     
+(b 4)---(   )---(   )---(   )   (   )---(   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 2,771,023)</td>
+	<td>292.299µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (b 4)   (   )   (   )
+                                                
+(   )   (b 2)   (   )   (   )   (   )   (w 4)
+                                                
+(b 2)   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (w 2)   (b 5)   (   )
+                                                
+(   )   (b 2)   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (b 3)   (   )   (b 2)   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )---(   )---(b 4)   (   )---(   )
+  |                       |       |       |     
+(   )---(b 2)   (   )---(   )   (   )   (w 4)
+          |       |               |       |     
+(b 2)---(   )   (   )   (   )   (   )   (   )
+  |               |               |       |     
+(   )---(   )   (   )---(w 2)---(b 5)   (   )
+          |                               |     
+(   )---(b 2)   (   )---(   )   (   )---(   )
+  |               |       |       |             
+(   )---(   )---(b 3)   (   )---(b 2)   (   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 2,772,537)</td>
+	<td>563.864µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (b 2)   (   )   (   )
+                                                
+(   )   (b 5)   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (w 4)
+                                                
+(   )   (w 3)   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (b 3)   (b 2)   (w 3)   (   )
+                                                
+(   )   (   )   (   )   (   )   (b 4)   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (b 2)---(   )   (   )
+                          |       |             
+(   )   (b 5)---(   )---(   )   (   )---(   )
+          |                               |     
+(   )   (   )   (   )---(   )---(   )   (w 4)
+          |       |               |       |     
+(   )   (w 3)   (   )   (   )   (   )   (   )
+          |       |               |       |     
+(   )---(   )   (b 3)---(b 2)   (w 3)   (   )
+  |                       |       |       |     
+(   )---(   )---(   )---(   )   (b 4)---(   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 2,802,541)</td>
+	<td>327.019µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (w 2)   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (w 3)   (   )
+                                                
+(   )   (b 3)   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(b 2)   (   )   (   )   (b 3)   (w 3)   (   )
+                                                
+(   )   (b 4)   (   )   (   )   (   )   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(w 2)---(   )   (   )   (   )   (   )
+  |               |                             
+(   )---(   )   (   )---(   )---(w 3)---(   )
+          |                               |     
+(   )   (b 3)---(   )---(   )   (   )---(   )
+                          |       |             
+(   )---(   )---(   )   (   )   (   )   (   )
+  |               |       |       |             
+(b 2)---(   )   (   )---(b 3)   (w 3)   (   )
+          |                       |             
+(   )   (b 4)---(   )---(   )---(   )   (   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 3,048,908)</td>
+	<td>340.322µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(b 6)   (   )   (   )   (   )   (   )   (b 5)
+                                                
+(   )   (b 2)   (   )   (   )   (   )   (   )
+                                                
+(   )   (b 4)   (   )   (w 3)   (   )   (w 4)
+                                                
+(w 5)   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (b 2)   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (b 3)   (b 2)   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(b 6)---(   )   (   )---(   )   (   )---(b 5)
+  |       |       |       |       |       |     
+(   )   (b 2)---(   )   (   )---(   )   (   )
+  |                                       |     
+(   )   (b 4)---(   )---(w 3)---(   )   (w 4)
+  |       |                       |       |     
+(w 5)   (   )---(   )   (   )---(   )   (   )
+  |               |       |               |     
+(   )   (   )---(b 2)   (   )   (   )---(   )
+  |       |               |       |             
+(   )---(   )   (   )   (b 3)---(b 2)   (   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 3,136,306)</td>
+	<td>363.194µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(b 8)   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (b 2)   (   )   (w 2)
+                                                
+(   )   (   )   (   )   (   )   (b 3)   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (b 4)   (   )   (w 3)   (   )   (   )
+                                                
+(   )   (   )   (   )   (b 5)   (   )   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(b 8)---(   )---(   )---(   )   (   )---(   )
+  |                       |       |       |     
+(   )   (   )---(   )   (b 2)---(   )   (w 2)
+  |       |       |                       |     
+(   )   (   )   (   )---(   )   (b 3)---(   )
+  |       |               |       |             
+(   )   (   )   (   )   (   )   (   )   (   )
+  |       |               |       |             
+(   )   (b 4)---(   )   (w 3)   (   )---(   )
+  |               |       |               |     
+(   )---(   )---(   )   (b 5)---(   )---(   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 3,253,085)</td>
+	<td>309.91µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (   )   (b 3)
+                                                
+(   )   (   )   (   )   (b 3)   (   )   (b 2)
+                                                
+(   )   (b 4)   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (b 3)   (   )   (   )
+                                                
+(w 5)   (   )   (   )   (   )   (w 4)   (   )
+                                                
+(   )   (   )   (   )   (   )   (w 5)   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )   (   )   (   )---(   )---(b 3)
+  |       |               |               |     
+(   )   (   )---(   )---(b 3)   (   )---(b 2)
+  |                               |             
+(   )   (b 4)---(   )---(   )   (   )---(   )
+  |       |               |               |     
+(   )   (   )   (   )   (b 3)---(   )---(   )
+  |       |                                     
+(w 5)   (   )---(   )---(   )---(w 4)---(   )
+  |                                       |     
+(   )---(   )---(   )---(   )---(w 5)---(   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 3,289,102)</td>
+	<td>376.102µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (w 3)   (   )
+                                                
+(   )   (   )   (   )   (   )   (b 2)   (   )
+                                                
+(   )   (   )   (w 2)   (   )   (   )   (b 2)
+                                                
+(b 4)   (   )   (b 3)   (   )   (   )   (   )
+                                                
+(b 2)   (   )   (   )   (   )   (   )   (   )
+                                                
+(b 3)   (   )   (   )   (b 4)   (   )   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )   (   )---(   )---(w 3)---(   )
+  |       |       |                       |     
+(   )   (   )   (   )---(   )   (b 2)---(   )
+  |       |               |       |             
+(   )   (   )---(w 2)---(   )   (   )---(b 2)
+  |                                       |     
+(b 4)---(   )   (b 3)---(   )   (   )---(   )
+          |       |       |       |             
+(b 2)---(   )   (   )   (   )   (   )---(   )
+  |               |       |               |     
+(b 3)---(   )---(   )   (b 4)---(   )---(   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 3,700,670)</td>
+	<td>215.751µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (w 3)   (b 4)   (   )   (   )
+                                                
+(w 2)   (b 2)   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (b 3)   (   )   (   )
+                                                
+(   )   (b 2)   (   )   (   )   (   )   (b 2)
+                                                
+(   )   (   )   (b 2)   (   )   (   )   (b 2)
+                                                
+(   )   (   )   (   )   (w 5)   (   )   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )---(w 3)---(b 4)   (   )   (   )
+  |                       |                     
+(w 2)   (b 2)---(   )   (   )---(   )   (   )
+  |       |       |               |             
+(   )---(   )   (   )---(b 3)   (   )---(   )
+                          |               |     
+(   )   (b 2)---(   )   (   )   (   )---(b 2)
+          |       |       |       |             
+(   )---(   )   (b 2)---(   )   (   )---(b 2)
+  |                                       |     
+(   )---(   )---(   )---(w 5)---(   )---(   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 3,799,599)</td>
+	<td>325.156µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (   )   (b 5)
+                                                
+(b 2)   (b 3)   (w 3)   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (w 3)   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (w 4)
+                                                
+(b 2)   (   )   (   )   (   )   (b 2)   (   )
+                                                
+(   )   (   )   (   )   (b 2)   (   )   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )---(   )   (   )   (   )---(b 5)
+  |               |               |       |     
+(b 2)---(b 3)   (w 3)   (   )   (   )   (   )
+          |       |               |       |     
+(   )   (   )   (   )   (   )   (w 3)   (   )
+          |       |               |       |     
+(   )---(   )   (   )---(   )---(   )   (w 4)
+  |                                       |     
+(b 2)---(   )   (   )---(   )   (b 2)---(   )
+          |       |       |       |             
+(   )   (   )---(   )   (b 2)---(   )   (   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 4,033,904)</td>
+	<td>392.86µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (b 4)   (   )   (   )   (b 2)   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (b 2)
+                                                
+(   )   (   )   (w 2)   (b 3)   (   )   (   )
+                                                
+(w 5)   (   )   (w 2)   (   )   (   )   (b 2)
+                                                
+(   )   (   )   (   )   (b 2)   (   )   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(b 4)   (   )   (   )---(b 2)   (   )
+  |       |               |       |             
+(   )   (   )   (   )---(   )   (   )---(   )
+  |       |       |                       |     
+(   )   (   )   (   )---(   )   (   )---(b 2)
+  |       |               |       |             
+(   )   (   )---(w 2)---(b 3)   (   )---(   )
+  |                                       |     
+(w 5)   (   )---(w 2)---(   )   (   )---(b 2)
+  |       |               |       |             
+(   )---(   )   (   )   (b 2)---(   )   (   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 4,070,768)</td>
+	<td>361.647µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (w 4)   (   )   (w 3)   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (b 2)   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(w 5)   (   )   (   )   (b 4)   (   )   (b 3)
+                                                
+(   )   (   )   (   )   (w 5)   (   )   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )   (   )   (   )   (   )   (   )
+  |       |                                     
+(   )   (w 4)   (   )---(w 3)---(   )---(   )
+  |       |       |                       |     
+(   )   (   )   (   )   (   )---(b 2)   (   )
+  |       |       |       |       |       |     
+(   )   (   )   (   )   (   )   (   )---(   )
+  |       |       |       |                     
+(w 5)   (   )---(   )   (b 4)---(   )---(b 3)
+  |                                       |     
+(   )---(   )---(   )---(w 5)---(   )---(   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 4,148,488)</td>
+	<td>379.962µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (   )   (b10)
+                                                
+(   )   (w 4)   (   )   (   )   (   )   (   )
+                                                
+(   )   (b 2)   (   )   (   )   (   )   (   )
+                                                
+(   )   (b 2)   (   )   (   )   (b 4)   (   )
+                                                
+(   )   (b 2)   (   )   (   )   (   )   (   )
+                                                
+(b 3)   (   )   (   )   (   )   (b 2)   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )---(   )---(   )---(   )---(b10)
+  |                                       |     
+(   )---(w 4)---(   )---(   )---(   )   (   )
+                                  |       |     
+(   )   (b 2)---(   )   (   )   (   )   (   )
+          |       |               |       |     
+(   )---(b 2)   (   )---(   )---(b 4)   (   )
+  |                                       |     
+(   )   (b 2)---(   )   (   )---(   )   (   )
+  |       |       |       |       |       |     
+(b 3)---(   )   (   )---(   )   (b 2)---(   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 4,619,472)</td>
+	<td>387.5µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (b 2)   (   )   (b 2)   (   )   (   )
+                                                
+(b 3)   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (b 3)
+                                                
+(   )   (b 2)   (   )   (   )   (   )   (   )
+                                                
+(   )   (w 2)   (   )   (   )   (   )   (   )
+                                                
+(b 4)   (   )   (   )   (   )   (   )   (b 3)
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (b 2)---(   )   (b 2)---(   )   (   )
+          |       |       |       |             
+(b 3)---(   )   (   )---(   )   (   )---(   )
+  |                                       |     
+(   )   (   )---(   )   (   )---(   )---(b 3)
+  |       |       |       |                     
+(   )---(b 2)   (   )   (   )---(   )---(   )
+                  |                       |     
+(   )---(w 2)---(   )   (   )---(   )   (   )
+  |                       |       |       |     
+(b 4)---(   )---(   )---(   )   (   )---(b 3)
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 4,645,634)</td>
+	<td>272.88µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (w 4)   (   )   (   )   (   )
+                                                
+(w 5)   (b 5)   (   )   (   )   (b 4)   (   )
+                                                
+(   )   (   )   (   )   (   )   (b 2)   (   )
+                                                
+(   )   (   )   (w 3)   (   )   (   )   (   )
+                                                
+(   )   (b 2)   (   )   (   )   (w 2)   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )---(w 4)---(   )---(   )   (   )
+  |                               |             
+(w 5)   (b 5)---(   )---(   )---(b 4)   (   )
+  |       |                                     
+(   )   (   )   (   )   (   )   (b 2)---(   )
+  |       |                       |       |     
+(   )   (   )---(w 3)---(   )---(   )   (   )
+  |                                       |     
+(   )   (b 2)---(   )   (   )---(w 2)---(   )
+  |       |       |       |                     
+(   )---(   )   (   )---(   )   (   )   (   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 4,741,522)</td>
+	<td>238.22µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (b 2)   (   )   (   )   (   )   (b 6)
+                                                
+(w 4)   (   )   (   )   (   )   (b 2)   (   )
+                                                
+(   )   (b 2)   (   )   (   )   (b 3)   (   )
+                                                
+(   )   (   )   (b 2)   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(b 2)   (   )   (   )   (   )---(b 6)
+  |       |                       |       |     
+(w 4)   (   )---(   )   (   )---(b 2)   (   )
+  |               |       |               |     
+(   )   (b 2)---(   )   (   )---(b 3)   (   )
+  |       |                       |       |     
+(   )   (   )---(b 2)   (   )   (   )   (   )
+  |               |               |       |     
+(   )---(   )   (   )---(   )---(   )   (   )
+          |                               |     
+(   )   (   )---(   )---(   )---(   )---(   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 432,119)</td>
+	<td>324.765µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (b 2)   (b 2)   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (w 2)
+                                                
+(b 3)   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (b 2)   (   )   (   )   (   )   (   )
+                                                
+(b 4)   (w 3)   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (b 5)   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(b 2)   (b 2)---(   )   (   )---(   )
+  |       |       |       |       |       |     
+(   )   (   )---(   )   (   )---(   )   (w 2)
+  |                                       |     
+(b 3)---(   )   (   )---(   )   (   )---(   )
+          |       |       |       |             
+(   )   (b 2)---(   )   (   )   (   )---(   )
+                          |               |     
+(b 4)---(w 3)---(   )---(   )   (   )---(   )
+  |                               |             
+(   )---(   )---(   )---(   )---(b 5)   (   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 5,253,364)</td>
+	<td>371.03µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (b 6)   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (b 3)   (   )   (   )
+                                                
+(b 2)   (   )   (   )   (   )   (   )   (   )
+                                                
+(b 3)   (   )   (   )   (w 2)   (b 2)   (   )
+                                                
+(   )   (   )   (   )   (   )   (w 2)   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )---(   )---(   )---(b 6)   (   )
+  |                               |             
+(   )---(   )---(   )---(   )   (   )   (   )
+                          |       |             
+(   )   (   )---(   )---(b 3)   (   )---(   )
+          |                               |     
+(b 2)---(   )   (   )---(   )   (   )---(   )
+  |               |       |       |             
+(b 3)---(   )---(   )   (w 2)   (b 2)---(   )
+                          |               |     
+(   )   (   )   (   )   (   )---(w 2)---(   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 5,313,969)</td>
+	<td>261.718µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (w 4)   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (w 2)   (   )   (   )   (b 2)
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(b 4)   (   )   (   )   (   )   (w 2)   (   )
+                                                
+(b 2)   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (w 4)   (   )   (   )   (   )   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(w 4)---(   )---(   )---(   )   (   )
+  |                               |             
+(   )   (   )---(w 2)---(   )   (   )---(b 2)
+  |       |               |               |     
+(   )   (   )---(   )   (   )---(   )---(   )
+  |               |                             
+(b 4)---(   )   (   )   (   )---(w 2)---(   )
+          |       |       |               |     
+(b 2)---(   )   (   )---(   )   (   )---(   )
+  |                               |             
+(   )---(w 4)---(   )---(   )---(   )   (   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 5,763,376)</td>
+	<td>472.448µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (w 3)   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (w 2)   (   )
+                                                
+(   )   (w 2)   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (b 2)   (   )   (b 2)
+                                                
+(b 6)   (   )   (   )   (   )   (   )   (b 6)
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )---(w 3)---(   )---(   )   (   )
+          |                       |             
+(   )---(   )   (   )---(   )   (   )---(   )
+  |               |       |               |     
+(   )---(   )   (   )   (   )---(w 2)---(   )
+          |       |                             
+(   )   (w 2)   (   )   (   )---(   )   (   )
+          |       |       |       |             
+(   )---(   )   (   )---(b 2)   (   )---(b 2)
+  |                                       |     
+(b 6)---(   )---(   )---(   )---(   )---(b 6)
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 5,911,022)</td>
+	<td>384.814µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(b 6)   (   )   (   )   (w 3)   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (b 2)   (b 4)
+                                                
+(   )   (   )   (   )   (   )   (b 4)   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(b 6)   (   )   (b 2)   (b 2)   (   )   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(b 6)---(   )   (   )---(w 3)---(   )---(   )
+  |       |       |                       |     
+(   )   (   )---(   )   (   )---(   )---(   )
+  |                       |                     
+(   )   (   )---(   )---(   )   (b 2)---(b 4)
+  |       |                       |       |     
+(   )   (   )---(   )---(   )---(b 4)   (   )
+  |                                       |     
+(   )   (   )---(   )   (   )---(   )   (   )
+  |       |       |       |       |       |     
+(b 6)---(   )   (b 2)---(b 2)   (   )---(   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 5,937,602)</td>
+	<td>303.356µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (w 5)   (   )   (   )
+                                                
+(   )   (   )   (   )   (w 4)   (   )   (   )
+                                                
+(   )   (   )   (   )   (w 3)   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (w 2)   (   )   (   )   (   )
+                                                
+(   )   (w 5)   (   )   (   )   (   )   (b 6)
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )---(   )---(w 5)---(   )---(   )
+  |                                       |     
+(   )   (   )---(   )---(w 4)---(   )---(   )
+  |       |                                     
+(   )   (   )   (   )---(w 3)---(   )---(   )
+  |       |       |                       |     
+(   )   (   )   (   )---(   )   (   )---(   )
+  |       |               |       |             
+(   )   (   )---(w 2)---(   )   (   )---(   )
+  |                                       |     
+(   )---(w 5)---(   )---(   )---(   )---(b 6)
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 530,864)</td>
+	<td>241.063µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (b 4)   (   )   (w 3)   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (b 5)   (   )
+                                                
+(w 4)   (   )   (   )   (   )   (   )   (w 5)
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (b 2)   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (b 2)   (   )   (   )   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(b 4)   (   )---(w 3)---(   )---(   )
+  |       |       |                       |     
+(   )   (   )   (   )   (   )---(b 5)   (   )
+  |       |       |       |       |       |     
+(w 4)   (   )   (   )   (   )   (   )   (w 5)
+  |       |       |       |       |       |     
+(   )   (   )---(   )   (   )   (   )   (   )
+  |                       |       |       |     
+(   )---(b 2)   (   )---(   )   (   )   (   )
+          |       |               |       |     
+(   )   (   )---(b 2)   (   )   (   )---(   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 6,280,084)</td>
+	<td>238.118µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (   )   (b 3)
+                                                
+(   )   (   )   (   )   (   )   (   )   (b 2)
+                                                
+(   )   (   )   (   )   (   )   (w 2)   (   )
+                                                
+(w 5)   (   )   (   )   (b 2)   (   )   (b 3)
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(b 8)   (   )   (   )   (   )   (   )   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )   (   )   (   )---(   )---(b 3)
+  |       |               |               |     
+(   )   (   )   (   )---(   )   (   )---(b 2)
+  |       |       |               |             
+(   )   (   )   (   )---(   )   (w 2)   (   )
+  |       |               |       |             
+(w 5)   (   )   (   )---(b 2)   (   )---(b 3)
+  |       |       |                       |     
+(   )   (   )---(   )   (   )---(   )   (   )
+  |                       |       |       |     
+(b 8)---(   )---(   )---(   )   (   )---(   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 6,431,411)</td>
+	<td>368.327µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (   )   (b 9)
+                                                
+(   )   (b 2)   (   )   (b 2)   (   )   (   )
+                                                
+(   )   (   )   (b 2)   (   )   (w 2)   (   )
+                                                
+(   )   (w 4)   (   )   (   )   (   )   (   )
+                                                
+(w 2)   (   )   (w 2)   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (b 2)   (   )   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )---(   )---(   )---(   )---(b 9)
+  |                                       |     
+(   )   (b 2)---(   )   (b 2)---(   )   (   )
+  |       |       |       |       |       |     
+(   )---(   )   (b 2)---(   )   (w 2)   (   )
+                                  |       |     
+(   )---(w 4)---(   )---(   )---(   )   (   )
+  |                                       |     
+(w 2)   (   )---(w 2)---(   )   (   )---(   )
+  |       |               |       |             
+(   )---(   )   (   )   (b 2)---(   )   (   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 6,830,559)</td>
+	<td>512.617µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(b 6)   (   )   (   )   (   )   (   )   (b 3)
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (b 3)   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (w 2)
+                                                
+(   )   (b 4)   (b 3)   (   )   (   )   (b 3)
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(b 6)---(   )   (   )   (   )---(   )---(b 3)
+  |       |               |               |     
+(   )   (   )---(   )---(   )   (   )---(   )
+  |                               |             
+(   )   (   )---(   )---(   )   (   )   (   )
+  |       |               |       |             
+(   )   (   )   (   )---(   )   (b 3)---(   )
+  |       |       |                       |     
+(   )   (   )   (   )   (   )---(   )   (w 2)
+  |       |       |       |       |       |     
+(   )---(b 4)   (b 3)---(   )   (   )---(b 3)
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 610,131)</td>
+	<td>477.698µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (b 3)   (b 3)   (   )   (   )   (   )
+                                                
+(   )   (w 2)   (   )   (   )   (   )   (   )
+                                                
+(w 3)   (b 3)   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (w 2)   (b 2)   (   )   (b 5)   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (b 3)
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(b 3)   (b 3)---(   )---(   )   (   )
+  |       |       |               |             
+(   )   (w 2)   (   )---(   )   (   )   (   )
+  |       |               |       |             
+(w 3)   (b 3)---(   )   (   )   (   )   (   )
+  |               |       |       |             
+(   )---(   )   (   )---(   )   (   )   (   )
+          |                       |             
+(   )   (w 2)   (b 2)---(   )   (b 5)---(   )
+          |       |       |               |     
+(   )   (   )---(   )   (   )---(   )---(b 3)
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 7,184,597)</td>
+	<td>498.073µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (   )   (b 6)
+                                                
+(w 2)   (b 2)   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (b 3)   (b 4)   (   )   (   )
+                                                
+(   )   (w 2)   (   )   (   )   (   )   (   )
+                                                
+(   )   (b 2)   (   )   (   )   (w 3)   (   )
+                                                
+(   )   (   )   (b 2)   (   )   (   )   (b 6)
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )   (   )---(   )   (   )---(b 6)
+  |       |       |       |       |       |     
+(w 2)   (b 2)---(   )   (   )---(   )   (   )
+  |                                       |     
+(   )---(   )---(b 3)   (b 4)---(   )   (   )
+                  |       |       |       |     
+(   )---(w 2)---(   )   (   )   (   )   (   )
+  |                       |       |       |     
+(   )   (b 2)---(   )   (   )   (w 3)   (   )
+  |       |       |       |       |       |     
+(   )---(   )   (b 2)---(   )   (   )---(b 6)
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 7,793,947)</td>
+	<td>361.289µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(b 7)   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (b 3)   (   )   (   )   (   )   (b 2)
+                                                
+(w 5)   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (b 2)   (   )
+                                                
+(   )   (   )   (   )   (   )   (w 2)   (   )
+                                                
+(   )   (   )   (   )   (   )   (w 3)   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(b 7)---(   )---(   )   (   )---(   )   (   )
+  |               |       |       |             
+(   )   (b 3)---(   )   (   )   (   )---(b 2)
+  |       |               |               |     
+(w 5)   (   )   (   )---(   )   (   )---(   )
+  |       |       |               |             
+(   )   (   )---(   )   (   )---(b 2)   (   )
+  |                       |                     
+(   )   (   )---(   )   (   )---(w 2)---(   )
+  |       |       |                       |     
+(   )---(   )   (   )---(   )---(w 3)---(   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 7,887,988)</td>
+	<td>361.643µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (w 3)   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (b 3)
+                                                
+(b 3)   (   )   (   )   (   )   (b 2)   (b 3)
+                                                
+(   )   (   )   (   )   (   )   (b 3)   (   )
+                                                
+(   )   (b 3)   (b 2)   (   )   (   )   (b 4)
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )   (   )---(w 3)---(   )---(   )
+  |       |       |                       |     
+(   )   (   )---(   )   (   )---(   )---(b 3)
+  |                       |                     
+(b 3)---(   )   (   )---(   )   (b 2)---(b 3)
+          |       |               |       |     
+(   )   (   )   (   )---(   )---(b 3)   (   )
+          |                               |     
+(   )   (b 3)---(b 2)   (   )---(   )---(b 4)
+                  |       |                     
+(   )   (   )   (   )---(   )   (   )   (   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 7,928,469)</td>
+	<td>607.892µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (b 4)   (   )   (   )   (   )
+                                                
+(   )   (w 3)   (b 3)   (w 2)   (b 3)   (   )
+                                                
+(w 4)   (   )   (   )   (b 2)   (   )   (   )
+                                                
+(   )   (b 2)   (b 2)   (   )   (   )   (b 4)
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )   (   )   (   )   (   )   (   )
+  |       |                                     
+(   )   (   )   (b 4)---(   )---(   )---(   )
+  |       |       |                       |     
+(   )   (w 3)   (b 3)---(w 2)---(b 3)   (   )
+  |       |                       |       |     
+(w 4)   (   )---(   )   (b 2)---(   )   (   )
+  |               |       |               |     
+(   )---(b 2)   (b 2)---(   )   (   )---(b 4)
+          |                       |             
+(   )   (   )---(   )---(   )---(   )   (   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 7,970,361)</td>
+	<td>481.24µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (b 4)   (b 2)   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (b 3)   (   )   (b 2)   (   )   (b 3)
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (b 2)   (   )   (w 2)
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )---(   )---(b 4)   (b 2)---(   )
+  |                       |       |       |     
+(   )---(   )---(   )   (   )---(   )   (   )
+                  |                       |     
+(   )---(b 3)   (   )---(b 2)   (   )---(b 3)
+  |       |               |       |             
+(   )   (   )   (   )---(   )   (   )---(   )
+  |       |       |                       |     
+(   )   (   )---(   )   (b 2)---(   )   (w 2)
+  |                       |       |       |     
+(   )---(   )---(   )---(   )   (   )---(   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 8,277,486)</td>
+	<td>609.307µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (b 2)   (   )   (   )
+                                                
+(w 2)   (b 2)   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (b 3)   (   )   (w 2)   (b 4)
+                                                
+(   )   (   )   (   )   (   )   (b 2)   (   )
+                                                
+(w 2)   (   )   (w 2)   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )   (   )---(b 2)   (   )---(   )
+  |       |       |       |       |       |     
+(w 2)   (b 2)---(   )   (   )---(   )   (   )
+  |                                       |     
+(   )---(   )---(b 3)   (   )---(w 2)---(b 4)
+                  |       |                     
+(   )---(   )---(   )   (   )---(b 2)   (   )
+  |                               |             
+(w 2)   (   )---(w 2)---(   )   (   )---(   )
+  |       |               |               |     
+(   )---(   )   (   )   (   )---(   )---(   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 8,500,075)</td>
+	<td>322.244µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (b 2)   (   )   (   )   (b 3)
+                                                
+(w 3)   (   )   (   )   (   )   (   )   (b 5)
+                                                
+(   )   (   )   (b 3)   (   )   (   )   (   )
+                                                
+(   )   (   )   (w 4)   (   )   (   )   (   )
+                                                
+(   )   (w 5)   (   )   (   )   (   )   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )   (   )---(   )---(   )---(   )
+  |       |       |                       |     
+(   )   (   )---(b 2)   (   )---(   )---(b 3)
+  |                       |                     
+(w 3)   (   )---(   )   (   )---(   )---(b 5)
+  |       |       |                       |     
+(   )---(   )   (b 3)---(   )---(   )   (   )
+                                  |       |     
+(   )---(   )---(w 4)---(   )---(   )   (   )
+  |                                       |     
+(   )---(w 5)---(   )---(   )---(   )---(   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 8,967,122)</td>
+	<td>487.027µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (b 2)   (   )   (   )   (   )   (b 3)
+                                                
+(   )   (   )   (   )   (   )   (   )   (w 2)
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (b 4)   (b 2)   (   )
+                                                
+(w 5)   (   )   (b 2)   (   )   (b 2)   (w 2)
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(b 2)   (   )   (   )   (   )---(b 3)
+  |       |                       |       |     
+(   )   (   )---(   )   (   )---(   )   (w 2)
+  |               |       |               |     
+(   )   (   )---(   )   (   )   (   )---(   )
+  |       |               |       |             
+(   )   (   )---(   )---(b 4)   (b 2)---(   )
+  |                                       |     
+(w 5)   (   )---(b 2)   (   )---(b 2)   (w 2)
+  |       |       |       |       |       |     
+(   )---(   )   (   )---(   )   (   )---(   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 824,905)</td>
+	<td>399.122µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (b 5)   (   )
+                                                
+(   )   (   )   (w 3)   (   )   (   )   (b 2)
+                                                
+(   )   (   )   (   )   (w 2)   (   )   (   )
+                                                
+(   )   (   )   (w 2)   (   )   (w 3)   (   )
+                                                
+(   )   (   )   (   )   (b 2)   (   )   (   )
+                                                
+(   )   (b 3)   (   )   (   )   (   )   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )---(   )---(   )---(b 5)   (   )
+  |                               |             
+(   )---(   )---(w 3)---(   )   (   )---(b 2)
+                          |               |     
+(   )   (   )   (   )   (w 2)   (   )---(   )
+                          |       |             
+(   )   (   )---(w 2)---(   )   (w 3)   (   )
+          |                       |             
+(   )   (   )   (   )---(b 2)   (   )   (   )
+          |       |       |       |             
+(   )   (b 3)---(   )   (   )---(   )   (   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 9,536,268)</td>
+	<td>247.574µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (b 6)   (   )   (   )   (   )
+                                                
+(   )   (b 4)   (w 4)   (   )   (b 2)   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (b 3)
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (w 3)   (   )
+                                                
+(   )   (   )   (   )   (w 4)   (   )   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )---(b 6)   (   )   (   )---(   )
+  |               |               |       |     
+(   )---(b 4)   (w 4)   (   )---(b 2)   (   )
+          |       |       |               |     
+(   )   (   )   (   )   (   )   (   )---(b 3)
+          |       |       |       |             
+(   )   (   )   (   )   (   )   (   )   (   )
+          |       |       |       |             
+(   )---(   )   (   )---(   )   (w 3)   (   )
+  |                               |             
+(   )---(   )---(   )---(w 4)---(   )   (   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 9,761,419)</td>
+	<td>253.305µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(w 2)   (b 4)   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (w 4)   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(b 5)   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (b10)
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )   (   )   (   )   (   )---(   )
+  |       |                       |       |     
+(w 2)   (b 4)---(   )---(   )---(   )   (   )
+  |                                       |     
+(   )---(   )---(w 4)---(   )---(   )   (   )
+                                  |       |     
+(   )   (   )   (   )   (   )   (   )   (   )
+                                  |       |     
+(b 5)---(   )---(   )---(   )---(   )   (   )
+  |                                       |     
+(   )---(   )---(   )---(   )---(   )---(b10)
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 975,117)</td>
+	<td>540.649µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (b 2)   (   )   (   )   (b 2)   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                                                
+(w 5)   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (w 2)   (   )   (   )   (   )   (b 3)
+                                                
+(   )   (   )   (   )   (   )   (w 2)   (   )
+                                                
+(   )   (w 5)   (   )   (   )   (   )   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(b 2)   (   )   (   )---(b 2)   (   )
+  |       |               |       |             
+(   )   (   )---(   )---(   )   (   )---(   )
+  |                                       |     
+(w 5)   (   )---(   )---(   )---(   )   (   )
+  |       |                       |       |     
+(   )   (w 2)   (   )---(   )   (   )---(b 3)
+  |       |       |       |                     
+(   )   (   )---(   )   (   )---(w 2)---(   )
+  |                                       |     
+(   )---(w 5)---(   )---(   )---(   )---(   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>5x5 (PuzzleID: 985,091)</td>
+	<td>381.268µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(b 3)   (   )   (   )   (   )   (b 2)   (   )
+                                                
+(   )   (   )   (   )   (b 2)   (   )   (   )
+                                                
+(   )   (w 4)   (   )   (   )   (b 6)   (   )
+                                                
+(   )   (w 2)   (   )   (   )   (   )   (w 5)
+                                                
+(b 2)   (   )   (   )   (   )   (   )   (   )
+                                                
+(   )   (   )   (   )   (   )   (   )   (   )
+                              
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(b 3)---(   )   (   )---(   )   (b 2)---(   )
+  |       |       |       |       |       |     
+(   )   (   )---(   )   (b 2)---(   )   (   )
+  |                                       |     
+(   )---(w 4)---(   )---(   )---(b 6)   (   )
+                                  |       |     
+(   )---(w 2)---(   )   (   )   (   )   (w 5)
+  |               |               |       |     
+(b 2)---(   )   (   )---(   )---(   )   (   )
+          |                               |     
+(   )   (   )---(   )---(   )---(   )---(   )
+                              
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>7x7 (Manual Easy 7x7)</td>
+	<td>1.085343ms</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (b11)
+                                                                
+(w 2)   (   )   (   )   (b 4)   (w 3)   (   )   (   )   (   )
+                                                                
+(   )   (   )   (w 3)   (   )   (b 2)   (   )   (   )   (   )
+                                                                
+(   )   (   )   (   )   (w 4)   (   )   (   )   (   )   (   )
+                                                                
+(   )   (b 3)   (   )   (   )   (   )   (b 4)   (   )   (   )
+                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                
+(   )   (   )   (   )   (w 4)   (   )   (b 5)   (   )   (   )
+                                                                
+(b10)   (   )   (w 6)   (   )   (   )   (   )   (   )   (   )
+                                        
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )   (   )---(   )---(   )---(   )---(   )---(b11)
+  |       |       |                                       |     
+(w 2)   (   )---(   )   (b 4)---(w 3)---(   )---(   )   (   )
+  |                       |                       |       |     
+(   )---(   )---(w 3)---(   )   (b 2)---(   )   (   )   (   )
+                                  |       |       |       |     
+(   )---(   )---(   )---(w 4)---(   )   (   )   (   )   (   )
+  |                                       |       |       |     
+(   )   (b 3)---(   )   (   )---(   )---(b 4)   (   )   (   )
+  |       |       |       |                       |       |     
+(   )   (   )   (   )---(   )   (   )   (   )---(   )   (   )
+  |       |                               |               |     
+(   )   (   )---(   )---(w 4)---(   )---(b 5)   (   )---(   )
+  |                                               |             
+(b10)---(   )---(w 6)---(   )---(   )---(   )---(   )   (   )
+                                        
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>7x7 (Manual hard 7x7)</td>
+	<td>2.032218ms</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(b 8)   (   )   (   )   (   )   (   )   (   )   (b 2)   (   )
+                                                                
+(   )   (w 6)   (b 6)   (   )   (   )   (w 2)   (   )   (   )
+                                                                
+(   )   (   )   (   )   (b 3)   (   )   (b 5)   (   )   (   )
+                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 2)
+                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (w 2)   (   )
+                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 3)
+                                        
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(b 8)---(   )   (   )   (   )---(   )   (   )   (b 2)---(   )
+  |       |               |       |               |       |     
+(   )   (w 6)   (b 6)---(   )   (   )---(w 2)---(   )   (   )
+  |       |       |                                       |     
+(   )   (   )   (   )   (b 3)---(   )---(b 5)   (   )---(   )
+  |       |       |       |               |       |             
+(   )   (   )   (   )   (   )---(   )   (   )   (   )---(   )
+  |       |       |               |       |               |     
+(   )   (   )   (   )   (   )---(   )   (   )   (   )---(b 2)
+  |       |       |       |               |       |             
+(   )   (   )   (   )   (   )   (   )---(   )   (w 2)   (   )
+  |       |       |       |       |               |             
+(   )   (   )---(   )   (   )   (   )---(   )   (   )---(   )
+  |                       |               |               |     
+(   )---(   )---(   )---(   )   (   )   (   )---(   )---(b 3)
+                                        
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>7x7 (Manual normal 7x7)</td>
+	<td>1.128921ms</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                
+(   )   (b 2)   (   )   (w 3)   (   )   (   )   (   )   (   )
+                                                                
+(   )   (b 6)   (   )   (   )   (   )   (   )   (w 2)   (   )
+                                                                
+(w 4)   (w 2)   (   )   (   )   (   )   (w 4)   (   )   (b 2)
+                                                                
+(   )   (   )   (w 2)   (   )   (   )   (   )   (   )   (   )
+                                                                
+(   )   (   )   (b 3)   (   )   (   )   (   )   (   )   (   )
+                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                
+(   )   (   )   (b 4)   (   )   (   )   (   )   (   )   (b 4)
+                                        
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )---(   )   (   )   (   )   (   )---(   )---(   )
+          |       |                       |               |     
+(   )---(b 2)   (   )---(w 3)---(   )---(   )   (   )---(   )
+  |                                               |             
+(   )   (b 6)---(   )---(   )---(   )---(   )   (w 2)   (   )
+  |       |                               |       |             
+(w 4)   (w 2)   (   )   (   )   (   )   (w 4)   (   )---(b 2)
+  |       |                               |               |     
+(   )   (   )---(w 2)---(   )   (   )   (   )   (   )---(   )
+  |                       |               |       |             
+(   )---(   )   (b 3)---(   )   (   )   (   )   (   )   (   )
+          |       |                       |       |             
+(   )---(   )   (   )   (   )   (   )---(   )   (   )---(   )
+  |               |               |                       |     
+(   )---(   )---(b 4)   (   )   (   )---(   )---(   )---(b 4)
+                                        
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>7x7 (Manual second normal 7x7)</td>
+	<td>1.137011ms</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (w 3)   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                
+(   )   (   )   (   )   (b 2)   (   )   (   )   (w 2)   (w 3)
+                                                                
+(   )   (   )   (   )   (   )   (b 3)   (   )   (   )   (   )
+                                                                
+(   )   (   )   (   )   (b 4)   (   )   (b 5)   (b 5)   (   )
+                                                                
+(b 6)   (   )   (b 3)   (w 2)   (   )   (   )   (   )   (   )
+                                                                
+(   )   (   )   (b 2)   (   )   (   )   (   )   (   )   (   )
+                                                                
+(   )   (   )   (   )   (   )   (b 3)   (   )   (   )   (   )
+                                                                
+(   )   (   )   (b 3)   (   )   (   )   (b 5)   (   )   (   )
+                                        
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(w 3)---(   )---(   )   (   )---(   )   (   )---(   )
+  |                       |       |       |       |       |     
+(   )   (   )---(   )   (b 2)---(   )   (   )   (w 2)   (w 3)
+  |       |       |                       |       |       |     
+(   )   (   )   (   )---(   )---(b 3)   (   )---(   )   (   )
+  |       |                       |                       |     
+(   )   (   )---(   )---(b 4)   (   )---(b 5)   (b 5)---(   )
+  |                       |               |       |             
+(b 6)---(   )---(b 3)   (w 2)   (   )   (   )   (   )   (   )
+                  |       |               |       |             
+(   )   (   )---(b 2)   (   )---(   )   (   )   (   )   (   )
+          |                       |       |       |             
+(   )---(   )   (   )---(   )---(b 3)   (   )   (   )   (   )
+  |               |                       |       |             
+(   )---(   )---(b 3)   (   )   (   )   (b 5)---(   )   (   )
+                                        
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>7x7 (PuzzleID: 1,305,103)</td>
+	<td>883.288µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (w 4)   (   )   (   )   (   )   (   )   (   )
+                                                                
+(   )   (b 2)   (   )   (w 2)   (   )   (   )   (   )   (   )
+                                                                
+(b 2)   (   )   (   )   (   )   (w 2)   (w 3)   (   )   (w 4)
+                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                
+(   )   (b 2)   (   )   (b 3)   (w 2)   (   )   (   )   (   )
+                                                                
+(   )   (   )   (b 6)   (   )   (b 4)   (   )   (   )   (b 3)
+                                                                
+(   )   (b 3)   (   )   (   )   (   )   (   )   (   )   (w 2)
+                                                                
+(b 3)   (b 2)   (   )   (   )   (   )   (   )   (b 2)   (   )
+                                        
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )---(w 4)---(   )---(   )---(   )   (   )---(   )
+          |                               |       |       |     
+(   )---(b 2)   (   )---(w 2)---(   )   (   )   (   )   (   )
+  |               |               |       |       |       |     
+(b 2)---(   )   (   )   (   )   (w 2)   (w 3)   (   )   (w 4)
+          |       |               |       |       |       |     
+(   )---(   )   (   )   (   )---(   )   (   )---(   )   (   )
+  |               |       |                               |     
+(   )---(b 2)   (   )   (b 3)---(w 2)---(   )   (   )---(   )
+          |       |                       |       |             
+(   )---(   )   (b 6)---(   )---(b 4)   (   )   (   )---(b 3)
+  |                               |       |               |     
+(   )   (b 3)---(   )---(   )   (   )   (   )---(   )   (w 2)
+  |       |               |       |               |       |     
+(b 3)---(b 2)   (   )   (   )---(   )   (   )   (b 2)---(   )
+                                        
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>7x7 (PuzzleID: 1,401,786)</td>
+	<td>843.203µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (   )   (   )   (w 3)   (   )
+                                                                
+(   )   (   )   (   )   (   )   (   )   (b 4)   (w 2)   (   )
+                                                                
+(   )   (   )   (   )   (   )   (w 3)   (   )   (   )   (   )
+                                                                
+(   )   (b 4)   (b 5)   (   )   (b 5)   (   )   (   )   (   )
+                                                                
+(   )   (b 2)   (   )   (w 3)   (   )   (   )   (   )   (b 2)
+                                                                
+(   )   (   )   (   )   (b 3)   (   )   (   )   (w 2)   (   )
+                                                                
+(   )   (b 2)   (   )   (   )   (   )   (b 3)   (b 3)   (   )
+                                                                
+(   )   (   )   (b 2)   (   )   (   )   (   )   (w 3)   (   )
+                                        
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )---(   )   (   )   (   )---(   )---(w 3)---(   )
+          |       |               |                       |     
+(   )   (   )   (   )   (   )   (   )   (b 4)---(w 2)---(   )
+          |       |               |       |                     
+(   )   (   )   (   )   (   )   (w 3)   (   )   (   )   (   )
+          |       |               |       |                     
+(   )---(b 4)   (b 5)---(   )---(b 5)   (   )---(   )---(   )
+  |                                                       |     
+(   )---(b 2)   (   )---(w 3)---(   )---(   )   (   )---(b 2)
+          |       |                       |       |             
+(   )---(   )   (   )---(b 3)   (   )   (   )   (w 2)   (   )
+  |                       |               |       |             
+(   )   (b 2)---(   )   (   )   (   )---(b 3)   (b 3)---(   )
+  |       |       |       |       |                       |     
+(   )---(   )   (b 2)---(   )   (   )---(   )---(w 3)---(   )
+                                        
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>7x7 (PuzzleID: 1,845,873)</td>
+	<td>1.052298ms</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (w 7)   (   )   (   )   (   )   (   )
+                                                                
+(   )   (   )   (   )   (   )   (w 3)   (   )   (   )   (   )
+                                                                
+(   )   (   )   (b 2)   (   )   (b 2)   (   )   (   )   (b 2)
+                                                                
+(   )   (   )   (   )   (b 2)   (   )   (   )   (   )   (   )
+                                                                
+(   )   (w 3)   (   )   (w 2)   (   )   (   )   (b 2)   (   )
+                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 4)
+                                                                
+(w 4)   (b 4)   (   )   (   )   (b 3)   (   )   (   )   (   )
+                                                                
+(b 9)   (   )   (   )   (   )   (   )   (   )   (b 2)   (   )
+                                        
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )---(   )---(w 7)---(   )---(   )---(   )---(   )
+  |                                                       |     
+(   )---(   )   (   )---(   )---(w 3)---(   )   (   )---(   )
+          |       |                       |       |             
+(   )   (   )---(b 2)   (   )---(b 2)   (   )   (   )---(b 2)
+                          |       |       |               |     
+(   )---(   )   (   )---(b 2)   (   )---(   )   (   )---(   )
+  |       |       |                               |             
+(   )   (w 3)   (   )---(w 2)---(   )   (   )---(b 2)   (   )
+  |       |                       |       |                     
+(   )   (   )   (   )---(   )   (   )   (   )---(   )---(b 4)
+  |       |       |       |       |                       |     
+(w 4)   (b 4)---(   )   (   )---(b 3)   (   )---(   )   (   )
+  |                                       |       |       |     
+(b 9)---(   )---(   )---(   )---(   )---(   )   (b 2)---(   )
+                                        
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>7x7 (PuzzleID: 1,891,848)</td>
+	<td>683.225µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (   )   (w 6)   (   )   (   )
+                                                                
+(b 4)   (   )   (   )   (w 2)   (   )   (   )   (   )   (   )
+                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                
+(   )   (   )   (w 2)   (   )   (w 3)   (b 3)   (   )   (   )
+                                                                
+(   )   (   )   (   )   (   )   (   )   (w 2)   (   )   (   )
+                                                                
+(b 2)   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                
+(   )   (   )   (w 3)   (   )   (   )   (   )   (b 2)   (w 5)
+                                                                
+(   )   (b 2)   (   )   (b 3)   (   )   (   )   (b 2)   (   )
+                                        
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )---(   )---(   )---(   )---(w 6)---(   )---(   )
+          |                                               |     
+(b 4)---(   )   (   )---(w 2)---(   )   (   )---(   )---(   )
+  |               |               |       |                     
+(   )   (   )---(   )   (   )   (   )   (   )   (   )---(   )
+  |       |                       |       |       |       |     
+(   )   (   )---(w 2)---(   )   (w 3)   (b 3)---(   )   (   )
+  |                       |       |                       |     
+(   )---(   )   (   )---(   )   (   )---(w 2)---(   )   (   )
+          |       |                               |       |     
+(b 2)---(   )   (   )   (   )   (   )---(   )---(   )   (   )
+  |               |               |                       |     
+(   )---(   )   (w 3)   (   )---(   )   (   )---(b 2)   (w 5)
+          |       |       |               |       |       |     
+(   )   (b 2)---(   )   (b 3)---(   )---(   )   (b 2)---(   )
+                                        
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>7x7 (PuzzleID: 3,213,310)</td>
+	<td>1.00108ms</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (b 5)   (   )   (   )   (   )   (b 5)
+                                                                
+(   )   (   )   (   )   (b 3)   (   )   (   )   (   )   (   )
+                                                                
+(b 3)   (   )   (b 3)   (   )   (   )   (   )   (   )   (b 2)
+                                                                
+(   )   (   )   (   )   (   )   (b 4)   (   )   (w 2)   (   )
+                                                                
+(   )   (b 3)   (   )   (   )   (w 2)   (b 2)   (   )   (   )
+                                                                
+(w 4)   (b 2)   (   )   (   )   (   )   (   )   (b 2)   (   )
+                                                                
+(   )   (b 2)   (b 2)   (   )   (   )   (w 2)   (   )   (   )
+                                                                
+(   )   (b 2)   (   )   (   )   (   )   (   )   (   )   (   )
+                                        
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )   (   )   (b 5)---(   )---(   )---(   )---(b 5)
+  |       |               |                               |     
+(   )   (   )---(   )---(b 3)   (   )---(   )   (   )---(   )
+  |                               |       |       |             
+(b 3)---(   )   (b 3)---(   )---(   )   (   )   (   )---(b 2)
+          |       |                       |               |     
+(   )---(   )   (   )---(   )---(b 4)   (   )---(w 2)---(   )
+  |                               |                             
+(   )   (b 3)---(   )---(   )   (w 2)   (b 2)---(   )   (   )
+  |       |               |       |       |       |             
+(w 4)   (b 2)---(   )   (   )   (   )---(   )   (b 2)---(   )
+  |               |       |                               |     
+(   )   (b 2)---(b 2)   (   )   (   )---(w 2)---(   )   (   )
+  |       |               |       |               |       |     
+(   )---(b 2)   (   )   (   )---(   )   (   )   (   )---(   )
+                                        
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>7x7 (PuzzleID: 5,197,088)</td>
+	<td>1.304157ms</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                
+(   )   (b 2)   (   )   (   )   (   )   (   )   (b 2)   (   )
+                                                                
+(   )   (   )   (w 2)   (   )   (   )   (   )   (   )   (b 2)
+                                                                
+(   )   (   )   (   )   (   )   (b 2)   (b 3)   (b 3)   (   )
+                                                                
+(   )   (   )   (   )   (w 3)   (   )   (b 4)   (   )   (   )
+                                                                
+(   )   (w 4)   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                
+(w 7)   (   )   (   )   (   )   (   )   (   )   (b 2)   (   )
+                                                                
+(   )   (   )   (   )   (w 4)   (   )   (   )   (   )   (   )
+                                        
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )   (   )---(   )---(   )---(   )---(   )---(   )
+  |       |       |                                       |     
+(   )   (b 2)---(   )   (   )---(   )---(   )   (b 2)---(   )
+  |                       |               |       |             
+(   )   (   )---(w 2)---(   )   (   )   (   )   (   )---(b 2)
+  |       |                               |               |     
+(   )   (   )   (   )---(   )   (b 2)---(b 3)   (b 3)---(   )
+  |       |       |       |       |               |             
+(   )   (   )   (   )   (w 3)   (   )---(b 4)   (   )   (   )
+  |       |       |       |               |       |             
+(   )   (w 4)   (   )   (   )   (   )   (   )   (   )---(   )
+  |       |       |       |               |               |     
+(w 7)   (   )---(   )   (   )---(   )   (   )   (b 2)---(   )
+  |                               |       |       |             
+(   )---(   )---(   )---(w 4)---(   )   (   )---(   )   (   )
+                                        
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>7x7 (PuzzleID: 6,483,955)</td>
+	<td>663.207µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (   )   (   )   (b 3)   (   )
+                                                                
+(   )   (   )   (   )   (b 4)   (   )   (   )   (   )   (w 4)
+                                                                
+(b 3)   (   )   (   )   (   )   (b 2)   (b 2)   (   )   (   )
+                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (b 3)   (   )
+                                                                
+(b 6)   (   )   (   )   (b 4)   (   )   (   )   (   )   (   )
+                                                                
+(   )   (b 4)   (   )   (   )   (   )   (   )   (b 2)   (   )
+                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (b 2)   (   )
+                                                                
+(   )   (w 2)   (   )   (   )   (   )   (   )   (   )   (b 3)
+                                        
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (   )   (   )   (b 3)---(   )
+                                                  |       |     
+(   )---(   )---(   )---(b 4)   (   )---(   )   (   )   (w 4)
+  |                       |       |       |       |       |     
+(b 3)---(   )---(   )   (   )---(b 2)   (b 2)---(   )   (   )
+                  |                                       |     
+(   )   (   )   (   )---(   )   (   )---(   )---(b 3)   (   )
+                          |       |               |       |     
+(b 6)---(   )---(   )---(b 4)   (   )---(   )   (   )---(   )
+  |                                       |                     
+(   )   (b 4)---(   )---(   )---(   )   (   )---(b 2)   (   )
+  |       |                       |               |             
+(   )   (   )---(   )   (   )   (   )---(   )   (b 2)---(   )
+  |               |                       |               |     
+(   )---(w 2)---(   )   (   )   (   )   (   )---(   )---(b 3)
+                                        
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>7x7 (PuzzleID: 713,557)</td>
+	<td>783.926µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (   )   (b 2)   (   )   (b 6)
+                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                
+(   )   (   )   (   )   (b 5)   (   )   (   )   (   )   (   )
+                                                                
+(   )   (b 4)   (b 3)   (   )   (   )   (w 2)   (   )   (   )
+                                                                
+(b 6)   (   )   (   )   (b 3)   (   )   (   )   (b 2)   (b 6)
+                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 6)
+                                                                
+(b 8)   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                        
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )---(   )---(   )   (   )---(b 2)   (   )---(b 6)
+  |                       |       |       |       |       |     
+(   )   (   )---(   )   (   )---(   )   (   )---(   )   (   )
+  |       |       |                                       |     
+(   )   (   )   (   )---(   )---(   )---(   )---(   )   (   )
+  |       |                                       |       |     
+(   )   (   )   (   )   (b 5)---(   )---(   )---(   )   (   )
+  |       |               |                               |     
+(   )   (b 4)---(b 3)   (   )   (   )---(w 2)---(   )   (   )
+  |               |       |       |               |       |     
+(b 6)---(   )   (   )   (b 3)---(   )   (   )   (b 2)---(b 6)
+          |       |                                             
+(   )---(   )   (   )---(   )---(   )---(   )---(   )---(b 6)
+  |                                                       |     
+(b 8)---(   )---(   )---(   )---(   )---(   )---(   )---(   )
+                                        
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>7x7 (PuzzleID: 8,156,383)</td>
+	<td>828.218µs</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (b 7)   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                
+(   )   (   )   (b 4)   (   )   (   )   (   )   (   )   (b 4)
+                                                                
+(   )   (   )   (   )   (b 3)   (   )   (   )   (   )   (   )
+                                                                
+(   )   (w 4)   (   )   (   )   (b 3)   (   )   (w 4)   (   )
+                                                                
+(   )   (   )   (   )   (   )   (w 2)   (w 4)   (   )   (   )
+                                                                
+(   )   (   )   (   )   (   )   (b 5)   (   )   (   )   (   )
+                                                                
+(   )   (b 2)   (   )   (   )   (   )   (b 5)   (   )   (   )
+                                                                
+(   )   (   )   (b 3)   (   )   (b 4)   (   )   (   )   (   )
+                                        
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (b 7)---(   )---(   )---(   )   (   )   (   )   (   )
+          |                       |                             
+(   )   (   )   (b 4)---(   )   (   )---(   )---(   )---(b 4)
+          |       |       |                               |     
+(   )   (   )   (   )   (b 3)---(   )---(   )   (   )---(   )
+          |       |                       |       |             
+(   )   (w 4)   (   )   (   )---(b 3)   (   )   (w 4)   (   )
+          |       |       |       |       |       |             
+(   )---(   )   (   )---(   )   (w 2)   (w 4)   (   )   (   )
+  |                               |       |       |             
+(   )   (   )---(   )---(   )---(b 5)   (   )   (   )   (   )
+  |       |                               |       |             
+(   )   (b 2)---(   )   (   )   (   )---(b 5)   (   )---(   )
+  |               |               |                       |     
+(   )---(   )---(b 3)   (   )   (b 4)---(   )---(   )---(   )
+                                        
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>7x7 (PuzzleID: 8,189,111)</td>
+	<td>1.831347ms</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(b 4)   (   )   (w 3)   (   )   (   )   (   )   (   )   (b 3)
+                                                                
+(   )   (   )   (   )   (   )   (b 2)   (w 4)   (b 3)   (   )
+                                                                
+(   )   (   )   (   )   (b 3)   (   )   (   )   (   )   (   )
+                                                                
+(w 3)   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                
+(   )   (b 3)   (   )   (   )   (b 2)   (   )   (   )   (   )
+                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                
+(   )   (   )   (b 5)   (   )   (   )   (   )   (   )   (   )
+                                                                
+(b 8)   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                        
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(b 4)---(   )---(w 3)---(   )   (   )   (   )---(   )---(b 3)
+  |                       |               |               |     
+(   )---(   )---(   )   (   )---(b 2)   (w 4)   (b 3)---(   )
+                  |               |       |       |             
+(   )---(   )   (   )   (b 3)---(   )   (   )   (   )   (   )
+  |       |       |       |               |       |             
+(w 3)   (   )   (   )   (   )   (   )   (   )   (   )---(   )
+  |       |       |       |               |               |     
+(   )   (b 3)---(   )   (   )---(b 2)   (   )---(   )   (   )
+  |                               |               |       |     
+(   )---(   )   (   )---(   )---(   )   (   )   (   )   (   )
+          |       |                               |       |     
+(   )---(   )   (b 5)---(   )---(   )---(   )---(   )   (   )
+  |                                                       |     
+(b 8)---(   )---(   )---(   )---(   )---(   )---(   )---(   )
+                                        
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>7x7 (PuzzleID: 8,498,922)</td>
+	<td>1.053895ms</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(b 4)   (   )   (   )   (   )   (b 3)   (   )   (   )   (   )
+                                                                
+(   )   (b 2)   (   )   (   )   (   )   (   )   (b 2)   (   )
+                                                                
+(b 2)   (   )   (   )   (w 2)   (   )   (b 2)   (   )   (   )
+                                                                
+(   )   (   )   (   )   (w 3)   (   )   (   )   (   )   (   )
+                                                                
+(b 2)   (   )   (   )   (   )   (   )   (b 4)   (   )   (   )
+                                                                
+(   )   (   )   (b 4)   (   )   (b 3)   (   )   (   )   (   )
+                                                                
+(b 2)   (   )   (b 3)   (   )   (   )   (   )   (   )   (   )
+                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (b 6)   (b 8)
+                                        
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(b 4)---(   )---(   )---(   )   (b 3)---(   )   (   )---(   )
+  |                       |       |       |       |       |     
+(   )---(b 2)   (   )---(   )   (   )   (   )---(b 2)   (   )
+          |       |               |                       |     
+(b 2)---(   )   (   )---(w 2)---(   )   (b 2)---(   )   (   )
+  |                                       |       |       |     
+(   )---(   )   (   )---(w 3)---(   )---(   )   (   )   (   )
+          |       |                               |       |     
+(b 2)---(   )   (   )   (   )   (   )---(b 4)   (   )   (   )
+  |               |               |       |       |       |     
+(   )---(   )   (b 4)---(   )---(b 3)   (   )   (   )   (   )
+          |                               |       |       |     
+(b 2)---(   )   (b 3)---(   )---(   )   (   )   (   )   (   )
+  |               |               |       |       |       |     
+(   )---(   )---(   )   (   )   (   )---(   )   (b 6)---(b 8)
+                                        
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>10x10 (Manual normal 10x10)</td>
+	<td>2.963415ms</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (b 2)   (   )   (   )   (b 2)   (   )   (   )   (   )   (   )   (   )   (b 4)
+                                                                                        
+(b 2)   (   )   (   )   (b 2)   (   )   (   )   (   )   (   )   (   )   (   )   (b 2)
+                                                                                        
+(   )   (b 2)   (   )   (b 2)   (b 2)   (b 3)   (   )   (   )   (   )   (   )   (b 2)
+                                                                                        
+(b 2)   (   )   (w 2)   (   )   (   )   (   )   (b 4)   (   )   (w 4)   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (w 2)   (   )   (   )   (b 4)
+                                                                                        
+(b 2)   (   )   (b 3)   (b 2)   (   )   (   )   (   )   (   )   (   )   (b 2)   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 3)   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (b 4)   (   )   (b 2)   (   )   (   )   (w 2)   (   )
+                                                                                        
+(   )   (   )   (   )   (w 3)   (   )   (   )   (w 2)   (   )   (b 3)   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 3)   (b 2)   (   )   (   )
+                                                                                        
+(   )   (b 3)   (   )   (   )   (   )   (b 4)   (   )   (b 2)   (   )   (   )   (b 3)
+                                                       
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (b 2)---(   )   (   )---(b 2)   (   )---(   )   (   )---(   )---(   )---(b 4)
+          |       |       |       |       |       |       |                       |     
+(b 2)---(   )   (   )---(b 2)   (   )---(   )   (   )   (   )---(   )   (   )---(b 2)
+  |                                               |               |       |             
+(   )---(b 2)   (   )---(b 2)   (b 2)---(b 3)   (   )   (   )   (   )   (   )---(b 2)
+          |       |       |       |       |       |               |               |     
+(b 2)---(   )   (w 2)   (   )---(   )   (   )   (b 4)---(   )   (w 4)   (   )---(   )
+  |               |                       |               |       |       |             
+(   )---(   )   (   )---(   )   (   )   (   )---(   )   (w 2)   (   )   (   )---(b 4)
+          |               |                       |       |       |               |     
+(b 2)---(   )   (b 3)---(b 2)   (   )---(   )   (   )---(   )   (   )---(b 2)   (   )
+  |               |               |       |                               |       |     
+(   )---(   )   (   )   (   )   (   )   (   )---(   )   (   )---(   )---(b 3)   (   )
+          |       |               |               |       |                       |     
+(   )---(   )   (   )---(   )---(b 4)   (   )---(b 2)   (   )   (   )---(w 2)---(   )
+  |                                       |               |       |                     
+(   )   (   )---(   )---(w 3)---(   )   (   )---(w 2)---(   )   (b 3)---(   )---(   )
+  |       |                       |                                               |     
+(   )   (   )   (   )---(   )---(   )   (   )---(   )---(b 3)   (b 2)---(   )   (   )
+  |       |       |                       |               |       |       |       |     
+(   )---(b 3)   (   )---(   )---(   )---(b 4)   (   )   (b 2)---(   )   (   )---(b 3)
+                                                       
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>10x10 (PuzzleID: 1,366,434)</td>
+	<td>12.831378ms</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (b 4)   (   )   (   )   (   )   (b 3)   (b 2)   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 2)   (b 2)   (   )   (   )
+                                                                                        
+(w 8)   (   )   (b 2)   (w 7)   (   )   (   )   (   )   (   )   (b 3)   (   )   (   )
+                                                                                        
+(   )   (b 2)   (   )   (   )   (   )   (w 3)   (   )   (   )   (   )   (w 3)   (   )
+                                                                                        
+(   )   (b 2)   (   )   (   )   (   )   (w 2)   (b 4)   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (b 2)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (b 2)   (   )   (   )   (   )   (   )   (   )   (b 2)
+                                                                                        
+(   )   (b 4)   (   )   (   )   (   )   (b 2)   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (b 3)   (   )   (w 2)   (b 6)   (   )   (   )
+                                                                                        
+(   )   (   )   (b 8)   (   )   (   )   (w 7)   (   )   (   )   (   )   (   )   (   )
+                                                       
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )---(b 4)   (   )   (   )---(   )---(b 3)   (b 2)---(   )
+                          |       |               |               |       |       |     
+(   )---(   )---(   )   (   )   (   )   (   )   (   )---(b 2)   (b 2)---(   )   (   )
+  |               |       |       |                       |                       |     
+(w 8)   (   )---(b 2)   (w 7)   (   )   (   )   (   )   (   )---(b 3)   (   )---(   )
+  |       |               |       |                               |       |             
+(   )   (b 2)---(   )   (   )   (   )---(w 3)---(   )---(   )   (   )   (w 3)   (   )
+  |               |       |                               |       |       |             
+(   )   (b 2)---(   )   (   )   (   )---(w 2)---(b 4)   (   )---(   )   (   )   (   )
+  |       |               |       |               |                       |             
+(   )   (   )---(b 2)   (   )   (   )---(   )   (   )   (   )---(   )   (   )---(   )
+  |               |       |               |       |       |       |               |     
+(   )   (   )---(   )   (   )   (   )---(   )   (   )---(   )   (   )   (   )---(   )
+  |       |               |       |                               |       |             
+(   )   (   )   (   )   (   )---(b 2)   (   )   (   )   (   )   (   )   (   )---(b 2)
+  |       |                                                       |               |     
+(   )   (b 4)---(   )---(   )   (   )   (b 2)---(   )   (   )   (   )   (   )---(   )
+  |                       |               |       |               |       |             
+(   )---(   )---(   )   (   )---(   )---(b 3)   (   )---(w 2)---(b 6)   (   )   (   )
+                  |                                                       |             
+(   )   (   )   (b 8)---(   )---(   )---(w 7)---(   )---(   )---(   )---(   )   (   )
+                                                       
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>10x10 (PuzzleID: 1,897,766)</td>
+	<td>17.801517ms</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 3)
+                                                                                        
+(   )   (   )   (w 2)   (   )   (   )   (b 2)   (b 3)   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (b 3)   (   )   (w 5)   (   )   (   )   (   )   (   )   (   )   (b 3)
+                                                                                        
+(b 2)   (b 2)   (   )   (   )   (   )   (   )   (   )   (b 4)   (   )   (   )   (   )
+                                                                                        
+(b 3)   (   )   (   )   (w 3)   (   )   (w 2)   (b 4)   (   )   (   )   (   )   (w 6)
+                                                                                        
+(   )   (w 3)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(b 2)   (   )   (   )   (   )   (   )   (w 3)   (w 3)   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (b 2)   (   )   (   )   (   )   (   )   (w 2)   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (b 4)   (b 2)   (   )   (b 3)   (   )   (   )   (   )
+                                                                                        
+(b 2)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (w 2)   (   )   (   )   (   )   (w 3)   (b 4)   (   )   (   )   (b 2)   (   )
+                                                       
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )   (   )   (   )---(   )   (   )---(   )---(   )   (   )   (   )---(b 3)
+  |       |               |       |       |               |               |       |     
+(   )   (   )---(w 2)---(   )   (   )   (b 2)---(b 3)   (   )   (   )---(   )   (   )
+  |                               |               |       |       |               |     
+(   )---(   )   (b 3)---(   )   (w 5)   (   )   (   )   (   )   (   )   (   )---(b 3)
+          |       |       |       |               |       |       |       |             
+(b 2)---(b 2)   (   )   (   )   (   )   (   )---(   )   (b 4)---(   )   (   )---(   )
+  |               |       |       |       |                                       |     
+(b 3)---(   )---(   )   (w 3)   (   )   (w 2)   (b 4)---(   )---(   )---(   )   (w 6)
+                          |       |       |       |                       |       |     
+(   )---(w 3)---(   )---(   )   (   )---(   )   (   )---(   )   (   )---(   )   (   )
+  |                                                       |       |               |     
+(b 2)---(   )   (   )---(   )   (   )---(w 3)---(w 3)---(   )   (   )---(   )   (   )
+          |       |       |       |                                       |       |     
+(   )   (   )---(   )   (   )---(b 2)   (   )   (   )---(   )   (   )   (w 2)   (   )
+                                                  |       |               |       |     
+(   )   (   )---(   )---(   )---(b 4)   (b 2)---(   )   (b 3)---(   )---(   )   (   )
+          |                       |       |                                       |     
+(b 2)---(   )   (   )---(   )   (   )---(   )   (   )---(   )---(   )   (   )---(   )
+  |               |       |                       |               |       |             
+(   )---(w 2)---(   )   (   )---(   )---(w 3)---(b 4)   (   )   (   )---(b 2)   (   )
+                                                       
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>10x10 (PuzzleID: 176,186)</td>
+	<td>10.326614ms</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (w 3)   (   )   (   )   (   )   (b 2)   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 2)   (   )   (   )   (   )
+                                                                                        
+(   )   (w 4)   (   )   (w 4)   (w 4)   (   )   (b 8)   (   )   (b 3)   (   )   (b 2)
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (b 4)   (   )   (   )   (w 2)   (   )   (   )
+                                                                                        
+(   )   (   )   (b 2)   (   )   (b 2)   (   )   (   )   (w 2)   (b 2)   (   )   (   )
+                                                                                        
+(w 6)   (   )   (   )   (   )   (   )   (b 3)   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (w 4)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (b 2)   (   )   (   )   (   )   (   )   (   )   (   )   (w 2)   (   )
+                                                                                        
+(b 2)   (   )   (   )   (b 2)   (   )   (   )   (b 4)   (   )   (   )   (b 3)   (b 3)
+                                                                                        
+(   )   (   )   (   )   (b 2)   (   )   (b 2)   (   )   (   )   (b 4)   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                       
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )---(w 3)---(   )   (   )   (   )---(b 2)   (   )   (   )---(   )   (   )
+  |                       |               |       |               |       |             
+(   )   (   )---(   )   (   )---(   )---(   )   (   )---(b 2)   (   )   (   )---(   )
+  |       |       |                                       |       |               |     
+(   )   (w 4)   (   )---(w 4)---(w 4)---(   )---(b 8)   (   )---(b 3)   (   )---(b 2)
+  |       |                                       |                       |             
+(   )   (   )   (   )---(   )---(   )---(b 4)   (   )   (   )---(w 2)---(   )   (   )
+  |       |       |                       |       |       |                             
+(   )   (   )   (b 2)---(   )   (b 2)---(   )   (   )   (w 2)   (b 2)---(   )   (   )
+  |       |               |       |               |       |       |       |             
+(w 6)   (   )---(   )---(   )   (   )---(b 3)   (   )   (   )---(   )   (   )---(   )
+  |                                       |       |                               |     
+(   )---(w 4)---(   )---(   )---(   )   (   )   (   )---(   )---(   )   (   )---(   )
+                                  |       |                       |       |             
+(   )   (   )---(b 2)   (   )---(   )   (   )---(   )---(   )   (   )   (w 2)   (   )
+          |       |       |                               |       |       |             
+(b 2)---(   )   (   )---(b 2)   (   )---(   )---(b 4)   (   )   (   )   (b 3)---(b 3)
+  |                               |               |       |       |               |     
+(   )---(   )   (   )---(b 2)   (   )---(b 2)   (   )   (   )   (b 4)---(   )   (   )
+          |       |       |               |       |       |               |       |     
+(   )   (   )---(   )   (   )---(   )---(   )   (   )---(   )   (   )   (   )---(   )
+                                                       
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>10x10 (PuzzleID: 2,209,059)</td>
+	<td>1.972445ms</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (w 4)   (   )   (w 4)   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 2)   (   )   (   )   (b 2)
+                                                                                        
+(w 3)   (b 2)   (   )   (   )   (   )   (b 5)   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(b 4)   (   )   (   )   (   )   (b 2)   (   )   (   )   (   )   (   )   (b 2)   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (w 8)   (   )   (   )
+                                                                                        
+(w 6)   (   )   (w 2)   (   )   (   )   (b 4)   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (w 3)   (b 2)   (   )   (   )   (   )   (   )   (   )   (   )   (b 3)   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (b 4)   (w 7)   (   )   (   )   (   )   (b 2)
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (b 3)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (b 2)   (   )   (b 2)   (   )   (   )   (   )   (   )   (b 3)
+                                                       
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )---(   )   (   )---(w 4)---(   )---(w 4)---(   )   (   )---(   )   (   )
+  |               |       |                               |       |       |             
+(   )   (   )---(   )   (   )---(   )---(   )---(   )   (b 2)---(   )   (   )---(b 2)
+  |       |                                       |                               |     
+(w 3)   (b 2)---(   )   (   )---(   )---(b 5)   (   )   (   )---(   )   (   )---(   )
+  |               |       |               |       |       |       |       |             
+(b 4)---(   )   (   )   (   )---(b 2)   (   )   (   )   (   )   (   )   (b 2)---(   )
+          |       |               |       |       |       |       |               |     
+(   )---(   )   (   )---(   )---(   )   (   )   (   )   (   )   (w 8)   (   )---(   )
+  |                                       |       |       |       |       |             
+(w 6)   (   )---(w 2)---(   )   (   )---(b 4)   (   )   (   )   (   )   (   )   (   )
+  |       |               |       |               |       |       |       |             
+(   )   (w 3)   (b 2)---(   )   (   )---(   )   (   )   (   )   (   )   (b 3)---(   )
+  |       |       |                       |       |       |       |               |     
+(   )   (   )   (   )---(   )---(   )---(b 4)   (w 7)   (   )   (   )   (   )---(b 2)
+  |       |                                       |       |       |       |             
+(   )   (   )---(   )---(   )---(   )---(   )---(   )   (   )   (   )   (   )   (   )
+  |                                                       |       |       |             
+(   )   (b 3)---(   )---(   )   (   )---(   )   (   )---(   )   (   )   (   )---(   )
+  |       |               |       |       |       |               |               |     
+(   )---(   )   (   )   (b 2)---(   )   (b 2)---(   )   (   )   (   )---(   )---(b 3)
+                                                       
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>10x10 (PuzzleID: 2,430,834)</td>
+	<td>4.242685ms</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(b 3)   (b 2)   (   )   (   )   (b 4)   (b 3)   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (w 3)   (b 2)   (   )   (b 2)   (   )   (   )   (   )
+                                                                                        
+(b 3)   (   )   (   )   (   )   (   )   (   )   (b 2)   (   )   (   )   (b 3)   (   )
+                                                                                        
+(   )   (w 2)   (w 2)   (   )   (   )   (b 2)   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(b 2)   (   )   (   )   (   )   (   )   (   )   (   )   (b 4)   (w 2)   (b 3)   (w 2)
+                                                                                        
+(   )   (w 3)   (   )   (   )   (w 4)   (   )   (   )   (   )   (b 3)   (b 2)   (   )
+                                                                                        
+(   )   (b 2)   (   )   (w 3)   (   )   (   )   (   )   (   )   (b 2)   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (   )   (w 5)   (   )   (w 2)   (   )   (   )
+                                                                                        
+(   )   (b 2)   (b 2)   (   )   (   )   (   )   (   )   (b 3)   (   )   (b 3)   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (w 2)   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (b 2)   (   )   (   )   (   )   (   )   (   )   (b 2)   (   )   (   )
+                                                       
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(b 3)---(b 2)   (   )   (   )---(b 4)   (b 3)---(   )---(   )   (   )---(   )---(   )
+  |       |               |       |       |               |       |               |     
+(   )   (   )---(   )---(   )   (w 3)   (b 2)---(   )   (b 2)---(   )   (   )---(   )
+  |                               |               |                       |             
+(b 3)---(   )   (   )---(   )   (   )   (   )---(b 2)   (   )---(   )---(b 3)   (   )
+          |       |       |       |       |               |                             
+(   )   (w 2)   (w 2)   (   )---(   )   (b 2)---(   )   (   )   (   )   (   )---(   )
+          |       |                               |       |               |       |     
+(b 2)---(   )   (   )---(   )---(   )   (   )---(   )   (b 4)---(w 2)---(b 3)   (w 2)
+  |                               |       |                                       |     
+(   )---(w 3)---(   )---(   )   (w 4)   (   )   (   )---(   )---(b 3)   (b 2)---(   )
+                          |       |       |       |               |       |             
+(   )---(b 2)   (   )   (w 3)   (   )   (   )   (   )   (   )---(b 2)   (   )---(   )
+  |       |               |       |       |       |       |                       |     
+(   )   (   )---(   )   (   )   (   )   (   )   (w 5)   (   )---(w 2)---(   )   (   )
+  |               |       |       |       |       |                       |       |     
+(   )---(b 2)   (b 2)---(   )   (   )---(   )   (   )   (b 3)---(   )---(b 3)   (   )
+          |                                       |       |                       |     
+(   )   (   )---(   )   (   )---(w 2)---(   )   (   )   (   )---(   )   (   )---(   )
+                  |       |               |       |               |       |             
+(   )   (   )   (b 2)---(   )   (   )   (   )---(   )   (   )   (b 2)---(   )   (   )
+                                                       
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>10x10 (PuzzleID: 2,760,173)</td>
+	<td>5.29581ms</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (   )   (   )   (w 4)   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (b 3)   (   )   (   )   (   )   (   )   (b 2)   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (b 4)   (w 3)   (w 5)   (   )   (   )   (b 3)   (w 4)   (   )
+                                                                                        
+(   )   (b 2)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 3)   (   )   (w 6)
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (w 3)   (   )   (   )   (   )   (   )   (w 2)   (   )   (   )   (   )   (b 7)
+                                                                                        
+(b 8)   (   )   (   )   (   )   (b 2)   (   )   (   )   (b 2)   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (b 5)   (   )   (b 3)   (   )   (   )   (   )   (   )   (b 2)
+                                                                                        
+(b 2)   (   )   (   )   (b 2)   (   )   (   )   (   )   (   )   (w 4)   (   )   (   )
+                                                                                        
+(   )   (w 2)   (   )   (   )   (   )   (b 3)   (   )   (b 3)   (   )   (b 2)   (   )
+                                                       
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )   (   )   (   )---(   )---(   )---(w 4)---(   )   (   )---(   )---(   )
+  |       |               |                               |       |               |     
+(   )   (b 3)---(   )---(   )   (   )---(   )   (b 2)---(   )   (   )---(   )   (   )
+  |                               |       |       |                       |       |     
+(   )   (   )---(   )---(b 4)   (w 3)   (w 5)   (   )---(   )---(b 3)   (w 4)   (   )
+  |       |               |       |       |                       |       |       |     
+(   )   (b 2)---(   )   (   )   (   )   (   )   (   )---(   )---(   )   (   )   (   )
+  |               |       |       |       |       |                       |       |     
+(   )   (   )---(   )   (   )---(   )   (   )   (   )---(   )---(b 3)   (   )   (w 6)
+  |       |                               |                       |       |       |     
+(   )   (   )   (   )---(   )   (   )   (   )   (   )---(   )   (   )---(   )   (   )
+  |       |       |       |               |       |       |                       |     
+(   )   (w 3)   (   )   (   )   (   )---(   )   (w 2)   (   )---(   )   (   )---(b 7)
+  |       |       |       |       |               |               |       |             
+(b 8)---(   )   (   )   (   )   (b 2)---(   )   (   )---(b 2)   (   )   (   )   (   )
+                  |       |               |               |       |       |             
+(   )   (   )---(   )   (b 5)---(   )---(b 3)   (   )---(   )   (   )   (   )---(b 2)
+          |                                       |               |               |     
+(b 2)---(   )   (   )---(b 2)   (   )---(   )   (   )---(   )   (w 4)   (   )---(   )
+  |               |       |       |       |               |       |       |             
+(   )---(w 2)---(   )   (   )---(   )   (b 3)---(   )---(b 3)   (   )---(b 2)   (   )
+                                                       
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>10x10 (PuzzleID: 210,686)</td>
+	<td>5.151868ms</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (b 8)   (   )   (   )   (   )   (   )   (w 7)   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (b 2)   (   )   (   )   (b 4)   (   )   (   )   (   )   (   )
+                                                                                        
+(b 3)   (   )   (   )   (   )   (   )   (   )   (   )   (w 3)   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (b 3)   (   )   (b 3)   (   )   (   )   (w 4)   (w 5)
+                                                                                        
+(   )   (   )   (b 3)   (b 2)   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (b 2)   (   )   (   )   (   )   (   )   (b 2)   (   )   (   )
+                                                                                        
+(   )   (b 2)   (w 3)   (   )   (   )   (   )   (b 3)   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (b 4)   (   )   (   )   (w 3)   (w 2)   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (b 4)   (   )   (   )   (w 3)   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 6)   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (w 3)   (   )   (b 5)
+                                                       
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (b 8)---(   )---(   )---(   )---(   )---(w 7)---(   )---(   )   (   )---(   )
+          |                                                       |       |       |     
+(   )---(   )   (   )---(b 2)   (   )---(   )---(b 4)   (   )---(   )   (   )   (   )
+  |               |       |       |               |       |               |       |     
+(b 3)---(   )---(   )   (   )---(   )   (   )   (   )   (w 3)   (   )   (   )   (   )
+                                                  |       |               |       |     
+(   )   (   )   (   )---(   )---(b 3)   (   )---(b 3)   (   )   (   )   (w 4)   (w 5)
+                  |               |       |               |               |       |     
+(   )---(   )---(b 3)   (b 2)---(   )   (   )   (   )---(   )   (   )---(   )   (   )
+  |                       |               |       |               |               |     
+(   )---(   )   (   )---(b 2)   (   )---(   )   (   )   (   )---(b 2)   (   )---(   )
+          |       |               |               |       |               |             
+(   )---(b 2)   (w 3)   (   )   (   )   (   )---(b 3)   (   )   (   )---(   )   (   )
+  |               |               |       |               |       |                     
+(   )---(b 4)   (   )   (   )   (w 3)   (w 2)   (   )   (   )   (   )   (   )   (   )
+          |       |               |       |               |       |                     
+(   )   (   )   (   )---(   )---(   )   (b 4)---(   )---(   )   (w 3)   (   )---(   )
+          |                                                       |       |       |     
+(   )   (   )   (   )---(   )---(   )---(   )---(   )---(b 6)   (   )---(   )   (   )
+          |       |                                       |                       |     
+(   )   (   )---(   )   (   )   (   )   (   )   (   )   (   )---(w 3)---(   )---(b 5)
+                                                       
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>10x10 (PuzzleID: 3,515,465)</td>
+	<td>4.163524ms</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (w 7)   (   )
+                                                                                        
+(b 4)   (   )   (   )   (   )   (b 2)   (b 4)   (   )   (   )   (   )   (b 3)   (   )
+                                                                                        
+(   )   (   )   (   )   (b 2)   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (b 3)   (   )   (   )   (b 4)   (b 5)   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (b 2)   (   )   (   )   (   )   (w 4)   (   )   (   )   (   )   (w 3)   (   )
+                                                                                        
+(   )   (   )   (b 4)   (   )   (   )   (   )   (w 4)   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (w 2)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (w 2)   (   )
+                                                                                        
+(w 4)   (   )   (   )   (   )   (w 2)   (   )   (   )   (   )   (   )   (   )   (w 4)
+                                                                                        
+(   )   (   )   (b 2)   (   )   (   )   (   )   (b 4)   (   )   (   )   (b 4)   (   )
+                                                                                        
+(   )   (b 5)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                       
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )---(   )---(   )---(   )---(   )---(   )---(w 7)---(   )
+                          |                                                       |     
+(b 4)---(   )   (   )   (   )---(b 2)   (b 4)---(   )---(   )---(   )   (b 3)---(   )
+  |       |                       |       |                       |       |             
+(   )   (   )   (   )   (b 2)---(   )   (   )---(   )---(   )   (   )   (   )   (   )
+  |       |               |                               |       |       |             
+(   )   (b 3)---(   )   (   )---(b 4)   (b 5)---(   )   (   )   (   )---(   )   (   )
+  |               |               |       |       |       |                             
+(   )---(   )   (   )   (   )   (   )   (   )   (   )   (   )---(   )---(   )---(   )
+          |       |               |       |       |                               |     
+(   )---(b 2)   (   )   (   )   (   )   (w 4)   (   )   (   )---(   )---(w 3)---(   )
+  |               |               |       |       |       |                             
+(   )   (   )---(b 4)   (   )---(   )   (   )   (w 4)   (   )---(   )   (   )---(   )
+  |       |               |               |       |               |       |       |     
+(   )   (w 2)   (   )   (   )   (   )---(   )   (   )---(   )   (   )   (w 2)   (   )
+  |       |               |       |                       |       |       |       |     
+(w 4)   (   )---(   )   (   )   (w 2)   (   )   (   )---(   )   (   )---(   )   (w 4)
+  |               |       |       |               |                               |     
+(   )---(   )   (b 2)---(   )   (   )---(   )   (b 4)---(   )---(   )---(b 4)   (   )
+          |                               |                               |       |     
+(   )   (b 5)---(   )---(   )---(   )---(   )   (   )   (   )   (   )   (   )---(   )
+                                                       
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>10x10 (PuzzleID: 4,050,348)</td>
+	<td>3.416725ms</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(b11)   (   )   (   )   (   )   (   )   (w 5)   (   )   (   )   (   )   (w 2)   (   )
+                                                                                        
+(   )   (   )   (   )   (b 2)   (b 4)   (w 2)   (   )   (   )   (   )   (b 5)   (   )
+                                                                                        
+(   )   (   )   (w 2)   (   )   (   )   (   )   (w 2)   (   )   (   )   (   )   (w 6)
+                                                                                        
+(   )   (   )   (w 2)   (   )   (   )   (   )   (   )   (   )   (b 3)   (   )   (   )
+                                                                                        
+(   )   (b 2)   (   )   (w 3)   (   )   (   )   (   )   (b 2)   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (b 2)   (   )   (b 3)   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (   )   (w 5)   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (w 2)   (   )   (   )   (   )   (b 2)   (   )   (b 3)   (b 3)   (   )   (b 3)
+                                                                                        
+(   )   (b 4)   (   )   (   )   (   )   (   )   (w 3)   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (w 4)   (   )   (   )   (b 2)   (   )   (b 3)   (   )   (   )   (   )
+                                                       
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(b11)---(   )   (   )---(   )---(   )---(w 5)---(   )---(   )   (   )---(w 2)---(   )
+  |       |       |                                       |       |               |     
+(   )   (   )   (   )---(b 2)   (b 4)---(w 2)---(   )   (   )   (   )---(b 5)   (   )
+  |       |               |       |               |       |               |       |     
+(   )   (   )---(w 2)---(   )   (   )   (   )   (w 2)   (   )---(   )   (   )   (w 6)
+  |                               |               |               |       |       |     
+(   )   (   )---(w 2)---(   )   (   )---(   )   (   )---(   )---(b 3)   (   )   (   )
+  |       |               |               |                               |       |     
+(   )   (b 2)---(   )   (w 3)   (   )---(   )   (   )---(b 2)   (   )   (   )   (   )
+  |               |       |       |               |       |               |       |     
+(   )   (   )---(b 2)   (   )   (b 3)---(   )---(   )   (   )---(   )---(   )   (   )
+  |       |               |                                                       |     
+(   )   (   )---(   )   (   )---(   )---(   )---(w 5)---(   )---(   )   (   )---(   )
+  |               |                                               |       |             
+(   )   (   )---(   )   (   )---(   )   (   )---(   )   (   )   (   )   (   )   (   )
+  |       |               |       |       |       |               |       |             
+(   )   (w 2)   (   )   (   )   (   )---(b 2)   (   )   (b 3)---(b 3)   (   )---(b 3)
+  |       |               |                       |       |                       |     
+(   )   (b 4)---(   )---(   )   (   )---(   )   (w 3)   (   )   (   )---(   )   (   )
+  |                               |       |       |       |       |       |       |     
+(   )---(   )---(w 4)---(   )---(   )   (b 2)---(   )   (b 3)---(   )   (   )---(   )
+                                                       
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>10x10 (PuzzleID: 4,162,883)</td>
+	<td>11.866454ms</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (   )   (w 7)   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(w 2)   (   )   (b 4)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (w 8)   (w 7)   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (b 4)   (   )   (   )   (b 4)   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (w 2)   (   )   (b 3)   (   )   (   )   (   )   (w 6)   (   )
+                                                                                        
+(   )   (w 3)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(w 6)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (b 2)   (   )   (   )   (b 2)   (w 5)   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (w 8)
+                                                                                        
+(   )   (b 2)   (   )   (   )   (w 6)   (   )   (   )   (   )   (   )   (   )   (   )
+                                                       
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )   (   )   (   )---(   )---(w 7)---(   )---(   )---(   )---(   )---(   )
+  |       |               |                                                       |     
+(w 2)   (   )---(b 4)   (   )---(   )   (   )---(   )---(   )   (   )---(   )---(   )
+  |               |               |       |               |       |                     
+(   )---(   )   (   )   (   )---(   )   (   )---(   )   (w 8)   (w 7)   (   )---(   )
+          |       |       |                       |       |       |       |       |     
+(   )   (   )   (   )   (b 4)---(   )---(   )---(b 4)   (   )   (   )   (   )   (   )
+          |       |                                       |       |       |       |     
+(   )---(   )   (   )---(   )   (   )---(   )---(   )   (   )   (   )   (   )   (   )
+  |                       |       |               |       |       |       |       |     
+(   )   (   )---(   )   (w 2)   (   )---(b 3)   (   )   (   )   (   )   (w 6)   (   )
+  |       |       |       |               |       |       |       |       |       |     
+(   )   (w 3)   (   )---(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+  |       |                               |       |       |       |       |       |     
+(w 6)   (   )   (   )---(   )   (   )---(   )   (   )   (   )   (   )   (   )   (   )
+  |       |       |       |       |               |       |       |       |       |     
+(   )   (   )---(b 2)   (   )   (   )---(b 2)   (w 5)   (   )   (   )---(   )   (   )
+  |                       |               |       |       |                       |     
+(   )   (   )---(   )   (   )---(   )---(   )   (   )---(   )   (   )---(   )   (w 8)
+  |       |       |                                               |       |       |     
+(   )---(b 2)   (   )---(   )---(w 6)---(   )---(   )---(   )---(   )   (   )---(   )
+                                                       
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>10x10 (PuzzleID: 551,246)</td>
+	<td>10.862022ms</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (b 2)   (   )   (   )   (   )   (   )   (   )   (b 2)   (   )   (   )   (b 3)
+                                                                                        
+(   )   (   )   (w 2)   (b 2)   (   )   (   )   (   )   (b 2)   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (b 4)   (   )   (   )   (w 3)   (w 3)   (   )   (   )   (b 2)   (   )
+                                                                                        
+(   )   (b 2)   (b 3)   (   )   (b 3)   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (w 2)   (   )   (b 3)   (   )   (b 2)   (   )   (w 3)   (   )   (   )   (b 2)
+                                                                                        
+(b 6)   (   )   (   )   (   )   (   )   (   )   (b 2)   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (w 2)   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (   )   (b 2)   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (w 2)   (b 2)   (   )   (   )   (w 3)   (b 3)   (   )   (   )   (w 2)   (   )
+                                                                                        
+(   )   (   )   (   )   (w 3)   (   )   (   )   (   )   (   )   (w 2)   (   )   (   )
+                                                                                        
+(   )   (   )   (w 4)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 7)
+                                                       
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (b 2)---(   )   (   )---(   )---(   )   (   )---(b 2)   (   )---(   )---(b 3)
+          |       |       |               |       |       |       |               |     
+(   )---(   )   (w 2)   (b 2)---(   )   (   )   (   )   (b 2)---(   )   (   )---(   )
+  |               |               |       |       |                       |             
+(   )---(   )   (b 4)---(   )---(   )   (w 3)   (w 3)   (   )---(   )   (b 2)---(   )
+          |                               |       |       |       |               |     
+(   )---(b 2)   (b 3)---(   )---(b 3)   (   )---(   )   (   )   (   )   (   )---(   )
+  |               |               |                       |       |       |             
+(   )---(w 2)---(   )   (b 3)---(   )   (b 2)---(   )   (w 3)   (   )   (   )---(b 2)
+                          |               |       |       |       |               |     
+(b 6)---(   )   (   )   (   )   (   )---(   )   (b 2)---(   )   (   )   (   )---(   )
+  |       |               |       |                               |       |             
+(   )   (   )---(   )---(   )   (   )   (   )   (   )---(w 2)---(   )   (   )---(   )
+  |                               |               |                               |     
+(   )   (   )---(   )   (   )---(   )   (   )---(b 2)   (   )---(   )---(   )   (   )
+  |       |       |       |               |               |               |       |     
+(   )   (w 2)   (b 2)---(   )   (   )   (w 3)   (b 3)---(   )   (   )   (w 2)   (   )
+  |       |                               |       |                       |       |     
+(   )   (   )---(   )---(w 3)---(   )   (   )   (   )   (   )---(w 2)---(   )   (   )
+  |                               |       |       |       |                       |     
+(   )---(   )---(w 4)---(   )---(   )   (   )---(   )   (   )---(   )---(   )---(b 7)
+                                                       
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>10x10 (PuzzleID: 6,217,369)</td>
+	<td>21.362692ms</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (b 3)   (   )   (   )   (b 3)   (   )   (   )   (w 4)   (   )   (   )
+                                                                                        
+(b 2)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 7)   (w 8)
+                                                                                        
+(   )   (   )   (   )   (   )   (b 4)   (   )   (   )   (   )   (b 2)   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (b 2)   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(w 8)   (   )   (   )   (b 3)   (   )   (   )   (w 2)   (b 3)   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (b 4)   (   )   (   )   (w 2)   (   )   (b 3)   (   )   (   )   (   )
+                                                                                        
+(   )   (w 5)   (   )   (w 2)   (   )   (   )   (   )   (   )   (   )   (w 6)   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (b 6)   (   )   (   )   (b 3)   (b 3)   (   )   (b 3)   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (w 2)   (   )   (   )   (b 2)   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (w 2)   (   )
+                                                       
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )---(b 3)   (   )   (   )---(b 3)   (   )---(   )---(w 4)---(   )---(   )
+  |               |               |       |       |                               |     
+(b 2)---(   )   (   )---(   )---(   )   (   )   (   )---(   )   (   )---(b 7)   (w 8)
+          |                               |               |       |       |       |     
+(   )---(   )   (   )   (   )---(b 4)   (   )---(   )   (   )---(b 2)   (   )   (   )
+  |                       |       |               |                       |       |     
+(   )   (   )---(   )   (   )   (   )   (b 2)---(   )   (   )---(   )   (   )   (   )
+  |       |       |       |       |       |               |       |       |       |     
+(w 8)   (   )   (   )---(b 3)   (   )   (   )---(w 2)---(b 3)   (   )   (   )   (   )
+  |       |                       |                               |       |       |     
+(   )   (   )   (b 4)---(   )   (   )---(w 2)---(   )   (b 3)---(   )   (   )   (   )
+  |       |       |       |                       |       |               |       |     
+(   )   (w 5)   (   )   (w 2)   (   )---(   )   (   )   (   )   (   )   (w 6)   (   )
+  |       |       |       |       |       |       |       |               |       |     
+(   )   (   )   (   )   (   )---(   )   (   )   (   )   (   )---(   )---(   )   (   )
+  |       |       |                       |       |                               |     
+(   )   (b 6)---(   )   (   )   (b 3)---(b 3)   (   )   (b 3)---(   )   (   )---(   )
+  |                               |               |       |       |       |             
+(   )   (   )---(w 2)---(   )   (   )   (b 2)---(   )   (   )   (   )   (   )---(   )
+  |       |               |       |       |               |       |               |     
+(   )---(   )   (   )   (   )---(   )   (   )---(   )---(   )   (   )---(w 2)---(   )
+                                                       
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>10x10 (PuzzleID: 6,593,963)</td>
+	<td>46.777878ms</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (w 9)   (   )
+                                                                                        
+(   )   (   )   (b 7)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 2)
+                                                                                        
+(   )   (   )   (   )   (   )   (b 3)   (   )   (b 3)   (   )   (   )   (b 2)   (   )
+                                                                                        
+(   )   (b 2)   (   )   (b 2)   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (b 2)   (b 2)   (   )   (   )   (   )   (   )   (b 2)   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (w 2)   (   )   (b 3)   (   )   (   )   (b 6)
+                                                                                        
+(   )   (   )   (   )   (   )   (b 4)   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (b 4)   (   )   (   )   (   )   (   )   (   )   (   )   (b 2)   (   )   (w 5)
+                                                                                        
+(   )   (   )   (w 2)   (   )   (w 2)   (   )   (   )   (   )   (   )   (w 4)   (   )
+                                                                                        
+(   )   (b 2)   (b 4)   (   )   (   )   (   )   (w 3)   (   )   (   )   (   )   (   )
+                                                                                        
+(b 6)   (   )   (   )   (   )   (   )   (   )   (   )   (w 2)   (   )   (   )   (   )
+                                                       
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )---(   )---(   )---(   )---(   )---(   )---(   )---(   )---(w 9)---(   )
+          |                                                                       |     
+(   )---(   )   (b 7)---(   )---(   )---(   )---(   )---(   )---(   )   (   )---(b 2)
+  |               |                                               |       |             
+(   )---(   )   (   )---(   )   (b 3)---(   )   (b 3)---(   )---(   )   (b 2)---(   )
+          |               |       |       |       |                               |     
+(   )---(b 2)   (   )---(b 2)   (   )   (   )   (   )---(   )   (   )---(   )---(   )
+  |               |               |       |               |       |                     
+(   )   (   )---(b 2)   (b 2)---(   )   (   )---(   )   (   )   (b 2)---(   )   (   )
+  |       |               |                       |       |               |             
+(   )   (   )   (   )---(   )   (   )---(w 2)---(   )   (b 3)---(   )   (   )---(b 6)
+  |       |       |               |                               |               |     
+(   )   (   )   (   )---(   )   (b 4)---(   )---(   )---(   )   (   )---(   )   (   )
+  |       |               |                               |               |       |     
+(   )   (b 4)---(   )   (   )---(   )   (   )---(   )   (   )---(b 2)   (   )   (w 5)
+  |               |               |       |       |               |       |       |     
+(   )---(   )   (w 2)   (   )   (w 2)   (   )   (   )   (   )---(   )   (w 4)   (   )
+          |       |               |       |       |       |               |       |     
+(   )---(b 2)   (b 4)---(   )---(   )   (   )   (w 3)   (   )---(   )   (   )   (   )
+  |                                       |       |               |       |       |     
+(b 6)---(   )---(   )---(   )---(   )---(   )   (   )---(w 2)---(   )   (   )---(   )
+                                                       
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>10x10 (PuzzleID: 6,959,600)</td>
+	<td>2.896562ms</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (b 2)   (b 4)   (   )   (   )   (w 3)   (   )   (b 4)   (w 3)   (   )   (b 4)
+                                                                                        
+(   )   (   )   (   )   (w 2)   (   )   (   )   (   )   (   )   (b 3)   (   )   (   )
+                                                                                        
+(b 2)   (   )   (   )   (   )   (   )   (w 2)   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(b 2)   (   )   (   )   (   )   (   )   (   )   (   )   (b 4)   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (w 3)   (   )   (   )   (b 4)   (w 6)   (   )   (   )   (b 2)   (   )
+                                                                                        
+(   )   (   )   (   )   (w 2)   (w 2)   (   )   (   )   (   )   (b 3)   (   )   (   )
+                                                                                        
+(w 2)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 2)
+                                                                                        
+(   )   (   )   (   )   (b 2)   (   )   (   )   (b 2)   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (b 3)   (b 2)   (   )   (   )   (   )   (   )   (   )   (b 2)   (w 3)
+                                                                                        
+(   )   (b 3)   (   )   (w 2)   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (   )   (w 6)   (   )   (   )   (   )   (   )
+                                                       
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (b 2)---(b 4)   (   )---(   )---(w 3)---(   )   (b 4)---(w 3)---(   )---(b 4)
+          |       |       |                       |       |                       |     
+(   )---(   )   (   )   (w 2)   (   )---(   )   (   )   (   )---(b 3)   (   )---(   )
+  |               |       |       |       |       |               |       |             
+(b 2)---(   )   (   )   (   )---(   )   (w 2)   (   )   (   )   (   )   (   )---(   )
+          |       |                       |       |               |               |     
+(b 2)---(   )   (   )---(   )---(   )---(   )   (   )   (b 4)---(   )   (   )---(   )
+  |                                               |       |               |             
+(   )---(   )---(w 3)---(   )   (   )---(b 4)   (w 6)   (   )   (   )---(b 2)   (   )
+                          |       |       |       |       |       |                     
+(   )---(   )   (   )   (w 2)   (w 2)   (   )   (   )   (   )   (b 3)---(   )---(   )
+  |       |               |       |       |       |       |                       |     
+(w 2)   (   )---(   )   (   )---(   )   (   )   (   )---(   )   (   )   (   )---(b 2)
+  |               |                       |                               |             
+(   )---(   )   (   )   (b 2)---(   )   (   )---(b 2)   (   )---(   )   (   )---(   )
+          |       |       |       |               |       |       |               |     
+(   )   (   )   (b 3)---(b 2)   (   )---(   )   (   )---(   )   (   )---(b 2)   (w 3)
+          |                               |                               |       |     
+(   )---(b 3)   (   )---(w 2)---(   )   (   )---(   )---(   )---(   )---(   )   (   )
+  |               |               |                                               |     
+(   )---(   )---(   )   (   )   (   )---(   )---(w 6)---(   )---(   )---(   )---(   )
+                                                       
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>10x10 (PuzzleID: 7,153,011)</td>
+	<td>4.851187ms</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (b 2)   (   )   (   )   (   )   (b 2)   (b 3)   (   )   (   )
+                                                                                        
+(   )   (   )   (b 2)   (   )   (w 2)   (   )   (   )   (   )   (b 2)   (   )   (   )
+                                                                                        
+(   )   (b 4)   (   )   (   )   (   )   (w 3)   (   )   (   )   (w 3)   (   )   (   )
+                                                                                        
+(   )   (   )   (b 2)   (   )   (   )   (   )   (   )   (b 2)   (   )   (b 6)   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (b 6)   (   )   (b 2)   (   )   (   )   (   )
+                                                                                        
+(w 5)   (   )   (b 2)   (b 3)   (   )   (   )   (   )   (b 2)   (w 3)   (   )   (w 7)
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 2)   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 2)   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (w 2)   (   )   (b 2)   (   )   (b 3)   (   )   (   )   (   )
+                                                                                        
+(w 3)   (   )   (b 4)   (   )   (w 2)   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (w 6)   (   )   (   )   (   )   (   )   (b 2)   (   )   (   )   (   )
+                                                       
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )---(   )   (b 2)---(   )   (   )   (   )---(b 2)   (b 3)---(   )---(   )
+          |       |       |       |               |       |       |               |     
+(   )---(   )   (b 2)---(   )   (w 2)   (   )---(   )   (   )---(b 2)   (   )---(   )
+  |                               |       |                               |             
+(   )   (b 4)---(   )   (   )---(   )   (w 3)   (   )---(   )---(w 3)---(   )   (   )
+  |       |       |       |               |       |                                     
+(   )   (   )   (b 2)---(   )   (   )   (   )   (   )   (b 2)---(   )   (b 6)---(   )
+  |       |                               |       |       |       |       |       |     
+(   )   (   )   (   )---(   )---(   )---(b 6)   (   )---(b 2)   (   )   (   )   (   )
+  |       |       |                                               |       |       |     
+(w 5)   (   )---(b 2)   (b 3)---(   )---(   )   (   )---(b 2)   (w 3)   (   )   (w 7)
+  |                       |               |       |       |       |       |       |     
+(   )---(   )---(   )   (   )---(   )   (   )---(   )   (b 2)---(   )   (   )   (   )
+                  |               |                                       |       |     
+(   )---(   )   (   )   (   )---(   )   (   )   (   )---(b 2)   (   )   (   )   (   )
+  |       |       |       |                       |       |               |       |     
+(   )   (   )   (   )   (w 2)   (   )   (b 2)---(   )   (b 3)---(   )---(   )   (   )
+  |       |       |       |               |                                       |     
+(w 3)   (   )---(b 4)   (   )---(w 2)---(   )   (   )---(   )   (   )---(   )   (   )
+  |                                               |       |       |       |       |     
+(   )---(   )---(w 6)---(   )---(   )---(   )---(   )   (b 2)---(   )   (   )---(   )
+                                                       
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>10x10 (PuzzleID: 7,585,613)</td>
+	<td>21.193301ms</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (b 7)   (   )   (   )   (w 3)   (b 4)   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (w 2)
+                                                                                        
+(w 4)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (w 3)   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (w 3)   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (w 4)   (   )   (   )   (   )   (b 4)   (   )   (   )
+                                                                                        
+(   )   (   )   (b 5)   (   )   (   )   (w 4)   (w 3)   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (b 3)   (   )   (   )   (   )   (   )   (b 2)   (b 3)   (   )   (   )
+                                                                                        
+(   )   (b 3)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (w 2)   (   )
+                                                                                        
+(   )   (   )   (b 2)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 2)
+                                                                                        
+(   )   (   )   (   )   (   )   (b 2)   (b 2)   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (w 7)   (   )   (   )   (   )   (   )   (   )   (b 4)   (   )   (   )
+                                                       
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )   (   )---(b 7)   (   )---(   )---(w 3)---(b 4)   (   )   (   )---(   )
+  |       |       |       |       |                       |               |       |     
+(   )   (   )---(   )   (   )   (   )---(   )   (   )---(   )   (   )---(   )   (w 2)
+  |                       |               |       |               |               |     
+(w 4)   (   )---(   )   (   )   (   )---(   )   (   )---(   )   (w 3)   (   )---(   )
+  |       |       |       |       |                       |       |       |             
+(   )   (   )   (   )   (   )   (   )   (   )---(   )   (w 3)   (   )   (   )---(   )
+  |       |       |       |       |       |       |       |       |               |     
+(   )---(   )   (   )   (   )   (w 4)   (   )   (   )   (   )   (b 4)---(   )   (   )
+                  |       |       |       |       |       |               |       |     
+(   )---(   )---(b 5)   (   )   (   )   (w 4)   (w 3)   (   )---(   )---(   )   (   )
+  |                       |       |       |       |                               |     
+(   )---(   )---(b 3)   (   )---(   )   (   )   (   )---(b 2)   (b 3)---(   )---(   )
+                  |                       |               |       |                     
+(   )---(b 3)   (   )---(   )---(   )---(   )   (   )---(   )   (   )---(w 2)---(   )
+  |       |                                       |                               |     
+(   )   (   )   (b 2)---(   )   (   )---(   )   (   )   (   )---(   )   (   )---(b 2)
+  |       |       |       |       |       |       |       |       |       |             
+(   )   (   )---(   )   (   )---(b 2)   (b 2)---(   )   (   )   (   )   (   )---(   )
+  |                                                       |       |               |     
+(   )---(   )---(w 7)---(   )---(   )---(   )---(   )---(   )   (b 4)---(   )---(   )
+                                                       
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>10x10 (PuzzleID: 8,132,183)</td>
+	<td>1.839985ms</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(b12)   (   )   (   )   (   )   (b 4)   (   )   (   )   (   )   (   )   (   )   (b 2)
+                                                                                        
+(   )   (   )   (w 2)   (   )   (b 4)   (   )   (   )   (w 3)   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (   )   (w 4)   (   )   (w 4)   (   )   (   )
+                                                                                        
+(   )   (w 3)   (   )   (   )   (b 3)   (   )   (   )   (   )   (   )   (b 3)   (   )
+                                                                                        
+(   )   (   )   (w 4)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(w 9)   (   )   (   )   (   )   (   )   (   )   (b 5)   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (w 5)
+                                                                                        
+(   )   (   )   (b 2)   (   )   (w 2)   (   )   (b 3)   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (b 3)   (   )   (   )   (b 3)   (w 2)   (   )   (b 5)   (   )
+                                                                                        
+(   )   (b 2)   (b 2)   (   )   (   )   (   )   (   )   (   )   (b 4)   (   )   (   )
+                                                       
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )---(   )   (   )   (   )   (   )   (   )---(   )   (   )
+                          |       |                               |       |             
+(b12)---(   )---(   )---(   )   (b 4)---(   )---(   )---(   )   (   )   (   )---(b 2)
+  |                                                       |       |               |     
+(   )   (   )---(w 2)---(   )   (b 4)---(   )---(   )   (w 3)   (   )   (   )---(   )
+  |       |               |       |               |       |       |       |             
+(   )   (   )   (   )   (   )   (   )   (   )   (w 4)   (   )   (w 4)   (   )   (   )
+  |       |               |       |               |       |       |       |             
+(   )   (w 3)   (   )   (   )---(b 3)   (   )   (   )   (   )---(   )   (b 3)---(   )
+  |       |                                       |                               |     
+(   )   (   )---(w 4)---(   )---(   )---(   )   (   )   (   )---(   )---(   )   (   )
+  |                                       |       |       |               |       |     
+(w 9)   (   )---(   )---(   )---(   )---(   )   (b 5)---(   )   (   )   (   )   (   )
+  |       |                                                               |       |     
+(   )   (   )   (   )---(   )   (   )   (   )---(   )---(   )---(   )   (   )   (w 5)
+  |       |       |       |               |                       |       |       |     
+(   )   (   )---(b 2)   (   )---(w 2)---(   )   (b 3)---(   )---(   )   (   )   (   )
+  |                                               |                       |       |     
+(   )   (   )---(   )   (b 3)---(   )---(   )   (b 3)---(w 2)---(   )   (b 5)---(   )
+  |       |       |       |               |                       |                     
+(   )---(b 2)   (b 2)---(   )   (   )   (   )---(   )---(   )---(b 4)   (   )   (   )
+                                                       
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>10x10 (PuzzleID: 8,416,278)</td>
+	<td>14.027303ms</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (b 2)   (   )   (b 2)   (   )   (b 2)   (b 2)   (b 5)
+                                                                                        
+(   )   (   )   (   )   (b 2)   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(w 6)   (   )   (   )   (   )   (   )   (   )   (   )   (w 8)   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (w 2)   (   )   (   )   (w 2)   (   )   (   )
+                                                                                        
+(   )   (b 4)   (   )   (   )   (w 2)   (b 2)   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (w 2)   (   )   (   )   (   )   (   )   (b 5)   (   )   (   )   (   )   (   )
+                                                                                        
+(w 6)   (   )   (w 2)   (   )   (   )   (b 3)   (   )   (   )   (b 5)   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (b 2)   (   )   (   )   (b 3)   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (b 2)   (w 2)   (   )   (   )   (   )   (   )   (   )   (   )   (w 5)
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 6)   (   )   (   )   (b 6)
+                                                       
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )---(   )   (   )---(b 2)   (   )---(b 2)   (   )---(b 2)   (b 2)---(b 5)
+          |       |       |       |       |       |       |       |       |       |     
+(   )---(   )   (   )---(b 2)   (   )---(   )   (   )---(   )   (   )---(   )   (   )
+  |                                                                               |     
+(w 6)   (   )---(   )---(   )---(   )---(   )---(   )---(w 8)---(   )---(   )   (   )
+  |       |                                                               |       |     
+(   )   (   )---(   )---(   )   (   )---(w 2)---(   )   (   )---(w 2)---(   )   (   )
+  |                       |       |               |       |                       |     
+(   )   (b 4)---(   )---(   )   (w 2)   (b 2)---(   )   (   )---(   )   (   )---(   )
+  |       |                       |       |                       |       |             
+(   )   (w 2)   (   )   (   )---(   )   (   )---(b 5)   (   )---(   )   (   )---(   )
+  |       |               |                       |       |                       |     
+(w 6)   (   )---(w 2)---(   )   (   )---(b 3)   (   )   (   )   (b 5)---(   )   (   )
+  |                               |       |       |       |       |       |       |     
+(   )---(   )   (   )---(   )---(   )   (   )   (   )   (   )   (   )   (   )   (   )
+          |       |                       |       |       |       |       |       |     
+(   )---(b 2)   (   )---(   )   (b 3)---(   )   (   )   (   )   (   )   (   )   (   )
+  |                       |       |               |       |       |       |       |     
+(   )   (   )---(b 2)   (w 2)   (   )   (   )---(   )   (   )   (   )   (   )   (w 5)
+  |       |       |       |       |       |               |       |       |       |     
+(   )---(   )   (   )---(   )   (   )---(   )   (   )   (b 6)---(   )   (   )---(b 6)
+                                                       
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>10x10 (PuzzleID: 8,528,975)</td>
+	<td>2.722827ms</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (b 2)   (   )   (   )   (w 4)   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(b 4)   (b 2)   (b 2)   (   )   (   )   (w 2)   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (   )   (b 6)   (   )   (b 2)   (   )   (   )   (   )   (b 2)   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 3)   (   )   (   )   (   )
+                                                                                        
+(b 5)   (   )   (   )   (   )   (   )   (   )   (   )   (b 4)   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (b 2)   (w 4)   (   )   (   )   (   )   (b 4)   (   )   (b 3)   (   )
+                                                                                        
+(   )   (w 3)   (   )   (   )   (   )   (   )   (w 3)   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (b 7)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                        
+(   )   (   )   (w 2)   (   )   (   )   (   )   (w 4)   (b 5)   (   )   (b 3)   (   )
+                                                                                        
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 2)   (   )   (b 2)   (w 9)
+                                                                                        
+(   )   (   )   (   )   (w 3)   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                       
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )---(b 2)   (   )---(   )---(w 4)---(   )---(   )   (   )   (   )   (   )
+          |       |       |                               |                             
+(b 4)---(b 2)   (b 2)---(   )   (   )---(w 2)---(   )   (   )---(   )   (   )---(   )
+  |                               |               |               |       |       |     
+(   )   (   )---(   )---(b 6)   (   )---(b 2)   (   )---(   )   (   )---(b 2)   (   )
+  |       |               |               |               |                       |     
+(   )   (   )---(   )   (   )   (   )---(   )   (   )   (b 3)---(   )---(   )   (   )
+  |               |       |       |                                       |       |     
+(b 5)---(   )---(   )   (   )   (   )---(   )---(   )---(b 4)   (   )   (   )   (   )
+                          |                               |               |       |     
+(   )   (   )---(b 2)   (w 4)   (   )---(   )---(   )---(b 4)   (   )---(b 3)   (   )
+          |       |       |       |                               |               |     
+(   )   (w 3)   (   )---(   )   (   )---(   )---(w 3)---(   )   (   )---(   )   (   )
+          |                                               |               |       |     
+(   )   (   )   (b 7)---(   )---(   )---(   )---(   )---(   )   (   )   (   )   (   )
+          |       |                                                       |       |     
+(   )---(   )   (w 2)   (   )---(   )---(   )---(w 4)---(b 5)   (   )---(b 3)   (   )
+  |               |       |                               |       |               |     
+(   )---(   )   (   )---(   )   (   )---(   )   (   )---(b 2)   (   )---(b 2)   (w 9)
+          |                       |       |       |                       |       |     
+(   )   (   )---(   )---(w 3)---(   )   (   )---(   )   (   )   (   )   (   )---(   )
+                                                       
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>15x15 (Manual easy 15x15)</td>
+	<td>22.616837ms</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 3)   (   )   (   )   (w 2)   (b 3)   (b 3)   (   )   (   )   (b 6)
+                                                                                                                                
+(   )   (   )   (b 4)   (b 9)   (   )   (   )   (w 3)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (w 4)   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (b 2)   (   )   (   )   (b 4)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(w 2)   (   )   (   )   (   )   (   )   (b 4)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (w 4)   (   )   (   )   (   )
+                                                                                                                                
+(b 3)   (   )   (b 3)   (w 7)   (   )   (   )   (w 2)   (   )   (w 2)   (   )   (   )   (   )   (   )   (b 7)   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 4)   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (w 5)   (   )   (   )   (   )   (b 3)   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (b 2)   (   )   (   )   (   )   (   )   (b 2)   (   )   (   )   (   )   (   )   (b 4)   (   )   (   )   (w 4)   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (b 2)   (b 3)   (   )   (   )   (b 3)   (   )   (   )   (   )   (   )   (   )   (b 7)
+                                                                                                                                
+(   )   (b 2)   (b 3)   (b 2)   (w 3)   (   )   (w 2)   (   )   (   )   (   )   (   )   (   )   (w 5)   (   )   (b 6)   (   )
+                                                                                                                                
+(   )   (   )   (   )   (b 4)   (   )   (   )   (   )   (b 2)   (w 2)   (   )   (   )   (b 3)   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (b 4)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 4)   (   )   (   )   (   )
+                                                                                                                                
+(   )   (w 2)   (   )   (   )   (w 2)   (   )   (   )   (   )   (   )   (   )   (   )   (b 4)   (   )   (   )   (   )   (w 6)
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (w 5)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (w 4)   (w 5)   (   )
+                                                                                                                                
+(b12)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (w 3)   (   )   (   )   (   )   (   )
+                                                                                
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )---(   )---(   )---(   )---(   )---(   )   (b 3)---(   )   (   )---(w 2)---(b 3)   (b 3)---(   )   (   )---(b 6)
+  |                                               |       |       |       |               |       |       |       |       |     
+(   )---(   )---(b 4)   (b 9)---(   )---(   )   (w 3)   (   )   (   )---(   )   (   )---(   )   (   )   (   )   (w 4)   (   )
+                  |       |               |       |       |                       |               |       |       |       |     
+(   )---(   )   (   )   (   )   (b 2)---(   )   (   )   (b 4)---(   )---(   )   (   )---(   )---(   )   (   )   (   )   (   )
+  |       |       |       |       |               |                       |                               |       |       |     
+(w 2)   (   )---(   )   (   )   (   )---(b 4)   (   )---(   )   (   )   (   )   (   )---(   )---(   )---(   )   (   )   (   )
+  |                       |               |               |               |       |                               |       |     
+(   )---(   )---(   )   (   )   (   )   (   )   (   )---(   )   (   )---(   )   (   )---(   )---(w 4)---(   )---(   )   (   )
+                  |       |               |       |               |                                                       |     
+(b 3)---(   )---(b 3)   (w 7)   (   )   (   )   (w 2)   (   )   (w 2)   (   )---(   )   (   )---(   )---(b 7)   (   )---(   )
+  |                       |               |       |               |       |       |       |               |       |             
+(   )---(   )---(   )   (   )   (   )---(   )   (   )---(   )---(b 4)   (   )   (   )   (   )---(   )   (   )   (   )   (   )
+                  |       |       |                                       |       |               |       |       |             
+(   )   (   )---(   )   (   )   (   )---(   )---(w 5)---(   )---(   )---(   )   (b 3)---(   )   (   )   (   )   (   )   (   )
+          |               |                                                               |       |       |       |             
+(   )---(b 2)   (   )---(   )   (   )   (   )---(b 2)   (   )   (   )---(   )---(   )---(b 4)   (   )   (   )   (w 4)   (   )
+  |               |                       |       |               |                               |       |       |             
+(   )---(   )   (   )   (   )   (   )---(b 2)   (b 3)---(   )---(   )   (b 3)---(   )---(   )   (   )   (   )   (   )---(b 7)
+          |       |               |                                       |               |       |       |               |     
+(   )---(b 2)   (b 3)---(b 2)   (w 3)   (   )---(w 2)---(   )   (   )---(   )   (   )   (   )   (w 5)   (   )---(b 6)   (   )
+  |                       |       |       |               |       |                       |       |               |       |     
+(   )---(   )---(   )---(b 4)   (   )   (   )   (   )---(b 2)   (w 2)   (   )   (   )---(b 3)   (   )---(   )   (   )   (   )
+                                  |       |       |               |               |                       |       |       |     
+(   )---(   )   (   )   (   )---(b 4)   (   )   (   )---(   )---(   )   (   )   (   )---(   )---(b 4)   (   )   (   )   (   )
+  |       |               |               |                                                       |       |       |       |     
+(   )   (w 2)   (   )   (   )---(w 2)---(   )   (   )---(   )   (   )---(   )---(   )---(b 4)   (   )   (   )   (   )   (w 6)
+  |       |                                       |       |       |                       |       |       |       |       |     
+(   )   (   )---(   )---(   )---(   )---(w 5)---(   )   (   )---(   )   (   )---(   )   (   )---(   )   (w 4)   (w 5)   (   )
+  |                                                                       |       |                       |       |       |     
+(b12)---(   )---(   )---(   )---(   )---(   )---(   )---(   )---(   )---(   )   (   )---(w 3)---(   )---(   )   (   )---(   )
+                                                                                
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>15x15 (PuzzleID: 1,169,504)</td>
+	<td>546.67593ms</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 6)   (w 4)   (   )   (   )   (   )   (   )   (   )   (w 3)   (   )
+                                                                                                                                
+(   )   (b 8)   (b 3)   (b 3)   (   )   (   )   (   )   (   )   (   )   (   )   (w 3)   (   )   (   )   (b 2)   (   )   (   )
+                                                                                                                                
+(w10)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 2)   (w 3)   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (w 4)   (   )   (b 4)   (w 5)   (   )   (   )   (b 7)   (b 2)   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (b 4)   (   )   (   )   (   )   (   )   (   )   (w 4)   (   )   (   )   (b 2)   (   )   (b 8)
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (b 5)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (b 4)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 2)   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 2)   (   )   (   )   (   )   (   )   (b 2)   (   )   (   )
+                                                                                                                                
+(   )   (b 9)   (   )   (   )   (w 5)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (w 2)   (   )   (   )
+                                                                                                                                
+(   )   (b 3)   (   )   (   )   (   )   (   )   (b 2)   (   )   (   )   (   )   (b 2)   (   )   (   )   (   )   (b 3)   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (b 4)   (b 2)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (w 2)   (   )
+                                                                                                                                
+(   )   (   )   (w 3)   (   )   (   )   (   )   (b 3)   (   )   (   )   (b 3)   (   )   (w 2)   (   )   (   )   (   )   (b 3)
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 2)   (   )   (b 4)   (   )   (   )   (b 2)
+                                                                                                                                
+(   )   (w 3)   (   )   (   )   (w 4)   (   )   (   )   (b 6)   (   )   (   )   (   )   (w 3)   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (w 9)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 2)   (   )   (   )
+                                                                                
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )---(   )---(   )---(   )---(   )   (   )   (b 6)---(w 4)---(   )---(   )---(   )   (   )---(   )---(w 3)---(   )
+  |                                       |               |                               |       |                       |     
+(   )   (b 8)---(b 3)   (b 3)---(   )   (   )   (   )   (   )   (   )---(   )---(w 3)---(   )   (   )---(b 2)   (   )---(   )
+  |       |       |       |       |       |               |       |                                       |       |             
+(w10)   (   )   (   )   (   )   (   )   (   )   (   )---(   )   (   )   (   )   (   )   (   )   (   )---(b 2)   (w 3)   (   )
+  |       |       |       |       |       |       |               |                               |               |             
+(   )   (   )   (   )---(   )   (   )   (w 4)   (   )---(b 4)   (w 5)   (   )   (   )---(b 7)   (b 2)---(   )   (   )   (   )
+  |       |                       |       |               |       |               |       |               |       |             
+(   )   (   )   (   )   (   )   (b 4)---(   )   (   )   (   )   (   )   (   )   (w 4)   (   )   (   )---(b 2)   (   )---(b 8)
+  |       |                                               |       |               |       |       |                       |     
+(   )   (   )   (   )---(   )---(   )---(   )---(b 5)   (   )   (   )   (   )   (   )   (   )   (   )---(   )---(   )   (   )
+  |       |       |                               |       |       |               |       |                       |       |     
+(   )   (   )   (b 4)---(   )---(   )---(   )   (   )---(   )   (   )---(   )   (   )   (   )   (   )   (   )---(b 2)   (   )
+  |       |                               |                               |       |       |               |               |     
+(   )   (   )   (   )   (   )---(   )   (   )---(   )   (   )---(b 2)   (   )---(   )   (   )   (   )   (b 2)---(   )   (   )
+  |       |               |       |               |       |       |                       |                       |       |     
+(   )   (b 9)---(   )---(   )   (w 5)   (   )---(   )   (   )   (   )---(   )---(   )   (   )   (   )---(w 2)---(   )   (   )
+  |                               |       |               |                       |       |       |                       |     
+(   )   (b 3)---(   )---(   )   (   )   (   )   (b 2)---(   )   (   )   (   )   (b 2)---(   )   (   )---(   )---(b 3)   (   )
+  |       |               |       |       |       |                                                               |       |     
+(   )---(   )   (   )   (   )   (   )   (   )   (   )---(   )   (   )   (   )---(   )   (   )   (   )---(   )---(   )   (   )
+                          |       |       |               |               |       |               |                       |     
+(   )---(   )---(   )   (   )   (   )   (b 4)---(b 2)   (   )   (   )   (   )   (   )---(   )   (   )   (   )---(w 2)---(   )
+  |               |       |       |               |       |               |               |       |       |                     
+(   )---(   )   (w 3)   (   )   (   )---(   )---(b 3)   (   )   (   )   (b 3)---(   )   (w 2)   (   )   (   )---(   )---(b 3)
+          |       |       |                               |                       |       |       |                       |     
+(   )   (   )   (   )   (   )---(   )---(   )---(   )   (   )   (   )   (   )---(b 2)   (   )---(b 4)   (   )   (   )---(b 2)
+          |       |                               |       |               |                                       |             
+(   )   (w 3)   (   )---(   )---(w 4)---(   )---(   )   (b 6)---(   )---(   )   (   )---(w 3)---(   )---(   )   (   )   (   )
+          |                                                                       |                       |       |             
+(   )   (   )---(   )---(   )---(   )---(w 9)---(   )---(   )---(   )---(   )---(   )   (   )   (   )   (b 2)---(   )   (   )
+                                                                                
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>15x15 (PuzzleID: 421,495)</td>
+	<td>22.401204ms</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (w 3)   (   )   (   )   (   )   (   )   (b 2)   (b 3)   (   )   (   )   (b 3)   (w 2)   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 2)   (b 3)   (   )
+                                                                                                                                
+(   )   (   )   (   )   (b 2)   (   )   (   )   (b 2)   (b 2)   (   )   (   )   (w 5)   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(w 6)   (b 2)   (b 2)   (   )   (b 2)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (w 2)   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 4)   (   )   (b 3)   (   )
+                                                                                                                                
+(   )   (w 3)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (b 2)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (w 2)   (b 4)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (b 3)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 3)   (   )
+                                                                                                                                
+(   )   (   )   (w 5)   (   )   (   )   (   )   (w 5)   (w 6)   (b 6)   (b10)   (w 4)   (   )   (   )   (   )   (   )   (b 7)
+                                                                                                                                
+(   )   (   )   (w 5)   (   )   (   )   (   )   (   )   (   )   (   )   (w 2)   (   )   (b 5)   (   )   (   )   (w 2)   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (b 5)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 4)
+                                                                                                                                
+(b 4)   (   )   (   )   (b 2)   (b 3)   (   )   (   )   (   )   (   )   (b 3)   (   )   (   )   (w 3)   (b 2)   (   )   (w 3)
+                                                                                                                                
+(   )   (   )   (w 3)   (   )   (   )   (   )   (   )   (w 2)   (b 2)   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (b 3)   (b 5)   (   )   (b 4)   (   )   (w 2)   (   )   (   )   (w 2)   (   )   (   )   (   )   (   )   (w 2)   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (w11)   (   )   (   )   (   )   (   )   (   )   (b12)   (   )   (   )   (   )   (   )
+                                                                                
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )---(w 3)---(   )---(   )   (   )   (   )   (b 2)---(b 3)   (   )---(   )   (b 3)---(w 2)---(   )   (   )   (   )
+          |                       |                       |       |       |       |       |               |                     
+(   )---(   )   (   )---(   )   (   )---(   )   (   )---(   )   (   )   (   )   (   )   (   )---(   )   (b 2)---(b 3)   (   )
+  |               |       |               |       |               |       |       |               |               |             
+(   )   (   )---(   )   (b 2)---(   )   (   )---(b 2)   (b 2)---(   )   (   )   (w 5)   (   )   (   )---(   )   (   )   (   )
+  |       |                       |                       |               |       |                       |       |             
+(w 6)   (b 2)---(b 2)   (   )   (b 2)---(   )   (   )---(   )   (   )   (   )   (   )   (   )   (   )   (w 2)   (   )---(   )
+  |               |                       |       |                       |       |                       |               |     
+(   )   (   )---(   )   (   )---(   )   (   )   (   )---(   )---(   )   (   )   (   )   (   )---(b 4)   (   )---(b 3)   (   )
+  |       |               |       |       |                       |       |       |       |       |               |       |     
+(   )   (w 3)   (   )---(   )   (   )   (   )   (   )---(   )   (   )   (   )   (   )---(   )   (   )   (   )   (   )   (   )
+  |       |       |               |       |       |       |       |       |                       |               |       |     
+(   )   (   )   (b 2)---(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )---(   )   (   )   (   )---(   )   (   )
+  |       |               |       |       |       |       |       |       |       |       |       |       |               |     
+(   )---(   )   (   )   (w 2)   (b 4)---(   )   (   )   (   )   (   )   (   )   (   )   (   )---(   )   (   )---(   )   (   )
+                          |                       |       |       |       |       |                               |       |     
+(   )   (   )   (   )   (   )---(   )---(b 3)   (   )   (   )   (   )   (   )   (   )   (   )   (   )---(   )---(b 3)   (   )
+                                          |       |       |       |       |       |               |                       |     
+(   )---(   )---(w 5)---(   )---(   )---(   )   (w 5)   (w 6)   (b 6)---(b10)   (w 4)   (   )   (   )---(   )   (   )---(b 7)
+  |                                               |       |                       |                       |       |             
+(   )   (   )---(w 5)---(   )---(   )---(   )---(   )   (   )   (   )---(w 2)---(   )   (b 5)---(   )---(   )   (w 2)   (   )
+  |       |                                               |       |                       |                       |             
+(   )   (   )---(   )   (   )---(   )---(b 5)   (   )   (   )---(   )   (   )   (   )   (   )   (   )---(   )   (   )---(b 4)
+  |               |       |               |                                               |       |       |               |     
+(b 4)---(   )   (   )   (b 2)---(b 3)   (   )   (   )   (   )---(   )---(b 3)   (   )   (   )   (w 3)   (b 2)---(   )   (w 3)
+          |       |               |       |               |               |               |       |               |       |     
+(   )   (   )   (w 3)   (   )   (   )   (   )   (   )   (w 2)   (b 2)---(   )   (   )---(   )   (   )   (   )---(   )   (   )
+          |       |               |       |               |       |               |               |       |               |     
+(   )---(b 3)   (b 5)---(   )---(b 4)   (   )---(w 2)---(   )   (   )---(w 2)---(   )   (   )---(   )   (   )---(w 2)---(   )
+  |                                                                                       |                                     
+(   )---(   )---(   )---(   )---(   )---(w11)---(   )---(   )---(   )---(   )---(   )---(b12)   (   )   (   )   (   )   (   )
+                                                                                
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>15x15 (PuzzleID: 5,395,284)</td>
+	<td>180.607834ms</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (w 2)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (w 9)   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 3)   (   )   (   )   (w 6)   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (w 2)   (   )   (   )   (   )   (   )   (   )   (w 2)   (   )
+                                                                                                                                
+(w 3)   (b 3)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 4)   (   )   (   )   (   )
+                                                                                                                                
+(   )   (b 3)   (   )   (   )   (   )   (w 6)   (   )   (   )   (   )   (   )   (b 2)   (b 2)   (   )   (   )   (w 2)   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 2)   (   )   (   )   (   )   (   )   (w 2)   (   )   (   )   (   )
+                                                                                                                                
+(b 2)   (   )   (   )   (w 7)   (   )   (   )   (b 5)   (   )   (w 4)   (   )   (w 2)   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (w 3)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(b 2)   (   )   (   )   (   )   (w 8)   (   )   (   )   (   )   (b 5)   (   )   (b 5)   (w 4)   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 5)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(b 3)   (   )   (b 4)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 2)   (   )   (b 4)   (   )   (   )
+                                                                                                                                
+(   )   (b 2)   (w 2)   (   )   (w 3)   (   )   (   )   (   )   (   )   (w 2)   (b 4)   (   )   (   )   (   )   (   )   (b 6)
+                                                                                                                                
+(   )   (   )   (   )   (b 5)   (   )   (   )   (b 3)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (b 2)   (b 3)   (   )   (   )   (   )   (   )   (   )   (b 4)   (   )   (w 2)   (   )   (   )   (b 5)   (   )   (b 3)
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 3)   (   )   (b 3)   (   )   (   )   (w 3)   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (w 4)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 2)   (   )
+                                                                                
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )---(w 2)---(   )   (   )---(   )---(   )---(   )---(   )---(   )---(w 9)---(   )---(   )---(   )
+                          |               |       |                                                                       |     
+(   )---(   )   (   )   (   )   (   )---(   )   (   )---(b 3)   (   )---(   )---(w 6)---(   )---(   )---(   )---(   )   (   )
+  |       |               |       |                       |       |                                               |       |     
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (w 2)   (   )   (   )   (   )   (   )---(   )   (w 2)   (   )
+  |       |               |       |                       |       |                               |       |       |       |     
+(w 3)   (b 3)---(   )   (   )   (   )   (   )---(   )   (   )---(   )   (   )---(   )---(   )---(b 4)   (   )---(   )   (   )
+  |               |       |       |       |       |                       |                                               |     
+(   )---(b 3)   (   )   (   )   (   )   (w 6)   (   )   (   )---(   )   (   )---(b 2)   (b 2)---(   )   (   )---(w 2)---(   )
+          |       |       |       |       |       |       |       |               |       |       |       |                     
+(   )   (   )   (   )   (   )   (   )   (   )   (   )---(b 2)   (   )   (   )   (   )---(   )   (w 2)   (   )---(   )   (   )
+          |       |       |       |       |                       |                               |               |             
+(b 2)---(   )   (   )   (w 7)   (   )   (   )   (b 5)---(   )   (w 4)   (   )---(w 2)---(   )   (   )---(   )   (   )---(   )
+  |               |       |       |       |       |       |       |       |               |               |               |     
+(   )---(   )   (   )---(   )   (   )   (   )   (   )   (w 3)   (   )   (   )   (   )---(   )   (   )   (   )---(   )   (   )
+          |                       |       |       |       |       |       |       |                               |       |     
+(b 2)---(   )   (   )---(   )   (w 8)   (   )   (   )   (   )   (b 5)---(   )   (b 5)---(w 4)---(   )---(   )---(   )   (   )
+  |               |       |       |       |       |       |                                                               |     
+(   )---(   )---(   )   (   )   (   )---(   )   (   )   (b 5)---(   )---(   )   (   )---(   )   (   )---(   )---(   )   (   )
+                          |                       |                       |       |       |       |               |       |     
+(b 3)---(   )---(b 4)   (   )   (   )---(   )---(   )   (   )---(   )---(   )   (   )   (b 2)---(   )   (b 4)---(   )   (   )
+  |               |       |       |                       |                       |                       |               |     
+(   )---(b 2)   (w 2)   (   )   (w 3)   (   )   (   )---(   )   (   )---(w 2)---(b 4)   (   )   (   )   (   )   (   )---(b 6)
+          |       |       |       |               |               |                                       |       |             
+(   )---(   )   (   )---(b 5)   (   )   (   )   (b 3)---(   )---(   )   (   )   (   )---(   )   (   )   (   )   (   )   (   )
+  |                               |                                               |       |               |       |             
+(   )   (b 2)---(b 3)   (   )---(   )   (   )---(   )---(   )---(b 4)   (   )   (w 2)   (   )---(   )---(b 5)   (   )---(b 3)
+  |       |       |       |               |                       |               |                                       |     
+(   )---(   )   (   )   (   )---(   )---(   )   (   )---(   )---(b 3)   (   )---(b 3)   (   )---(   )---(w 3)---(   )   (   )
+                  |                               |                       |               |                       |       |     
+(   )   (   )   (   )---(   )---(w 4)---(   )---(   )   (   )   (   )   (   )---(   )---(   )   (   )   (   )   (b 2)---(   )
+                                                                                
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>15x15 (PuzzleID: 6,688,261)</td>
+	<td>54.888961ms</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (b 4)   (   )   (   )   (   )   (   )   (b 2)   (   )   (b 2)   (   )   (   )   (b 2)   (   )   (w 3)   (   )   (b 4)
+                                                                                                                                
+(b 2)   (   )   (   )   (   )   (   )   (w 2)   (   )   (   )   (b 3)   (b 2)   (   )   (   )   (   )   (   )   (w 2)   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 6)   (   )   (   )   (   )   (w 2)   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (b 3)   (   )   (   )   (   )   (w 4)   (   )   (   )   (   )   (b 3)   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (b 4)   (b 5)   (   )   (   )   (   )   (w 5)   (   )   (w 3)   (b 3)   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (b 3)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (b 4)   (w 2)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 3)   (b 2)   (   )   (b 3)   (   )
+                                                                                                                                
+(   )   (w 4)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 6)   (   )   (   )   (w 2)   (   )   (   )
+                                                                                                                                
+(   )   (w 3)   (   )   (b 5)   (   )   (   )   (b 2)   (b 3)   (   )   (   )   (   )   (   )   (   )   (   )   (b 4)   (   )
+                                                                                                                                
+(w 2)   (   )   (   )   (   )   (   )   (   )   (   )   (b 2)   (   )   (   )   (   )   (   )   (b 2)   (   )   (b 5)   (   )
+                                                                                                                                
+(   )   (   )   (w 2)   (b 3)   (   )   (b 2)   (   )   (   )   (   )   (b 4)   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (b 3)   (   )   (b 5)   (   )   (   )   (   )   (   )   (   )   (   )   (b 4)   (   )   (w 8)
+                                                                                                                                
+(   )   (w 2)   (   )   (w 3)   (   )   (   )   (b 2)   (b 2)   (   )   (   )   (b 4)   (   )   (b 2)   (w 2)   (w 4)   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (b 2)   (b 2)   (   )   (   )   (   )   (   )   (b 3)   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (b 2)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 2)   (   )   (   )   (   )
+                                                                                                                                
+(   )   (b 4)   (w 3)   (   )   (   )   (b 2)   (   )   (b 2)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (b 4)---(   )---(   )---(   )   (   )---(b 2)   (   )   (b 2)---(   )   (   )---(b 2)   (   )---(w 3)---(   )---(b 4)
+          |                       |       |       |               |       |       |       |       |                       |     
+(b 2)---(   )   (   )---(   )   (   )   (w 2)   (   )---(   )---(b 3)   (b 2)---(   )   (   )---(   )   (   )---(w 2)---(   )
+  |               |       |       |       |                                                               |                     
+(   )---(   )   (   )   (   )   (   )   (   )---(   )---(b 6)   (   )---(   )   (   )---(w 2)---(   )   (   )   (   )---(   )
+          |       |       |       |                       |       |       |       |               |       |       |       |     
+(   )---(   )   (   )   (   )   (   )   (b 3)---(   )   (   )   (   )   (w 4)   (   )   (   )---(   )   (b 3)---(   )   (   )
+  |               |       |       |       |       |       |       |       |       |       |                               |     
+(   )   (   )---(   )   (b 4)---(b 5)   (   )   (   )   (   )   (w 5)   (   )   (w 3)   (b 3)---(   )---(   )   (   )---(   )
+  |       |                               |       |       |       |       |       |                       |       |             
+(   )   (   )   (   )   (b 3)---(   )---(   )   (   )   (   )   (   )   (   )   (   )---(   )   (   )   (   )   (   )   (   )
+  |       |               |                       |       |       |       |               |               |       |             
+(   )   (b 4)---(w 2)---(   )   (   )---(   )   (   )---(   )   (   )   (   )---(   )---(b 3)   (b 2)---(   )   (b 3)---(   )
+  |                               |       |                       |                               |                       |     
+(   )---(w 4)---(   )---(   )---(   )   (   )---(   )---(   )   (   )---(   )---(b 6)   (   )   (   )---(w 2)---(   )   (   )
+                                                          |                       |                               |       |     
+(   )---(w 3)---(   )---(b 5)   (   )   (   )---(b 2)   (b 3)---(   )---(   )   (   )   (   )---(   )---(   )---(b 4)   (   )
+  |                       |               |       |                       |       |       |                               |     
+(w 2)   (   )---(   )   (   )   (   )---(   )   (   )---(b 2)   (   )   (   )   (   )   (   )---(b 2)   (   )---(b 5)   (   )
+  |       |       |       |       |                       |               |       |               |       |       |       |     
+(   )---(   )   (w 2)   (b 3)---(   )   (b 2)---(   )   (   )---(   )---(b 4)   (   )   (   )   (   )---(   )   (   )   (   )
+                  |                       |       |                               |                               |       |     
+(   )---(   )   (   )---(   )   (b 3)---(   )   (b 5)---(   )---(   )---(   )---(   )   (   )---(   )---(b 4)   (   )   (w 8)
+  |       |               |       |                                                       |               |       |       |     
+(   )   (w 2)   (   )   (w 3)   (   )   (   )---(b 2)   (b 2)---(   )   (   )---(b 4)   (   )---(b 2)   (w 2)   (w 4)   (   )
+  |       |               |       |       |       |       |       |       |       |               |       |       |       |     
+(   )   (   )---(   )   (   )   (   )---(b 2)   (b 2)---(   )   (   )---(   )   (   )   (b 3)---(   )   (   )---(   )   (   )
+  |               |       |                                                       |       |                               |     
+(   )---(   )   (b 2)---(   )   (   )---(   )   (   )---(   )   (   )---(   )   (   )   (   )   (b 2)---(   )   (   )---(   )
+          |                       |       |       |       |       |       |       |       |       |       |       |             
+(   )   (b 4)---(w 3)---(   )---(   )   (b 2)---(   )   (b 2)---(   )   (   )---(   )   (   )---(   )   (   )---(   )   (   )
+                                                                                
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>15x15 (PuzzleID: 608,117)</td>
+	<td>101.369277ms</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (   )   (b 4)   (   )   (   )   (   )   (   )   (w 3)   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (b 2)   (b 3)   (   )   (   )   (b 2)   (b 2)   (   )   (   )   (   )   (   )   (   )   (   )   (b 2)   (w15)
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (w 2)   (   )   (w 3)   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (w 2)   (b 2)   (   )   (b 2)   (   )   (b 3)   (b 4)   (   )   (b 2)   (   )   (   )   (   )   (   )   (w 2)   (   )
+                                                                                                                                
+(   )   (   )   (w 2)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (w 6)   (w 2)   (   )   (b 3)   (   )   (   )   (   )   (b 5)   (b 2)   (b 4)   (   )   (b 2)   (   )
+                                                                                                                                
+(w15)   (   )   (w 5)   (   )   (   )   (w 2)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 2)   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 2)   (b 2)   (b 2)   (   )   (b 3)   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 2)   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (b 3)   (   )   (   )   (   )   (b 3)   (   )   (   )   (   )   (w 3)   (   )   (   )   (   )
+                                                                                                                                
+(   )   (w 8)   (   )   (   )   (   )   (w 2)   (   )   (   )   (   )   (   )   (b 2)   (   )   (   )   (w 3)   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (b 5)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (w 3)   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (b 4)   (b 3)   (w 3)   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (w 2)   (   )   (   )   (   )   (b 2)   (b 2)   (   )   (w 4)   (   )   (   )   (   )   (w 2)   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (b 3)   (   )   (b 2)   (b 3)   (   )   (b 6)   (w 3)   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(b16)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 3)   (   )   (   )   (   )   (   )
+                                                                                
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )   (   )---(   )   (   )   (b 4)---(   )---(   )---(   )   (   )---(w 3)---(   )---(   )   (   )   (   )---(   )
+  |       |       |       |               |                       |       |                       |               |       |     
+(   )   (   )---(b 2)   (b 3)---(   )---(   )   (b 2)---(b 2)   (   )---(   )   (   )---(   )---(   )   (   )---(b 2)   (w15)
+  |                                               |       |                       |                       |               |     
+(   )   (   )---(   )   (   )---(   )   (   )---(   )   (   )---(w 2)---(   )   (w 3)   (   )---(   )   (   )---(   )   (   )
+  |       |       |       |       |       |                               |       |       |       |               |       |     
+(   )   (w 2)   (b 2)---(   )   (b 2)---(   )   (b 3)---(b 4)   (   )---(b 2)   (   )   (   )   (   )   (   )   (w 2)   (   )
+  |       |                                       |       |       |               |       |       |               |       |     
+(   )   (   )---(w 2)---(   )   (   )---(   )   (   )   (   )   (   )---(   )   (   )---(   )   (   )   (   )---(   )   (   )
+  |                       |       |       |       |       |               |                       |       |               |     
+(   )   (   )---(   )   (w 6)   (w 2)   (   )---(b 3)   (   )   (   )   (   )---(b 5)   (b 2)---(b 4)   (   )---(b 2)   (   )
+  |       |       |       |       |                       |                       |       |                       |       |     
+(w15)   (   )   (w 5)   (   )   (   )---(w 2)---(   )   (   )---(   )   (   )   (   )   (   )---(   )   (b 2)---(   )   (   )
+  |       |       |       |                       |               |               |               |       |               |     
+(   )   (   )   (   )   (   )   (   )---(   )   (   )---(b 2)   (b 2)---(b 2)   (   )   (b 3)---(   )   (   )---(   )   (   )
+  |       |       |       |       |       |               |               |       |       |                       |       |     
+(   )   (   )   (   )   (   )   (   )   (   )---(   )---(   )   (   )---(b 2)   (   )   (   )   (   )---(   )---(   )   (   )
+  |       |       |       |       |                               |               |       |       |                       |     
+(   )   (   )   (   )   (   )   (b 3)---(   )   (   )---(   )---(b 3)   (   )   (   )---(   )   (w 3)   (   )---(   )   (   )
+  |       |       |       |               |       |                                               |       |       |       |     
+(   )   (w 8)   (   )---(   )   (   )   (w 2)   (   )   (   )---(   )   (   )---(b 2)   (   )   (   )   (w 3)   (   )   (   )
+  |       |                               |       |       |       |       |       |               |       |       |       |     
+(   )   (   )   (   )---(   )---(   )---(b 5)   (   )   (   )   (   )   (   )   (   )---(   )---(   )   (w 3)   (   )   (   )
+  |       |       |                               |       |       |       |                               |       |       |     
+(   )   (   )   (   )---(   )   (   )---(   )   (b 4)---(b 3)   (w 3)   (   )   (   )---(   )---(   )---(   )   (   )   (   )
+  |       |               |       |       |                       |       |       |                               |       |     
+(   )   (   )---(w 2)---(   )   (   )   (   )---(b 2)   (b 2)---(   )   (w 4)   (   )   (   )   (   )---(w 2)---(   )   (   )
+  |                               |               |       |               |       |               |                       |     
+(   )   (   )---(   )   (   )---(b 3)   (   )---(b 2)   (b 3)---(   )---(b 6)   (w 3)   (   )---(   )   (   )---(   )   (   )
+  |       |       |       |               |                                       |       |               |       |       |     
+(b16)---(   )   (   )---(   )   (   )   (   )---(   )---(   )---(   )---(   )---(   )   (b 3)---(   )---(   )   (   )---(   )
+                                                                                
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>15x15 (PuzzleID: 7,510,233)</td>
+	<td>25.293967ms</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (b 2)   (   )   (   )   (   )   (   )   (b 3)   (   )   (b 6)   (   )   (b 6)   (   )   (   )   (   )   (   )   (b12)
+                                                                                                                                
+(   )   (   )   (b 2)   (   )   (w 4)   (   )   (   )   (b 4)   (   )   (   )   (   )   (   )   (   )   (w 3)   (b 5)   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (w 4)   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (b 3)   (   )   (   )   (   )   (   )   (   )   (w 3)   (w 3)   (   )   (w 2)   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (w 3)   (   )   (   )   (b 3)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (b 3)   (   )   (   )   (   )   (   )   (w 2)   (   )   (b 4)   (   )   (   )   (b 3)   (w 2)   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (b 2)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 3)   (b 5)   (   )   (   )   (   )
+                                                                                                                                
+(   )   (b 4)   (   )   (   )   (   )   (   )   (   )   (b 5)   (   )   (   )   (   )   (w 2)   (   )   (   )   (   )   (b 9)
+                                                                                                                                
+(b 8)   (   )   (b 2)   (   )   (   )   (   )   (b 3)   (   )   (   )   (w 4)   (   )   (   )   (w 3)   (   )   (w 2)   (   )
+                                                                                                                                
+(b 2)   (   )   (   )   (   )   (b 3)   (   )   (b 2)   (   )   (   )   (   )   (   )   (b 8)   (b 4)   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 4)   (   )   (   )   (   )   (   )   (b 4)   (   )   (   )   (b 2)
+                                                                                                                                
+(b 5)   (w 2)   (   )   (   )   (   )   (   )   (w 3)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 3)
+                                                                                                                                
+(   )   (   )   (   )   (w 3)   (   )   (b 4)   (   )   (   )   (w 3)   (   )   (b 3)   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (w 2)   (   )   (   )   (   )   (   )   (   )   (b 6)   (   )   (   )   (   )   (b 2)
+                                                                                                                                
+(   )   (   )   (b 2)   (b 4)   (   )   (   )   (w 8)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 2)
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (w10)   (   )   (   )   (   )
+                                                                                
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (b 2)---(   )   (   )   (   )---(   )   (b 3)---(   )---(b 6)   (   )   (b 6)---(   )---(   )---(   )---(   )---(b12)
+          |       |               |       |       |               |               |                                       |     
+(   )---(   )   (b 2)---(   )   (w 4)   (   )   (   )---(b 4)   (   )   (   )---(   )   (   )---(   )---(w 3)---(b 5)   (   )
+  |                       |       |       |               |       |       |               |                       |       |     
+(   )   (   )---(   )   (   )   (   )   (   )---(   )   (   )   (w 4)   (   )   (   )---(   )   (   )---(   )   (   )   (   )
+  |       |       |       |       |               |       |       |       |       |               |       |       |       |     
+(   )   (   )   (   )---(b 3)   (   )   (   )---(   )   (   )   (   )   (w 3)   (w 3)   (   )   (w 2)   (   )---(   )   (   )
+  |       |                       |       |               |       |       |       |               |                       |     
+(   )   (   )---(w 3)---(   )---(   )   (b 3)---(   )---(   )   (   )---(   )   (   )   (   )---(   )   (   )---(   )   (   )
+  |                                                                               |       |               |       |       |     
+(   )   (b 3)---(   )   (   )---(   )   (   )---(w 2)---(   )   (b 4)---(   )---(   )   (b 3)---(w 2)---(   )   (   )   (   )
+  |       |       |       |       |       |               |       |                                               |       |     
+(   )   (   )   (b 2)---(   )   (   )---(   )   (   )   (   )   (   )   (   )   (   )---(b 3)   (b 5)---(   )---(   )   (   )
+  |       |                                               |       |               |       |       |                       |     
+(   )   (b 4)---(   )---(   )   (   )---(   )---(   )---(b 5)   (   )---(   )---(   )   (w 2)   (   )   (   )---(   )---(b 9)
+  |                       |       |                                                       |       |       |                     
+(b 8)---(   )   (b 2)---(   )   (   )---(   )---(b 3)   (   )---(   )---(w 4)---(   )---(   )   (w 3)   (   )---(w 2)---(   )
+          |       |                               |       |                                       |                       |     
+(b 2)---(   )   (   )---(   )---(b 3)   (   )---(b 2)   (   )---(   )---(   )---(   )---(b 8)   (b 4)---(   )   (   )---(   )
+  |                               |       |                                               |               |       |             
+(   )---(   )---(   )---(   )---(   )   (   )   (   )---(b 4)   (   )---(   )---(   )   (   )   (b 4)---(   )   (   )---(b 2)
+                                          |       |       |       |               |       |       |                       |     
+(b 5)---(w 2)---(   )   (   )---(   )   (   )   (w 3)   (   )   (   )   (   )   (   )   (   )   (   )   (   )---(   )---(b 3)
+  |               |       |       |       |       |       |       |               |       |       |       |                     
+(   )   (   )---(   )   (w 3)   (   )---(b 4)   (   )   (   )   (w 3)   (   )---(b 3)   (   )   (   )   (   )---(   )---(   )
+  |       |               |                       |       |       |       |               |       |                       |     
+(   )   (   )---(   )   (   )   (   )---(w 2)---(   )   (   )---(   )   (   )---(   )---(b 6)   (   )---(   )   (   )---(b 2)
+  |               |       |       |                                                                       |       |             
+(   )---(   )   (b 2)---(b 4)   (   )   (   )---(w 8)---(   )---(   )---(   )---(   )---(   )---(   )---(   )   (   )---(b 2)
+          |                       |       |                                                                               |     
+(   )   (   )---(   )---(   )---(   )   (   )---(   )---(   )---(   )---(   )---(   )---(   )---(w10)---(   )---(   )---(   )
+                                                                                
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>15x15 (PuzzleID: 8,867,306)</td>
+	<td>83.779028ms</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (w 2)   (   )   (b 4)   (   )   (   )   (   )   (   )   (b 2)   (   )   (b 5)   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (b 3)   (b 3)   (   )   (   )   (   )   (   )   (   )   (   )   (b 3)   (   )   (w 2)   (   )   (   )   (w 5)
+                                                                                                                                
+(   )   (   )   (b 3)   (   )   (   )   (b 5)   (w 2)   (   )   (b 4)   (   )   (b 3)   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (w 2)   (   )   (   )   (   )   (   )   (b 5)   (   )   (   )   (   )   (   )   (   )   (b 4)   (   )
+                                                                                                                                
+(b 3)   (b 3)   (   )   (   )   (   )   (   )   (w 3)   (b 5)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (b 5)   (b 6)   (   )   (w 3)   (   )   (   )   (b 2)   (   )   (w 5)   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (b 3)   (   )   (b 3)   (   )   (b 3)   (   )   (   )   (w 6)   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (w 2)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (w 3)   (   )   (b 4)   (   )   (   )   (b 2)   (   )   (   )   (   )   (   )   (   )   (   )   (w 7)   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (w 2)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (w 2)   (   )   (   )   (   )   (   )   (   )   (w 3)   (   )   (b 2)   (   )   (b 5)   (b 5)
+                                                                                                                                
+(b 5)   (   )   (w 2)   (   )   (   )   (b 2)   (   )   (   )   (   )   (w 3)   (   )   (   )   (   )   (   )   (b 4)   (   )
+                                                                                                                                
+(b 2)   (   )   (   )   (w 3)   (   )   (   )   (   )   (   )   (w 2)   (   )   (   )   (w 2)   (   )   (   )   (w 2)   (   )
+                                                                                                                                
+(   )   (   )   (w 5)   (   )   (   )   (   )   (   )   (w 3)   (b 3)   (   )   (b 2)   (   )   (b 3)   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (b 4)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )---(w 2)---(   )   (b 4)---(   )---(   )---(   )   (   )   (b 2)---(   )   (b 5)---(   )---(   )---(   )
+                  |               |       |                       |               |       |       |                       |     
+(   )---(   )---(b 3)   (b 3)---(   )   (   )---(   )---(   )   (   )---(   )---(b 3)   (   )   (w 2)   (   )---(   )   (w 5)
+  |                       |                               |                               |       |       |       |       |     
+(   )---(   )---(b 3)   (   )   (   )   (b 5)---(w 2)---(   )   (b 4)---(   )---(b 3)   (   )---(   )   (   )   (   )   (   )
+                  |       |               |                       |               |                       |       |       |     
+(   )   (   )---(   )   (   )---(   )   (   )   (   )---(   )   (   )   (   )   (   )---(   )---(   )---(   )   (   )   (   )
+          |                       |       |       |       |       |                                               |       |     
+(   )   (   )   (   )---(w 2)---(   )   (   )   (   )   (   )   (b 5)---(   )---(   )---(   )   (   )   (   )---(b 4)   (   )
+          |       |                       |       |       |                               |               |               |     
+(b 3)---(b 3)   (   )---(   )---(   )---(   )   (w 3)   (b 5)---(   )---(   )---(   )   (   )   (   )   (   )   (   )---(   )
+  |                                               |                               |       |               |       |             
+(   )   (   )---(b 5)   (b 6)---(   )---(w 3)---(   )   (   )   (b 2)---(   )   (w 5)   (   )   (   )   (   )   (   )---(   )
+  |       |       |       |                                       |       |       |       |               |               |     
+(   )---(   )   (   )   (   )   (b 3)---(   )   (b 3)---(   )---(b 3)   (   )   (   )   (w 6)   (   )   (   )   (   )---(   )
+                  |       |       |       |       |                       |       |       |               |       |             
+(   )---(   )   (   )   (   )   (   )   (w 2)   (   )---(   )---(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+  |       |       |       |       |       |                       |       |       |       |               |       |             
+(   )   (w 3)   (   )   (b 4)---(   )   (   )---(b 2)   (   )---(   )   (   )   (   )   (   )   (   )   (w 7)   (   )   (   )
+  |       |       |                               |       |               |       |       |               |       |             
+(   )   (   )   (   )---(   )---(   )   (   )---(   )   (w 2)   (   )---(   )   (   )---(   )   (   )   (   )   (   )   (   )
+  |       |                       |       |               |       |                                       |       |             
+(   )   (   )---(   )   (   )   (w 2)   (   )---(   )---(   )   (   )---(   )---(w 3)---(   )   (b 2)---(   )   (b 5)---(b 5)
+  |               |               |                                                       |       |                       |     
+(b 5)---(   )   (w 2)   (   )   (   )---(b 2)   (   )---(   )   (   )---(w 3)---(   )---(   )   (   )---(   )---(b 4)   (   )
+          |       |                       |       |       |       |                                               |       |     
+(b 2)---(   )   (   )---(w 3)---(   )---(   )   (   )   (   )   (w 2)   (   )   (   )---(w 2)---(   )   (   )   (w 2)   (   )
+  |                                               |       |       |               |               |               |       |     
+(   )---(   )---(w 5)---(   )---(   )---(   )   (   )   (w 3)   (b 3)---(   )   (b 2)---(   )   (b 3)---(   )---(   )   (   )
+                                          |       |       |               |               |                               |     
+(   )   (   )   (   )   (   )   (   )   (   )---(b 4)   (   )---(   )---(   )   (   )   (   )---(   )---(   )---(   )---(   )
+                                                                                
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>15x15 (PuzzleID: 875,381)</td>
+	<td>62.513598ms</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b10)   (   )   (   )   (   )   (   )
+                                                                                                                                
+(b 5)   (   )   (   )   (   )   (b 3)   (   )   (   )   (   )   (b 2)   (   )   (   )   (   )   (   )   (   )   (   )   (b 2)
+                                                                                                                                
+(   )   (b 6)   (   )   (   )   (   )   (   )   (   )   (b 2)   (   )   (   )   (w 2)   (   )   (b 2)   (   )   (b 3)   (   )
+                                                                                                                                
+(   )   (   )   (   )   (w 2)   (   )   (   )   (   )   (   )   (   )   (b 2)   (   )   (   )   (w 2)   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (b 2)   (b 2)   (   )   (   )   (   )   (   )   (b 2)   (   )   (   )   (b 3)   (   )   (b 4)
+                                                                                                                                
+(   )   (   )   (   )   (   )   (b 3)   (   )   (b 2)   (w 3)   (b 7)   (   )   (   )   (b 2)   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (b 2)   (   )   (b 2)   (   )   (b 4)   (   )   (   )   (   )   (   )   (b 6)   (w 3)   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (b 3)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (w 4)   (w 5)   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (b 5)   (   )   (b 4)   (   )   (   )   (   )   (   )   (   )   (   )   (w 2)   (   )
+                                                                                                                                
+(w 9)   (   )   (   )   (   )   (   )   (   )   (b 6)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (w 6)   (w 4)   (   )   (   )   (   )   (   )   (   )   (b 7)   (   )   (   )   (   )   (   )   (   )   (   )   (w 7)
+                                                                                                                                
+(   )   (   )   (   )   (   )   (b 3)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (w 2)   (w 4)   (   )
+                                                                                                                                
+(   )   (   )   (w 2)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (w 2)   (   )   (   )   (   )   (b 2)   (   )   (   )   (   )   (   )   (w 2)   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (w 2)   (   )   (b 3)   (   )   (   )   (   )   (b 3)   (   )   (   )
+                                                                                
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )---(   )   (   )   (   )---(   )---(   )---(   )---(   )---(   )---(   )---(b10)   (   )   (   )---(   )   (   )
+          |       |               |                                                       |               |       |             
+(b 5)---(   )   (   )---(   )---(b 3)   (   )---(   )   (   )---(b 2)   (   )---(   )   (   )   (   )---(   )   (   )---(b 2)
+  |                                       |       |       |       |       |       |       |       |                       |     
+(   )   (b 6)---(   )---(   )---(   )---(   )   (   )---(b 2)   (   )---(   )   (w 2)   (   )   (b 2)---(   )   (b 3)---(   )
+  |       |                                                                       |       |               |       |             
+(   )   (   )   (   )---(w 2)---(   )   (   )   (   )---(   )---(   )   (b 2)---(   )   (   )---(w 2)---(   )   (   )   (   )
+  |       |       |               |               |               |       |                                       |             
+(   )   (   )---(   )   (   )---(b 2)   (b 2)---(   )   (   )---(   )   (   )---(b 2)   (   )---(   )---(b 3)   (   )---(b 4)
+  |                       |               |               |                       |       |               |               |     
+(   )---(   )   (   )   (   )---(b 3)   (   )---(b 2)   (w 3)   (b 7)---(   )   (   )---(b 2)   (   )   (   )---(   )   (   )
+          |                       |               |       |       |       |                                       |       |     
+(   )---(b 2)   (   )---(b 2)   (   )   (b 4)---(   )   (   )   (   )   (   )   (b 6)---(w 3)---(   )---(   )   (   )   (   )
+  |               |       |       |       |               |       |       |       |                       |       |       |     
+(   )   (   )---(   )   (   )---(b 3)   (   )   (   )---(   )   (   )   (   )   (   )   (   )---(   )   (   )   (   )---(   )
+  |       |                               |       |               |       |       |       |       |       |                     
+(   )   (   )   (   )---(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (w 4)   (w 5)   (   )   (   )---(   )
+  |       |       |       |               |       |               |       |       |       |       |       |       |       |     
+(   )   (   )   (   )   (   )---(   )---(b 5)   (   )---(b 4)   (   )   (   )---(   )   (   )   (   )   (   )   (w 2)   (   )
+  |       |       |                                       |       |                       |       |       |       |       |     
+(w 9)   (   )   (   )   (   )---(   )---(   )---(b 6)   (   )   (   )   (   )---(   )   (   )   (   )   (   )---(   )   (   )
+  |       |       |       |                       |       |       |       |       |       |       |                       |     
+(   )   (w 6)   (w 4)   (   )---(   )---(   )   (   )   (   )   (b 7)---(   )   (   )---(   )   (   )   (   )---(   )   (w 7)
+  |       |       |                       |       |       |                                       |       |       |       |     
+(   )   (   )   (   )---(   )   (b 3)---(   )   (   )   (   )---(   )---(   )---(   )---(   )---(   )   (w 2)   (w 4)   (   )
+  |       |               |       |               |                                                       |       |       |     
+(   )   (   )---(w 2)---(   )   (   )   (   )   (   )---(   )   (   )---(   )   (   )---(   )   (   )---(   )   (   )   (   )
+  |                               |                       |       |       |       |       |       |               |       |     
+(   )   (   )---(w 2)---(   )   (   )---(   )   (b 2)---(   )   (   )   (   )   (   )   (w 2)   (   )---(   )   (   )   (   )
+  |       |               |               |       |               |       |       |       |               |       |       |     
+(   )---(   )   (   )   (   )---(   )---(   )   (   )---(w 2)---(   )   (b 3)---(   )   (   )---(   )---(b 3)   (   )---(   )
+                                                                                
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>15x15 (PuzzleID: 9,157,787)</td>
+	<td>60.389778ms</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (w 4)   (   )   (   )   (   )   (   )   (w 4)   (   )   (   )   (   )   (   )   (   )   (b 5)
+                                                                                                                                
+(   )   (   )   (   )   (   )   (b 3)   (   )   (b 4)   (   )   (b 3)   (b 4)   (   )   (   )   (   )   (w 2)   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 3)   (b 3)   (w 2)   (   )   (   )   (b 3)   (   )   (   )   (   )
+                                                                                                                                
+(b 2)   (   )   (b 6)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 5)   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (b 2)   (   )   (   )   (   )   (b 5)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 5)
+                                                                                                                                
+(w 5)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 2)   (   )   (   )   (w 4)   (   )   (w 3)   (   )   (   )
+                                                                                                                                
+(   )   (   )   (w 2)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 5)   (   )   (b 4)   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 5)   (w 4)   (   )   (w 5)   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (w 2)   (b 5)   (b 5)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (b 3)   (   )   (b 2)   (b 5)   (   )   (w 3)   (   )   (   )   (   )   (   )   (b 2)   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 2)   (   )
+                                                                                                                                
+(   )   (   )   (w 2)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(w 3)   (   )   (   )   (w 2)   (   )   (   )   (   )   (   )   (w 2)   (b 6)   (   )   (   )   (   )   (b 4)   (   )   (   )
+                                                                                                                                
+(   )   (w 2)   (   )   (   )   (   )   (b 4)   (w 5)   (b 5)   (w 4)   (   )   (   )   (b 5)   (w 4)   (w 2)   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (w 2)   (   )   (   )   (   )   (   )   (b 4)   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (w 2)   (   )   (   )   (   )   (   )   (w 4)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 5)
+                                                                                
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )---(   )---(   )---(w 4)---(   )   (   )   (   )   (   )---(w 4)---(   )---(   )---(   )   (   )   (   )---(b 5)
+          |                               |                       |                               |               |       |     
+(   )   (   )   (   )---(   )---(b 3)   (   )   (b 4)---(   )---(b 3)   (b 4)---(   )---(   )   (   )---(w 2)---(   )   (   )
+          |       |               |       |       |                       |               |                               |     
+(   )---(   )   (   )   (   )   (   )---(   )   (   )   (b 3)---(b 3)   (w 2)   (   )   (   )   (b 3)---(   )---(   )   (   )
+  |               |                               |       |       |       |               |       |               |       |     
+(b 2)---(   )   (b 6)---(   )---(   )---(   )---(   )   (   )   (   )   (   )---(b 5)   (   )---(   )   (   )   (   )   (   )
+          |                                               |       |               |                               |       |     
+(   )---(   )   (   )---(b 2)   (   )---(   )---(   )---(b 5)   (   )---(   )   (   )   (   )---(   )   (   )   (   )---(b 5)
+  |               |       |       |                                       |       |       |       |                             
+(w 5)   (   )---(   )   (   )---(   )   (   )---(   )   (   )   (b 2)---(   )   (   )   (w 4)   (   )---(w 3)---(   )---(   )
+  |       |                               |       |               |               |       |                               |     
+(   )   (   )---(w 2)---(   )   (   )   (   )   (   )   (   )   (   )---(   )   (   )   (   )   (b 5)---(   )   (b 4)---(   )
+  |                       |               |       |                       |       |       |       |       |       |             
+(   )   (   )---(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )---(b 5)   (w 4)   (   )   (w 5)   (   )   (   )
+  |       |       |       |               |       |                                       |       |       |       |             
+(   )   (   )   (   )   (   )---(w 2)---(b 5)   (b 5)---(   )---(   )   (   )---(   )---(   )   (   )   (   )   (   )   (   )
+  |       |       |                                               |       |                       |       |       |             
+(   )---(b 3)   (   )---(b 2)   (b 5)---(   )---(w 3)---(   )   (   )   (   )   (   )---(b 2)   (   )   (   )   (   )---(   )
+                          |       |                       |       |       |       |       |       |       |               |     
+(   )---(   )   (   )---(   )   (   )   (   )   (   )---(   )   (   )   (   )   (   )   (   )---(   )   (   )   (b 2)---(   )
+  |       |       |               |               |               |       |       |                       |       |             
+(   )   (   )   (w 2)   (   )---(   )   (   )   (   )   (   )---(   )   (   )   (   )   (   )   (   )---(   )   (   )---(   )
+  |       |       |       |                       |       |               |       |               |                       |     
+(w 3)   (   )---(   )   (w 2)   (   )   (   )   (   )   (   )---(w 2)---(b 6)   (   )---(   )   (   )   (b 4)---(   )---(   )
+  |                       |                       |                                       |       |       |                     
+(   )---(w 2)---(   )   (   )---(   )---(b 4)   (w 5)   (b 5)---(w 4)---(   )---(   )---(b 5)   (w 4)   (w 2)   (   )---(   )
+                  |                       |       |       |                                       |       |       |       |     
+(   )   (   )---(   )   (   )---(   )   (w 2)   (   )   (   )---(   )---(   )---(b 4)   (   )   (   )   (   )---(   )   (   )
+          |               |       |       |       |                               |               |                       |     
+(   )   (   )---(w 2)---(   )   (   )---(   )   (   )---(w 4)---(   )---(   )---(   )   (   )   (   )---(   )---(   )---(b 5)
+                                                                                
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>15x15 (PuzzleID: 9,183,977)</td>
+	<td>20.507322ms</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (w10)   (b11)   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (b 2)   (   )   (   )   (   )   (b 4)   (   )   (   )   (   )   (   )   (   )   (   )   (b 2)   (   )   (   )
+                                                                                                                                
+(   )   (w 2)   (   )   (   )   (b 4)   (w 3)   (   )   (   )   (b 2)   (   )   (   )   (   )   (   )   (   )   (b 7)   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (w 3)   (   )   (w 2)   (   )   (w 3)   (   )   (b 2)   (   )   (   )   (   )
+                                                                                                                                
+(w 2)   (b 3)   (   )   (   )   (   )   (   )   (b 4)   (w 2)   (b 2)   (b 2)   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (w 2)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 2)   (   )   (w 2)   (   )   (   )
+                                                                                                                                
+(   )   (   )   (b 3)   (b 2)   (   )   (   )   (w 4)   (b 4)   (   )   (   )   (   )   (   )   (w 2)   (   )   (w 6)   (   )
+                                                                                                                                
+(b 2)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (w 2)   (   )   (   )   (   )   (b 2)   (   )   (   )
+                                                                                                                                
+(   )   (   )   (b 2)   (   )   (   )   (w 5)   (   )   (   )   (   )   (   )   (   )   (b 3)   (w 3)   (   )   (   )   (w 9)
+                                                                                                                                
+(   )   (   )   (   )   (   )   (b 4)   (   )   (b 5)   (   )   (   )   (   )   (b 2)   (   )   (   )   (b 2)   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (b 3)   (   )   (   )   (   )   (   )   (w 5)   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(w 6)   (   )   (b 2)   (b 4)   (   )   (   )   (   )   (w 2)   (   )   (   )   (   )   (   )   (   )   (w 5)   (   )   (   )
+                                                                                                                                
+(   )   (   )   (b 4)   (   )   (   )   (   )   (b 2)   (   )   (   )   (   )   (   )   (w 4)   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (w 3)   (   )   (   )   (w 2)   (   )   (   )   (   )   (w 2)   (   )
+                                                                                                                                
+(   )   (b 2)   (   )   (   )   (   )   (   )   (   )   (   )   (b 6)   (w 7)   (b 3)   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(b 7)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (w 3)   (   )   (   )   (   )   (w 2)   (   )
+                                                                                
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )   (   )---(   )---(   )---(   )---(   )---(   )---(   )---(   )---(   )---(w10)---(b11)   (   )---(   )   (   )
+  |       |       |                                                                               |       |       |             
+(   )   (   )---(b 2)   (   )---(   )---(   )   (b 4)---(   )   (   )---(   )   (   )---(   )   (   )---(b 2)   (   )---(   )
+  |                       |               |       |       |       |       |       |       |                               |     
+(   )---(w 2)---(   )   (   )---(b 4)   (w 3)   (   )   (   )---(b 2)   (   )   (   )   (   )---(   )   (   )---(b 7)   (   )
+                  |               |       |       |                       |       |               |       |       |       |     
+(   )---(   )   (   )---(   )   (   )   (   )   (w 3)   (   )---(w 2)---(   )   (w 3)   (   )   (b 2)---(   )   (   )   (   )
+  |       |               |       |       |       |       |                       |                               |       |     
+(w 2)   (b 3)---(   )---(   )   (   )   (   )---(b 4)   (w 2)   (b 2)---(b 2)   (   )---(   )   (   )---(   )   (   )   (   )
+  |                               |                       |       |       |               |       |       |       |       |     
+(   )---(w 2)---(   )   (   )---(   )   (   )---(   )   (   )---(   )   (   )---(   )   (b 2)---(   )   (w 2)   (   )   (   )
+                  |       |               |       |                               |                       |       |       |     
+(   )---(   )---(b 3)   (b 2)---(   )   (   )   (w 4)   (b 4)---(   )   (   )   (   )   (   )---(w 2)---(   )   (w 6)   (   )
+  |                               |       |       |       |       |               |       |                       |       |     
+(b 2)---(   )   (   )---(   )   (   )   (   )   (   )   (   )   (   )---(w 2)---(   )   (   )   (   )---(b 2)   (   )   (   )
+          |       |       |       |       |       |       |                               |       |       |       |       |     
+(   )   (   )---(b 2)   (   )   (   )   (w 5)   (   )   (   )   (   )---(   )   (   )---(b 3)   (w 3)   (   )---(   )   (w 9)
+                          |       |       |       |       |       |       |       |               |                       |     
+(   )---(   )   (   )   (   )---(b 4)   (   )   (b 5)---(   )   (   )   (   )   (b 2)---(   )   (   )   (b 2)---(   )   (   )
+  |       |                               |                       |       |               |       |       |       |       |     
+(   )   (   )---(   )---(b 3)   (   )   (   )---(   )---(   )   (w 5)   (   )   (   )---(   )   (   )---(   )   (   )---(   )
+  |                       |                               |       |       |       |                                             
+(w 6)   (   )---(b 2)   (b 4)---(   )---(   )---(   )   (w 2)   (   )   (   )   (   )---(   )---(   )---(w 5)---(   )---(   )
+  |       |       |                               |       |       |       |                                               |     
+(   )   (   )   (b 4)---(   )---(   )---(   )   (b 2)---(   )   (   )   (   )   (   )---(w 4)---(   )---(   )---(   )   (   )
+  |       |                               |                       |       |       |                               |       |     
+(   )   (   )---(   )---(   )   (   )   (   )---(   )---(w 3)---(   )   (   )   (w 2)   (   )---(   )   (   )   (w 2)   (   )
+  |                       |                                               |       |       |       |               |       |     
+(   )   (b 2)---(   )   (   )---(   )---(   )---(   )---(   )---(b 6)   (w 7)   (b 3)---(   )   (   )   (   )---(   )   (   )
+  |       |       |                                               |       |                       |       |               |     
+(b 7)---(   )   (   )---(   )---(   )---(   )---(   )---(   )---(   )   (   )---(w 3)---(   )---(   )   (   )---(w 2)---(   )
+                                                                                
+
+```
+</details>
+</td>
+</tr>
+<tr>
+	<td>15x15 (PuzzleID: 9,337,598)</td>
+	<td>40.246685ms</td>
+	<td>0</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 6)   (   )   (   )   (b 5)   (   )   (w 2)   (   )   (   )   (b 3)
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (b 2)   (   )   (   )   (   )   (   )   (   )   (   )   (b 2)   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (b 2)   (   )   (   )   (   )   (w 2)   (   )   (   )   (   )   (b 3)   (b 2)   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (w 2)   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (w11)   (   )   (   )   (b 2)   (   )   (   )   (   )   (b 4)   (   )   (   )   (b 4)   (b 2)   (   )
+                                                                                                                                
+(   )   (w 7)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 3)   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (b 2)   (   )   (   )   (   )   (   )   (   )   (b 2)   (   )   (b 2)   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (w 2)   (   )   (   )   (   )   (   )   (w 9)   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (w 4)   (w 5)   (   )   (   )   (   )   (w 2)   (   )   (b 2)
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (w 5)   (   )   (   )   (   )   (   )   (w 6)   (   )   (   )   (   )   (   )   (b 2)
+                                                                                                                                
+(w12)   (w 4)   (   )   (   )   (w11)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (   )   (   )   (   )   (w 2)   (   )   (   )   (   )   (   )   (   )   (   )   (   )   (b 2)
+                                                                                                                                
+(b13)   (   )   (   )   (   )   (   )   (   )   (w 6)   (   )   (   )   (   )   (b 2)   (   )   (   )   (b 3)   (   )   (   )
+                                                                                                                                
+(   )   (   )   (   )   (   )   (b 2)   (   )   (   )   (b 2)   (b 2)   (   )   (   )   (   )   (b 2)   (   )   (   )   (b 2)
+                                                                                                                                
+(w 2)   (b 2)   (   )   (b 3)   (   )   (   )   (   )   (   )   (b 2)   (w 2)   (   )   (   )   (   )   (b 2)   (   )   (b 2)
+                                                                                                                                
+(   )   (   )   (   )   (w 4)   (   )   (   )   (   )   (   )   (b 4)   (   )   (b 2)   (   )   (   )   (   )   (   )   (   )
+                                                                                
+
+```
+</details>
+</td>
+	<td><details><summary>Solution</summary>
+
+```
+
+(   )---(   )   (   )---(   )   (   )---(   )   (   )   (b 6)---(   )---(   )---(b 5)   (   )---(w 2)---(   )   (   )---(b 3)
+  |       |       |       |       |       |               |                       |       |               |       |       |     
+(   )   (   )   (   )   (   )   (   )   (b 2)---(   )   (   )   (   )---(   )   (   )   (   )---(b 2)   (   )---(   )   (   )
+  |       |       |       |       |               |       |       |       |       |               |                       |     
+(   )   (   )   (   )   (   )   (   )   (b 2)---(   )   (   )   (   )   (w 2)   (   )---(   )   (   )---(b 3)   (b 2)---(   )
+  |       |       |       |       |       |               |       |       |               |               |       |             
+(   )   (   )   (   )   (   )   (   )   (   )---(   )   (   )---(   )   (   )---(   )   (w 2)   (   )   (   )   (   )---(   )
+  |       |       |       |       |               |                               |       |               |               |     
+(   )   (   )   (   )   (w11)   (   )   (   )---(b 2)   (   )---(   )---(   )---(b 4)   (   )---(   )---(b 4)   (b 2)---(   )
+  |       |       |       |       |       |               |                                                       |             
+(   )   (w 7)   (   )   (   )   (   )   (   )---(   )   (   )---(   )   (   )---(   )   (   )---(   )---(b 3)   (   )---(   )
+  |       |       |       |       |               |               |       |       |       |               |               |     
+(   )   (   )   (   )   (   )   (   )   (   )---(b 2)   (   )   (   )   (   )   (   )   (   )   (b 2)---(   )   (b 2)---(   )
+  |       |       |       |       |       |                       |       |       |       |       |               |             
+(   )   (   )---(   )   (   )   (   )   (   )---(w 2)---(   )   (   )   (   )   (   )   (w 9)   (   )---(   )   (   )---(   )
+  |                       |       |                       |       |       |       |       |               |               |     
+(   )   (   )---(   )   (   )   (   )   (   )---(   )   (   )   (w 4)   (w 5)   (   )   (   )   (   )   (w 2)   (   )---(b 2)
+  |       |       |       |       |       |       |       |       |       |       |       |               |       |             
+(   )   (   )   (   )   (   )   (   )   (w 5)   (   )   (   )---(   )   (   )   (w 6)   (   )   (   )---(   )   (   )---(b 2)
+  |       |       |       |       |       |       |                       |       |       |       |                       |     
+(w12)   (w 4)   (   )   (   )   (w11)   (   )   (   )   (   )---(   )---(   )   (   )   (   )   (   )---(   )   (   )---(   )
+  |       |       |       |       |       |       |       |                       |       |               |       |             
+(   )   (   )   (   )   (   )---(   )   (   )   (   )   (w 2)   (   )   (   )---(   )   (   )   (   )   (   )   (   )---(b 2)
+  |       |       |                       |       |       |               |               |               |               |     
+(b13)---(   )   (   )   (   )---(   )   (   )   (w 6)   (   )---(   )   (   )---(b 2)   (   )   (   )---(b 3)   (   )---(   )
+                  |       |       |       |       |               |               |       |       |               |             
+(   )---(   )   (   )   (   )   (b 2)---(   )   (   )   (b 2)---(b 2)   (   )---(   )   (   )   (b 2)---(   )   (   )---(b 2)
+  |       |       |       |                       |       |               |               |               |               |     
+(w 2)   (b 2)---(   )   (b 3)---(   )   (   )---(   )   (   )---(b 2)   (w 2)   (   )---(   )   (   )---(b 2)   (   )---(b 2)
+  |                               |       |                       |       |       |               |               |             
+(   )---(   )---(   )---(w 4)---(   )   (   )---(   )---(   )---(b 4)   (   )---(b 2)   (   )   (   )---(   )---(   )   (   )
+                                                                                
+
+```
+</details>
+</td>
+</tr>
