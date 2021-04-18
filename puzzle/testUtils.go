@@ -24,6 +24,6 @@ func BuildTestPuzzle(
 		}
 		c = c.Translate(dir)
 	}
-	t.Logf("BuildTestPuzzle produced: \n%s\n", p)
-	return p
+	t.Logf("BuildTestPuzzle produced: \n%s\n", outPuzz)
+	return outPuzz
 }

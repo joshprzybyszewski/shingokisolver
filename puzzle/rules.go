@@ -54,7 +54,9 @@ func (r *rules) addAffected(couldAffect ...model.EdgePair) {
 	}
 }
 
-// TODO consider having a separate set of evals for node changes:#
+// TODO instead of relying on the execution of evals of other
+// nodes _after_ these rules have been checked, we should detect
+// what other nodes change when "I" go into the Exists/Avoided state.
 func (r *rules) addEvaluations(evals ...func(ge model.GetEdger) model.EdgeState) {
 	if r == nil {
 		return

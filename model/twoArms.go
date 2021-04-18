@@ -10,8 +10,6 @@ var (
 	optionsCache map[int]map[Node][]TwoArms = make(map[int]map[Node][]TwoArms, 25)
 )
 
-// TODO add a wrapper around this that will also filter out two-arm
-// options that would run into another node in an invalid way:#
 func BuildTwoArmOptions(
 	n Node,
 	numEdges int,

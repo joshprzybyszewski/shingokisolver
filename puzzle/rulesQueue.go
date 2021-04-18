@@ -65,6 +65,6 @@ func (rq *rulesQueue) noticeUpdated(
 }
 
 func (rq *rulesQueue) clearUpdated() {
-	// TODO there may be a faster way to do this
+	// TODO there may be a faster way to clear this map.
 	rq.updated = make(map[model.EdgePair]struct{}, len(rq.updated))
 }

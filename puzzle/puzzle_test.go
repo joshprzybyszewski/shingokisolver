@@ -5,6 +5,7 @@ import (
 
 	"github.com/joshprzybyszewski/shingokisolver/model"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestNumEdgesAndNodes(t *testing.T) {
@@ -47,19 +48,8 @@ func TestIsEdge(t *testing.T) {
 	)))
 }
 
-// defined here as a helper to make unit tests easier
-func (p *Puzzle) isInvalid() bool {
-	switch p.GetState(model.InvalidNodeCoord) {
-	case model.Incomplete, model.Complete:
-		return false
-	default:
-		return true
-	}
-}
-
 func TestIsInvalid(t *testing.T) {
 	p := NewPuzzle(2, nil)
-	assert.False(t, p.isInvalid())
 
 	p = BuildTestPuzzle(t, p,
 		model.NewCoordFromInts(
@@ -68,8 +58,6 @@ func TestIsInvalid(t *testing.T) {
 		),
 		model.HeadRight,
 	)
-	assert.False(t, p.isInvalid())
-
 	p = BuildTestPuzzle(t, p,
 		model.NewCoordFromInts(
 			0,
@@ -77,16 +65,15 @@ func TestIsInvalid(t *testing.T) {
 		),
 		model.HeadRight,
 	)
-	assert.False(t, p.isInvalid())
 
-	p = BuildTestPuzzle(t, p,
+	s := p.AddEdge(
 		model.NewCoordFromInts(
 			0,
 			1,
 		),
 		model.HeadDown,
 	)
-	assert.True(t, p.isInvalid())
+	assert.Equal(t, model.Violation, s)
 }
 
 func TestIsInvalidBadBlackNode(t *testing.T) {
@@ -103,10 +90,16 @@ func TestIsInvalidBadBlackNode(t *testing.T) {
 			0,
 		),
 		model.HeadRight,
-		model.HeadRight,
 	)
 
-	assert.True(t, p.isInvalid())
+	s := p.AddEdge(
+		model.NewCoordFromInts(
+			1,
+			1,
+		),
+		model.HeadRight,
+	)
+	assert.Equal(t, model.Violation, s)
 }
 
 func TestIsInvalidBadWhiteNode(t *testing.T) {
@@ -123,10 +116,16 @@ func TestIsInvalidBadWhiteNode(t *testing.T) {
 			0,
 		),
 		model.HeadRight,
-		model.HeadDown,
 	)
 
-	assert.True(t, p.isInvalid())
+	s := p.AddEdge(
+		model.NewCoordFromInts(
+			1,
+			1,
+		),
+		model.HeadDown,
+	)
+	assert.Equal(t, model.Violation, s)
 }
 
 func TestIsInvalidBadBlackNodeTooManyLines(t *testing.T) {
@@ -145,15 +144,14 @@ func TestIsInvalidBadBlackNodeTooManyLines(t *testing.T) {
 		model.HeadRight,
 		model.HeadDown,
 	)
-	p = BuildTestPuzzle(t, p,
+	s := p.AddEdge(
 		model.NewCoordFromInts(
 			0,
 			1,
 		),
 		model.HeadRight,
 	)
-
-	assert.True(t, p.isInvalid())
+	assert.Equal(t, model.Violation, s)
 }
 
 func TestIsInvalidBadWhiteNodeTooManyLines(t *testing.T) {
@@ -163,38 +161,17 @@ func TestIsInvalidBadWhiteNodeTooManyLines(t *testing.T) {
 		IsWhite: true,
 		Value:   2,
 	}})
+	s := p.ClaimGimmes()
+	require.Equal(t, model.Incomplete, s)
 
-	p = BuildTestPuzzle(t, p,
+	s = p.AddEdge(
 		model.NewCoordFromInts(
 			0,
-			0,
+			2,
 		),
 		model.HeadRight,
-		model.HeadRight,
-		model.HeadRight,
 	)
-
-	assert.True(t, p.isInvalid())
-}
-
-func TestIsInvalidGoodWhiteNodeAllowsTheRowToHaveManyEdges(t *testing.T) {
-	p := NewPuzzle(5, []model.NodeLocation{{
-		Row:     0,
-		Col:     1,
-		IsWhite: true,
-		Value:   2,
-	}})
-	p = BuildTestPuzzle(t, p,
-		model.NewCoordFromInts(
-			0,
-			0,
-		),
-		model.HeadRight,
-		model.HeadRight,
-		model.HeadRight,
-	)
-
-	assert.True(t, p.isInvalid())
+	assert.Equal(t, model.Violation, s)
 }
 
 func TestGetEdgesFromNode(t *testing.T) {
@@ -220,7 +197,7 @@ func TestGetEdgesFromNode(t *testing.T) {
 	assert.False(t, p.IsEdge(model.HeadLeft, model.NewCoordFromInts(0, 0)))
 
 	assert.False(t, p.IsEdge(model.HeadRight, model.NewCoordFromInts(1, 1)))
-	assert.False(t, p.IsEdge(model.HeadDown, model.NewCoordFromInts(1, 1)))
+	assert.True(t, p.IsEdge(model.HeadDown, model.NewCoordFromInts(1, 1)))
 
 	nOut, isMax := p.GetSumOutgoingStraightLines(model.NewCoordFromInts(1, 1))
 	assert.Equal(t, int8(2), nOut)

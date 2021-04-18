@@ -37,6 +37,10 @@ type websitePuzzle struct {
 	secret map[string]string
 }
 
+func (wp websitePuzzle) String() string {
+	return fmt.Sprintf("websitePuzzle{id: %s, pd: %s}", wp.id, wp.pd)
+}
+
 func getPuzzle(
 	size int,
 	diff difficulty,
