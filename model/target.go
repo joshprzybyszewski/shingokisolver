@@ -4,6 +4,14 @@ import (
 	"errors"
 )
 
+var (
+	InvalidTarget = Target{
+		Node: Node{
+			coord: InvalidNodeCoord,
+		},
+	}
+)
+
 type Target struct {
 	Node    Node
 	Options []TwoArms
@@ -12,13 +20,18 @@ type Target struct {
 }
 
 func GetNextTarget(
-	curTarget *Target,
+	curTarget Target,
 	nodes []Node,
 	getOptions func(Node) []TwoArms,
 ) (Target, bool, error) {
 	seenNodes := make(map[NodeCoord]struct{}, len(nodes))
-	for t := curTarget; t != nil; t = t.Parent {
+	for t := curTarget; t.Node.coord != InvalidNodeCoord; t = *t.Parent {
 		seenNodes[t.Node.Coord()] = struct{}{}
+	}
+
+	seenNodesSlice := make([]NodeCoord, 0, len(seenNodes))
+	for nc := range seenNodes {
+		seenNodesSlice = append(seenNodesSlice, nc)
 	}
 
 	var best nodeOption
@@ -36,7 +49,7 @@ func GetNextTarget(
 		no := nodeOption{
 			Node:    n,
 			Options: options,
-			MinDist: getMinDist(n, seenNodes),
+			MinDist: getMinDist(n, seenNodesSlice),
 		}
 
 		if isBetterThanCurrentBest(best, no) {
@@ -52,17 +65,17 @@ func GetNextTarget(
 	return Target{
 		Node:    best.Node,
 		Options: best.Options,
-		Parent:  curTarget,
+		Parent:  &curTarget,
 	}, true, nil
 }
 
 func getMinDist(
 	n Node,
-	seen map[NodeCoord]struct{},
+	seen []NodeCoord,
 ) int {
 	lowest := -1
 
-	for nc := range seen {
+	for _, nc := range seen {
 		dNew := nc.DistanceTo(n.Coord())
 		if lowest == -1 || dNew < lowest {
 			lowest = dNew

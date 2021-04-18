@@ -219,8 +219,8 @@ func (p *Puzzle) isInTheWayOfOtherNodes(
 }
 
 func (p *Puzzle) GetNextTarget(
-	cur *model.Target,
-) (*model.Target, model.State) {
+	cur model.Target,
+) (model.Target, model.State) {
 	t, ok, err := model.GetNextTarget(
 		cur,
 		p.nodes,
@@ -228,10 +228,26 @@ func (p *Puzzle) GetNextTarget(
 	)
 
 	if err != nil {
-		return nil, model.Violation
+		return model.Target{}, model.Violation
 	}
 	if !ok {
-		return nil, model.NodesComplete
+		return model.Target{}, model.NodesComplete
 	}
-	return &t, model.Incomplete
+	return t, model.Incomplete
+}
+
+func (p *Puzzle) GetFirstTarget() (model.Target, model.State) {
+	t, ok, err := model.GetNextTarget(
+		model.InvalidTarget,
+		p.nodes,
+		p.getPossibleTwoArms,
+	)
+
+	if err != nil {
+		return model.Target{}, model.Violation
+	}
+	if !ok {
+		return model.Target{}, model.NodesComplete
+	}
+	return t, model.Incomplete
 }

@@ -55,10 +55,10 @@ func (d *targetSolver) solve() (*puzzle.Puzzle, bool) {
 		return nil, false
 	}
 
-	target, state := d.puzzle.GetNextTarget(nil)
+	target, state := d.puzzle.GetFirstTarget()
 	switch state {
 	case model.Incomplete, model.Complete:
-		// printPuzzleUpdate(`GetNextTarget`, 0, puzz, target)
+		// printPuzzleUpdate(`GetFirstTarget`, 0, puzz, target)
 	default:
 		return nil, false
 	}
@@ -74,7 +74,7 @@ func (d *targetSolver) solve() (*puzzle.Puzzle, bool) {
 func (d *targetSolver) getSolutionFromDepths(
 	depth int,
 	puzz *puzzle.Puzzle,
-	targeting *model.Target,
+	targeting model.Target,
 ) *puzzle.Puzzle {
 
 	nc := targeting.Node.Coord()
@@ -134,7 +134,7 @@ func (d *targetSolver) getSolutionFromDepths(
 func (d *targetSolver) buildAllTwoArmsForTraversal(
 	depth int,
 	puzz *puzzle.Puzzle,
-	curTarget *model.Target,
+	curTarget model.Target,
 	ta model.TwoArms,
 ) *puzzle.Puzzle {
 
