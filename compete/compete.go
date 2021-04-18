@@ -9,6 +9,25 @@ import (
 	"github.com/joshprzybyszewski/shingokisolver/solvers"
 )
 
+func PopulateCache(
+	size int,
+	numDesired int,
+) {
+	for numGot := 0; numGot < numDesired; {
+		for _, d := range []difficulty{
+			easy,
+			medium,
+			hard,
+		} {
+			_, err := getPuzzle(size, d)
+			if err != nil {
+				log.Printf("getPuzzle errored: %+v", err)
+			}
+			numGot++
+		}
+	}
+}
+
 func Run() {
 	// TODO figure out GC
 	// disable garbage collection entirely.

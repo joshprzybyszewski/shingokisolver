@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/joshprzybyszewski/shingokisolver/compete"
 	"github.com/joshprzybyszewski/shingokisolver/puzzle"
 )
 
@@ -115,8 +116,8 @@ func buildLatestResultsOutput(
 			s.heapSize,
 			s.numGCs,
 			s.pauseNS,
-			unsolvedCell, // s.Unsolved,
-			solutionCell, // s.Solution,
+			unsolvedCell,
+			solutionCell,
 		))
 
 	}
@@ -154,6 +155,10 @@ func buildSummaryBySize(
 		summaries, ok := summsBySize[size]
 		if !ok {
 			continue
+		}
+
+		if size != 2 && len(summaries) < 100 {
+			compete.PopulateCache(size, 100-len(summaries))
 		}
 
 		var totalDur time.Duration
