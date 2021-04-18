@@ -189,7 +189,7 @@ func buildAllSummariesOutput(
 `)
 	for _, s := range allSummaries {
 		unsolvedCell := fmt.Sprintf(
-			"<details><summary>Solution</summary>\n\n```\n%s\n```\n</details>\n",
+			"<details><summary>Puzzle</summary>\n\n```\n%s\n```\n</details>\n",
 			s.Unsolved,
 		)
 		solutionCell := fmt.Sprintf(
