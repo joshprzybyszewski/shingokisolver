@@ -16,7 +16,9 @@
                
 
 ```
-</details>|<details><summary>Solution</summary>
+</details>
+
+|<details><summary>Solution</summary>
 
 ```
 
@@ -28,7 +30,9 @@
                
 
 ```
-</details>|
+</details>
+
+|
 |5x5 (Manual Easy)|341.981µs|0|TODO|TODO|
 |5x5 (PuzzleID: 1,125,014)|218.166µs|0|TODO|TODO|
 |5x5 (PuzzleID: 1,208,094)|204.141µs|0|TODO|TODO|
