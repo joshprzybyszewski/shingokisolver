@@ -28,6 +28,20 @@ func (nc NodeCoord) String() string {
 	return fmt.Sprintf("NodeCoord{Row: %d, Col: %d}", nc.Row, nc.Col)
 }
 
+func (nc NodeCoord) DistanceTo(
+	other NodeCoord,
+) int {
+	dist := int(nc.Row - other.Row)
+	if dist < 0 {
+		dist *= -1
+	}
+	if nc.Col < other.Col {
+		return dist + int(other.Col-nc.Col)
+	} else {
+		return dist + int(nc.Col-other.Col)
+	}
+}
+
 func NewCoordFromInts(r, c int) NodeCoord {
 	return NodeCoord{
 		Row: RowIndex(r),
@@ -51,19 +65,18 @@ func (nc NodeCoord) Translate(
 	return nc
 }
 
-func (nc NodeCoord) TranslateN(
-	move Cardinal,
-	n int,
+func (nc NodeCoord) TranslateAlongArm(
+	arm Arm,
 ) NodeCoord {
-	switch move {
+	switch arm.Heading {
 	case HeadUp:
-		nc.Row -= RowIndex(n)
+		nc.Row -= RowIndex(arm.Len)
 	case HeadDown:
-		nc.Row += RowIndex(n)
+		nc.Row += RowIndex(arm.Len)
 	case HeadLeft:
-		nc.Col -= ColIndex(n)
+		nc.Col -= ColIndex(arm.Len)
 	case HeadRight:
-		nc.Col += ColIndex(n)
+		nc.Col += ColIndex(arm.Len)
 	}
 	return nc
 }

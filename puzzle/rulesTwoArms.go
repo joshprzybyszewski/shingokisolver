@@ -11,12 +11,12 @@ func (rs *ruleSet) addAllTwoArmRules(
 
 	for _, o := range options {
 		afterArm1 := model.NewEdgePair(
-			node.Coord().TranslateN(o.One.Heading, int(o.One.Len)),
+			node.Coord().TranslateAlongArm(o.One),
 			o.One.Heading,
 		)
 
 		afterArm2 := model.NewEdgePair(
-			node.Coord().TranslateN(o.Two.Heading, int(o.Two.Len)),
+			node.Coord().TranslateAlongArm(o.Two),
 			o.Two.Heading,
 		)
 

@@ -149,7 +149,20 @@ func isTwoArmsPossible(
 ) bool {
 
 	nc := node.Coord()
-	return !ge.AnyAvoided(nc, ta.One) && !ge.AnyAvoided(nc, ta.Two)
+	return !ge.AnyAvoided(nc, ta.One) &&
+		!ge.AnyAvoided(nc, ta.Two) &&
+		!ge.IsEdge(
+			model.NewEdgePair(
+				nc.TranslateAlongArm(ta.One),
+				ta.One.Heading,
+			),
+		) &&
+		!ge.IsEdge(
+			model.NewEdgePair(
+				nc.TranslateAlongArm(ta.Two),
+				ta.Two.Heading,
+			),
+		)
 }
 
 func (p *Puzzle) isInTheWayOfOtherNodes(

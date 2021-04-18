@@ -1,8 +1,8 @@
 package solvers
 
 import (
-	"fmt"
 	"log"
+	"time"
 
 	"github.com/joshprzybyszewski/shingokisolver/model"
 	"github.com/joshprzybyszewski/shingokisolver/puzzle"
@@ -30,16 +30,6 @@ func printPuzzleUpdate(
 	if !includeProgressLogs {
 		return
 	}
-	shouldSkip := true
-	if targeting != nil {
-		if _, ok := seen[targeting.Node.Coord()]; ok {
-			shouldSkip = false
-			seen[targeting.Node.Coord()] = struct{}{}
-		}
-	}
-	if shouldSkip {
-		return
-	}
 
 	log.Printf("printPuzzleUpdate")
 	log.Printf("\tcaller:  \t%s",
@@ -56,7 +46,8 @@ func printPuzzleUpdate(
 	// log.Printf("\tbeta:\n%+v\n", puzz.Beta())
 
 	log.Printf("\tpuzzle:\n%s\n", puzz)
-	fmt.Scanf("wait for acknowledgement")
+	time.Sleep(100 * time.Millisecond)
+	// fmt.Scanf("wait for acknowledgement")
 }
 
 func copyAndRemove(orig []model.NodeCoord, exclude model.NodeCoord) []model.NodeCoord {

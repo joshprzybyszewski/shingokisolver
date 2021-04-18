@@ -21,8 +21,7 @@ func GetNextTarget(
 		seenNodes[t.Node.Coord()] = struct{}{}
 	}
 
-	var bestNode Node
-	var bestOptions []TwoArms
+	var best nodeOption
 
 	for _, n := range nodes {
 		if _, ok := seenNodes[n.Coord()]; ok {
@@ -34,20 +33,73 @@ func GetNextTarget(
 			return Target{}, false, errors.New(`invalid node!`)
 		}
 
-		if len(options) < len(bestOptions) || bestOptions == nil {
-			bestNode = n
-			bestOptions = options
+		no := nodeOption{
+			Node:    n,
+			Options: options,
+			MinDist: getMinDist(n, seenNodes),
+		}
+
+		if isBetterThanCurrentBest(best, no) {
+			best = no
 		}
 	}
 
-	if bestOptions == nil {
+	if best.Options == nil {
 		// all of the nodes have been satisfied.
 		return Target{}, false, nil
 	}
 
 	return Target{
-		Node:    bestNode,
-		Options: bestOptions,
+		Node:    best.Node,
+		Options: best.Options,
 		Parent:  curTarget,
 	}, true, nil
+}
+
+func getMinDist(
+	n Node,
+	seen map[NodeCoord]struct{},
+) int {
+	lowest := -1
+
+	for nc := range seen {
+		dNew := nc.DistanceTo(n.Coord())
+		if lowest == -1 || dNew < lowest {
+			lowest = dNew
+		}
+	}
+
+	return lowest
+}
+
+type nodeOption struct {
+	Node
+	Options []TwoArms
+	MinDist int
+}
+
+func isBetterThanCurrentBest(
+	prev, new nodeOption,
+) bool {
+	if prev.Options == nil {
+		return true
+	}
+
+	if len(new.Options) == 1 {
+		return true
+	}
+
+	if new.MinDist < prev.MinDist {
+		return true
+	}
+
+	if len(new.Options) < len(prev.Options) {
+		return true
+	}
+
+	if new.Node.Type() == WhiteNode {
+		return true
+	}
+
+	return false
 }

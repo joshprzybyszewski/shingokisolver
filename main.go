@@ -51,8 +51,9 @@ func main() {
 		if !strings.Contains(pd.String(), `5,434,778`) {
 			continue
 		}
-		go runSolver(pd)
-		time.Sleep(30 * time.Second)
+		runSolver(pd)
+		// go runSolver(pd)
+		// time.Sleep(30 * time.Second)
 
 		if *addPprof && (time.Since(t0) > 10*time.Second ||
 			pd.NumEdges > 50) {
