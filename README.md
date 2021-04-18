@@ -3,7 +3,8 @@
 ![Travis challenged me](https://user-images.githubusercontent.com/23204038/112846696-f1f1fb00-906b-11eb-9693-3130ce4e78d7.png)
 
 </startResults>
-<tr>
+
+<table><tr>
 	<th>Name</th>
 	<th>Duration</th>
 	<th>Allocations</th>
@@ -12,7 +13,7 @@
 </tr>
 <tr>
 	<td>2x2 (Manual 2x2 (contrived example))</td>
-	<td>92.39µs</td>
+	<td>39.935µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -45,7 +46,7 @@
 </tr>
 <tr>
 	<td>5x5 (Manual Easy)</td>
-	<td>437.533µs</td>
+	<td>255.171µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -90,7 +91,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 1,125,014)</td>
-	<td>257.614µs</td>
+	<td>230.053µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -135,7 +136,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 1,208,094)</td>
-	<td>271.854µs</td>
+	<td>289.736µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -180,7 +181,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 1,239,516)</td>
-	<td>308.46µs</td>
+	<td>332.004µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -225,7 +226,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 1,413,095)</td>
-	<td>247.116µs</td>
+	<td>274.066µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -270,7 +271,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 1,471,690)</td>
-	<td>400.065µs</td>
+	<td>350.415µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -315,7 +316,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 1,492,616)</td>
-	<td>359.745µs</td>
+	<td>495.78µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -360,7 +361,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 1,520,692)</td>
-	<td>324.243µs</td>
+	<td>318.157µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -405,7 +406,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 1,678,415)</td>
-	<td>319.333µs</td>
+	<td>387.325µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -450,7 +451,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 1,737,679)</td>
-	<td>356.521µs</td>
+	<td>404.66µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -495,7 +496,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 1,802,467)</td>
-	<td>284.448µs</td>
+	<td>351.419µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -540,7 +541,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 1,868,052)</td>
-	<td>288.455µs</td>
+	<td>286.48µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -585,7 +586,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 1,929,002)</td>
-	<td>291.269µs</td>
+	<td>293.741µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -630,7 +631,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 1,931,395)</td>
-	<td>649.738µs</td>
+	<td>714.102µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -675,7 +676,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 1,952,465)</td>
-	<td>350.3µs</td>
+	<td>337.044µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -720,7 +721,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 1,994,369)</td>
-	<td>355.283µs</td>
+	<td>315.613µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -765,7 +766,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 161,408)</td>
-	<td>343.658µs</td>
+	<td>306.141µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -810,7 +811,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 2,340,433)</td>
-	<td>378.921µs</td>
+	<td>327.381µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -855,7 +856,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 2,414,694)</td>
-	<td>247.479µs</td>
+	<td>238.474µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -900,7 +901,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 2,459,150)</td>
-	<td>333.955µs</td>
+	<td>357.687µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -945,7 +946,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 2,771,023)</td>
-	<td>292.299µs</td>
+	<td>385.664µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -990,7 +991,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 2,772,537)</td>
-	<td>563.864µs</td>
+	<td>378.343µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -1035,7 +1036,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 2,802,541)</td>
-	<td>327.019µs</td>
+	<td>373.59µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -1080,7 +1081,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 3,048,908)</td>
-	<td>340.322µs</td>
+	<td>307.962µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -1125,7 +1126,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 3,136,306)</td>
-	<td>363.194µs</td>
+	<td>382.347µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -1170,7 +1171,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 3,253,085)</td>
-	<td>309.91µs</td>
+	<td>274.875µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -1215,7 +1216,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 3,289,102)</td>
-	<td>376.102µs</td>
+	<td>242.881µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -1260,7 +1261,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 3,700,670)</td>
-	<td>215.751µs</td>
+	<td>383.501µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -1305,7 +1306,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 3,799,599)</td>
-	<td>325.156µs</td>
+	<td>219.869µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -1350,7 +1351,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 4,033,904)</td>
-	<td>392.86µs</td>
+	<td>358.551µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -1395,7 +1396,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 4,070,768)</td>
-	<td>361.647µs</td>
+	<td>426.673µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -1440,7 +1441,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 4,148,488)</td>
-	<td>379.962µs</td>
+	<td>312.84µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -1485,7 +1486,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 4,619,472)</td>
-	<td>387.5µs</td>
+	<td>424.711µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -1530,7 +1531,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 4,645,634)</td>
-	<td>272.88µs</td>
+	<td>339.809µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -1575,7 +1576,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 4,741,522)</td>
-	<td>238.22µs</td>
+	<td>471.497µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -1620,7 +1621,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 432,119)</td>
-	<td>324.765µs</td>
+	<td>409.411µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -1665,7 +1666,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 5,253,364)</td>
-	<td>371.03µs</td>
+	<td>323.527µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -1710,7 +1711,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 5,313,969)</td>
-	<td>261.718µs</td>
+	<td>205.65µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -1755,7 +1756,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 5,763,376)</td>
-	<td>472.448µs</td>
+	<td>306.801µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -1800,7 +1801,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 5,911,022)</td>
-	<td>384.814µs</td>
+	<td>515.475µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -1845,7 +1846,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 5,937,602)</td>
-	<td>303.356µs</td>
+	<td>304.247µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -1890,7 +1891,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 530,864)</td>
-	<td>241.063µs</td>
+	<td>343.932µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -1935,7 +1936,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 6,280,084)</td>
-	<td>238.118µs</td>
+	<td>294.669µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -1980,7 +1981,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 6,431,411)</td>
-	<td>368.327µs</td>
+	<td>329.131µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -2025,7 +2026,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 6,830,559)</td>
-	<td>512.617µs</td>
+	<td>330.464µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -2070,7 +2071,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 610,131)</td>
-	<td>477.698µs</td>
+	<td>253.661µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -2115,7 +2116,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 7,184,597)</td>
-	<td>498.073µs</td>
+	<td>317.906µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -2160,7 +2161,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 7,793,947)</td>
-	<td>361.289µs</td>
+	<td>528.848µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -2205,7 +2206,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 7,887,988)</td>
-	<td>361.643µs</td>
+	<td>322.321µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -2250,7 +2251,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 7,928,469)</td>
-	<td>607.892µs</td>
+	<td>792.541µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -2295,7 +2296,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 7,970,361)</td>
-	<td>481.24µs</td>
+	<td>463.286µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -2340,7 +2341,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 8,277,486)</td>
-	<td>609.307µs</td>
+	<td>684.308µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -2385,7 +2386,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 8,500,075)</td>
-	<td>322.244µs</td>
+	<td>278.09µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -2430,7 +2431,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 8,967,122)</td>
-	<td>487.027µs</td>
+	<td>496.939µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -2475,7 +2476,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 824,905)</td>
-	<td>399.122µs</td>
+	<td>255.412µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -2520,7 +2521,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 9,536,268)</td>
-	<td>247.574µs</td>
+	<td>228.769µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -2565,7 +2566,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 9,761,419)</td>
-	<td>253.305µs</td>
+	<td>408.48µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -2610,7 +2611,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 975,117)</td>
-	<td>540.649µs</td>
+	<td>428.8µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -2655,7 +2656,7 @@
 </tr>
 <tr>
 	<td>5x5 (PuzzleID: 985,091)</td>
-	<td>381.268µs</td>
+	<td>524.795µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -2700,7 +2701,7 @@
 </tr>
 <tr>
 	<td>7x7 (Manual Easy 7x7)</td>
-	<td>1.085343ms</td>
+	<td>825.209µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -2753,7 +2754,7 @@
 </tr>
 <tr>
 	<td>7x7 (Manual hard 7x7)</td>
-	<td>2.032218ms</td>
+	<td>3.173478ms</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -2806,7 +2807,7 @@
 </tr>
 <tr>
 	<td>7x7 (Manual normal 7x7)</td>
-	<td>1.128921ms</td>
+	<td>687.604µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -2859,7 +2860,7 @@
 </tr>
 <tr>
 	<td>7x7 (Manual second normal 7x7)</td>
-	<td>1.137011ms</td>
+	<td>699.928µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -2912,7 +2913,7 @@
 </tr>
 <tr>
 	<td>7x7 (PuzzleID: 1,305,103)</td>
-	<td>883.288µs</td>
+	<td>692.73µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -2965,7 +2966,7 @@
 </tr>
 <tr>
 	<td>7x7 (PuzzleID: 1,401,786)</td>
-	<td>843.203µs</td>
+	<td>934.405µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -3018,7 +3019,7 @@
 </tr>
 <tr>
 	<td>7x7 (PuzzleID: 1,845,873)</td>
-	<td>1.052298ms</td>
+	<td>1.008518ms</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -3071,7 +3072,7 @@
 </tr>
 <tr>
 	<td>7x7 (PuzzleID: 1,891,848)</td>
-	<td>683.225µs</td>
+	<td>558.266µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -3124,7 +3125,7 @@
 </tr>
 <tr>
 	<td>7x7 (PuzzleID: 3,213,310)</td>
-	<td>1.00108ms</td>
+	<td>852.957µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -3177,7 +3178,7 @@
 </tr>
 <tr>
 	<td>7x7 (PuzzleID: 5,197,088)</td>
-	<td>1.304157ms</td>
+	<td>1.43807ms</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -3230,7 +3231,7 @@
 </tr>
 <tr>
 	<td>7x7 (PuzzleID: 6,483,955)</td>
-	<td>663.207µs</td>
+	<td>680.755µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -3283,7 +3284,7 @@
 </tr>
 <tr>
 	<td>7x7 (PuzzleID: 713,557)</td>
-	<td>783.926µs</td>
+	<td>929.526µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -3336,7 +3337,7 @@
 </tr>
 <tr>
 	<td>7x7 (PuzzleID: 8,156,383)</td>
-	<td>828.218µs</td>
+	<td>842.626µs</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -3389,7 +3390,7 @@
 </tr>
 <tr>
 	<td>7x7 (PuzzleID: 8,189,111)</td>
-	<td>1.831347ms</td>
+	<td>1.349714ms</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -3442,7 +3443,7 @@
 </tr>
 <tr>
 	<td>7x7 (PuzzleID: 8,498,922)</td>
-	<td>1.053895ms</td>
+	<td>1.342499ms</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -3495,7 +3496,7 @@
 </tr>
 <tr>
 	<td>10x10 (Manual normal 10x10)</td>
-	<td>2.963415ms</td>
+	<td>2.936907ms</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -3560,7 +3561,7 @@
 </tr>
 <tr>
 	<td>10x10 (PuzzleID: 1,366,434)</td>
-	<td>12.831378ms</td>
+	<td>9.87856ms</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -3625,7 +3626,7 @@
 </tr>
 <tr>
 	<td>10x10 (PuzzleID: 1,897,766)</td>
-	<td>17.801517ms</td>
+	<td>16.090132ms</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -3690,7 +3691,7 @@
 </tr>
 <tr>
 	<td>10x10 (PuzzleID: 176,186)</td>
-	<td>10.326614ms</td>
+	<td>9.74946ms</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -3755,7 +3756,7 @@
 </tr>
 <tr>
 	<td>10x10 (PuzzleID: 2,209,059)</td>
-	<td>1.972445ms</td>
+	<td>1.767138ms</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -3820,7 +3821,7 @@
 </tr>
 <tr>
 	<td>10x10 (PuzzleID: 2,430,834)</td>
-	<td>4.242685ms</td>
+	<td>2.128156ms</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -3885,7 +3886,7 @@
 </tr>
 <tr>
 	<td>10x10 (PuzzleID: 2,760,173)</td>
-	<td>5.29581ms</td>
+	<td>6.512311ms</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -3950,7 +3951,7 @@
 </tr>
 <tr>
 	<td>10x10 (PuzzleID: 210,686)</td>
-	<td>5.151868ms</td>
+	<td>4.609581ms</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -4015,7 +4016,7 @@
 </tr>
 <tr>
 	<td>10x10 (PuzzleID: 3,515,465)</td>
-	<td>4.163524ms</td>
+	<td>4.681698ms</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -4080,7 +4081,7 @@
 </tr>
 <tr>
 	<td>10x10 (PuzzleID: 4,050,348)</td>
-	<td>3.416725ms</td>
+	<td>4.056942ms</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -4145,7 +4146,7 @@
 </tr>
 <tr>
 	<td>10x10 (PuzzleID: 4,162,883)</td>
-	<td>11.866454ms</td>
+	<td>12.908419ms</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -4210,7 +4211,7 @@
 </tr>
 <tr>
 	<td>10x10 (PuzzleID: 551,246)</td>
-	<td>10.862022ms</td>
+	<td>10.633742ms</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -4275,7 +4276,7 @@
 </tr>
 <tr>
 	<td>10x10 (PuzzleID: 6,217,369)</td>
-	<td>21.362692ms</td>
+	<td>21.828816ms</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -4340,7 +4341,7 @@
 </tr>
 <tr>
 	<td>10x10 (PuzzleID: 6,593,963)</td>
-	<td>46.777878ms</td>
+	<td>48.088728ms</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -4405,7 +4406,7 @@
 </tr>
 <tr>
 	<td>10x10 (PuzzleID: 6,959,600)</td>
-	<td>2.896562ms</td>
+	<td>3.672733ms</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -4470,7 +4471,7 @@
 </tr>
 <tr>
 	<td>10x10 (PuzzleID: 7,153,011)</td>
-	<td>4.851187ms</td>
+	<td>4.260722ms</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -4535,7 +4536,7 @@
 </tr>
 <tr>
 	<td>10x10 (PuzzleID: 7,585,613)</td>
-	<td>21.193301ms</td>
+	<td>17.346732ms</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -4600,7 +4601,7 @@
 </tr>
 <tr>
 	<td>10x10 (PuzzleID: 8,132,183)</td>
-	<td>1.839985ms</td>
+	<td>1.96417ms</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -4665,7 +4666,7 @@
 </tr>
 <tr>
 	<td>10x10 (PuzzleID: 8,416,278)</td>
-	<td>14.027303ms</td>
+	<td>10.693816ms</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -4730,7 +4731,7 @@
 </tr>
 <tr>
 	<td>10x10 (PuzzleID: 8,528,975)</td>
-	<td>2.722827ms</td>
+	<td>2.148062ms</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -4795,7 +4796,7 @@
 </tr>
 <tr>
 	<td>15x15 (Manual easy 15x15)</td>
-	<td>22.616837ms</td>
+	<td>22.160428ms</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -4880,7 +4881,7 @@
 </tr>
 <tr>
 	<td>15x15 (PuzzleID: 1,169,504)</td>
-	<td>546.67593ms</td>
+	<td>606.426316ms</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -4965,7 +4966,7 @@
 </tr>
 <tr>
 	<td>15x15 (PuzzleID: 421,495)</td>
-	<td>22.401204ms</td>
+	<td>23.052412ms</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -5050,7 +5051,7 @@
 </tr>
 <tr>
 	<td>15x15 (PuzzleID: 5,395,284)</td>
-	<td>180.607834ms</td>
+	<td>165.619206ms</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -5135,7 +5136,7 @@
 </tr>
 <tr>
 	<td>15x15 (PuzzleID: 6,688,261)</td>
-	<td>54.888961ms</td>
+	<td>60.337929ms</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -5220,7 +5221,7 @@
 </tr>
 <tr>
 	<td>15x15 (PuzzleID: 608,117)</td>
-	<td>101.369277ms</td>
+	<td>96.589066ms</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -5305,7 +5306,7 @@
 </tr>
 <tr>
 	<td>15x15 (PuzzleID: 7,510,233)</td>
-	<td>25.293967ms</td>
+	<td>20.567354ms</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -5390,7 +5391,7 @@
 </tr>
 <tr>
 	<td>15x15 (PuzzleID: 8,867,306)</td>
-	<td>83.779028ms</td>
+	<td>75.17386ms</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -5475,7 +5476,7 @@
 </tr>
 <tr>
 	<td>15x15 (PuzzleID: 875,381)</td>
-	<td>62.513598ms</td>
+	<td>65.052845ms</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -5560,7 +5561,7 @@
 </tr>
 <tr>
 	<td>15x15 (PuzzleID: 9,157,787)</td>
-	<td>60.389778ms</td>
+	<td>59.520698ms</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -5645,7 +5646,7 @@
 </tr>
 <tr>
 	<td>15x15 (PuzzleID: 9,183,977)</td>
-	<td>20.507322ms</td>
+	<td>13.045681ms</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -5730,7 +5731,7 @@
 </tr>
 <tr>
 	<td>15x15 (PuzzleID: 9,337,598)</td>
-	<td>40.246685ms</td>
+	<td>48.684232ms</td>
 	<td>0</td>
 	<td><details><summary>Solution</summary>
 
@@ -5813,3 +5814,4 @@
 </details>
 </td>
 </tr>
+</table>

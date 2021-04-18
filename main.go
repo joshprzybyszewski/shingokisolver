@@ -176,7 +176,8 @@ func buildAllSummariesOutput(
 	})
 
 	sb.WriteString(resultsStartString)
-	sb.WriteString("\n")
+	sb.WriteString("\n\n")
+	sb.WriteString("<table>")
 
 	sb.WriteString(`<tr>
 	<th>Name</th>
@@ -212,5 +213,8 @@ func buildAllSummariesOutput(
 		))
 
 	}
+
+	sb.WriteString("</table>")
+
 	return sb.String()
 }
