@@ -34,3 +34,7 @@ longtest:
 .PHONY: bench
 bench:
 	go test -benchmem -run="^$$" -bench "^(BenchmarkSolve)$$" ./solvers/...
+
+.PHONY: lint
+lint: ## Runs linters (via golangci-lint) on golang code
+	golangci-lint run -v ./...

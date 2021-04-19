@@ -85,7 +85,7 @@ func runStandardSolver() {
 	allSummaries := make([]summary, 0, len(allPDs))
 
 	for _, pd := range allPDs {
-		if pd.NumEdges > 20 {
+		if pd.NumEdges > 15 {
 			continue
 		}
 		summ := runSolver(pd)
