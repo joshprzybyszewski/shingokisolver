@@ -29,7 +29,6 @@ func newRuleSet(
 				ep := model.NewEdgePair(nc, model.HeadRight)
 				rs.rows[r][c] = newRules(
 					ep,
-					numEdges,
 				)
 			}
 
@@ -37,7 +36,6 @@ func newRuleSet(
 				ep := model.NewEdgePair(nc, model.HeadDown)
 				rs.cols[r][c] = newRules(
 					ep,
-					numEdges,
 				)
 			}
 		}

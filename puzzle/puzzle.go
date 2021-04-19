@@ -5,19 +5,17 @@ import (
 )
 
 type nodeWithOptions struct {
-	model.Node
 	Options []model.TwoArms
+	model.Node
 }
 
 type Puzzle struct {
-	numEdges uint8
-
-	nodes         []model.Node
-	twoArmOptions map[model.NodeCoord]nodeWithOptions
-
 	edges *edgesTriState
 	rules *ruleSet
 	rq    *rulesQueue
+
+	twoArmOptions map[model.NodeCoord]nodeWithOptions
+	nodes         []model.Node
 }
 
 func NewPuzzle(
@@ -35,10 +33,9 @@ func NewPuzzle(
 	}
 
 	puzz := Puzzle{
-		numEdges: uint8(numEdges),
-		nodes:    nodes,
-		edges:    newEdgesStates(numEdges),
-		rules:    newRuleSet(numEdges, nodes),
+		nodes: nodes,
+		edges: newEdgesStates(numEdges),
+		rules: newRuleSet(numEdges, nodes),
 	}
 
 	puzz.rq = newRulesQueue(puzz.edges, puzz, puzz.NumEdges())
@@ -51,7 +48,6 @@ func (p Puzzle) DeepCopy() Puzzle {
 	// ever be read from, never written to :#
 
 	dc := Puzzle{
-		numEdges:      p.numEdges,
 		nodes:         p.nodes,
 		twoArmOptions: p.twoArmOptions,
 		edges:         p.edges.Copy(),
@@ -64,11 +60,11 @@ func (p Puzzle) DeepCopy() Puzzle {
 }
 
 func (p Puzzle) NumEdges() int {
-	return int(p.numEdges)
+	return int(p.edges.numEdges)
 }
 
 func (p Puzzle) numNodes() int {
-	return int(p.numEdges) + 1
+	return p.NumEdges() + 1
 }
 
 func (p Puzzle) getNode(

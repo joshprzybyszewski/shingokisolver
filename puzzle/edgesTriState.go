@@ -79,13 +79,14 @@ func getMask(
 }
 
 type edgesTriState struct {
-	numEdges uint16
-
 	rows []bitData
 	cols []bitData
 
 	avoidRows []bitData
 	avoidCols []bitData
+
+	// TODO remove this field and replace it with a method
+	numEdges uint16
 }
 
 func newEdgesStates(

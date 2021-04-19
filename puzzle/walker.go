@@ -6,11 +6,12 @@ import (
 
 type simpleWalker struct {
 	provider model.GetEdger
-	start    model.NodeCoord
-	cur      model.NodeCoord
 
-	skipSeen bool
 	seen     map[model.NodeCoord]struct{}
+	skipSeen bool
+
+	start model.NodeCoord
+	cur   model.NodeCoord
 }
 
 func newWalker(

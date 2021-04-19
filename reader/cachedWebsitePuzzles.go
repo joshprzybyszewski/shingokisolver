@@ -16,7 +16,7 @@ func CachedWebsitePuzzles() ([]PuzzleDef, error) {
 
 	lines := strings.Split(string(file), "\n")
 	for _, l := range lines {
-		if len(l) == 0 {
+		if l == `` {
 			continue
 		}
 		parts := strings.Split(l, ":")

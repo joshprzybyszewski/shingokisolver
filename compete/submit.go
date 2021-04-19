@@ -32,11 +32,11 @@ func submitAnswer(
 		return err
 	}
 
-	hallUrl, header, data, err := getHallOfFameSubmission(wp, doc)
+	hallURL, header, data, err := getHallOfFameSubmission(wp, doc)
 	if err != nil {
 		return err
 	}
-	resp, respHeaders, err = post(hallUrl, header, data)
+	resp, respHeaders, err = post(hallURL, header, data)
 	if err != nil {
 		return err
 	}

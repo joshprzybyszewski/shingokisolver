@@ -7,7 +7,6 @@ import (
 )
 
 func getStandardNodeRules(
-	ep model.EdgePair,
 	otherStartEdges []model.EdgePair,
 	otherEndEdges []model.EdgePair,
 ) []func(model.GetEdger) model.EdgeState {
@@ -32,12 +31,6 @@ func getStandardEvalFor(otherInputs []model.EdgePair) func(ge model.GetEdger) mo
 			} else if ge.IsAvoided(otherEP) {
 				numNonExisting++
 			}
-			// switch s := ge.GetEdge(otherEP); s {
-			// case model.EdgeExists:
-			// 	numExisting++
-			// case model.EdgeAvoided, model.EdgeOutOfBounds:
-			// 	numNonExisting++
-			// }
 		}
 
 		switch {

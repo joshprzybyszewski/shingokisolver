@@ -37,9 +37,9 @@ func (nc NodeCoord) DistanceTo(
 	}
 	if nc.Col < other.Col {
 		return dist + int(other.Col-nc.Col)
-	} else {
-		return dist + int(nc.Col-other.Col)
 	}
+
+	return dist + int(nc.Col-other.Col)
 }
 
 func NewCoordFromInts(r, c int) NodeCoord {

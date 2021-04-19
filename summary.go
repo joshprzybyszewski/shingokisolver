@@ -20,15 +20,15 @@ const (
 
 type summary struct {
 	Name     string
-	NumEdges int
-	Duration time.Duration
-
-	heapSize uint64
-	numGCs   uint32
-	pauseNS  uint64
-
 	Unsolved string
 	Solution string
+
+	heapSize uint64
+	pauseNS  uint64
+	numGCs   uint32
+
+	NumEdges int
+	Duration time.Duration
 }
 
 func updateReadme(allSummaries []summary) {
@@ -95,7 +95,8 @@ func buildLatestResultsOutput(
 	size := 0
 	nWritten := 0
 
-	for _, s := range allSummaries {
+	for i := range allSummaries {
+		s := allSummaries[i]
 		if size != s.NumEdges {
 			size = s.NumEdges
 			nWritten = 0
@@ -144,7 +145,8 @@ func buildSummaryBySize(
 	allSummaries []summary,
 ) string {
 	summsBySize := make(map[int][]summary, 10)
-	for _, summ := range allSummaries {
+	for i := range allSummaries {
+		summ := allSummaries[i]
 		summsBySize[summ.NumEdges] = append(summsBySize[summ.NumEdges], summ)
 	}
 
@@ -179,11 +181,11 @@ func buildSummaryBySize(
 		var totalGCs uint32
 		var totalPauseNS uint64
 
-		for _, summ := range summaries {
-			totalDur += summ.Duration
-			totalHeapBytes += summ.heapSize
-			totalGCs += summ.numGCs
-			totalPauseNS += summ.pauseNS
+		for i := range summaries {
+			totalDur += summaries[i].Duration
+			totalHeapBytes += summaries[i].heapSize
+			totalGCs += summaries[i].numGCs
+			totalPauseNS += summaries[i].pauseNS
 		}
 
 		avgDur := totalDur / time.Duration(len(summaries))

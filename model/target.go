@@ -13,10 +13,9 @@ var (
 )
 
 type Target struct {
-	Node    Node
+	Parent  *Target
 	Options []TwoArms
-
-	Parent *Target
+	Node    Node
 }
 
 func GetNextTarget(
@@ -43,7 +42,7 @@ func GetNextTarget(
 		options := getOptions(n)
 		if len(options) == 0 {
 			// this means that there's a node with literally zero options
-			return Target{}, false, errors.New(`invalid node!`)
+			return Target{}, false, errors.New(`invalid node`)
 		}
 
 		no := nodeOption{
@@ -86,8 +85,8 @@ func getMinDist(
 }
 
 type nodeOption struct {
-	Node
 	Options []TwoArms
+	Node
 	MinDist int
 }
 

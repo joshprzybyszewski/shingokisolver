@@ -5,16 +5,14 @@ import (
 )
 
 type rules struct {
-	me model.EdgePair
-
 	couldAffect []model.EdgePair
 
 	evals []func(ge model.GetEdger) model.EdgeState
+	me    model.EdgePair
 }
 
 func newRules(
 	ep model.EdgePair,
-	numEdges int,
 ) *rules {
 
 	r := rules{
@@ -30,7 +28,6 @@ func newRules(
 	r.addAffected(otherEndEdges...)
 
 	r.addEvaluations(getStandardNodeRules(
-		ep,
 		otherStartEdges,
 		otherEndEdges,
 	)...)

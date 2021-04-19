@@ -8,8 +8,8 @@ import (
 func TestPerpendiculars(t *testing.T) {
 	tests := []struct {
 		name string
-		args Cardinal
 		want []Cardinal
+		args Cardinal
 	}{{
 		args: HeadUp,
 		want: []Cardinal{HeadRight, HeadLeft},

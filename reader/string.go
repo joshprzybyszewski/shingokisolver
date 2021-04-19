@@ -17,8 +17,8 @@ const (
 
 type PuzzleDef struct {
 	Description string
-	NumEdges    int
 	Nodes       []model.NodeLocation
+	NumEdges    int
 }
 
 func (pd PuzzleDef) String() string {

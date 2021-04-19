@@ -31,10 +31,9 @@ func (d difficulty) String() string {
 }
 
 type websitePuzzle struct {
-	id string
-	pd reader.PuzzleDef
-
 	secret map[string]string
+	id     string
+	pd     reader.PuzzleDef
 }
 
 func (wp websitePuzzle) String() string {

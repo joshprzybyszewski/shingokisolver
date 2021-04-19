@@ -10,7 +10,7 @@ import (
 )
 
 func BenchmarkSolve(b *testing.B) {
-	puzzles := reader.GetAllPuzzles()
+	allPuzzles := reader.GetAllPuzzles()
 
 	for _, size := range []int{
 		5,
@@ -20,7 +20,7 @@ func BenchmarkSolve(b *testing.B) {
 		20,
 		25,
 	} {
-		puzzles := reader.GetPuzzleWithSize(puzzles, size)
+		puzzles := reader.GetPuzzleWithSize(allPuzzles, size)
 		b.Run(fmt.Sprintf("Solve %dx%d", size, size), func(b *testing.B) {
 			for _, pd := range puzzles {
 				_, err := NewSolver(

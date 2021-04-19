@@ -10,10 +10,10 @@ import (
 
 func TestFromWebsiteTask(t *testing.T) {
 	testCases := []struct {
-		numEdges int
 		puzzID   string
 		task     string
 		expPD    PuzzleDef
+		numEdges int
 	}{{
 		numEdges: 5,
 		puzzID:   `5,258,416`,
