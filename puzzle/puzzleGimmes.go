@@ -2,9 +2,7 @@ package puzzle
 
 import "github.com/joshprzybyszewski/shingokisolver/model"
 
-func (p *Puzzle) ClaimGimmes() model.State {
-
-	defer p.populateTwoArmsCache()
+func (p Puzzle) ClaimGimmes() (Puzzle, model.State) {
 
 	// first we're going to claim any of the gimmes from the "standard"
 	// node rules.
@@ -16,7 +14,7 @@ func (p *Puzzle) ClaimGimmes() model.State {
 			switch s := p.updateEdgeFromRules(ep); s {
 			case model.Violation,
 				model.Unexpected:
-				return s
+				return Puzzle{}, s
 			}
 		}
 	}
@@ -36,11 +34,17 @@ func (p *Puzzle) ClaimGimmes() model.State {
 			switch s := p.updateEdgeFromRules(ep); s {
 			case model.Violation,
 				model.Unexpected:
-				return s
+				return Puzzle{}, s
 			}
 		}
 	}
 
 	// run the queue down
-	return p.runQueue()
+	switch s := p.runQueue(); s {
+	case model.Violation, model.Unexpected:
+		return Puzzle{}, s
+	}
+
+	p.twoArmOptions = getTwoArmsCache(p.nodes, p.NumEdges(), p.edges, p)
+	return p, model.Incomplete
 }

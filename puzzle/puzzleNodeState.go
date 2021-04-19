@@ -2,13 +2,9 @@ package puzzle
 
 import "github.com/joshprzybyszewski/shingokisolver/model"
 
-func (p *Puzzle) GetNodeState(
+func (p Puzzle) GetNodeState(
 	nc model.NodeCoord,
 ) model.State {
-	if p == nil {
-		return model.Incomplete
-	}
-
 	n, ok := p.getNode(nc)
 	if !ok {
 		return model.Incomplete
@@ -27,7 +23,7 @@ func (p *Puzzle) GetNodeState(
 	}
 }
 
-func (p *Puzzle) GetSumOutgoingStraightLines(
+func (p Puzzle) GetSumOutgoingStraightLines(
 	coord model.NodeCoord,
 ) (int8, bool) {
 	var total int8

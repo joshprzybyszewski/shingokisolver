@@ -11,10 +11,10 @@ import (
 
 func BuildTestPuzzle(
 	t *testing.T,
-	p *Puzzle,
+	p Puzzle,
 	startCoord model.NodeCoord,
 	steps ...model.Cardinal,
-) *Puzzle {
+) Puzzle {
 	c := startCoord
 	outPuzz := p.DeepCopy()
 	for _, dir := range steps {

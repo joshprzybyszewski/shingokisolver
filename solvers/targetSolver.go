@@ -9,7 +9,7 @@ import (
 )
 
 type targetSolver struct {
-	puzzle *puzzle.Puzzle
+	puzzle puzzle.Puzzle
 }
 
 func newTargetSolver(
@@ -41,18 +41,14 @@ func (d *targetSolver) Solve() (SolvedResults, error) {
 	}, nil
 }
 
-func (d *targetSolver) solve() (*puzzle.Puzzle, bool) {
-	puzz := d.puzzle.DeepCopy()
+func (d *targetSolver) solve() (puzzle.Puzzle, bool) {
 
-	switch s := puzz.ClaimGimmes(); s {
+	puzz, s := d.puzzle.DeepCopy().ClaimGimmes()
+	switch s {
 	case model.Incomplete, model.Complete:
 		// printPuzzleUpdate(`ClaimGimmes`, 0, puzz, nil)
 	default:
-		return nil, false
-	}
-
-	if puzz == nil {
-		return nil, false
+		return puzzle.Puzzle{}, false
 	}
 
 	target, state := d.puzzle.GetFirstTarget()
@@ -60,22 +56,21 @@ func (d *targetSolver) solve() (*puzzle.Puzzle, bool) {
 	case model.Incomplete, model.Complete:
 		// printPuzzleUpdate(`GetFirstTarget`, 0, puzz, target)
 	default:
-		return nil, false
+		return puzzle.Puzzle{}, false
 	}
 
-	p := d.getSolutionFromDepths(
+	return d.getSolutionFromDepths(
 		0,
 		puzz.DeepCopy(),
 		target,
 	)
-	return p, p != nil
 }
 
 func (d *targetSolver) getSolutionFromDepths(
 	depth int,
-	puzz *puzzle.Puzzle,
+	puzz puzzle.Puzzle,
 	targeting model.Target,
-) *puzzle.Puzzle {
+) (puzzle.Puzzle, bool) {
 
 	nc := targeting.Node.Coord()
 
@@ -83,7 +78,7 @@ func (d *targetSolver) getSolutionFromDepths(
 
 	switch puzz.GetNodeState(nc) {
 	case model.Violation:
-		return nil
+		return puzzle.Puzzle{}, false
 
 	case model.Complete:
 		// the target node is already complete, perhaps a previous node
@@ -93,11 +88,11 @@ func (d *targetSolver) getSolutionFromDepths(
 		nextTarget, state := puzz.GetNextTarget(targeting)
 		switch state {
 		case model.Violation:
-			return nil
+			return puzzle.Puzzle{}, false
 		case model.NodesComplete:
 			switch puzz.GetState(nc) {
 			case model.Complete:
-				return puzz
+				return puzz, true
 			}
 
 			return d.flip(
@@ -117,26 +112,26 @@ func (d *targetSolver) getSolutionFromDepths(
 	// until we "complete" the node.
 	for _, option := range targeting.Options {
 		// then, once we find a completion path, add it to the returned slice
-		p := d.buildAllTwoArmsForTraversal(
+		p, isComplete := d.buildAllTwoArmsForTraversal(
 			depth,
 			puzz.DeepCopy(),
 			targeting,
 			option,
 		)
-		if p != nil {
-			return p
+		if isComplete {
+			return p, true
 		}
 	}
 
-	return nil
+	return puzzle.Puzzle{}, false
 }
 
 func (d *targetSolver) buildAllTwoArmsForTraversal(
 	depth int,
-	puzz *puzzle.Puzzle,
+	puzz puzzle.Puzzle,
 	curTarget model.Target,
 	ta model.TwoArms,
-) *puzzle.Puzzle {
+) (puzzle.Puzzle, bool) {
 
 	switch puzz.AddEdges(getTwoArmsEdges(
 		curTarget.Node.Coord(),
@@ -144,26 +139,26 @@ func (d *targetSolver) buildAllTwoArmsForTraversal(
 	)...) {
 	case model.Duplicate, model.Incomplete, model.Complete:
 	default:
-		return nil
+		return puzzle.Puzzle{}, false
 	}
 
 	switch puzz.GetState(curTarget.Node.Coord()) {
 	case model.Complete:
-		return puzz
+		return puzz, true
 	case model.Incomplete:
 		// continue
 	default:
-		return nil
+		return puzzle.Puzzle{}, false
 	}
 
 	nextTarget, state := puzz.GetNextTarget(curTarget)
 	switch state {
 	case model.Violation:
-		return nil
+		return puzzle.Puzzle{}, false
 	case model.NodesComplete:
 		switch puzz.GetState(curTarget.Node.Coord()) {
 		case model.Complete:
-			return puzz
+			return puzz, true
 		}
 
 		return d.flip(

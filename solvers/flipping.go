@@ -6,41 +6,41 @@ import (
 )
 
 func (d *targetSolver) flip(
-	puzz *puzzle.Puzzle,
-) *puzzle.Puzzle {
+	puzz puzzle.Puzzle,
+) (puzzle.Puzzle, bool) {
 
 	ep, ok := puzz.GetUnknownEdge()
 	if !ok {
 		switch puzz.GetState(model.InvalidNodeCoord) {
 		case model.Complete:
-			return puzz
+			return puzz, true
 		default:
-			return nil
+			return puzzle.Puzzle{}, false
 		}
 	}
 
 	switch puzzWithEdge := puzz.DeepCopy(); puzzWithEdge.AddEdges(ep) {
 	case model.Complete, model.Incomplete:
 		if puzzWithEdge.GetState(ep.NodeCoord) == model.Complete {
-			return puzzWithEdge
+			return puzzWithEdge, true
 		}
 
-		res := d.flip(puzzWithEdge)
-		if res != nil {
-			return res
+		res, isComplete := d.flip(puzzWithEdge)
+		if isComplete {
+			return res, true
 		}
 	}
 
 	switch puzzWithoutEdge := puzz.DeepCopy(); puzzWithoutEdge.AvoidEdge(ep) {
 	case model.Complete, model.Incomplete:
 		if puzzWithoutEdge.GetState(ep.NodeCoord) == model.Complete {
-			return puzzWithoutEdge
+			return puzzWithoutEdge, true
 		}
-		res := d.flip(puzzWithoutEdge)
-		if res != nil {
-			return res
+		res, isComplete := d.flip(puzzWithoutEdge)
+		if isComplete {
+			return res, true
 		}
 	}
 
-	return nil
+	return puzzle.Puzzle{}, false
 }

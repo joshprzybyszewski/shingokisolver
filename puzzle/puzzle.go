@@ -23,9 +23,9 @@ type Puzzle struct {
 func NewPuzzle(
 	numEdges int,
 	nodeLocations []model.NodeLocation,
-) *Puzzle {
+) Puzzle {
 	if numEdges > MaxEdges {
-		return nil
+		return Puzzle{}
 	}
 
 	nodes := make([]model.Node, 0, len(nodeLocations))
@@ -34,7 +34,7 @@ func NewPuzzle(
 		nodes = append(nodes, model.NewNode(nc, nl.IsWhite, nl.Value))
 	}
 
-	puzz := &Puzzle{
+	puzz := Puzzle{
 		numEdges: uint8(numEdges),
 		nodes:    nodes,
 		edges:    newEdgesStates(numEdges),
@@ -46,15 +46,11 @@ func NewPuzzle(
 	return puzz
 }
 
-func (p *Puzzle) DeepCopy() *Puzzle {
-	if p == nil {
-		return nil
-	}
-
+func (p Puzzle) DeepCopy() Puzzle {
 	// I don't think we need to copy nodes because it should only
 	// ever be read from, never written to :#
 
-	dc := &Puzzle{
+	dc := Puzzle{
 		numEdges:      p.numEdges,
 		nodes:         p.nodes,
 		twoArmOptions: p.twoArmOptions,
@@ -67,15 +63,15 @@ func (p *Puzzle) DeepCopy() *Puzzle {
 	return dc
 }
 
-func (p *Puzzle) NumEdges() int {
+func (p Puzzle) NumEdges() int {
 	return int(p.numEdges)
 }
 
-func (p *Puzzle) numNodes() int {
+func (p Puzzle) numNodes() int {
 	return int(p.numEdges) + 1
 }
 
-func (p *Puzzle) getNode(
+func (p Puzzle) getNode(
 	nc model.NodeCoord,
 ) (model.Node, bool) {
 	if p.twoArmOptions == nil {
@@ -95,12 +91,12 @@ func (p *Puzzle) getNode(
 	return tao.Node, true
 }
 
-func (p *Puzzle) getPossibleTwoArms(
+func (p Puzzle) getPossibleTwoArms(
 	node model.Node,
 ) []model.TwoArms {
 
 	if p.twoArmOptions == nil {
-		return p.getTwoArmsForNode(node).Options
+		return getTwoArmsForNode(node, p.NumEdges(), p.edges, p).Options
 	}
 
 	tao := p.twoArmOptions[node.Coord()]
@@ -115,22 +111,33 @@ func (p *Puzzle) getPossibleTwoArms(
 	return filteredOptions
 }
 
-func (p *Puzzle) populateTwoArmsCache() {
-	p.twoArmOptions = make(map[model.NodeCoord]nodeWithOptions, len(p.nodes))
-	for _, node := range p.nodes {
-		p.twoArmOptions[node.Coord()] = p.getTwoArmsForNode(node)
+func getTwoArmsCache(
+	nodes []model.Node,
+	numEdges int,
+	ge model.GetEdger,
+	gn getNoder,
+) map[model.NodeCoord]nodeWithOptions {
+	nwoByNC := make(map[model.NodeCoord]nodeWithOptions, len(nodes))
+	for _, node := range nodes {
+		nwoByNC[node.Coord()] = getTwoArmsForNode(node, numEdges, ge, gn)
 	}
+	return nwoByNC
 }
 
-func (p *Puzzle) getTwoArmsForNode(node model.Node) nodeWithOptions {
-	options := model.BuildTwoArmOptions(node, p.NumEdges())
+func getTwoArmsForNode(
+	node model.Node,
+	numEdges int,
+	ge model.GetEdger,
+	gn getNoder,
+) nodeWithOptions {
+	options := model.BuildTwoArmOptions(node, numEdges)
 	filteredOptions := make([]model.TwoArms, 0, len(options))
 
 	for _, o := range options {
-		if !isTwoArmsPossible(node, o, p.edges) {
+		if !isTwoArmsPossible(node, o, ge) {
 			continue
 		}
-		if p.isInTheWayOfOtherNodes(node, o) {
+		if isInTheWayOfOtherNodes(node, o, gn) {
 			continue
 		}
 		filteredOptions = append(filteredOptions, o)
@@ -165,9 +172,14 @@ func isTwoArmsPossible(
 		)
 }
 
-func (p *Puzzle) isInTheWayOfOtherNodes(
+type getNoder interface {
+	getNode(model.NodeCoord) (model.Node, bool)
+}
+
+func isInTheWayOfOtherNodes(
 	node model.Node,
 	ta model.TwoArms,
+	gn getNoder,
 ) bool {
 
 	nc := node.Coord()
@@ -181,7 +193,7 @@ func (p *Puzzle) isInTheWayOfOtherNodes(
 
 	for i, a1 := 1, nc; i < int(ta.One.Len); i++ {
 		a1 = a1.Translate(ta.One.Heading)
-		otherNode, ok := p.getNode(a1)
+		otherNode, ok := gn.getNode(a1)
 		if !ok {
 			continue
 		}
@@ -199,7 +211,7 @@ func (p *Puzzle) isInTheWayOfOtherNodes(
 
 	for i, a2 := 1, nc; i < int(ta.Two.Len); i++ {
 		a2 = a2.Translate(ta.Two.Heading)
-		otherNode, ok := p.getNode(a2)
+		otherNode, ok := gn.getNode(a2)
 		if !ok {
 			continue
 		}
@@ -218,7 +230,7 @@ func (p *Puzzle) isInTheWayOfOtherNodes(
 	return false
 }
 
-func (p *Puzzle) GetNextTarget(
+func (p Puzzle) GetNextTarget(
 	cur model.Target,
 ) (model.Target, model.State) {
 	t, ok, err := model.GetNextTarget(
@@ -236,7 +248,7 @@ func (p *Puzzle) GetNextTarget(
 	return t, model.Incomplete
 }
 
-func (p *Puzzle) GetFirstTarget() (model.Target, model.State) {
+func (p Puzzle) GetFirstTarget() (model.Target, model.State) {
 	t, ok, err := model.GetNextTarget(
 		model.InvalidTarget,
 		p.nodes,

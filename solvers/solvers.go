@@ -24,13 +24,13 @@ func NewSolver(
 }
 
 type SolvedResults struct {
-	Puzzle *puzzle.Puzzle
+	Puzzle puzzle.Puzzle
 
 	Duration time.Duration
 }
 
 func (sr SolvedResults) String() string {
-	if sr.Puzzle == nil {
+	if sr.Puzzle.GetState(model.InvalidNodeCoord) != model.Complete {
 		return fmt.Sprintf("Took %s. <no solution>\n", sr.Duration)
 	}
 	return fmt.Sprintf("Took %s\n%s\n", sr.Duration, sr.Puzzle.Solution())

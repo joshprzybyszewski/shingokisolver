@@ -4,12 +4,9 @@ import (
 	"github.com/joshprzybyszewski/shingokisolver/model"
 )
 
-func (p *Puzzle) GetState(
+func (p Puzzle) GetState(
 	coord model.NodeCoord,
 ) model.State {
-	if p == nil {
-		return model.Violation
-	}
 
 	nodeState := p.getStateOfNodes()
 	switch nodeState {
@@ -44,7 +41,7 @@ func (p *Puzzle) GetState(
 	return nodeState
 }
 
-func (p *Puzzle) getStateOfNodes() model.State {
+func (p Puzzle) getStateOfNodes() model.State {
 	// it's cheaper for us to just iterate all of the nodes
 	// and check for their validity than it is to check every
 	// (r, c) or filtering out to only be in the range

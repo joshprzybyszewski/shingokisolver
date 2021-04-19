@@ -8,16 +8,10 @@ func AddProgressLogs() {
 	includeProgressLogs = true
 }
 
-func (p *Puzzle) Alpha() *edgesTriState {
-	if p == nil {
-		return (*edgesTriState)(nil)
-	}
+func (p Puzzle) Alpha() *edgesTriState {
 	return p.edges
 }
 
-func (p *Puzzle) Beta() *ruleSet {
-	if p == nil {
-		return (*ruleSet)(nil)
-	}
+func (p Puzzle) Beta() *ruleSet {
 	return p.rules
 }

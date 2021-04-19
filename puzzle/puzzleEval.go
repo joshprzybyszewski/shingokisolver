@@ -4,7 +4,7 @@ import (
 	"github.com/joshprzybyszewski/shingokisolver/model"
 )
 
-func (p *Puzzle) checkRuleset(
+func (p Puzzle) checkRuleset(
 	ep model.EdgePair,
 	expState model.EdgeState,
 ) model.State {
@@ -26,7 +26,7 @@ func (p *Puzzle) checkRuleset(
 	return model.Incomplete
 }
 
-func (p *Puzzle) updateEdgeFromRules(
+func (p Puzzle) updateEdgeFromRules(
 	ep model.EdgePair,
 ) model.State {
 	switch es := p.rules.getRules(ep).getEdgeState(p.edges); es {

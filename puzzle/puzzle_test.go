@@ -161,7 +161,7 @@ func TestIsInvalidBadWhiteNodeTooManyLines(t *testing.T) {
 		IsWhite: true,
 		Value:   2,
 	}})
-	s := p.ClaimGimmes()
+	p, s := p.ClaimGimmes()
 	require.Equal(t, model.Incomplete, s)
 
 	s = p.AddEdge(

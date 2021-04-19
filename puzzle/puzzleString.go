@@ -7,21 +7,18 @@ import (
 	"github.com/joshprzybyszewski/shingokisolver/model"
 )
 
-func (p *Puzzle) String() string {
+func (p Puzzle) String() string {
 	return p.string(true, true)
 }
 
-func (p *Puzzle) Solution() string {
+func (p Puzzle) Solution() string {
 	return p.string(false, false)
 }
 
-func (p *Puzzle) string(
+func (p Puzzle) string(
 	includeXs bool,
 	includeQueue bool,
 ) string {
-	if p == nil {
-		return `(*Puzzle)<nil>`
-	}
 	var sb strings.Builder
 	sb.WriteString("\n")
 	for r := 0; r < p.numNodes(); r++ {

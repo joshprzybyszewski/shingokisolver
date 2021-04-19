@@ -4,7 +4,7 @@ import (
 	"github.com/joshprzybyszewski/shingokisolver/model"
 )
 
-func (p *Puzzle) GetUnknownEdge() (model.EdgePair, bool) {
+func (p Puzzle) GetUnknownEdge() (model.EdgePair, bool) {
 
 	// start from a point that is guaranteed to have an edge.
 	// so we choose a node!
@@ -36,7 +36,7 @@ func (p *Puzzle) GetUnknownEdge() (model.EdgePair, bool) {
 	return model.EdgePair{}, false
 }
 
-func (p *Puzzle) IsEdge(
+func (p Puzzle) IsEdge(
 	move model.Cardinal,
 	nc model.NodeCoord,
 ) bool {
@@ -44,24 +44,24 @@ func (p *Puzzle) IsEdge(
 	return p.GetEdgeState(ep) == model.EdgeExists
 }
 
-func (p *Puzzle) GetEdgeState(
+func (p Puzzle) GetEdgeState(
 	ep model.EdgePair,
 ) model.EdgeState {
 	return p.edges.GetEdge(ep)
 }
 
-func (p *Puzzle) isEdgeDefined(ep model.EdgePair) bool {
+func (p Puzzle) isEdgeDefined(ep model.EdgePair) bool {
 	return p.edges.IsDefined(ep)
 }
 
-func (p *Puzzle) AddEdge(
+func (p Puzzle) AddEdge(
 	startNode model.NodeCoord,
 	move model.Cardinal,
 ) model.State {
 	return p.AddEdges(model.NewEdgePair(startNode, move))
 }
 
-func (p *Puzzle) AddEdges(
+func (p Puzzle) AddEdges(
 	pairs ...model.EdgePair,
 ) model.State {
 	for _, ep := range pairs {
@@ -79,7 +79,7 @@ func (p *Puzzle) AddEdges(
 	return p.runQueue()
 }
 
-func (p *Puzzle) addEdge(
+func (p Puzzle) addEdge(
 	ep model.EdgePair,
 ) model.State {
 	switch state := p.edges.SetEdge(ep); state {
@@ -93,7 +93,7 @@ func (p *Puzzle) addEdge(
 	}
 }
 
-func (p *Puzzle) AvoidEdge(
+func (p Puzzle) AvoidEdge(
 	ep model.EdgePair,
 ) model.State {
 	if !p.edges.isInBounds(ep) {
@@ -109,7 +109,7 @@ func (p *Puzzle) AvoidEdge(
 	return p.runQueue()
 }
 
-func (p *Puzzle) avoidEdge(
+func (p Puzzle) avoidEdge(
 	ep model.EdgePair,
 ) model.State {
 
@@ -124,7 +124,7 @@ func (p *Puzzle) avoidEdge(
 	}
 }
 
-func (p *Puzzle) runQueue() model.State {
+func (p Puzzle) runQueue() model.State {
 	defer p.rq.clearUpdated()
 
 	for ep, ok := p.rq.pop(); ok; ep, ok = p.rq.pop() {
