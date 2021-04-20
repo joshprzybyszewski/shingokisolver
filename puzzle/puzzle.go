@@ -231,6 +231,10 @@ func isInTheWayOfOtherNodes(
 func (p Puzzle) GetNextTarget(
 	cur model.Target,
 ) (model.Target, model.State) {
+	if p.GetState(cur.Node.Coord()) == model.Complete {
+		return model.Target{}, model.Complete
+	}
+
 	t, ok, err := model.GetNextTarget(
 		cur,
 		p.nodes,
@@ -247,6 +251,10 @@ func (p Puzzle) GetNextTarget(
 }
 
 func (p Puzzle) GetFirstTarget() (model.Target, model.State) {
+	if p.GetState(model.InvalidNodeCoord) == model.Complete {
+		return model.Target{}, model.Complete
+	}
+
 	t, ok, err := model.GetNextTarget(
 		model.InvalidTarget,
 		p.nodes,

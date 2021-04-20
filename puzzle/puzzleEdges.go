@@ -51,28 +51,82 @@ func (p Puzzle) GetEdgeState(
 }
 
 func (p Puzzle) AddEdge(
-	startNode model.NodeCoord,
-	move model.Cardinal,
-) model.State {
-	return p.AddEdges(model.NewEdgePair(startNode, move))
+	ep model.EdgePair,
+) (Puzzle, model.State) {
+	var state model.State
+
+	if !p.edges.IsInBounds(ep) {
+		return Puzzle{}, model.Violation
+	}
+
+	state = p.addEdge(ep)
+	switch state {
+	case model.Incomplete, model.Complete, model.Duplicate:
+	default:
+		return Puzzle{}, state
+	}
+
+	state = p.runQueue()
+	switch state {
+	case model.Incomplete, model.Complete, model.Duplicate:
+		// TODO return a copy of p?
+		return p, state
+	default:
+		return Puzzle{}, state
+	}
 }
 
-func (p Puzzle) AddEdges(
-	pairs ...model.EdgePair,
-) model.State {
-	for _, ep := range pairs {
+func (p Puzzle) AvoidEdge(
+	ep model.EdgePair,
+) (Puzzle, model.State) {
+	if !p.edges.IsInBounds(ep) {
+		return Puzzle{}, model.Violation
+	}
+
+	state := p.avoidEdge(ep)
+	switch state {
+	case model.Incomplete, model.Duplicate:
+	default:
+		return Puzzle{}, state
+	}
+
+	state = p.runQueue()
+	switch state {
+	case model.Incomplete, model.Complete, model.Duplicate:
+		// TODO return a copy of p?
+		return p, state
+	default:
+		return Puzzle{}, state
+	}
+}
+
+func (p Puzzle) AddTwoArms(
+	start model.NodeCoord,
+	ta model.TwoArms,
+) (Puzzle, model.State) {
+	var state model.State
+
+	for _, ep := range ta.GetAllEdges(start) {
 		if !p.edges.IsInBounds(ep) {
-			return model.Violation
+			return Puzzle{}, model.Violation
 		}
 
-		switch s := p.addEdge(ep); s {
+		state = p.addEdge(ep)
+		switch state {
 		case model.Incomplete, model.Complete, model.Duplicate:
 		default:
-			return s
+			return Puzzle{}, state
 		}
 	}
 
-	return p.runQueue()
+	state = p.runQueue()
+	switch state {
+	case model.Incomplete, model.Complete, model.Duplicate:
+		// TODO return a copy of p?
+		return p, state
+	default:
+		return Puzzle{}, state
+	}
 }
 
 func (p Puzzle) addEdge(
@@ -82,27 +136,12 @@ func (p Puzzle) addEdge(
 	case model.Incomplete, model.Complete:
 		p.rq.NoticeUpdated(ep)
 
+		// TODO return a copy of p?
 		return p.checkRuleset(ep, model.EdgeExists)
 
 	default:
 		return state
 	}
-}
-
-func (p Puzzle) AvoidEdge(
-	ep model.EdgePair,
-) model.State {
-	if !p.edges.IsInBounds(ep) {
-		return model.Violation
-	}
-
-	switch s := p.avoidEdge(ep); s {
-	case model.Incomplete, model.Duplicate:
-	default:
-		return s
-	}
-
-	return p.runQueue()
 }
 
 func (p Puzzle) avoidEdge(
@@ -113,6 +152,7 @@ func (p Puzzle) avoidEdge(
 	case model.Incomplete, model.Complete:
 		p.rq.NoticeUpdated(ep)
 
+		// TODO return a copy of p?
 		// see if I'm breaking any rules or I can make any more moves
 		return p.checkRuleset(ep, model.EdgeAvoided)
 	default:

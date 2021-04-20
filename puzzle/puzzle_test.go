@@ -66,12 +66,14 @@ func TestIsInvalid(t *testing.T) {
 		model.HeadRight,
 	)
 
-	s := p.AddEdge(
-		model.NewCoordFromInts(
-			0,
-			1,
+	_, s := p.AddEdge(
+		model.NewEdgePair(
+			model.NewCoordFromInts(
+				0,
+				1,
+			),
+			model.HeadDown,
 		),
-		model.HeadDown,
 	)
 	assert.Equal(t, model.Violation, s)
 }
@@ -92,12 +94,14 @@ func TestIsInvalidBadBlackNode(t *testing.T) {
 		model.HeadRight,
 	)
 
-	s := p.AddEdge(
-		model.NewCoordFromInts(
-			1,
-			1,
+	_, s := p.AddEdge(
+		model.NewEdgePair(
+			model.NewCoordFromInts(
+				1,
+				1,
+			),
+			model.HeadRight,
 		),
-		model.HeadRight,
 	)
 	assert.Equal(t, model.Violation, s)
 }
@@ -118,12 +122,14 @@ func TestIsInvalidBadWhiteNode(t *testing.T) {
 		model.HeadRight,
 	)
 
-	s := p.AddEdge(
-		model.NewCoordFromInts(
-			1,
-			1,
+	_, s := p.AddEdge(
+		model.NewEdgePair(
+			model.NewCoordFromInts(
+				1,
+				1,
+			),
+			model.HeadDown,
 		),
-		model.HeadDown,
 	)
 	assert.Equal(t, model.Violation, s)
 }
@@ -144,12 +150,14 @@ func TestIsInvalidBadBlackNodeTooManyLines(t *testing.T) {
 		model.HeadRight,
 		model.HeadDown,
 	)
-	s := p.AddEdge(
-		model.NewCoordFromInts(
-			0,
-			1,
+	_, s := p.AddEdge(
+		model.NewEdgePair(
+			model.NewCoordFromInts(
+				0,
+				1,
+			),
+			model.HeadRight,
 		),
-		model.HeadRight,
 	)
 	assert.Equal(t, model.Violation, s)
 }
@@ -164,12 +172,14 @@ func TestIsInvalidBadWhiteNodeTooManyLines(t *testing.T) {
 	p, s := p.ClaimGimmes()
 	require.Equal(t, model.Incomplete, s)
 
-	s = p.AddEdge(
-		model.NewCoordFromInts(
-			0,
-			2,
+	_, s = p.AddEdge(
+		model.NewEdgePair(
+			model.NewCoordFromInts(
+				0,
+				2,
+			),
+			model.HeadRight,
 		),
-		model.HeadRight,
 	)
 	assert.Equal(t, model.Violation, s)
 }

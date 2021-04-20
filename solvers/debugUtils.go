@@ -18,9 +18,8 @@ func AddProgressLogs() {
 
 func printPuzzleUpdate(
 	caller string,
-	depth int,
-	puzz *puzzle.Puzzle,
-	targeting *model.Target,
+	puzz puzzle.Puzzle,
+	targeting model.Target,
 ) {
 
 	if !includeProgressLogs {
@@ -30,9 +29,6 @@ func printPuzzleUpdate(
 	log.Printf("printPuzzleUpdate")
 	log.Printf("\tcaller:  \t%s",
 		caller,
-	)
-	log.Printf("\tdepth:   \t%d",
-		depth,
 	)
 	log.Printf("\ttargeting:\t%+v",
 		targeting,

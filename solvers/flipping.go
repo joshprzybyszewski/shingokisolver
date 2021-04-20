@@ -19,7 +19,8 @@ func flip(
 		}
 	}
 
-	switch puzzWithEdge := puzz.DeepCopy(); puzzWithEdge.AddEdges(ep) {
+	puzzWithEdge, state := puzz.DeepCopy().AddEdge(ep)
+	switch state {
 	case model.Complete, model.Incomplete:
 		if puzzWithEdge.GetState(ep.NodeCoord) == model.Complete {
 			return puzzWithEdge, true
@@ -31,7 +32,8 @@ func flip(
 		}
 	}
 
-	switch puzzWithoutEdge := puzz.DeepCopy(); puzzWithoutEdge.AvoidEdge(ep) {
+	puzzWithoutEdge, state := puzz.DeepCopy().AvoidEdge(ep)
+	switch state {
 	case model.Complete, model.Incomplete:
 		if puzzWithoutEdge.GetState(ep.NodeCoord) == model.Complete {
 			return puzzWithoutEdge, true

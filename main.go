@@ -85,7 +85,7 @@ func runStandardSolver() {
 	allSummaries := make([]summary, 0, len(allPDs))
 
 	for _, pd := range allPDs {
-		if pd.NumEdges != 10 { // || !strings.Contains(pd.String(), `2,589,287`) {
+		if pd.NumEdges > 15 { //  || !strings.Contains(pd.String(), `2,589,287`) {
 			continue
 		}
 		summ := runSolver(pd)
@@ -123,7 +123,7 @@ func runSolver(
 	).String()
 
 	if err != nil {
-		log.Printf("Could not solve! %v: %s\n%s\n\n\n", err, sr, unsolvedStr)
+		log.Fatalf("Could not solve! %v: %s\n%s\n\n\n", err, sr, unsolvedStr)
 	} else {
 		log.Printf("Solved: %s\n\n\n", sr)
 	}
