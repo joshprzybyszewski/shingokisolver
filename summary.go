@@ -172,7 +172,7 @@ func buildSummaryBySize(
 			continue
 		}
 
-		if size != 2 && len(summaries) < 100 {
+		if size != 2 && len(summaries) < 10 {
 			compete.PopulateCache(size, 100-len(summaries))
 		}
 

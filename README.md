@@ -17,4 +17,9 @@ Using golang, I've built a solver. You can see it execute on cached puzzles with
 
 |Num Edges|Sample Size|Average Duration|Average Allocations (KB)|Average Garbage Collections|Average GC Pause (ns)|
 |-:|-:|-:|-:|-:|-:|
-|10x10|101|16.532073ms|3437.589|1.01|52.356µs|
+|2x2|1|84.545µs|7.898|0.00|0s|
+|5x5|11|404.295µs|44.504|0.00|0s|
+|7x7|11|1.133645ms|126.812|0.00|0s|
+|10x10|11|13.871393ms|2121.141|0.36|14.508µs|
+|15x15|11|195.375509ms|55003.029|25.73|1.998706ms|
+|20x20|11|14.649298779s|3458576.045|1380.91|48.177693ms|

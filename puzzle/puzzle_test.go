@@ -66,7 +66,7 @@ func TestIsInvalid(t *testing.T) {
 		model.HeadRight,
 	)
 
-	_, s := p.AddEdge(
+	_, s := AddEdge(p,
 		model.NewEdgePair(
 			model.NewCoordFromInts(
 				0,
@@ -94,7 +94,7 @@ func TestIsInvalidBadBlackNode(t *testing.T) {
 		model.HeadRight,
 	)
 
-	_, s := p.AddEdge(
+	_, s := AddEdge(p,
 		model.NewEdgePair(
 			model.NewCoordFromInts(
 				1,
@@ -122,7 +122,7 @@ func TestIsInvalidBadWhiteNode(t *testing.T) {
 		model.HeadRight,
 	)
 
-	_, s := p.AddEdge(
+	_, s := AddEdge(p,
 		model.NewEdgePair(
 			model.NewCoordFromInts(
 				1,
@@ -150,7 +150,7 @@ func TestIsInvalidBadBlackNodeTooManyLines(t *testing.T) {
 		model.HeadRight,
 		model.HeadDown,
 	)
-	_, s := p.AddEdge(
+	_, s := AddEdge(p,
 		model.NewEdgePair(
 			model.NewCoordFromInts(
 				0,
@@ -172,7 +172,7 @@ func TestIsInvalidBadWhiteNodeTooManyLines(t *testing.T) {
 	p, s := p.ClaimGimmes()
 	require.Equal(t, model.Incomplete, s)
 
-	_, s = p.AddEdge(
+	_, s = AddEdge(p,
 		model.NewEdgePair(
 			model.NewCoordFromInts(
 				0,

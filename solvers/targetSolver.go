@@ -40,7 +40,7 @@ func doSolve(
 ) (puzzle.Puzzle, bool) {
 
 	// claim all of the gimmes we can
-	puzz, s := puzz.DeepCopy().ClaimGimmes()
+	puzz, s := puzz.ClaimGimmes()
 	switch s {
 	case model.Incomplete, model.Complete:
 		printPuzzleUpdate(`ClaimGimmes`, puzz, model.Target{})
@@ -82,7 +82,7 @@ func doSolve(
 			// don't "aim at target" below, but start flipping edges
 			// now.
 			return flip(
-				puzz.DeepCopy(),
+				puzz,
 			)
 		case model.Violation:
 			return puzzle.Puzzle{}, false
@@ -92,7 +92,7 @@ func doSolve(
 	// Now we're going to start descending through the nodes, aiming at our next
 	// target.
 	return solveAimingAtTarget(
-		puzz.DeepCopy(),
+		puzz,
 		target,
 	)
 }
@@ -121,7 +121,7 @@ func solveAimingAtTarget(
 	for _, option := range targeting.Options {
 		// then, once we find a completion path, add it to the returned slice
 		p, isComplete := buildTwoArmsToDescend(
-			puzz.DeepCopy(),
+			puzz,
 			targeting,
 			option,
 		)
@@ -165,7 +165,7 @@ func descendToNextTarget(
 		// This is a special case that is handled below
 	default:
 		return solveAimingAtTarget(
-			puzz.DeepCopy(),
+			puzz,
 			nextTarget,
 		)
 	}
@@ -174,7 +174,7 @@ func descendToNextTarget(
 	// This means that we need to transition to "flipping edge state"
 	// until we can find a complete puzzle
 	return flip(
-		puzz.DeepCopy(),
+		puzz,
 	)
 }
 
@@ -184,7 +184,7 @@ func addTwoArms(
 	ta model.TwoArms,
 ) (puzzle.Puzzle, bool) {
 
-	outPuzz, state := inPuzz.AddTwoArms(start, ta)
+	outPuzz, state := puzzle.AddTwoArms(inPuzz, start, ta)
 	switch state {
 	case model.Duplicate, model.Incomplete, model.Complete:
 		return outPuzz, true

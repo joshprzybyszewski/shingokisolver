@@ -9,6 +9,8 @@ func flip(
 	puzz puzzle.Puzzle,
 ) (puzzle.Puzzle, bool) {
 
+	printPuzzleUpdate(`flip`, puzz, model.InvalidTarget)
+
 	ep, ok := puzz.GetUnknownEdge()
 	if !ok {
 		switch puzz.GetState(model.InvalidNodeCoord) {
@@ -19,7 +21,10 @@ func flip(
 		}
 	}
 
-	puzzWithEdge, state := puzz.DeepCopy().AddEdge(ep)
+	puzzWithEdge, state := puzzle.AddEdge(
+		puzz,
+		ep,
+	)
 	switch state {
 	case model.Complete, model.Incomplete:
 		if puzzWithEdge.GetState(ep.NodeCoord) == model.Complete {
@@ -32,7 +37,10 @@ func flip(
 		}
 	}
 
-	puzzWithoutEdge, state := puzz.DeepCopy().AvoidEdge(ep)
+	puzzWithoutEdge, state := puzzle.AvoidEdge(
+		puzz,
+		ep,
+	)
 	switch state {
 	case model.Complete, model.Incomplete:
 		if puzzWithoutEdge.GetState(ep.NodeCoord) == model.Complete {

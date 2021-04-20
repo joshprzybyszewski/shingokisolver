@@ -6,7 +6,6 @@ import (
 	"os"
 	"runtime"
 	"runtime/pprof"
-	"strings"
 	"time"
 
 	"github.com/joshprzybyszewski/shingokisolver/compete"
@@ -60,18 +59,21 @@ func runProfiler() {
 	// disable garbage collection entirely.
 	// dangerous, I know.
 	// debug.SetGCPercent(-1)
+	t0 := time.Now()
 
 	for _, pd := range reader.GetAllPuzzles() {
-		if !strings.Contains(pd.String(), `5,434,778`) {
+		if pd.NumEdges > 15 { //  || !strings.Contains(pd.String(), `2,589,287`) {
+			// if !strings.Contains(pd.String(), `5,434,778`) {
 			continue
 		}
 
-		go runSolver(pd)
+		runSolver(pd)
+		// go runSolver(pd)
+		// time.Sleep(30 * time.Second)
 
-		// This is currently only going to run a profile for a single puzzle
-		// defined as the ID above.
-		time.Sleep(30 * time.Second)
-		return
+		if time.Since(t0) > 30*time.Second {
+			return
+		}
 	}
 }
 
@@ -84,15 +86,29 @@ func runStandardSolver() {
 	allPDs := reader.GetAllPuzzles()
 	allSummaries := make([]summary, 0, len(allPDs))
 
+	numBySize := make(map[int]int, 8)
+	maxPerSize := 10
+
 	for _, pd := range allPDs {
-		if pd.NumEdges > 15 { //  || !strings.Contains(pd.String(), `2,589,287`) {
+		if pd.NumEdges > 20 {
 			continue
 		}
+
+		if numBySize[pd.NumEdges] > maxPerSize {
+			continue
+		}
+
+		// if !strings.Contains(pd.String(), `5,937,602`) {
+		// 	continue
+		// }
+
 		summ := runSolver(pd)
 		allSummaries = append(allSummaries, summ)
 
 		// collect garbage now, which should be that entire puzzle that we solved:#
 		runtime.GC()
+
+		numBySize[pd.NumEdges] += 1
 	}
 
 	if *shouldWriteResults {

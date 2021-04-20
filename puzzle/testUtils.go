@@ -19,7 +19,7 @@ func BuildTestPuzzle(
 	outPuzz := p.DeepCopy()
 	var s model.State
 	for _, dir := range steps {
-		outPuzz, s = outPuzz.AddEdge(model.NewEdgePair(c, dir))
+		outPuzz, s = AddEdge(outPuzz, model.NewEdgePair(c, dir))
 		switch s {
 		case model.Unexpected, model.Violation, model.Duplicate:
 			require.Fail(t, "failure building puzzle", "unexpected state (%s) after adding edge: %+v, %+v\n%s\n", s, dir, c, p)
