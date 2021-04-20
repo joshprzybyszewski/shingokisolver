@@ -1,4 +1,4 @@
-package puzzle
+package state
 
 import (
 	"github.com/joshprzybyszewski/shingokisolver/model"
@@ -8,7 +8,7 @@ const (
 	MaxEdges = 25 // currently, the len(masks)
 )
 
-var _ model.GetEdger = (*edgesTriState)(nil)
+var _ model.GetEdger = (*TriEdges)(nil)
 
 type bitData uint32
 
@@ -78,7 +78,7 @@ func getMask(
 	}
 }
 
-type edgesTriState struct {
+type TriEdges struct {
 	rows []bitData
 	cols []bitData
 
@@ -89,10 +89,10 @@ type edgesTriState struct {
 	numEdges uint16
 }
 
-func newEdgesStates(
+func New(
 	numEdges int,
-) *edgesTriState {
-	return &edgesTriState{
+) *TriEdges {
+	return &TriEdges{
 		numEdges:  uint16(numEdges),
 		rows:      make([]bitData, numEdges+1),
 		cols:      make([]bitData, numEdges+1),
@@ -101,7 +101,11 @@ func newEdgesStates(
 	}
 }
 
-func (ets *edgesTriState) isArmInBounds(
+func (ets *TriEdges) NumEdges() int {
+	return int(ets.numEdges)
+}
+
+func (ets *TriEdges) isArmInBounds(
 	start model.NodeCoord,
 	arm model.Arm,
 ) bool {
@@ -125,7 +129,7 @@ func (ets *edgesTriState) isArmInBounds(
 	return false
 }
 
-func (ets *edgesTriState) isInBounds(
+func (ets *TriEdges) IsInBounds(
 	ep model.EdgePair,
 ) bool {
 	if ep.Row < 0 || ep.Col < 0 {
@@ -143,7 +147,7 @@ func (ets *edgesTriState) isInBounds(
 	}
 }
 
-func (ets *edgesTriState) AllExist(
+func (ets *TriEdges) AllExist(
 	start model.NodeCoord,
 	arm model.Arm,
 ) bool {
@@ -171,7 +175,7 @@ func (ets *edgesTriState) AllExist(
 	}
 }
 
-func (ets *edgesTriState) AnyAvoided(
+func (ets *TriEdges) AnyAvoided(
 	start model.NodeCoord,
 	arm model.Arm,
 ) bool {
@@ -198,7 +202,7 @@ func (ets *edgesTriState) AnyAvoided(
 	}
 }
 
-func (ets *edgesTriState) Any(
+func (ets *TriEdges) Any(
 	start model.NodeCoord,
 	arm model.Arm,
 ) (bool, bool) {
@@ -223,8 +227,8 @@ func (ets *edgesTriState) Any(
 	}
 }
 
-func (ets *edgesTriState) IsEdge(ep model.EdgePair) bool {
-	if !ets.isInBounds(ep) {
+func (ets *TriEdges) IsEdge(ep model.EdgePair) bool {
+	if !ets.IsInBounds(ep) {
 		return false
 	}
 
@@ -239,8 +243,8 @@ func (ets *edgesTriState) IsEdge(ep model.EdgePair) bool {
 	return false
 }
 
-func (ets *edgesTriState) IsAvoided(ep model.EdgePair) bool {
-	if !ets.isInBounds(ep) {
+func (ets *TriEdges) IsAvoided(ep model.EdgePair) bool {
+	if !ets.IsInBounds(ep) {
 		return true
 	}
 
@@ -254,15 +258,15 @@ func (ets *edgesTriState) IsAvoided(ep model.EdgePair) bool {
 	return false
 }
 
-func (ets *edgesTriState) IsDefined(ep model.EdgePair) bool {
+func (ets *TriEdges) IsDefined(ep model.EdgePair) bool {
 	return ets.IsAvoided(ep) || ets.IsEdge(ep)
 }
 
-func (ets *edgesTriState) GetEdge(
+func (ets *TriEdges) GetEdge(
 	ep model.EdgePair,
 ) model.EdgeState {
 
-	if !ets.isInBounds(ep) {
+	if !ets.IsInBounds(ep) {
 		return model.EdgeOutOfBounds
 	}
 
@@ -288,7 +292,7 @@ func (ets *edgesTriState) GetEdge(
 	return model.EdgeUnknown
 }
 
-func (ets *edgesTriState) SetEdge(
+func (ets *TriEdges) SetEdge(
 	ep model.EdgePair,
 ) model.State {
 
@@ -311,7 +315,7 @@ func (ets *edgesTriState) SetEdge(
 	return model.Incomplete
 }
 
-func (ets *edgesTriState) AvoidEdge(
+func (ets *TriEdges) AvoidEdge(
 	ep model.EdgePair,
 ) model.State {
 
@@ -336,8 +340,8 @@ func (ets *edgesTriState) AvoidEdge(
 	return model.Incomplete
 }
 
-func (ets *edgesTriState) Copy() *edgesTriState {
-	cpy := &edgesTriState{
+func (ets *TriEdges) Copy() *TriEdges {
+	cpy := &TriEdges{
 		numEdges:  ets.numEdges,
 		rows:      make([]bitData, len(ets.rows)),
 		cols:      make([]bitData, len(ets.cols)),

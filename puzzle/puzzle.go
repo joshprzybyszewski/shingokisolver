@@ -1,7 +1,9 @@
 package puzzle
 
 import (
+	"github.com/joshprzybyszewski/shingokisolver/logic"
 	"github.com/joshprzybyszewski/shingokisolver/model"
+	"github.com/joshprzybyszewski/shingokisolver/state"
 )
 
 type nodeWithOptions struct {
@@ -10,9 +12,9 @@ type nodeWithOptions struct {
 }
 
 type Puzzle struct {
-	edges *edgesTriState
-	rules *ruleSet
-	rq    *rulesQueue
+	edges *state.TriEdges
+	rules *logic.RuleSet
+	rq    *logic.Queue
 
 	twoArmOptions map[model.NodeCoord]nodeWithOptions
 	nodes         []model.Node
@@ -22,7 +24,7 @@ func NewPuzzle(
 	numEdges int,
 	nodeLocations []model.NodeLocation,
 ) Puzzle {
-	if numEdges > MaxEdges {
+	if numEdges > state.MaxEdges {
 		return Puzzle{}
 	}
 
@@ -34,11 +36,11 @@ func NewPuzzle(
 
 	puzz := Puzzle{
 		nodes: nodes,
-		edges: newEdgesStates(numEdges),
-		rules: newRuleSet(numEdges, nodes),
+		edges: state.New(numEdges),
+		rules: logic.New(numEdges, nodes),
 	}
 
-	puzz.rq = newRulesQueue(puzz.edges, puzz, puzz.NumEdges())
+	puzz.rq = logic.NewQueue(puzz.edges, puzz.NumEdges())
 
 	return puzz
 }
@@ -54,13 +56,13 @@ func (p Puzzle) DeepCopy() Puzzle {
 		rules:         p.rules,
 	}
 
-	dc.rq = newRulesQueue(dc.edges, dc, dc.NumEdges())
+	dc.rq = logic.NewQueue(dc.edges, dc.NumEdges())
 
 	return dc
 }
 
 func (p Puzzle) NumEdges() int {
-	return int(p.edges.numEdges)
+	return p.edges.NumEdges()
 }
 
 func (p Puzzle) numNodes() int {

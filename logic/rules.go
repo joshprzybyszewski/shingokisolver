@@ -1,10 +1,10 @@
-package puzzle
+package logic
 
 import (
 	"github.com/joshprzybyszewski/shingokisolver/model"
 )
 
-type rules struct {
+type Rules struct {
 	couldAffect []model.EdgePair
 
 	evals []func(ge model.GetEdger) model.EdgeState
@@ -13,9 +13,9 @@ type rules struct {
 
 func newRules(
 	ep model.EdgePair,
-) *rules {
+) *Rules {
 
-	r := rules{
+	r := Rules{
 		me:          ep,
 		couldAffect: make([]model.EdgePair, 0, 6),
 		evals:       make([]func(ge model.GetEdger) model.EdgeState, 0, 2),
@@ -35,11 +35,11 @@ func newRules(
 	return &r
 }
 
-func (r *rules) affects() []model.EdgePair {
+func (r *Rules) Affects() []model.EdgePair {
 	return r.couldAffect
 }
 
-func (r *rules) addAffected(couldAffect ...model.EdgePair) {
+func (r *Rules) addAffected(couldAffect ...model.EdgePair) {
 	if r == nil {
 		return
 	}
@@ -54,7 +54,7 @@ func (r *rules) addAffected(couldAffect ...model.EdgePair) {
 // TODO instead of relying on the execution of evals of other
 // nodes _after_ these rules have been checked, we should detect
 // what other nodes change when "I" go into the Exists/Avoided state.
-func (r *rules) addEvaluations(evals ...func(ge model.GetEdger) model.EdgeState) {
+func (r *Rules) addEvaluations(evals ...func(ge model.GetEdger) model.EdgeState) {
 	if r == nil {
 		return
 	}
@@ -67,7 +67,7 @@ func (r *rules) addEvaluations(evals ...func(ge model.GetEdger) model.EdgeState)
 	}
 }
 
-func (r *rules) getEdgeState(ge model.GetEdger) model.EdgeState {
+func (r *Rules) GetEvaluatedState(ge model.GetEdger) model.EdgeState {
 	if r == nil {
 		return model.EdgeOutOfBounds
 	}
@@ -95,7 +95,7 @@ func (r *rules) getEdgeState(ge model.GetEdger) model.EdgeState {
 	return es
 }
 
-func (r *rules) addRulesForNode(
+func (r *Rules) addRulesForNode(
 	node model.Node,
 	dir model.Cardinal,
 ) {

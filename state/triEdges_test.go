@@ -1,4 +1,4 @@
-package puzzle
+package state
 
 import (
 	"testing"
@@ -9,7 +9,7 @@ import (
 
 func TestAllExist(t *testing.T) {
 
-	ets := newEdgesStates(5)
+	ets := New(5)
 
 	nc00 := model.NewCoord(0, 0)
 	assert.Equal(t, model.Incomplete, ets.SetEdge(model.NewEdgePair(nc00, model.HeadRight)))
@@ -71,7 +71,7 @@ func TestAllExist(t *testing.T) {
 }
 
 func TestAny(t *testing.T) {
-	ets := newEdgesStates(5)
+	ets := New(5)
 
 	nc00 := model.NewCoord(0, 0)
 	nc01 := model.NewCoord(0, 1)

@@ -1,4 +1,4 @@
-package puzzle
+package logic
 
 import "github.com/joshprzybyszewski/shingokisolver/model"
 

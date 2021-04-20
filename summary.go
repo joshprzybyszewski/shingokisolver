@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/joshprzybyszewski/shingokisolver/compete"
-	"github.com/joshprzybyszewski/shingokisolver/puzzle"
+	"github.com/joshprzybyszewski/shingokisolver/state"
 )
 
 const (
@@ -166,7 +166,7 @@ func buildSummaryBySize(
 	sb.WriteString("\n")
 	sb.WriteString("|-:|-:|-:|-:|-:|-:|\n")
 
-	for size := 1; size < puzzle.MaxEdges; size++ {
+	for size := 1; size < state.MaxEdges; size++ {
 		summaries, ok := summsBySize[size]
 		if !ok {
 			continue

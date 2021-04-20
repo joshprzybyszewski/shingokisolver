@@ -1,27 +1,27 @@
-package puzzle
+package logic
 
 import (
 	"github.com/joshprzybyszewski/shingokisolver/model"
 )
 
-type ruleSet struct {
-	rows [][]*rules
-	cols [][]*rules
+type RuleSet struct {
+	rows [][]*Rules
+	cols [][]*Rules
 }
 
-func newRuleSet(
+func New(
 	numEdges int,
 	nodes []model.Node,
-) *ruleSet {
-	rs := &ruleSet{
-		rows: make([][]*rules, numEdges+1),
-		cols: make([][]*rules, numEdges),
+) *RuleSet {
+	rs := &RuleSet{
+		rows: make([][]*Rules, numEdges+1),
+		cols: make([][]*Rules, numEdges),
 	}
 
 	for r := 0; r <= numEdges; r++ {
-		rs.rows[r] = make([]*rules, numEdges)
+		rs.rows[r] = make([]*Rules, numEdges)
 		if r < numEdges {
-			rs.cols[r] = make([]*rules, numEdges+1)
+			rs.cols[r] = make([]*Rules, numEdges+1)
 		}
 		for c := 0; c <= numEdges; c++ {
 			nc := model.NewCoordFromInts(r, c)
@@ -44,16 +44,16 @@ func newRuleSet(
 	for _, n := range nodes {
 		nc := n.Coord()
 		for _, dir := range model.AllCardinals {
-			rs.getRules(model.NewEdgePair(nc, dir)).addRulesForNode(n, dir)
+			rs.Get(model.NewEdgePair(nc, dir)).addRulesForNode(n, dir)
 		}
 	}
 
 	return rs
 }
 
-func (rs *ruleSet) getRules(
+func (rs *RuleSet) Get(
 	ep model.EdgePair,
-) *rules {
+) *Rules {
 	// copied from isInBounds:#
 	if ep.Row < 0 || ep.Col < 0 {
 		// negative coords are bad

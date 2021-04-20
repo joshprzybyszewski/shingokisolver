@@ -1,10 +1,10 @@
-package puzzle
+package logic
 
 import (
 	"github.com/joshprzybyszewski/shingokisolver/model"
 )
 
-func (rs *ruleSet) addAllTwoArmRules(
+func (rs *RuleSet) AddAllTwoArmRules(
 	node model.Node,
 	options []model.TwoArms,
 ) {
@@ -52,7 +52,7 @@ func (rs *ruleSet) addAllTwoArmRules(
 		allEdges = append(allEdges, arm2Edges...)
 		allEdges = append(allEdges, afterArm1, afterArm2)
 		for _, e := range allEdges {
-			rs.getRules(e).addAffected(allEdges...)
+			rs.Get(e).addAffected(allEdges...)
 		}
 	}
 }
@@ -70,12 +70,12 @@ func getArmEdgesAndEnd(
 	return armEdges
 }
 
-func (rs *ruleSet) addExtendedRulesForAvoidedArm(
+func (rs *RuleSet) addExtendedRulesForAvoidedArm(
 	nc model.NodeCoord,
 	ta model.TwoArms,
 	thenAvoid model.EdgePair,
 ) {
-	rs.getRules(thenAvoid).addEvaluations(func(ge model.GetEdger) model.EdgeState {
+	rs.Get(thenAvoid).addEvaluations(func(ge model.GetEdger) model.EdgeState {
 		if ge.AllExist(nc, ta.One) && ge.AllExist(nc, ta.Two) {
 			return model.EdgeAvoided
 		}
@@ -85,14 +85,14 @@ func (rs *ruleSet) addExtendedRulesForAvoidedArm(
 
 }
 
-func (rs *ruleSet) addExtendedRulesForExistingArm(
+func (rs *RuleSet) addExtendedRulesForExistingArm(
 	node model.Node,
 	otherArm model.Arm,
 	needToAvoid, needsToNotExist model.EdgePair,
 	myArm model.Arm,
 ) {
 	for i, edge := range getArmEdgesAndEnd(node.Coord(), myArm) {
-		rs.getRules(edge).addEvaluations(
+		rs.Get(edge).addEvaluations(
 			getRuleForOppositeArm(
 				node,
 				otherArm,

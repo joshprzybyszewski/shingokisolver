@@ -50,10 +50,6 @@ func (p Puzzle) GetEdgeState(
 	return p.edges.GetEdge(ep)
 }
 
-func (p Puzzle) isEdgeDefined(ep model.EdgePair) bool {
-	return p.edges.IsDefined(ep)
-}
-
 func (p Puzzle) AddEdge(
 	startNode model.NodeCoord,
 	move model.Cardinal,
@@ -65,7 +61,7 @@ func (p Puzzle) AddEdges(
 	pairs ...model.EdgePair,
 ) model.State {
 	for _, ep := range pairs {
-		if !p.edges.isInBounds(ep) {
+		if !p.edges.IsInBounds(ep) {
 			return model.Violation
 		}
 
@@ -84,7 +80,7 @@ func (p Puzzle) addEdge(
 ) model.State {
 	switch state := p.edges.SetEdge(ep); state {
 	case model.Incomplete, model.Complete:
-		p.rq.noticeUpdated(ep)
+		p.rq.NoticeUpdated(ep)
 
 		return p.checkRuleset(ep, model.EdgeExists)
 
@@ -96,7 +92,7 @@ func (p Puzzle) addEdge(
 func (p Puzzle) AvoidEdge(
 	ep model.EdgePair,
 ) model.State {
-	if !p.edges.isInBounds(ep) {
+	if !p.edges.IsInBounds(ep) {
 		return model.Violation
 	}
 
@@ -115,7 +111,7 @@ func (p Puzzle) avoidEdge(
 
 	switch state := p.edges.AvoidEdge(ep); state {
 	case model.Incomplete, model.Complete:
-		p.rq.noticeUpdated(ep)
+		p.rq.NoticeUpdated(ep)
 
 		// see if I'm breaking any rules or I can make any more moves
 		return p.checkRuleset(ep, model.EdgeAvoided)
@@ -125,9 +121,9 @@ func (p Puzzle) avoidEdge(
 }
 
 func (p Puzzle) runQueue() model.State {
-	defer p.rq.clearUpdated()
+	defer p.rq.ClearUpdated()
 
-	for ep, ok := p.rq.pop(); ok; ep, ok = p.rq.pop() {
+	for ep, ok := p.rq.Pop(); ok; ep, ok = p.rq.Pop() {
 		switch s := p.updateEdgeFromRules(ep); s {
 		case model.Violation,
 			model.Unexpected:
@@ -135,8 +131,8 @@ func (p Puzzle) runQueue() model.State {
 		}
 	}
 
-	for ep := range p.rq.updated {
-		eval := p.rules.getRules(ep).getEdgeState(p.edges)
+	for _, ep := range p.rq.Updated() {
+		eval := p.rules.Get(ep).GetEvaluatedState(p.edges)
 		if eval == model.EdgeUnknown || eval == model.EdgeOutOfBounds {
 			// this is ok. It means that our algorithm is trying out
 			// edges, and we cannot determine what they are

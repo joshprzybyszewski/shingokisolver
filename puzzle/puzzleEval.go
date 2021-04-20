@@ -8,10 +8,10 @@ func (p Puzzle) checkRuleset(
 	ep model.EdgePair,
 	expState model.EdgeState,
 ) model.State {
-	r := p.rules.getRules(ep)
+	r := p.rules.Get(ep)
 
 	// check if the rules for this edge are broken
-	newEdge := r.getEdgeState(p.edges)
+	newEdge := r.GetEvaluatedState(p.edges)
 
 	switch newEdge {
 	case model.EdgeAvoided, model.EdgeExists:
@@ -21,7 +21,7 @@ func (p Puzzle) checkRuleset(
 	}
 
 	// Now let's look at all of the other affected rules
-	p.rq.push(r.affects()...)
+	p.rq.Push(r.Affects()...)
 
 	return model.Incomplete
 }
@@ -29,7 +29,7 @@ func (p Puzzle) checkRuleset(
 func (p Puzzle) updateEdgeFromRules(
 	ep model.EdgePair,
 ) model.State {
-	switch es := p.rules.getRules(ep).getEdgeState(p.edges); es {
+	switch es := p.rules.Get(ep).GetEvaluatedState(p.edges); es {
 	case model.EdgeAvoided:
 		return p.avoidEdge(ep)
 	case model.EdgeExists:

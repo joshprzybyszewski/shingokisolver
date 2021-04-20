@@ -41,39 +41,40 @@ func (p Puzzle) string(
 
 			// now draw an edge
 			ep := model.NewEdgePair(nc, model.HeadRight)
-			if p.edges.isInBounds(ep) {
-				_, ok := p.rq.toCheck[ep]
-				enQueued := includeQueue && ok
-				if enQueued {
-					sb.WriteString(`qq`)
-				}
+			if p.edges.IsInBounds(ep) {
+				// _, ok := p.rq.toCheck[ep]
+				// enQueued := includeQueue && ok
+				// if enQueued {
+				// 	sb.WriteString(`qq`)
+				// }
 				switch p.edges.GetEdge(ep) {
 				case model.EdgeExists:
-					if !enQueued {
-						sb.WriteString(`--`)
-					}
+					// if !enQueued {
+					sb.WriteString(`--`)
+					// }
 					sb.WriteString(`-`)
 				case model.EdgeAvoided:
-					if enQueued {
-						if includeXs {
-							sb.WriteString(`X`)
-						} else {
-							sb.WriteString(` `)
-						}
-					} else if includeXs {
+					// if enQueued {
+					// 	if includeXs {
+					// 		sb.WriteString(`X`)
+					// 	} else {
+					// 		sb.WriteString(` `)
+					// 	}
+					// } else
+					if includeXs {
 						sb.WriteString(` X `)
 					} else {
 						sb.WriteString(`   `)
 					}
 				case model.EdgeUnknown:
-					if !enQueued {
-						sb.WriteString(`  `)
-					}
+					// if !enQueued {
+					sb.WriteString(`  `)
+					// }
 					sb.WriteString(` `)
 				default:
-					if !enQueued {
-						sb.WriteString(`??`)
-					}
+					// if !enQueued {
+					sb.WriteString(`??`)
+					// }
 					sb.WriteString(`?`)
 				}
 			}
@@ -81,43 +82,44 @@ func (p Puzzle) string(
 			// now draw any edges that are below
 			below.WriteString(` `)
 			ep = model.NewEdgePair(nc, model.HeadDown)
-			if p.edges.isInBounds(ep) {
-				_, ok := p.rq.toCheck[ep]
-				enQueued := includeQueue && ok
-				if enQueued {
-					below.WriteString(`qq`)
-				}
+			if p.edges.IsInBounds(ep) {
+				// _, ok := p.rq.toCheck[ep]
+				// enQueued := includeQueue && ok
+				// if enQueued {
+				// 	below.WriteString(`qq`)
+				// }
 
 				switch p.edges.GetEdge(ep) {
 				case model.EdgeExists:
-					if !enQueued {
-						below.WriteString(` `)
-					}
+					// if !enQueued {
+					below.WriteString(` `)
+					// }
 					below.WriteString(`|`)
-					if !enQueued {
-						below.WriteString(` `)
-					}
+					// if !enQueued {
+					below.WriteString(` `)
+					// }
 				case model.EdgeAvoided:
-					if enQueued {
-						if includeXs {
-							below.WriteString(`X`)
-						} else {
-							below.WriteString(` `)
-						}
-					} else if includeXs {
+					// if enQueued {
+					// 	if includeXs {
+					// 		below.WriteString(`X`)
+					// 	} else {
+					// 		below.WriteString(` `)
+					// 	}
+					// } else
+					if includeXs {
 						below.WriteString(` X `)
 					} else {
 						below.WriteString(`   `)
 					}
 				case model.EdgeUnknown:
-					if !enQueued {
-						below.WriteString(`  `)
-					}
+					// if !enQueued {
+					below.WriteString(`  `)
+					// }
 					below.WriteString(` `)
 				default:
-					if !enQueued {
-						below.WriteString(`??`)
-					}
+					// if !enQueued {
+					below.WriteString(`??`)
+					// }
 					below.WriteString(`?`)
 				}
 			}
