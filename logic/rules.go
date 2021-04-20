@@ -4,10 +4,14 @@ import (
 	"github.com/joshprzybyszewski/shingokisolver/model"
 )
 
+type evaluator interface {
+	evaluate(model.GetEdger) model.EdgeState
+}
+
 type Rules struct {
 	couldAffect []model.EdgePair
 
-	evals []func(ge model.GetEdger) model.EdgeState
+	evals []evaluator
 	me    model.EdgePair
 }
 
@@ -17,8 +21,8 @@ func newRules(
 
 	r := Rules{
 		me:          ep,
-		couldAffect: make([]model.EdgePair, 0, 6),
-		evals:       make([]func(ge model.GetEdger) model.EdgeState, 0, 2),
+		couldAffect: make([]model.EdgePair, 0, 8),
+		evals:       make([]evaluator, 0, 4),
 	}
 
 	otherStartEdges := getOtherEdgeInputs(ep.NodeCoord, ep.Cardinal)
@@ -27,10 +31,14 @@ func newRules(
 	r.addAffected(otherStartEdges...)
 	r.addAffected(otherEndEdges...)
 
-	r.addEvaluations(getStandardNodeRules(
-		otherStartEdges,
-		otherEndEdges,
-	)...)
+	r.addEvaluations(
+		standardInput{
+			otherInputs: otherStartEdges,
+		},
+		standardInput{
+			otherInputs: otherEndEdges,
+		},
+	)
 
 	return &r
 }
@@ -54,7 +62,7 @@ func (r *Rules) addAffected(couldAffect ...model.EdgePair) {
 // TODO instead of relying on the execution of evals of other
 // nodes _after_ these rules have been checked, we should detect
 // what other nodes change when "I" go into the Exists/Avoided state.
-func (r *Rules) addEvaluations(evals ...func(ge model.GetEdger) model.EdgeState) {
+func (r *Rules) addEvaluations(evals ...evaluator) {
 	if r == nil {
 		return
 	}
@@ -74,8 +82,8 @@ func (r *Rules) GetEvaluatedState(ge model.GetEdger) model.EdgeState {
 
 	es := model.EdgeUnknown
 
-	for _, eval := range r.evals {
-		newES := eval(ge)
+	for _, e := range r.evals {
+		newES := e.evaluate(ge)
 		switch newES {
 		case model.EdgeErrored:
 			return newES
@@ -120,7 +128,7 @@ func (r *Rules) addRulesForNode(
 	r.addAffected(perps...)
 
 	r.addEvaluations(
-		getSimpleNodeRule(node, otherSideOfNode, perps),
+		newSimpleNodeEvaluator(node, otherSideOfNode, perps),
 	)
 }
 
