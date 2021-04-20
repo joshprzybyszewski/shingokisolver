@@ -5,6 +5,24 @@ type TwoArms struct {
 	Two Arm
 }
 
+func (ta TwoArms) GetAllEdges(start NodeCoord) []EdgePair {
+	allEdges := make([]EdgePair, 0, ta.One.Len+ta.Two.Len)
+
+	arm1End := start
+	for i := int8(0); i < ta.One.Len; i++ {
+		allEdges = append(allEdges, NewEdgePair(arm1End, ta.One.Heading))
+		arm1End = arm1End.Translate(ta.One.Heading)
+	}
+
+	arm2End := start
+	for i := int8(0); i < ta.Two.Len; i++ {
+		allEdges = append(allEdges, NewEdgePair(arm2End, ta.Two.Heading))
+		arm2End = arm2End.Translate(ta.Two.Heading)
+	}
+
+	return allEdges
+}
+
 var (
 	// puzzle size to Node to options
 	optionsCache map[int]map[Node][]TwoArms = make(map[int]map[Node][]TwoArms, 25)

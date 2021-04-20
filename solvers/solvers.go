@@ -1,6 +1,7 @@
 package solvers
 
 import (
+	"errors"
 	"fmt"
 	"time"
 
@@ -8,19 +9,15 @@ import (
 	"github.com/joshprzybyszewski/shingokisolver/puzzle"
 )
 
-type Solver interface {
-	Solve() (SolvedResults, error)
-}
-
-func NewSolver(
+func Solve(
 	size int,
 	nl []model.NodeLocation,
-) Solver {
+) (SolvedResults, error) {
 	if len(nl) == 0 {
-		panic(`cannot solve a puzzle with no nodes!`)
+		return SolvedResults{}, errors.New(`cannot solve a puzzle with no constraints`)
 	}
 
-	return newTargetSolver(size, nl)
+	return solveWithTargets(size, nl)
 }
 
 type SolvedResults struct {

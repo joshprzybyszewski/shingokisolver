@@ -85,7 +85,7 @@ func runStandardSolver() {
 	allSummaries := make([]summary, 0, len(allPDs))
 
 	for _, pd := range allPDs {
-		if pd.NumEdges > 15 {
+		if pd.NumEdges != 10 { // || !strings.Contains(pd.String(), `2,589,287`) {
 			continue
 		}
 		summ := runSolver(pd)
@@ -109,10 +109,10 @@ func runSolver(
 	var prevMemStats runtime.MemStats
 	runtime.ReadMemStats(&prevMemStats)
 
-	sr, err := solvers.NewSolver(
+	sr, err := solvers.Solve(
 		pd.NumEdges,
 		pd.Nodes,
-	).Solve()
+	)
 
 	var rms runtime.MemStats
 	runtime.ReadMemStats(&rms)

@@ -20,7 +20,7 @@ func (rs *RuleSet) AddAllTwoArmRules(
 			ta.Two.Heading,
 		)
 
-		allArmEdges := getAllEdges(node.Coord(), ta)
+		allArmEdges := ta.GetAllEdges(node.Coord())
 
 		allArmEdgesWithAfters := make([]model.EdgePair, len(allArmEdges), len(allArmEdges)+2)
 		copy(allArmEdgesWithAfters, allArmEdges)
@@ -52,25 +52,4 @@ func (rs *RuleSet) AddAllTwoArmRules(
 			rs.Get(edge).addAffected(allArmEdgesWithAfters...)
 		}
 	}
-}
-
-func getAllEdges(
-	start model.NodeCoord,
-	ta model.TwoArms,
-) []model.EdgePair {
-	armEdges := make([]model.EdgePair, 0, ta.One.Len+ta.Two.Len)
-
-	curEnd := start
-	for i := int8(0); i < ta.One.Len; i++ {
-		armEdges = append(armEdges, model.NewEdgePair(curEnd, ta.One.Heading))
-		curEnd = curEnd.Translate(ta.One.Heading)
-	}
-
-	curEnd = start
-	for i := int8(0); i < ta.Two.Len; i++ {
-		armEdges = append(armEdges, model.NewEdgePair(curEnd, ta.Two.Heading))
-		curEnd = curEnd.Translate(ta.Two.Heading)
-	}
-
-	return armEdges
 }

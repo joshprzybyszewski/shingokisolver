@@ -5,7 +5,7 @@ import (
 	"github.com/joshprzybyszewski/shingokisolver/puzzle"
 )
 
-func (d *targetSolver) flip(
+func flip(
 	puzz puzzle.Puzzle,
 ) (puzzle.Puzzle, bool) {
 
@@ -25,7 +25,7 @@ func (d *targetSolver) flip(
 			return puzzWithEdge, true
 		}
 
-		res, isComplete := d.flip(puzzWithEdge)
+		res, isComplete := flip(puzzWithEdge)
 		if isComplete {
 			return res, true
 		}
@@ -36,7 +36,7 @@ func (d *targetSolver) flip(
 		if puzzWithoutEdge.GetState(ep.NodeCoord) == model.Complete {
 			return puzzWithoutEdge, true
 		}
-		res, isComplete := d.flip(puzzWithoutEdge)
+		res, isComplete := flip(puzzWithoutEdge)
 		if isComplete {
 			return res, true
 		}

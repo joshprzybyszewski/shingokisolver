@@ -8,42 +8,38 @@ import (
 	"github.com/joshprzybyszewski/shingokisolver/puzzle"
 )
 
-type targetSolver struct {
-	puzzle puzzle.Puzzle
-}
-
-func newTargetSolver(
+func solveWithTargets(
 	size int,
 	nl []model.NodeLocation,
-) Solver {
-	if len(nl) == 0 {
-		return nil
-	}
+) (SolvedResults, error) {
 
-	return &targetSolver{
-		puzzle: puzzle.NewPuzzle(size, nl),
-	}
+	return solvePuzzleByTargets(
+		puzzle.NewPuzzle(size, nl),
+	)
 }
 
-func (d *targetSolver) Solve() (SolvedResults, error) {
-	t0 := time.Now()
+func solvePuzzleByTargets(
+	puzz puzzle.Puzzle,
+) (sr SolvedResults, _ error) {
+	defer func(t0 time.Time) {
+		sr.Duration = time.Since(t0)
+	}(time.Now())
 
-	puzz, isSolved := d.solve()
+	solution, isSolved := doSolve(puzz)
 	if !isSolved {
-		return SolvedResults{
-			Duration: time.Since(t0),
-		}, fmt.Errorf("puzzle unsolvable: %s", d.puzzle.String())
+		return SolvedResults{}, fmt.Errorf("puzzle unsolvable: %s", puzz.String())
 	}
 
 	return SolvedResults{
-		Puzzle:   puzz,
-		Duration: time.Since(t0),
+		Puzzle: solution,
 	}, nil
 }
 
-func (d *targetSolver) solve() (puzzle.Puzzle, bool) {
+func doSolve(
+	puzz puzzle.Puzzle,
+) (puzzle.Puzzle, bool) {
 
-	puzz, s := d.puzzle.DeepCopy().ClaimGimmes()
+	puzz, s := puzz.DeepCopy().ClaimGimmes()
 	switch s {
 	case model.Incomplete, model.Complete:
 		// printPuzzleUpdate(`ClaimGimmes`, 0, puzz, nil)
@@ -51,7 +47,7 @@ func (d *targetSolver) solve() (puzzle.Puzzle, bool) {
 		return puzzle.Puzzle{}, false
 	}
 
-	target, state := d.puzzle.GetFirstTarget()
+	target, state := puzz.GetFirstTarget()
 	switch state {
 	case model.Incomplete, model.Complete:
 		// printPuzzleUpdate(`GetFirstTarget`, 0, puzz, target)
@@ -59,15 +55,13 @@ func (d *targetSolver) solve() (puzzle.Puzzle, bool) {
 		return puzzle.Puzzle{}, false
 	}
 
-	return d.getSolutionFromDepths(
-		0,
+	return getSolutionFromDepths(
 		puzz.DeepCopy(),
 		target,
 	)
 }
 
-func (d *targetSolver) getSolutionFromDepths(
-	depth int,
+func getSolutionFromDepths(
 	puzz puzzle.Puzzle,
 	targeting model.Target,
 ) (puzzle.Puzzle, bool) {
@@ -95,13 +89,12 @@ func (d *targetSolver) getSolutionFromDepths(
 				return puzz, true
 			}
 
-			return d.flip(
+			return flip(
 				puzz.DeepCopy(),
 			)
 		}
 
-		return d.getSolutionFromDepths(
-			depth+1,
+		return getSolutionFromDepths(
 			puzz.DeepCopy(),
 			nextTarget,
 		)
@@ -112,8 +105,7 @@ func (d *targetSolver) getSolutionFromDepths(
 	// until we "complete" the node.
 	for _, option := range targeting.Options {
 		// then, once we find a completion path, add it to the returned slice
-		p, isComplete := d.buildAllTwoArmsForTraversal(
-			depth,
+		p, isComplete := buildAllTwoArmsForTraversal(
 			puzz.DeepCopy(),
 			targeting,
 			option,
@@ -126,16 +118,14 @@ func (d *targetSolver) getSolutionFromDepths(
 	return puzzle.Puzzle{}, false
 }
 
-func (d *targetSolver) buildAllTwoArmsForTraversal(
-	depth int,
+func buildAllTwoArmsForTraversal(
 	puzz puzzle.Puzzle,
 	curTarget model.Target,
 	ta model.TwoArms,
 ) (puzzle.Puzzle, bool) {
 
-	switch puzz.AddEdges(getTwoArmsEdges(
+	switch puzz.AddEdges(ta.GetAllEdges(
 		curTarget.Node.Coord(),
-		ta,
 	)...) {
 	case model.Duplicate, model.Incomplete, model.Complete:
 	default:
@@ -161,36 +151,13 @@ func (d *targetSolver) buildAllTwoArmsForTraversal(
 			return puzz, true
 		}
 
-		return d.flip(
+		return flip(
 			puzz.DeepCopy(),
 		)
 	}
 
-	return d.getSolutionFromDepths(
-		depth+1,
+	return getSolutionFromDepths(
 		puzz.DeepCopy(),
 		nextTarget,
 	)
-}
-
-func getTwoArmsEdges(
-	start model.NodeCoord,
-	ta model.TwoArms,
-) []model.EdgePair {
-
-	allEdges := make([]model.EdgePair, 0, ta.One.Len+ta.Two.Len)
-
-	arm1End := start
-	for i := int8(0); i < ta.One.Len; i++ {
-		allEdges = append(allEdges, model.NewEdgePair(arm1End, ta.One.Heading))
-		arm1End = arm1End.Translate(ta.One.Heading)
-	}
-
-	arm2End := start
-	for i := int8(0); i < ta.Two.Len; i++ {
-		allEdges = append(allEdges, model.NewEdgePair(arm2End, ta.Two.Heading))
-		arm2End = arm2End.Translate(ta.Two.Heading)
-	}
-
-	return allEdges
 }

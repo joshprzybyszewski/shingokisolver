@@ -80,12 +80,10 @@ func getAndSubmitPuzzle(
 		panic(err)
 	}
 
-	s := solvers.NewSolver(
+	sr, err := solvers.Solve(
 		wp.pd.NumEdges,
 		wp.pd.Nodes,
 	)
-
-	sr, err := s.Solve()
 	if err != nil {
 		p := puzzle.NewPuzzle(
 			wp.pd.NumEdges,
