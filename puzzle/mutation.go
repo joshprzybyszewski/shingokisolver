@@ -69,13 +69,21 @@ func AddTwoArms(
 	start model.NodeCoord,
 	ta model.TwoArms,
 ) (Puzzle, model.State) {
+
+	return AddEdges(p, ta.GetAllEdges(start))
+}
+
+func AddEdges(
+	p Puzzle,
+	eps []model.EdgePair,
+) (Puzzle, model.State) {
 	var ms model.State
 
 	newState := p.edges.Copy()
 	rq := logic.NewQueue(&newState, newState.NumEdges())
 	rules := p.rules
 
-	for _, ep := range ta.GetAllEdges(start) {
+	for _, ep := range eps {
 		if !newState.IsInBounds(ep) {
 			return Puzzle{}, model.Violation
 		}
