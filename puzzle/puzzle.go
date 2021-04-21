@@ -116,9 +116,11 @@ func getTwoArmsCache(
 	gn getNoder,
 ) map[model.NodeCoord]nodeWithOptions {
 	nwoByNC := make(map[model.NodeCoord]nodeWithOptions, len(nodes))
+
 	for _, node := range nodes {
 		nwoByNC[node.Coord()] = getTwoArmsForNode(node, numEdges, ge, gn)
 	}
+
 	return nwoByNC
 }
 
@@ -206,6 +208,19 @@ func isInTheWayOfOtherNodes(
 			return true
 		}
 	}
+	if otherNode, ok := gn.getNode(nc.TranslateAlongArm(ta.One)); ok {
+		if otherNode.Type() == model.WhiteNode {
+			// this arm would end in a white node. That's not ok because
+			// we would need to continue through it
+			return true
+		}
+		if otherNode.Value()-a1StraightLineVal < 1 {
+			// this arm meets the other node, and would require going
+			// next in a perpendicular path. Since this arm would
+			// contribute too much to its value, we can filter it ou.
+			return true
+		}
+	}
 
 	for i, a2 := 1, nc; i < int(ta.Two.Len); i++ {
 		a2 = a2.Translate(ta.Two.Heading)
@@ -221,6 +236,20 @@ func isInTheWayOfOtherNodes(
 		if otherNode.Value() != a2StraightLineVal {
 			// this arm would pass through the other node
 			// in a straight line, and the value would not be tenable
+			return true
+		}
+	}
+
+	if otherNode, ok := gn.getNode(nc.TranslateAlongArm(ta.Two)); ok {
+		if otherNode.Type() == model.WhiteNode {
+			// this arm would end in a white node. That's not ok because
+			// we would need to continue through it
+			return true
+		}
+		if otherNode.Value()-a2StraightLineVal < 1 {
+			// this arm meets the other node, and would require going
+			// next in a perpendicular path. Since this arm would
+			// contribute too much to its value, we can filter it ou.
 			return true
 		}
 	}

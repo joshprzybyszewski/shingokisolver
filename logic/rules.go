@@ -31,10 +31,12 @@ func newRules(
 	r.addAffected(otherStartEdges...)
 	r.addAffected(otherEndEdges...)
 
-	r.addEvaluations(
+	r.addEvaluation(
 		standardInput{
 			otherInputs: otherStartEdges,
 		},
+	)
+	r.addEvaluation(
 		standardInput{
 			otherInputs: otherEndEdges,
 		},
@@ -62,17 +64,15 @@ func (r *Rules) addAffected(couldAffect ...model.EdgePair) {
 // TODO instead of relying on the execution of evals of other
 // nodes _after_ these rules have been checked, we should detect
 // what other nodes change when "I" go into the Exists/Avoided state.
-func (r *Rules) addEvaluations(evals ...evaluator) {
+func (r *Rules) addEvaluation(eval evaluator) {
 	if r == nil {
 		return
 	}
 
-	for _, eval := range evals {
-		if eval == nil {
-			panic(`dev error`)
-		}
-		r.evals = append(r.evals, eval)
+	if eval == nil {
+		panic(`dev error`)
 	}
+	r.evals = append(r.evals, eval)
 }
 
 func (r *Rules) GetEvaluatedState(ge model.GetEdger) model.EdgeState {
@@ -127,7 +127,7 @@ func (r *Rules) addRulesForNode(
 	r.addAffected(otherSideOfNode)
 	r.addAffected(perps...)
 
-	r.addEvaluations(
+	r.addEvaluation(
 		newSimpleNodeEvaluator(node, otherSideOfNode, perps),
 	)
 }
