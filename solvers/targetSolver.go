@@ -116,6 +116,7 @@ func solveAimingAtTarget(
 		)
 	}
 
+	// TODO concurrency!
 	// for each of the TwoArm options, we're going to try setting the edges
 	// and then descending further into our targets
 	for _, option := range targeting.Options {
