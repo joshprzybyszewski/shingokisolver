@@ -15,7 +15,7 @@ func (p Puzzle) GetUnknownEdge() (model.EdgePair, bool) {
 	}
 
 	// now let's walk to the end of the line
-	w := newWalker(p.edges, nc)
+	w := newWalker(&p.edges, nc)
 	nc, isLoop := w.walkToTheEndOfThePath()
 	if isLoop {
 		// This is an error case. We made a loop, but we weren't expecting to.

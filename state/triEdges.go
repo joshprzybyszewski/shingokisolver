@@ -91,8 +91,8 @@ type TriEdges struct {
 
 func New(
 	numEdges int,
-) *TriEdges {
-	return &TriEdges{
+) TriEdges {
+	return TriEdges{
 		numEdges:  uint16(numEdges),
 		rows:      make([]bitData, numEdges+1),
 		cols:      make([]bitData, numEdges+1),
@@ -340,8 +340,8 @@ func (ets *TriEdges) AvoidEdge(
 	return model.Incomplete
 }
 
-func (ets *TriEdges) Copy() *TriEdges {
-	cpy := &TriEdges{
+func (ets TriEdges) Copy() TriEdges {
+	cpy := TriEdges{
 		numEdges:  ets.numEdges,
 		rows:      make([]bitData, len(ets.rows)),
 		cols:      make([]bitData, len(ets.cols)),

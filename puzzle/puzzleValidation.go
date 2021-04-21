@@ -24,7 +24,7 @@ func (p Puzzle) GetState(
 		}
 	}
 
-	w := newWalker(p.edges, coord)
+	w := newWalker(&p.edges, coord)
 	seenNodes, isLoop := w.walk()
 	if !isLoop {
 		return model.Incomplete

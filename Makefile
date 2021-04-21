@@ -38,3 +38,7 @@ bench:
 .PHONY: lint
 lint: ## Runs linters (via golangci-lint) on golang code
 	golangci-lint run -v ./...
+
+.PHONY: build
+build: ## builds the go binary with gcflags to see what the compiler's doing
+	go build -gcflags='-m -m' ./...

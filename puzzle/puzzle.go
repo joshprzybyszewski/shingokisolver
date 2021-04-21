@@ -12,7 +12,7 @@ type nodeWithOptions struct {
 }
 
 type Puzzle struct {
-	edges *state.TriEdges
+	edges state.TriEdges
 	rules *logic.RuleSet
 
 	twoArmOptions map[model.NodeCoord]nodeWithOptions
@@ -41,7 +41,7 @@ func NewPuzzle(
 }
 
 func (p Puzzle) withNewState(
-	edges *state.TriEdges,
+	edges state.TriEdges,
 ) Puzzle {
 	return Puzzle{
 		nodes:         p.nodes,
@@ -84,14 +84,14 @@ func (p Puzzle) getPossibleTwoArms(
 ) []model.TwoArms {
 
 	if p.twoArmOptions == nil {
-		return getTwoArmsForNode(node, p.NumEdges(), p.edges, p).Options
+		return getTwoArmsForNode(node, p.NumEdges(), &p.edges, p).Options
 	}
 
 	tao := p.twoArmOptions[node.Coord()]
 	filteredOptions := make([]model.TwoArms, 0, len(tao.Options))
 
 	for _, o := range tao.Options {
-		if isTwoArmsPossible(node, o, p.edges) {
+		if isTwoArmsPossible(node, o, &p.edges) {
 			filteredOptions = append(filteredOptions, o)
 		}
 	}

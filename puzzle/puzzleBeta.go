@@ -14,7 +14,7 @@ func AddProgressLogs() {
 }
 
 func (p Puzzle) Alpha() *state.TriEdges {
-	return p.edges
+	return &p.edges
 }
 
 func (p Puzzle) Beta() *logic.RuleSet {

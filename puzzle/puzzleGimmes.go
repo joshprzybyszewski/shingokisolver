@@ -9,7 +9,7 @@ func (p Puzzle) ClaimGimmes() (Puzzle, model.State) {
 
 	// TODO make these structs if possible
 	newState := p.edges.Copy()
-	rq := logic.NewQueue(newState, newState.NumEdges())
+	rq := logic.NewQueue(&newState, newState.NumEdges())
 	rules := p.rules
 
 	// first we're going to claim any of the gimmes from the "standard"
@@ -19,7 +19,7 @@ func (p Puzzle) ClaimGimmes() (Puzzle, model.State) {
 		for _, dir := range model.AllCardinals {
 			ep := model.NewEdgePair(nc, dir)
 
-			switch s := updateEdgeFromRules(newState, ep, rq, rules); s {
+			switch s := updateEdgeFromRules(&newState, ep, rq, rules); s {
 			case model.Violation,
 				model.Unexpected:
 				return Puzzle{}, s
@@ -39,7 +39,7 @@ func (p Puzzle) ClaimGimmes() (Puzzle, model.State) {
 		for _, dir := range model.AllCardinals {
 			ep := model.NewEdgePair(nc, dir)
 
-			switch s := updateEdgeFromRules(newState, ep, rq, rules); s {
+			switch s := updateEdgeFromRules(&newState, ep, rq, rules); s {
 			case model.Violation,
 				model.Unexpected:
 				return Puzzle{}, s
@@ -48,7 +48,7 @@ func (p Puzzle) ClaimGimmes() (Puzzle, model.State) {
 	}
 
 	// run the queue down
-	switch s := runQueue(newState, rq, rules); s {
+	switch s := runQueue(&newState, rq, rules); s {
 	case model.Violation, model.Unexpected:
 		return Puzzle{}, s
 	}
@@ -56,7 +56,7 @@ func (p Puzzle) ClaimGimmes() (Puzzle, model.State) {
 	twoArmOptions := getTwoArmsCache(
 		p.nodes,
 		p.NumEdges(),
-		newState,
+		&newState,
 		p,
 	)
 

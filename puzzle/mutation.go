@@ -18,17 +18,17 @@ func AddEdge(
 
 	// TODO make these structs if possible
 	newState := p.edges.Copy()
-	rq := logic.NewQueue(newState, newState.NumEdges())
+	rq := logic.NewQueue(&newState, newState.NumEdges())
 	rules := p.rules
 
-	ms = addEdge(newState, ep, rq, rules)
+	ms = addEdge(&newState, ep, rq, rules)
 	switch ms {
 	case model.Incomplete, model.Complete, model.Duplicate:
 	default:
 		return Puzzle{}, ms
 	}
 
-	ms = runQueue(newState, rq, rules)
+	ms = runQueue(&newState, rq, rules)
 	switch ms {
 	case model.Incomplete, model.Complete, model.Duplicate:
 		return p.withNewState(newState), ms
@@ -47,17 +47,17 @@ func AvoidEdge(
 
 	// TODO make these structs if possible
 	newState := p.edges.Copy()
-	rq := logic.NewQueue(newState, newState.NumEdges())
+	rq := logic.NewQueue(&newState, newState.NumEdges())
 	rules := p.rules
 
-	ms := avoidEdge(newState, ep, rq, rules)
+	ms := avoidEdge(&newState, ep, rq, rules)
 	switch ms {
 	case model.Incomplete, model.Duplicate:
 	default:
 		return Puzzle{}, ms
 	}
 
-	ms = runQueue(newState, rq, rules)
+	ms = runQueue(&newState, rq, rules)
 	switch ms {
 	case model.Incomplete, model.Complete, model.Duplicate:
 		// TODO return a copy of p?
@@ -76,7 +76,7 @@ func AddTwoArms(
 
 	// TODO make these structs if possible
 	newState := p.edges.Copy()
-	rq := logic.NewQueue(newState, newState.NumEdges())
+	rq := logic.NewQueue(&newState, newState.NumEdges())
 	rules := p.rules
 
 	for _, ep := range ta.GetAllEdges(start) {
@@ -84,7 +84,7 @@ func AddTwoArms(
 			return Puzzle{}, model.Violation
 		}
 
-		ms = addEdge(newState, ep, rq, rules)
+		ms = addEdge(&newState, ep, rq, rules)
 		switch ms {
 		case model.Incomplete, model.Complete, model.Duplicate:
 		default:
@@ -92,7 +92,7 @@ func AddTwoArms(
 		}
 	}
 
-	ms = runQueue(newState, rq, rules)
+	ms = runQueue(&newState, rq, rules)
 	switch ms {
 	case model.Incomplete, model.Complete, model.Duplicate:
 		// TODO return a copy of p?
