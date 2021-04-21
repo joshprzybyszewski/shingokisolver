@@ -1,6 +1,9 @@
 package puzzle
 
-import "github.com/joshprzybyszewski/shingokisolver/model"
+import (
+	"github.com/joshprzybyszewski/shingokisolver/logic"
+	"github.com/joshprzybyszewski/shingokisolver/model"
+)
 
 func AddEdge(
 	p Puzzle,
@@ -10,19 +13,20 @@ func AddEdge(
 
 	// TODO get rid of the need for this
 	p = p.DeepCopy()
+	rq := logic.NewQueue(p.edges, p.NumEdges())
 
 	if !p.edges.IsInBounds(ep) {
 		return Puzzle{}, model.Violation
 	}
 
-	state = p.addEdge(ep)
+	state = p.addEdge(ep, rq)
 	switch state {
 	case model.Incomplete, model.Complete, model.Duplicate:
 	default:
 		return Puzzle{}, state
 	}
 
-	state = p.runQueue()
+	state = p.runQueue(rq)
 	switch state {
 	case model.Incomplete, model.Complete, model.Duplicate:
 		// TODO return a copy of p?
@@ -42,15 +46,16 @@ func AvoidEdge(
 
 	// TODO get rid of the need for this
 	p = p.DeepCopy()
+	rq := logic.NewQueue(p.edges, p.NumEdges())
 
-	state := p.avoidEdge(ep)
+	state := p.avoidEdge(ep, rq)
 	switch state {
 	case model.Incomplete, model.Duplicate:
 	default:
 		return Puzzle{}, state
 	}
 
-	state = p.runQueue()
+	state = p.runQueue(rq)
 	switch state {
 	case model.Incomplete, model.Complete, model.Duplicate:
 		// TODO return a copy of p?
@@ -69,13 +74,14 @@ func AddTwoArms(
 
 	// TODO get rid of the need for this
 	p = p.DeepCopy()
+	rq := logic.NewQueue(p.edges, p.NumEdges())
 
 	for _, ep := range ta.GetAllEdges(start) {
 		if !p.edges.IsInBounds(ep) {
 			return Puzzle{}, model.Violation
 		}
 
-		state = p.addEdge(ep)
+		state = p.addEdge(ep, rq)
 		switch state {
 		case model.Incomplete, model.Complete, model.Duplicate:
 		default:
@@ -83,7 +89,7 @@ func AddTwoArms(
 		}
 	}
 
-	state = p.runQueue()
+	state = p.runQueue(rq)
 	switch state {
 	case model.Incomplete, model.Complete, model.Duplicate:
 		// TODO return a copy of p?
@@ -95,13 +101,14 @@ func AddTwoArms(
 
 func (p Puzzle) addEdge(
 	ep model.EdgePair,
+	rq *logic.Queue,
 ) model.State {
 	switch state := p.edges.SetEdge(ep); state {
 	case model.Incomplete, model.Complete:
-		p.rq.NoticeUpdated(ep)
+		rq.NoticeUpdated(ep)
 
 		// TODO return a copy of p?
-		return p.checkRuleset(ep, model.EdgeExists)
+		return p.checkRuleset(ep, model.EdgeExists, rq)
 
 	default:
 		return state
@@ -110,32 +117,35 @@ func (p Puzzle) addEdge(
 
 func (p Puzzle) avoidEdge(
 	ep model.EdgePair,
+	rq *logic.Queue,
 ) model.State {
 
 	switch state := p.edges.AvoidEdge(ep); state {
 	case model.Incomplete, model.Complete:
-		p.rq.NoticeUpdated(ep)
+		rq.NoticeUpdated(ep)
 
 		// TODO return a copy of p?
 		// see if I'm breaking any rules or I can make any more moves
-		return p.checkRuleset(ep, model.EdgeAvoided)
+		return p.checkRuleset(ep, model.EdgeAvoided, rq)
 	default:
 		return state
 	}
 }
 
-func (p Puzzle) runQueue() model.State {
-	defer p.rq.ClearUpdated()
+func (p Puzzle) runQueue(
+	rq *logic.Queue,
+) model.State {
+	defer rq.ClearUpdated()
 
-	for ep, ok := p.rq.Pop(); ok; ep, ok = p.rq.Pop() {
-		switch s := p.updateEdgeFromRules(ep); s {
+	for ep, ok := rq.Pop(); ok; ep, ok = rq.Pop() {
+		switch s := p.updateEdgeFromRules(ep, rq); s {
 		case model.Violation,
 			model.Unexpected:
 			return s
 		}
 	}
 
-	for _, ep := range p.rq.Updated() {
+	for _, ep := range rq.Updated() {
 		eval := p.rules.Get(ep).GetEvaluatedState(p.edges)
 		if eval == model.EdgeUnknown || eval == model.EdgeOutOfBounds {
 			// this is ok. It means that our algorithm is trying out
@@ -155,6 +165,7 @@ func (p Puzzle) runQueue() model.State {
 func (p Puzzle) checkRuleset(
 	ep model.EdgePair,
 	expState model.EdgeState,
+	rq *logic.Queue,
 ) model.State {
 	r := p.rules.Get(ep)
 
@@ -169,19 +180,20 @@ func (p Puzzle) checkRuleset(
 	}
 
 	// Now let's look at all of the other affected rules
-	p.rq.Push(r.Affects()...)
+	rq.Push(r.Affects()...)
 
 	return model.Incomplete
 }
 
 func (p Puzzle) updateEdgeFromRules(
 	ep model.EdgePair,
+	rq *logic.Queue,
 ) model.State {
 	switch es := p.rules.Get(ep).GetEvaluatedState(p.edges); es {
 	case model.EdgeAvoided:
-		return p.avoidEdge(ep)
+		return p.avoidEdge(ep, rq)
 	case model.EdgeExists:
-		return p.addEdge(ep)
+		return p.addEdge(ep, rq)
 	case model.EdgeUnknown, model.EdgeOutOfBounds:
 		return model.Incomplete
 	default:

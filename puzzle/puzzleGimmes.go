@@ -1,8 +1,13 @@
 package puzzle
 
-import "github.com/joshprzybyszewski/shingokisolver/model"
+import (
+	"github.com/joshprzybyszewski/shingokisolver/logic"
+	"github.com/joshprzybyszewski/shingokisolver/model"
+)
 
 func (p Puzzle) ClaimGimmes() (Puzzle, model.State) {
+
+	rq := logic.NewQueue(p.edges, p.NumEdges())
 
 	// first we're going to claim any of the gimmes from the "standard"
 	// node rules.
@@ -11,7 +16,7 @@ func (p Puzzle) ClaimGimmes() (Puzzle, model.State) {
 		for _, dir := range model.AllCardinals {
 			ep := model.NewEdgePair(nc, dir)
 
-			switch s := p.updateEdgeFromRules(ep); s {
+			switch s := p.updateEdgeFromRules(ep, rq); s {
 			case model.Violation,
 				model.Unexpected:
 				return Puzzle{}, s
@@ -31,7 +36,7 @@ func (p Puzzle) ClaimGimmes() (Puzzle, model.State) {
 		for _, dir := range model.AllCardinals {
 			ep := model.NewEdgePair(nc, dir)
 
-			switch s := p.updateEdgeFromRules(ep); s {
+			switch s := p.updateEdgeFromRules(ep, rq); s {
 			case model.Violation,
 				model.Unexpected:
 				return Puzzle{}, s
@@ -40,7 +45,7 @@ func (p Puzzle) ClaimGimmes() (Puzzle, model.State) {
 	}
 
 	// run the queue down
-	switch s := p.runQueue(); s {
+	switch s := p.runQueue(rq); s {
 	case model.Violation, model.Unexpected:
 		return Puzzle{}, s
 	}

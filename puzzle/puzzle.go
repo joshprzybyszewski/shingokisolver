@@ -14,7 +14,6 @@ type nodeWithOptions struct {
 type Puzzle struct {
 	edges *state.TriEdges
 	rules *logic.RuleSet
-	rq    *logic.Queue
 
 	twoArmOptions map[model.NodeCoord]nodeWithOptions
 	nodes         []model.Node
@@ -34,31 +33,23 @@ func NewPuzzle(
 		nodes = append(nodes, model.NewNode(nc, nl.IsWhite, nl.Value))
 	}
 
-	puzz := Puzzle{
+	return Puzzle{
 		nodes: nodes,
 		edges: state.New(numEdges),
 		rules: logic.New(numEdges, nodes),
 	}
-
-	puzz.rq = logic.NewQueue(puzz.edges, puzz.NumEdges())
-
-	return puzz
 }
 
 func (p Puzzle) DeepCopy() Puzzle {
 	// I don't think we need to copy nodes because it should only
 	// ever be read from, never written to :#
 
-	dc := Puzzle{
+	return Puzzle{
 		nodes:         p.nodes,
 		twoArmOptions: p.twoArmOptions,
 		edges:         p.edges.Copy(),
 		rules:         p.rules,
 	}
-
-	dc.rq = logic.NewQueue(dc.edges, dc.NumEdges())
-
-	return dc
 }
 
 func (p Puzzle) NumEdges() int {
