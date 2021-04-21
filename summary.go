@@ -58,19 +58,19 @@ func buildAllSummariesOutput(
 	allSummaries []summary,
 ) (string, string) {
 
-	return buildLatestResultsOutput(allSummaries), buildSummaryBySize(allSummaries)
+	summsBySize := make(map[int][]summary, 10)
+	for i := range allSummaries {
+		summ := allSummaries[i]
+		summsBySize[summ.NumEdges] = append(summsBySize[summ.NumEdges], summ)
+	}
+
+	return buildLatestResultsOutput(summsBySize), buildSummaryBySize(summsBySize)
 }
 
 func buildLatestResultsOutput(
-	allSummaries []summary,
+	summsBySize map[int][]summary,
 ) string {
 	var sb strings.Builder
-	sort.Slice(allSummaries, func(i, j int) bool {
-		if allSummaries[i].NumEdges != allSummaries[j].NumEdges {
-			return allSummaries[i].NumEdges < allSummaries[j].NumEdges
-		}
-		return allSummaries[i].Duration > allSummaries[j].Duration
-	})
 
 	sb.WriteString(resultsStartString)
 	sb.WriteString("\n\n")
@@ -92,30 +92,42 @@ func buildLatestResultsOutput(
 `)
 	var unsolvedCell, solutionCell string
 
-	size := 0
-	nWritten := 0
-
-	for i := range allSummaries {
-		s := allSummaries[i]
-		if size != s.NumEdges {
-			size = s.NumEdges
-			nWritten = 0
-		} else if nWritten > 10 {
-			// only write the top 10 longest per "num edges"
+	for size := 1; size < state.MaxEdges; size++ {
+		summaries, ok := summsBySize[size]
+		if !ok {
 			continue
-		} else {
-			nWritten++
 		}
-		unsolvedCell = fmt.Sprintf(
-			"<details><summary>Puzzle</summary>\n\n```\n%s\n```\n</details>\n",
-			s.Unsolved,
-		)
-		solutionCell = fmt.Sprintf(
-			"<details><summary>Solution</summary>\n\n```\n%s\n```\n</details>\n",
-			s.Solution,
-		)
 
-		sb.WriteString(fmt.Sprintf(`<tr>
+		sort.Slice(summaries, func(i, j int) bool {
+			if summaries[i].NumEdges != summaries[j].NumEdges {
+				return summaries[i].NumEdges < summaries[j].NumEdges
+			}
+			// return strings.Compare(summaries[i].Name, summaries[j].Name) > 0
+			return summaries[i].Duration > summaries[j].Duration
+		})
+
+		lenSlowest := 10
+		if len(summaries) < lenSlowest {
+			lenSlowest = len(summaries)
+		}
+		slowestSumms := make([]summary, lenSlowest)
+		copy(slowestSumms, summaries)
+		sort.Slice(slowestSumms, func(i, j int) bool {
+			return strings.Compare(slowestSumms[i].Name, slowestSumms[j].Name) < 0
+		})
+
+		for i := range slowestSumms {
+			s := slowestSumms[i]
+			unsolvedCell = fmt.Sprintf(
+				"<details><summary>Puzzle</summary>\n\n```\n%s\n```\n</details>\n",
+				s.Unsolved,
+			)
+			solutionCell = fmt.Sprintf(
+				"<details><summary>Solution</summary>\n\n```\n%s\n```\n</details>\n",
+				s.Solution,
+			)
+
+			sb.WriteString(fmt.Sprintf(`<tr>
 	<td>%s</td>
 	<td>%s</td>
 	<td>%d</td>
@@ -125,15 +137,15 @@ func buildLatestResultsOutput(
 	<td>%s</td>
 </tr>
 `,
-			s.Name,
-			s.Duration,
-			s.heapSize,
-			s.numGCs,
-			s.pauseNS,
-			unsolvedCell,
-			solutionCell,
-		))
-
+				s.Name,
+				s.Duration,
+				s.heapSize,
+				s.numGCs,
+				s.pauseNS,
+				unsolvedCell,
+				solutionCell,
+			))
+		}
 	}
 
 	sb.WriteString("</table>")
@@ -142,13 +154,8 @@ func buildLatestResultsOutput(
 }
 
 func buildSummaryBySize(
-	allSummaries []summary,
+	summsBySize map[int][]summary,
 ) string {
-	summsBySize := make(map[int][]summary, 10)
-	for i := range allSummaries {
-		summ := allSummaries[i]
-		summsBySize[summ.NumEdges] = append(summsBySize[summ.NumEdges], summ)
-	}
 
 	var sb strings.Builder
 	sb.WriteString(resultsStartString)
