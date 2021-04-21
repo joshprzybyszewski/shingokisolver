@@ -52,6 +52,17 @@ func (p Puzzle) DeepCopy() Puzzle {
 	}
 }
 
+func (p Puzzle) withNewState(
+	edges *state.TriEdges,
+) Puzzle {
+	return Puzzle{
+		nodes:         p.nodes,
+		twoArmOptions: p.twoArmOptions,
+		edges:         edges,
+		rules:         p.rules,
+	}
+}
+
 func (p Puzzle) NumEdges() int {
 	return p.edges.NumEdges()
 }

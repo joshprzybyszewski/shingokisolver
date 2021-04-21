@@ -7,7 +7,10 @@ import (
 
 func (p Puzzle) ClaimGimmes() (Puzzle, model.State) {
 
-	rq := logic.NewQueue(p.edges, p.NumEdges())
+	// TODO make these structs if possible
+	newState := p.edges.Copy()
+	rq := logic.NewQueue(newState, newState.NumEdges())
+	rules := p.rules
 
 	// first we're going to claim any of the gimmes from the "standard"
 	// node rules.
@@ -16,7 +19,7 @@ func (p Puzzle) ClaimGimmes() (Puzzle, model.State) {
 		for _, dir := range model.AllCardinals {
 			ep := model.NewEdgePair(nc, dir)
 
-			switch s := p.updateEdgeFromRules(ep, rq); s {
+			switch s := updateEdgeFromRules(newState, ep, rq, rules); s {
 			case model.Violation,
 				model.Unexpected:
 				return Puzzle{}, s
@@ -26,7 +29,7 @@ func (p Puzzle) ClaimGimmes() (Puzzle, model.State) {
 
 	// now we're going to add all of the extended rules
 	for _, n := range p.nodes {
-		p.rules.AddAllTwoArmRules(n, p.getPossibleTwoArms(n))
+		rules.AddAllTwoArmRules(n, p.getPossibleTwoArms(n))
 	}
 
 	// at this point, let's double check the edges surrounding the nodes
@@ -36,7 +39,7 @@ func (p Puzzle) ClaimGimmes() (Puzzle, model.State) {
 		for _, dir := range model.AllCardinals {
 			ep := model.NewEdgePair(nc, dir)
 
-			switch s := p.updateEdgeFromRules(ep, rq); s {
+			switch s := updateEdgeFromRules(newState, ep, rq, rules); s {
 			case model.Violation,
 				model.Unexpected:
 				return Puzzle{}, s
@@ -45,11 +48,22 @@ func (p Puzzle) ClaimGimmes() (Puzzle, model.State) {
 	}
 
 	// run the queue down
-	switch s := p.runQueue(rq); s {
+	switch s := runQueue(newState, rq, rules); s {
 	case model.Violation, model.Unexpected:
 		return Puzzle{}, s
 	}
 
-	p.twoArmOptions = getTwoArmsCache(p.nodes, p.NumEdges(), p.edges, p)
-	return p, model.Incomplete
+	twoArmOptions := getTwoArmsCache(
+		p.nodes,
+		p.NumEdges(),
+		newState,
+		p,
+	)
+
+	return Puzzle{
+		edges:         newState,
+		rules:         rules,
+		twoArmOptions: twoArmOptions,
+		nodes:         p.nodes,
+	}, model.Incomplete
 }
