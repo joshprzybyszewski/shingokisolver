@@ -23,10 +23,10 @@ func BenchmarkSolve(b *testing.B) {
 		puzzles := reader.GetPuzzleWithSize(allPuzzles, size)
 		b.Run(fmt.Sprintf("Solve %dx%d", size, size), func(b *testing.B) {
 			for _, pd := range puzzles {
-				_, err := NewSolver(
+				_, err := Solve(
 					pd.NumEdges,
 					pd.Nodes,
-				).Solve()
+				)
 				require.NoError(b, err)
 			}
 		})

@@ -40,18 +40,6 @@ func NewPuzzle(
 	}
 }
 
-func (p Puzzle) DeepCopy() Puzzle {
-	// I don't think we need to copy nodes because it should only
-	// ever be read from, never written to :#
-
-	return Puzzle{
-		nodes:         p.nodes,
-		twoArmOptions: p.twoArmOptions,
-		edges:         p.edges.Copy(),
-		rules:         p.rules,
-	}
-}
-
 func (p Puzzle) withNewState(
 	edges *state.TriEdges,
 ) Puzzle {

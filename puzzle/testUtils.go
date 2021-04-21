@@ -16,7 +16,7 @@ func BuildTestPuzzle(
 	steps ...model.Cardinal,
 ) Puzzle {
 	c := startCoord
-	outPuzz := p.DeepCopy()
+	outPuzz := p
 	var s model.State
 	for _, dir := range steps {
 		outPuzz, s = AddEdge(outPuzz, model.NewEdgePair(c, dir))
