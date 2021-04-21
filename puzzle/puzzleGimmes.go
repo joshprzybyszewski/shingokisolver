@@ -7,7 +7,6 @@ import (
 
 func (p Puzzle) ClaimGimmes() (Puzzle, model.State) {
 
-	// TODO make these structs if possible
 	newState := p.edges.Copy()
 	rq := logic.NewQueue(&newState, newState.NumEdges())
 	rules := p.rules

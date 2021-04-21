@@ -16,7 +16,6 @@ func AddEdge(
 
 	var ms model.State
 
-	// TODO make these structs if possible
 	newState := p.edges.Copy()
 	rq := logic.NewQueue(&newState, newState.NumEdges())
 	rules := p.rules
@@ -45,7 +44,6 @@ func AvoidEdge(
 		return Puzzle{}, model.Violation
 	}
 
-	// TODO make these structs if possible
 	newState := p.edges.Copy()
 	rq := logic.NewQueue(&newState, newState.NumEdges())
 	rules := p.rules
@@ -60,7 +58,6 @@ func AvoidEdge(
 	ms = runQueue(&newState, rq, rules)
 	switch ms {
 	case model.Incomplete, model.Complete, model.Duplicate:
-		// TODO return a copy of p?
 		return p.withNewState(newState), ms
 	default:
 		return Puzzle{}, ms
@@ -74,7 +71,6 @@ func AddTwoArms(
 ) (Puzzle, model.State) {
 	var ms model.State
 
-	// TODO make these structs if possible
 	newState := p.edges.Copy()
 	rq := logic.NewQueue(&newState, newState.NumEdges())
 	rules := p.rules
@@ -95,7 +91,6 @@ func AddTwoArms(
 	ms = runQueue(&newState, rq, rules)
 	switch ms {
 	case model.Incomplete, model.Complete, model.Duplicate:
-		// TODO return a copy of p?
 		return p.withNewState(newState), ms
 	default:
 		return Puzzle{}, ms
@@ -112,7 +107,6 @@ func addEdge(
 	case model.Incomplete, model.Complete:
 		rq.NoticeUpdated(ep)
 
-		// TODO return a copy of p?
 		return checkRuleset(edges, ep, model.EdgeExists, rq, rules)
 
 	default:
@@ -190,7 +184,7 @@ func checkRuleset(
 	}
 
 	// Now let's look at all of the other affected rules
-	rq.Push(r.Affects()...)
+	rq.Push(r.Affects())
 
 	return model.Incomplete
 }

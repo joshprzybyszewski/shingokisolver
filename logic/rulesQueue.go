@@ -27,7 +27,7 @@ func NewQueue(
 }
 
 func (rq *Queue) Push(
-	others ...model.EdgePair,
+	others []model.EdgePair,
 ) {
 	for _, other := range others {
 		if !rq.ec.IsInBounds(other) {

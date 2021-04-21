@@ -144,6 +144,7 @@ func buildTwoArmsToDescend(
 	if !ok {
 		return puzzle.Puzzle{}, false
 	}
+	// TODO add an edge off in all four "hangers" of these two arms
 
 	return descendToNextTarget(puzz, curTarget)
 }

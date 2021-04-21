@@ -85,7 +85,6 @@ type TriEdges struct {
 	avoidRows []bitData
 	avoidCols []bitData
 
-	// TODO remove this field and replace it with a method
 	numEdges uint16
 }
 
