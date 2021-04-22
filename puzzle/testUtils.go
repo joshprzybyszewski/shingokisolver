@@ -5,9 +5,38 @@ package puzzle
 import (
 	"testing"
 
-	"github.com/joshprzybyszewski/shingokisolver/model"
 	"github.com/stretchr/testify/require"
+
+	"github.com/joshprzybyszewski/shingokisolver/logic"
+	"github.com/joshprzybyszewski/shingokisolver/model"
+	"github.com/joshprzybyszewski/shingokisolver/state"
 )
+
+func BuildTestPuzzleWithNoRules(
+	t *testing.T,
+	numEdges int,
+	nls []model.NodeLocation,
+	startCoord model.NodeCoord,
+	steps ...model.Cardinal,
+) Puzzle {
+	if numEdges > state.MaxEdges {
+		t.Error(`bad input numEdges`)
+	}
+
+	nodes := make([]model.Node, 0, len(nls))
+	for _, nl := range nls {
+		nc := model.NewCoordFromInts(nl.Row, nl.Col)
+		nodes = append(nodes, model.NewNode(nc, nl.IsWhite, nl.Value))
+	}
+
+	puzz := Puzzle{
+		nodes: nodes,
+		edges: state.New(numEdges),
+		rules: &logic.RuleSet{},
+	}
+
+	return BuildTestPuzzle(t, puzz, startCoord, steps...)
+}
 
 func BuildTestPuzzle(
 	t *testing.T,

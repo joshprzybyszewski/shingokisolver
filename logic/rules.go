@@ -79,7 +79,6 @@ func (r *Rules) GetEvaluatedState(ge model.GetEdger) model.EdgeState {
 	if r == nil {
 		return model.EdgeOutOfBounds
 	}
-
 	es := model.EdgeUnknown
 
 	for _, e := range r.evals {

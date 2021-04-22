@@ -189,10 +189,10 @@ func checkRuleset(
 		if expState != newEdge {
 			return model.Violation
 		}
+		// TODO this may have broken everything...
+		// Now let's look at all of the other affected rules
+		rq.Push(r.Affects())
 	}
-
-	// Now let's look at all of the other affected rules
-	rq.Push(r.Affects())
 
 	return model.Incomplete
 }
