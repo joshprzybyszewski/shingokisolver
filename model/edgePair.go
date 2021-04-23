@@ -4,6 +4,13 @@ import (
 	"fmt"
 )
 
+var (
+	InvalidEdgePair EdgePair = EdgePair{
+		NodeCoord: InvalidNodeCoord,
+		Cardinal:  HeadNowhere,
+	}
+)
+
 type EdgePair struct {
 	NodeCoord
 	Cardinal

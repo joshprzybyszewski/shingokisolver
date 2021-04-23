@@ -291,7 +291,20 @@ func (ets *TriEdges) GetEdge(
 	return model.EdgeUnknown
 }
 
-func (ets *TriEdges) SetEdge(
+func (ets *TriEdges) UpdateEdge(
+	ep model.EdgePair,
+	es model.EdgeState,
+) model.State {
+	switch es {
+	case model.EdgeAvoided:
+		return ets.avoidEdge(ep)
+	case model.EdgeExists:
+		return ets.setEdge(ep)
+	}
+	return model.Violation
+}
+
+func (ets *TriEdges) setEdge(
 	ep model.EdgePair,
 ) model.State {
 
@@ -314,7 +327,7 @@ func (ets *TriEdges) SetEdge(
 	return model.Incomplete
 }
 
-func (ets *TriEdges) AvoidEdge(
+func (ets *TriEdges) avoidEdge(
 	ep model.EdgePair,
 ) model.State {
 

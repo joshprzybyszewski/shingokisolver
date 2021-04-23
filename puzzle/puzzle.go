@@ -45,10 +45,12 @@ func (p Puzzle) withNewState(
 	edges state.TriEdges,
 ) Puzzle {
 	out := Puzzle{
-		nodes:         p.nodes,
+		nodes: p.nodes,
+		// TODO don't copy this entirely anymore
 		twoArmOptions: make([]nodeWithOptions, 0, len(p.twoArmOptions)),
-		edges:         edges,
-		rules:         p.rules,
+		// twoArmOptions: p.twoArmOptions,
+		edges: edges,
+		rules: p.rules,
 	}
 
 	for _, tao := range p.twoArmOptions {
@@ -68,33 +70,6 @@ func (p Puzzle) withNewState(
 	}
 
 	return out
-}
-
-func (p Puzzle) getIncompleteNodes(
-	ge model.GetEdger,
-	minSize int8,
-) map[model.NodeCoord]model.Node {
-	filtered := make(map[model.NodeCoord]model.Node, len(p.nodes))
-	if p.twoArmOptions == nil {
-		for _, n := range p.nodes {
-			if n.Value() < minSize {
-				continue
-			}
-			switch getNodeState(n, ge) {
-			case model.Incomplete:
-				filtered[n.Coord()] = n
-			}
-		}
-	}
-	for _, tao := range p.twoArmOptions {
-		if tao.Value() < minSize {
-			continue
-		}
-		if len(tao.Options) > 1 {
-			filtered[tao.Coord()] = tao.Node
-		}
-	}
-	return filtered
 }
 
 func (p Puzzle) NumEdges() int {
@@ -142,8 +117,14 @@ func getPossibleTwoArmsFromCache(
 func (p Puzzle) GetNextTarget(
 	cur model.Target,
 ) (model.Target, model.State) {
-	if p.GetState(cur.Node.Coord()) == model.Complete {
+	switch s := p.GetState(); s {
+	case model.Complete:
 		return model.Target{}, model.Complete
+	case model.Incomplete, model.NodesComplete:
+		// continue. we'll let out caller handle the 'nodes complete' state
+		// TODO handle the nodes complete state now!
+	default:
+		return model.Target{}, s
 	}
 
 	tas := make([][]model.TwoArms, len(p.nodes))
@@ -167,8 +148,14 @@ func (p Puzzle) GetNextTarget(
 }
 
 func (p Puzzle) GetFirstTarget() (model.Target, model.State) {
-	if p.GetState(model.InvalidNodeCoord) == model.Complete {
+	switch s := p.GetState(); s {
+	case model.Complete:
 		return model.Target{}, model.Complete
+	case model.Incomplete, model.NodesComplete:
+		// continue. we'll let out caller handle the 'nodes complete' state
+		// TODO handle the nodes complete state now!
+	default:
+		return model.Target{}, s
 	}
 
 	tas := make([][]model.TwoArms, len(p.nodes))

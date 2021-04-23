@@ -22,7 +22,7 @@ func BuildGetEdger(
 	c := startCoord
 	var ms model.State
 	for _, dir := range steps {
-		ms = edges.SetEdge(model.NewEdgePair(c, dir))
+		ms = edges.setEdge(model.NewEdgePair(c, dir))
 		switch ms {
 		case model.Unexpected, model.Violation, model.Duplicate:
 			require.Fail(t, "failure building puzzle", "unexpected state (%s) after adding edge: %+v, %+v\n", ms, dir, c)
@@ -51,14 +51,14 @@ func BuildGetEdgerWithInput(
 
 	var ms model.State
 	for _, e := range input.Existing {
-		ms = edges.SetEdge(e)
+		ms = edges.setEdge(e)
 		switch ms {
 		case model.Unexpected, model.Violation, model.Duplicate:
 			require.Fail(t, "failure building puzzle", "unexpected state (%s) after adding edge: %s\n", ms, e)
 		}
 	}
 	for _, e := range input.Avoided {
-		ms = edges.AvoidEdge(e)
+		ms = edges.avoidEdge(e)
 		switch ms {
 		case model.Unexpected, model.Violation, model.Duplicate:
 			require.Fail(t, "failure building puzzle", "unexpected state (%s) after avoiding edge: %s\n", ms, e)

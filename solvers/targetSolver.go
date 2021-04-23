@@ -83,7 +83,7 @@ func doSolve(
 			// ok, the nodes are complete, but we're not solved.
 			// don't "aim at target" below, but start flipping edges
 			// now.
-			return flip(
+			return firstFlip(
 				puzz,
 			)
 		case model.Violation:
@@ -165,20 +165,18 @@ func descendToNextTarget(
 		// It's solved!
 		return puzz, true
 	case model.NodesComplete:
-		// This is a special case that is handled below
+		// At this point, we know that the nodes are all "complete".
+		// This means that we need to transition to "flipping edge state"
+		// until we can find a complete puzzle
+		return firstFlip(
+			puzz,
+		)
 	default:
 		return solveAimingAtTarget(
 			puzz,
 			nextTarget,
 		)
 	}
-
-	// At this point, we know that the nodes are all "complete".
-	// This means that we need to transition to "flipping edge state"
-	// until we can find a complete puzzle
-	return flip(
-		puzz,
-	)
 }
 
 func addTwoArms(
@@ -188,10 +186,8 @@ func addTwoArms(
 ) (puzzle.Puzzle, bool) {
 
 	outPuzz, state := puzzle.AddTwoArms(inPuzz, start, ta)
-	switch state {
-	case model.Duplicate, model.Incomplete, model.Complete:
-		return outPuzz, true
-	default:
+	if state != model.Incomplete {
 		return puzzle.Puzzle{}, false
 	}
+	return outPuzz, true
 }

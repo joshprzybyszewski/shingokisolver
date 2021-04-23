@@ -5,15 +5,14 @@ import (
 	"github.com/joshprzybyszewski/shingokisolver/puzzle"
 )
 
-func flip(
+func firstFlip(
 	puzz puzzle.Puzzle,
 ) (puzzle.Puzzle, bool) {
-
-	printPuzzleUpdate(`flip`, puzz, model.InvalidTarget)
+	printPuzzleUpdate(`firstFlip`, puzz, model.InvalidTarget)
 
 	ep, ok := puzz.GetUnknownEdge()
 	if !ok {
-		switch puzz.GetState(model.InvalidNodeCoord) {
+		switch puzz.GetState() {
 		case model.Complete:
 			return puzz, true
 		default:
@@ -21,17 +20,30 @@ func flip(
 		}
 	}
 
+	return flip(puzz, ep)
+}
+
+func flip(
+	puzz puzzle.Puzzle,
+	ep model.EdgePair,
+) (puzzle.Puzzle, bool) {
+
+	printPuzzleUpdate(`flip`, puzz, model.InvalidTarget)
+
+	var nextUnknown model.EdgePair
+
 	puzzWithEdge, state := puzzle.AddEdge(
 		puzz,
 		ep,
 	)
 	switch state {
 	case model.Complete, model.Incomplete:
-		if puzzWithEdge.GetState(ep.NodeCoord) == model.Complete {
+		nextUnknown, state = puzzWithEdge.GetStateOfLoop(ep.NodeCoord)
+		if state == model.Complete {
 			return puzzWithEdge, true
 		}
 
-		res, isComplete := flip(puzzWithEdge)
+		res, isComplete := flip(puzzWithEdge, nextUnknown)
 		if isComplete {
 			return res, true
 		}
@@ -43,10 +55,12 @@ func flip(
 	)
 	switch state {
 	case model.Complete, model.Incomplete:
-		if puzzWithoutEdge.GetState(ep.NodeCoord) == model.Complete {
+		nextUnknown, state = puzzWithoutEdge.GetStateOfLoop(ep.NodeCoord)
+		if state == model.Complete {
 			return puzzWithoutEdge, true
 		}
-		res, isComplete := flip(puzzWithoutEdge)
+
+		res, isComplete := flip(puzzWithoutEdge, nextUnknown)
 		if isComplete {
 			return res, true
 		}

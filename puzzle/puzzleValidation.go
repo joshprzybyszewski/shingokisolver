@@ -4,17 +4,32 @@ import (
 	"github.com/joshprzybyszewski/shingokisolver/model"
 )
 
-func (p Puzzle) GetState(
-	coord model.NodeCoord,
-) model.State {
+func (p Puzzle) GetState() model.State {
+	_, s := p.GetStateOfLoop(model.InvalidNodeCoord)
+	return s
+}
 
+func (p Puzzle) GetStateOfLoop(
+	coord model.NodeCoord,
+) (model.EdgePair, model.State) {
 	nodeState := p.getStateOfNodes()
 	switch nodeState {
 	case model.Incomplete, model.NodesComplete:
-		// keep going through checks...
+		// check the state of the loop before returning...
 	default:
-		return nodeState
+		return model.InvalidEdgePair, nodeState
 	}
+
+	lastUnknown, s := p.getStateOfLoop(model.InvalidNodeCoord)
+	if s == model.Complete && nodeState == model.Incomplete {
+		return model.InvalidEdgePair, model.Violation
+	}
+	return lastUnknown, s
+}
+
+func (p Puzzle) getStateOfLoop(
+	coord model.NodeCoord,
+) (model.EdgePair, model.State) {
 
 	if coord == model.InvalidNodeCoord {
 		coord = p.getRandomCoord()
@@ -23,24 +38,26 @@ func (p Puzzle) GetState(
 	w := newWalker(&p.edges, coord)
 	seenNodes, isLoop := w.walk()
 	if !isLoop {
-		return model.Incomplete
+		nextUnknown := model.InvalidEdgePair
+		for dir := range model.AllCardinalsMap {
+			ep := model.NewEdgePair(w.cur, dir)
+			if !p.edges.IsDefined(ep) {
+				nextUnknown = ep
+			}
+		}
+		return nextUnknown, model.Incomplete
 	}
 
 	for _, n := range p.nodes {
 		if _, ok := seenNodes[n.Coord()]; !ok {
 			// node was not seen. therefore, we completed a loop that
 			// doesn't see all nodes!
-			return model.Violation
+			return model.InvalidEdgePair, model.Violation
 		}
 	}
 
-	if nodeState == model.NodesComplete {
-		// it's a loop that has all of the nodes completed!
-		return model.Complete
-	}
-
-	// it's a loop that didn't complete all of the nodes!
-	return model.Violation
+	// it's a loop that has all of the nodes completed!
+	return model.InvalidEdgePair, model.Complete
 }
 
 func (p Puzzle) getStateOfNodes() model.State {

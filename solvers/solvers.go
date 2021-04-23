@@ -27,7 +27,7 @@ type SolvedResults struct {
 }
 
 func (sr SolvedResults) String() string {
-	if sr.Puzzle.GetState(model.InvalidNodeCoord) != model.Complete {
+	if sr.Puzzle.GetState() != model.Complete {
 		return fmt.Sprintf("Took %s. <no solution>\n", sr.Duration)
 	}
 	return fmt.Sprintf("Took %s\n%s\n", sr.Duration, sr.Puzzle.Solution())

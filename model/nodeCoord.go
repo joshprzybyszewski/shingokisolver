@@ -9,6 +9,7 @@ var (
 	}
 )
 
+// TODO these _could_ be 8 bits
 type RowIndex int16
 type ColIndex int16
 

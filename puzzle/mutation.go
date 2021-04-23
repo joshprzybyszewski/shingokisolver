@@ -44,14 +44,12 @@ func AvoidEdge(
 
 func claimGimmes(
 	p Puzzle,
-	nodes []model.Node,
 ) (Puzzle, model.State) {
 	obviousFilled, ms := performUpdates(p, updates{
 		nodes: p.nodes,
 	})
 
-	switch ms {
-	case model.Violation, model.Unexpected:
+	if ms != model.Incomplete {
 		log.Printf("ClaimGimmes() first performUpdates got unexpected state: %s", ms)
 		return Puzzle{}, ms
 	}
@@ -88,35 +86,27 @@ func performUpdates(
 	var ms model.State
 
 	newState := p.edges.Copy()
-	rq := logic.NewQueue(&newState, newState.NumEdges())
+	rq := logic.NewQueue(newState.NumEdges())
 	rules := p.rules
 
 	for _, ep := range u.edgesToAdd {
 		if !newState.IsInBounds(ep) {
-			// log.Printf("performUpdates(%+v) attempted to add an out-of-bounds edge: %v", u, ep)
 			return Puzzle{}, model.Violation
 		}
 
 		ms = addEdge(&newState, ep, rq, rules)
-		switch ms {
-		case model.Violation, model.Unexpected:
-			// TODO remove this
-			// log.Printf("performUpdates(%+v) got bad state (%s) on addEdge: %v", u, ms, ep)
+		if ms != model.Incomplete && ms != model.Duplicate {
 			return Puzzle{}, ms
 		}
 	}
 
 	for _, ep := range u.edgesToAvoid {
 		if !newState.IsInBounds(ep) {
-			// log.Printf("performUpdates(%+v) attempted to avoid an out-of-bounds edge: %v", u, ep)
 			return Puzzle{}, model.Violation
 		}
 
 		ms = avoidEdge(&newState, ep, rq, rules)
-		switch ms {
-		case model.Violation, model.Unexpected:
-			// TODO remove this
-			// log.Printf("performUpdates(%+v) got bad state (%s) on avoidEdge: %v", u, ms, ep)
+		if ms != model.Incomplete && ms != model.Duplicate {
 			return Puzzle{}, ms
 		}
 	}
@@ -129,19 +119,14 @@ func performUpdates(
 				rq,
 				rules,
 			)
-			switch ms {
-			case model.Violation, model.Unexpected:
-				// log.Printf("performUpdates(%+v) got bad state (%s) on updateEdgeFromRules: %+v %s", u, ms, n, dir)
+			if ms != model.Incomplete && ms != model.Duplicate {
 				return Puzzle{}, ms
 			}
 		}
 	}
 
 	ms = runQueue(&newState, rq, rules)
-	switch ms {
-	case model.Violation, model.Unexpected:
-		// TODO remove this
-		// log.Printf("performUpdates(%+v) got bad state on runQueue: %v", u, ms)
+	if ms != model.Incomplete {
 		return Puzzle{}, ms
 	}
 
@@ -154,15 +139,7 @@ func addEdge(
 	rq *logic.Queue,
 	rules *logic.RuleSet,
 ) model.State {
-	switch ms := edges.SetEdge(ep); ms {
-	case model.Incomplete, model.Complete:
-		rq.NoticeUpdated(ep)
-
-		return checkRuleset(edges, ep, model.EdgeExists, rq, rules)
-
-	default:
-		return ms
-	}
+	return updateEdge(model.EdgeExists, ep, edges, rq, rules.Get(ep))
 }
 
 func avoidEdge(
@@ -171,17 +148,21 @@ func avoidEdge(
 	rq *logic.Queue,
 	rules *logic.RuleSet,
 ) model.State {
+	return updateEdge(model.EdgeAvoided, ep, edges, rq, rules.Get(ep))
+}
 
-	switch ms := edges.AvoidEdge(ep); ms {
-	case model.Incomplete, model.Complete:
-		rq.NoticeUpdated(ep)
+func updateEdge(
+	es model.EdgeState,
+	ep model.EdgePair,
+	edges *state.TriEdges,
+	rq *logic.Queue,
+	r *logic.Rules,
+) model.State {
 
-		// see if I'm breaking any rules or I can make any more moves
-		return checkRuleset(edges, ep, model.EdgeAvoided, rq, rules)
-	default:
-		// log.Printf("avoidEdge(%+v) got bad state on AvoidEdge: %v", ep, ms)
+	if ms := edges.UpdateEdge(ep, es); ms != model.Incomplete {
 		return ms
 	}
+	return checkRuleset(es, edges, r, rq)
 }
 
 func runQueue(
@@ -189,31 +170,12 @@ func runQueue(
 	rq *logic.Queue,
 	rules *logic.RuleSet,
 ) model.State {
-	defer rq.ClearUpdated()
 
 	var ms model.State
 	for ep, ok := rq.Pop(); ok; ep, ok = rq.Pop() {
-		switch ms = updateEdgeFromRules(edges, ep, rq, rules); ms {
-		case model.Violation, model.Unexpected:
-			// log.Printf("runQueue(%+v) got bad state on updateEdgeFromRules: %v", ep, ms)
+		ms = updateEdgeFromRules(edges, ep, rq, rules)
+		if ms != model.Incomplete && ms != model.Duplicate {
 			return ms
-		}
-	}
-
-	// TODO can I?
-	return model.Incomplete
-	for _, ep := range rq.Updated() {
-		eval := rules.Get(ep).GetEvaluatedState(edges)
-		if eval == model.EdgeUnknown || eval == model.EdgeOutOfBounds {
-			// this is ok. It means that our algorithm is trying out
-			// edges, and we cannot determine what they are
-			continue
-		}
-
-		exp := edges.GetEdge(ep)
-		if eval != exp {
-			// log.Printf("runQueue(%+v, %+v) got bad state on GetEdge: %v", exp, eval, ms)
-			return model.Violation
 		}
 	}
 
@@ -221,27 +183,19 @@ func runQueue(
 }
 
 func checkRuleset(
-	edges *state.TriEdges,
-	ep model.EdgePair,
 	expState model.EdgeState,
+	edges *state.TriEdges,
+	r *logic.Rules,
 	rq *logic.Queue,
-	rules *logic.RuleSet,
 ) model.State {
-	r := rules.Get(ep)
-
-	// check if the rules for this edge are broken
-	newEdge := r.GetEvaluatedState(edges)
-
-	switch newEdge {
-	case model.EdgeAvoided, model.EdgeExists:
-		if expState != newEdge {
-			// log.Printf("checkRuleset(%+v) got bad state on GetEvaluatedState: %s %s", ep, expState, newEdge)
-			return model.Violation
-		}
-		// TODO this may have broken everything...
-		// Now let's look at all of the other affected rules
-		rq.Push(edges, r.Affects())
+	// TODO I think I'd be able to avoid this eval.
+	// Check if the rules for this edge are broken.
+	if evalState := r.GetEvaluatedState(edges); evalState != model.EdgeUnknown && evalState != expState {
+		return model.Violation
 	}
+
+	// Now let's look at all of the other affected rules
+	rq.Push(edges, r.Affects())
 
 	return model.Incomplete
 }

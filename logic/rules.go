@@ -9,7 +9,7 @@ type evaluator interface {
 }
 
 type Rules struct {
-	couldAffect []model.EdgePair
+	couldAffect map[model.EdgePair]struct{}
 
 	evals []evaluator
 	me    model.EdgePair
@@ -22,7 +22,7 @@ func newRules(
 
 	r := Rules{
 		me:          ep,
-		couldAffect: make([]model.EdgePair, 0, 8),
+		couldAffect: make(map[model.EdgePair]struct{}, 8),
 		evals:       make([]evaluator, 0, 4),
 	}
 
@@ -39,7 +39,12 @@ func newRules(
 }
 
 func (r *Rules) Affects() []model.EdgePair {
-	return r.couldAffect
+	// TODO this may be costly!
+	res := make([]model.EdgePair, len(r.couldAffect))
+	for ep := range r.couldAffect {
+		res = append(res, ep)
+	}
+	return res
 }
 
 func (r *Rules) addAffected(otherEPs ...model.EdgePair) {
@@ -47,12 +52,12 @@ func (r *Rules) addAffected(otherEPs ...model.EdgePair) {
 		return
 	}
 	for _, other := range otherEPs {
-		if other == r.me || other.IsIn(r.couldAffect...) {
+		if other == r.me {
 			// don't allow self-reference, or multiple of
 			// the same reference
 			continue
 		}
-		r.couldAffect = append(r.couldAffect, other)
+		r.couldAffect[other] = struct{}{}
 	}
 }
 

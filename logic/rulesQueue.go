@@ -9,17 +9,13 @@ type EdgeChecker interface {
 
 type Queue struct {
 	toCheck map[model.EdgePair]struct{}
-
-	updated map[model.EdgePair]struct{}
 }
 
 func NewQueue(
-	ec EdgeChecker,
 	numEdges int,
 ) *Queue {
 	return &Queue{
 		toCheck: make(map[model.EdgePair]struct{}, 2*numEdges*(numEdges-1)),
-		updated: make(map[model.EdgePair]struct{}, 2*numEdges*(numEdges-1)),
 	}
 }
 
@@ -28,18 +24,10 @@ func (rq *Queue) Push(
 	others []model.EdgePair,
 ) {
 	for _, other := range others {
-		// if !rq.ec.IsInBounds(other) {
-		// 	continue
-		// }
-		if ec.IsDefined(other) {
-			continue
+		if !ec.IsDefined(other) {
+			rq.toCheck[other] = struct{}{}
 		}
-		rq.toCheck[other] = struct{}{}
 	}
-}
-
-func (rq *Queue) HasEdgesToCheck() bool {
-	return len(rq.toCheck) > 0
 }
 
 func (rq *Queue) Pop() (model.EdgePair, bool) {
@@ -49,26 +37,5 @@ func (rq *Queue) Pop() (model.EdgePair, bool) {
 		return ep, true
 	}
 
-	return model.EdgePair{}, false
-}
-
-func (rq *Queue) NoticeUpdated(
-	ep model.EdgePair,
-) {
-	rq.updated[ep] = struct{}{}
-}
-
-func (rq *Queue) Updated() []model.EdgePair {
-	u := make([]model.EdgePair, 0, len(rq.updated))
-	for uep := range rq.updated {
-		u = append(u, uep)
-	}
-
-	return u
-}
-
-func (rq *Queue) ClearUpdated() {
-	for k := range rq.updated {
-		delete(rq.updated, k)
-	}
+	return model.InvalidEdgePair, false
 }

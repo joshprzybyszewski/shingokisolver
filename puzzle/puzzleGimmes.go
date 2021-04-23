@@ -7,9 +7,8 @@ import (
 )
 
 func (p Puzzle) ClaimGimmes() (Puzzle, model.State) {
-	outPuzz, ms := claimGimmes(p, p.nodes)
-	switch ms {
-	case model.Violation, model.Unexpected:
+	outPuzz, ms := claimGimmes(p)
+	if ms != model.Incomplete {
 		log.Printf("ClaimGimmes() second performUpdates got unexpected state: %s", ms)
 		return Puzzle{}, ms
 	}
@@ -20,7 +19,7 @@ func (p Puzzle) ClaimGimmes() (Puzzle, model.State) {
 		&outPuzz.edges,
 		outPuzz,
 	)
-	return outPuzz, outPuzz.GetState(outPuzz.getRandomCoord())
+	return outPuzz, outPuzz.GetState()
 }
 
 func buildTwoArmsCache(
