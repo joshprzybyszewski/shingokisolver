@@ -6,6 +6,7 @@ import (
 	"os"
 	"runtime"
 	"runtime/pprof"
+	"strings"
 	"time"
 
 	"github.com/joshprzybyszewski/shingokisolver/compete"
@@ -98,9 +99,9 @@ func runStandardSolver() {
 			continue
 		}
 
-		// if !strings.Contains(pd.String(), `2,589,287`) {
-		// 	continue
-		// }
+		if !strings.Contains(pd.String(), `2,589,287`) {
+			continue
+		}
 
 		summ := runSolver(pd)
 		allSummaries = append(allSummaries, summ)

@@ -56,6 +56,12 @@ func doSolve(
 	case model.Complete:
 		// already solved!
 		return puzz, true
+	case model.NodesComplete:
+		// All of the Nodes are solved just by the gimmes. Skip looking
+		// at all of the "targets" and move forward into the flipping logic
+		return firstFlip(
+			puzz,
+		)
 	case model.Incomplete:
 		printPuzzleUpdate(`GetFirstTarget`, puzz, target)
 	default:

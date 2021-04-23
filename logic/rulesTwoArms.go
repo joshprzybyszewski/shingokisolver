@@ -40,14 +40,15 @@ func (rs *RuleSet) AddAllTwoArmRules(
 		rs.Get(afterArm2).addAffected(allArmEdgesWithAfters...)
 
 		for _, edge := range allArmEdges {
-			rs.Get(edge).addEvaluation(
-				newWithinArmEvaluator(
-					node,
-					ta,
-					afterArm1, afterArm2,
-					edge,
-				),
-			)
+			// TODO determine if removing this makes it faster
+			// rs.Get(edge).addEvaluation(
+			// 	newWithinArmEvaluator(
+			// 		node,
+			// 		ta,
+			// 		afterArm1, afterArm2,
+			// 		edge,
+			// 	),
+			// )
 
 			// now _ensure_ that every arm and the off-arm are affecting each other!
 			rs.Get(edge).addAffected(allArmEdgesWithAfters...)

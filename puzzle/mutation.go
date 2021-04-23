@@ -45,8 +45,14 @@ func AvoidEdge(
 func claimGimmes(
 	p Puzzle,
 ) (Puzzle, model.State) {
+	allNodeEdgesToCheck := make(map[model.Node]map[model.Cardinal]int8, len(p.nodes))
+	for _, n := range p.nodes {
+		allNodeEdgesToCheck[n] = model.GetMaxArmsByDir(
+			model.BuildTwoArmOptions(n, p.NumEdges()),
+		)
+	}
 	obviousFilled, ms := performUpdates(p, updates{
-		nodes: p.nodes,
+		nodes: allNodeEdgesToCheck,
 	})
 
 	if ms != model.Incomplete {
@@ -55,6 +61,7 @@ func claimGimmes(
 	}
 
 	// now we're going to add all of the extended rules
+	allNodeEdgesToCheck = make(map[model.Node]map[model.Cardinal]int8, len(obviousFilled.nodes))
 	for _, n := range obviousFilled.nodes {
 		allTAs := model.BuildTwoArmOptions(n, obviousFilled.NumEdges())
 		nearbyNodes := model.BuildNearbyNodes(n, allTAs, obviousFilled)
@@ -64,10 +71,11 @@ func claimGimmes(
 			obviousFilled,
 			possibleTAs,
 		)
+		allNodeEdgesToCheck[n] = model.GetMaxArmsByDir(possibleTAs)
 	}
 
 	return performUpdates(obviousFilled, updates{
-		nodes: obviousFilled.nodes,
+		nodes: allNodeEdgesToCheck,
 	})
 
 }
@@ -76,7 +84,7 @@ type updates struct {
 	edgesToAdd   []model.EdgePair
 	edgesToAvoid []model.EdgePair
 
-	nodes []model.Node
+	nodes map[model.Node]map[model.Cardinal]int8
 }
 
 func performUpdates(
@@ -111,16 +119,20 @@ func performUpdates(
 		}
 	}
 
-	for _, n := range u.nodes {
-		for _, dir := range model.AllCardinals {
-			ms = updateEdgeFromRules(
-				&newState,
-				model.NewEdgePair(n.Coord(), dir),
-				rq,
-				rules,
-			)
-			if ms != model.Incomplete && ms != model.Duplicate {
-				return Puzzle{}, ms
+	for n, maxArmsByDir := range u.nodes {
+		for dir, maxLen := range maxArmsByDir {
+			ep := model.NewEdgePair(n.Coord(), dir)
+			for i := int8(0); i <= maxLen; i++ {
+				ms = updateEdgeFromRules(
+					&newState,
+					ep,
+					rq,
+					rules,
+				)
+				if ms != model.Incomplete && ms != model.Duplicate {
+					return Puzzle{}, ms
+				}
+				ep = ep.Next(dir)
 			}
 		}
 	}
@@ -131,6 +143,23 @@ func performUpdates(
 	}
 
 	return p.withNewState(newState), ms
+}
+
+func runQueue(
+	edges *state.TriEdges,
+	rq *logic.Queue,
+	rules *logic.RuleSet,
+) model.State {
+
+	var ms model.State
+	for ep, ok := rq.Pop(); ok; ep, ok = rq.Pop() {
+		ms = updateEdgeFromRules(edges, ep, rq, rules)
+		if ms != model.Incomplete && ms != model.Duplicate {
+			return ms
+		}
+	}
+
+	return model.Incomplete
 }
 
 func addEdge(
@@ -162,41 +191,13 @@ func updateEdge(
 	if ms := edges.UpdateEdge(ep, es); ms != model.Incomplete {
 		return ms
 	}
-	return checkRuleset(es, edges, r, rq)
-}
 
-func runQueue(
-	edges *state.TriEdges,
-	rq *logic.Queue,
-	rules *logic.RuleSet,
-) model.State {
-
-	var ms model.State
-	for ep, ok := rq.Pop(); ok; ep, ok = rq.Pop() {
-		ms = updateEdgeFromRules(edges, ep, rq, rules)
-		if ms != model.Incomplete && ms != model.Duplicate {
-			return ms
-		}
-	}
-
-	return model.Incomplete
-}
-
-func checkRuleset(
-	expState model.EdgeState,
-	edges *state.TriEdges,
-	r *logic.Rules,
-	rq *logic.Queue,
-) model.State {
-	// TODO I think I'd be able to avoid this eval.
-	// Check if the rules for this edge are broken.
-	if evalState := r.GetEvaluatedState(edges); evalState != model.EdgeUnknown && evalState != expState {
+	evalState := r.EvaluateFullState(edges)
+	if evalState != model.EdgeUnknown && evalState != es {
 		return model.Violation
 	}
 
-	// Now let's look at all of the other affected rules
 	rq.Push(edges, r.Affects())
-
 	return model.Incomplete
 }
 
@@ -206,7 +207,7 @@ func updateEdgeFromRules(
 	rq *logic.Queue,
 	rules *logic.RuleSet,
 ) model.State {
-	switch es := rules.Get(ep).GetEvaluatedState(edges); es {
+	switch es := rules.Get(ep).EvaluateQuickState(edges); es {
 	case model.EdgeAvoided:
 		return avoidEdge(edges, ep, rq, rules)
 	case model.EdgeExists:

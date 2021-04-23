@@ -32,6 +32,13 @@ type advancedNode struct {
 }
 
 func (an advancedNode) evaluate(ge model.GetEdger) model.EdgeState {
+	if ge.AnyAvoided(an.node.Coord(), model.Arm{
+		Heading: an.dir,
+		Len:     an.index,
+	}) {
+		return model.EdgeUnknown
+	}
+
 	filteredTAs := an.node.GetFilteredOptions(an.options, ge, an.nearbyNodes)
 	minArmByDir, isOnly := model.GetMinArmsByDir(filteredTAs)
 	if an.index < minArmByDir[an.dir] {

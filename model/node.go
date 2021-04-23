@@ -24,6 +24,13 @@ func (n Node) String() string {
 	return fmt.Sprintf("Node{%s%2d @ %+v}", n.nType, n.val, n.coord)
 }
 
+func (n Node) PrettyString() string {
+	if n.Type() == WhiteNode {
+		return fmt.Sprintf("(w%2d)", n.val)
+	}
+	return fmt.Sprintf("(b%2d)", n.val)
+}
+
 func (n Node) Coord() NodeCoord {
 	return n.coord
 }

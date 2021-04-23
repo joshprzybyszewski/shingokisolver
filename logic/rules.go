@@ -11,8 +11,10 @@ type evaluator interface {
 type Rules struct {
 	couldAffect map[model.EdgePair]struct{}
 
-	evals []evaluator
-	me    model.EdgePair
+	mustRunEvals []standardInput
+	otherEvals   []evaluator
+
+	me model.EdgePair
 }
 
 func newRules(
@@ -21,9 +23,10 @@ func newRules(
 ) *Rules {
 
 	r := Rules{
-		me:          ep,
-		couldAffect: make(map[model.EdgePair]struct{}, 8),
-		evals:       make([]evaluator, 0, 4),
+		me:           ep,
+		couldAffect:  make(map[model.EdgePair]struct{}, 8),
+		mustRunEvals: make([]standardInput, 0, 2),
+		otherEvals:   make([]evaluator, 0, 4),
 	}
 
 	otherStartEdges := getOtherEdgeInputs(ge, ep.NodeCoord, ep.Cardinal)
@@ -73,28 +76,64 @@ func (r *Rules) addEvaluation(eval evaluator) {
 		panic(`dev error: addEvaluation should not have been nil`)
 	}
 
-	r.evals = append(r.evals, eval)
+	if si, ok := eval.(standardInput); ok {
+		r.mustRunEvals = append(r.mustRunEvals, si)
+	} else {
+		r.otherEvals = append(r.otherEvals, eval)
+	}
 }
 
-func (r *Rules) GetEvaluatedState(ge model.GetEdger) model.EdgeState {
+func (r *Rules) EvaluateQuickState(ge model.GetEdger) model.EdgeState {
+	return r.evaluateState(ge, false)
+}
+
+func (r *Rules) EvaluateFullState(ge model.GetEdger) model.EdgeState {
+	return r.evaluateState(ge, true)
+}
+
+func (r *Rules) evaluateState(
+	ge model.GetEdger,
+	fullCheck bool,
+) model.EdgeState {
+
 	if r == nil {
 		return model.EdgeOutOfBounds
 	}
-	// log.Printf("GetEvaluatedState(%s)", r.me)
 	es := model.EdgeUnknown
 
-	for _, e := range r.evals {
+	for _, e := range r.mustRunEvals {
 		newES := e.evaluate(ge)
-		// log.Printf("%s = %T %+v", newES, e, e)
 		switch newES {
 		case model.EdgeErrored:
 			return newES
 		case model.EdgeAvoided, model.EdgeExists:
-			// return newES
-			// TODO go back to this if I don't trust myself anymore
 			if es != model.EdgeUnknown && es != newES {
-				// log.Printf("(%s) previously evaluated: %s, now evaluated: %s\n\tCurrent evaluator: %T = %+v", r.me, es, newES, e, e)
 				return model.EdgeErrored
+			}
+			es = newES
+		case model.EdgeUnknown:
+			// ok
+		default:
+			// unsupported response
+			return model.EdgeErrored
+		}
+	}
+
+	if !fullCheck && es != model.EdgeUnknown {
+		return es
+	}
+
+	for _, e := range r.otherEvals {
+		newES := e.evaluate(ge)
+		switch newES {
+		case model.EdgeErrored:
+			return newES
+		case model.EdgeAvoided, model.EdgeExists:
+			if es != model.EdgeUnknown && es != newES {
+				return model.EdgeErrored
+			}
+			if !fullCheck {
+				return newES
 			}
 			es = newES
 		case model.EdgeUnknown:

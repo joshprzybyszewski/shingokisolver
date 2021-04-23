@@ -47,27 +47,27 @@ func (p Puzzle) withNewState(
 	out := Puzzle{
 		nodes: p.nodes,
 		// TODO don't copy this entirely anymore
-		twoArmOptions: make([]nodeWithOptions, 0, len(p.twoArmOptions)),
-		// twoArmOptions: p.twoArmOptions,
-		edges: edges,
-		rules: p.rules,
+		// twoArmOptions: make([]nodeWithOptions, 0, len(p.twoArmOptions)),
+		twoArmOptions: p.twoArmOptions,
+		edges:         edges,
+		rules:         p.rules,
 	}
 
-	for _, tao := range p.twoArmOptions {
-		newOptions := getPossibleTwoArmsFromCache(
-			&out.edges,
-			out,
-			tao,
-		)
-		if len(newOptions) == 0 {
-			continue
-		}
+	// for _, tao := range p.twoArmOptions {
+	// 	newOptions := getPossibleTwoArmsFromCache(
+	// 		&out.edges,
+	// 		out,
+	// 		tao,
+	// 	)
+	// 	if len(newOptions) == 0 {
+	// 		continue
+	// 	}
 
-		out.twoArmOptions = append(out.twoArmOptions, nodeWithOptions{
-			Node:    tao.Node,
-			Options: newOptions,
-		})
-	}
+	// 	out.twoArmOptions = append(out.twoArmOptions, nodeWithOptions{
+	// 		Node:    tao.Node,
+	// 		Options: newOptions,
+	// 	})
+	// }
 
 	return out
 }
@@ -151,9 +151,8 @@ func (p Puzzle) GetFirstTarget() (model.Target, model.State) {
 	switch s := p.GetState(); s {
 	case model.Complete:
 		return model.Target{}, model.Complete
-	case model.Incomplete, model.NodesComplete:
+	case model.Incomplete:
 		// continue. we'll let out caller handle the 'nodes complete' state
-		// TODO handle the nodes complete state now!
 	default:
 		return model.Target{}, s
 	}
