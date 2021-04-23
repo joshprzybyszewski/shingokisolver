@@ -8,11 +8,7 @@ func (p Puzzle) GetUnknownEdge() (model.EdgePair, bool) {
 
 	// start from a point that is guaranteed to have an edge.
 	// so we choose a node!
-	var nc model.NodeCoord
-	for _, n := range p.nodes {
-		nc = n.Coord()
-		break
-	}
+	nc := p.getRandomCoord()
 
 	// now let's walk to the end of the line
 	w := newWalker(&p.edges, nc)

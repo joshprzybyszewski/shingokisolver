@@ -90,7 +90,7 @@ func runStandardSolver() {
 	maxPerSize := 10
 
 	for _, pd := range allPDs {
-		if pd.NumEdges > 20 {
+		if pd.NumEdges > 25 {
 			continue
 		}
 
@@ -98,7 +98,7 @@ func runStandardSolver() {
 			continue
 		}
 
-		// if !strings.Contains(pd.String(), `5,937,602`) {
+		// if !strings.Contains(pd.String(), `2,589,287`) {
 		// 	continue
 		// }
 
@@ -108,7 +108,7 @@ func runStandardSolver() {
 		// collect garbage now, which should be that entire puzzle that we solved:#
 		runtime.GC()
 
-		numBySize[pd.NumEdges] += 1
+		numBySize[pd.NumEdges]++
 	}
 
 	if *shouldWriteResults {

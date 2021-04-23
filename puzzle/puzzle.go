@@ -15,7 +15,7 @@ type Puzzle struct {
 	edges state.TriEdges
 	rules *logic.RuleSet
 
-	twoArmOptions map[model.NodeCoord]nodeWithOptions
+	twoArmOptions []nodeWithOptions
 	nodes         []model.Node
 }
 
@@ -33,218 +33,121 @@ func NewPuzzle(
 		nodes = append(nodes, model.NewNode(nc, nl.IsWhite, nl.Value))
 	}
 
+	edges := state.New(numEdges)
 	return Puzzle{
 		nodes: nodes,
-		edges: state.New(numEdges),
-		rules: logic.New(numEdges, nodes),
+		edges: edges,
+		rules: logic.New(&edges, numEdges, nodes),
 	}
 }
 
 func (p Puzzle) withNewState(
 	edges state.TriEdges,
 ) Puzzle {
-	return Puzzle{
+	out := Puzzle{
 		nodes:         p.nodes,
-		twoArmOptions: p.twoArmOptions,
+		twoArmOptions: make([]nodeWithOptions, 0, len(p.twoArmOptions)),
 		edges:         edges,
 		rules:         p.rules,
 	}
+
+	for _, tao := range p.twoArmOptions {
+		newOptions := getPossibleTwoArmsFromCache(
+			&out.edges,
+			out,
+			tao,
+		)
+		if len(newOptions) == 0 {
+			continue
+		}
+
+		out.twoArmOptions = append(out.twoArmOptions, nodeWithOptions{
+			Node:    tao.Node,
+			Options: newOptions,
+		})
+	}
+
+	return out
+}
+
+func (p Puzzle) getIncompleteNodes(
+	ge model.GetEdger,
+	minSize int8,
+) map[model.NodeCoord]model.Node {
+	filtered := make(map[model.NodeCoord]model.Node, len(p.nodes))
+	if p.twoArmOptions == nil {
+		for _, n := range p.nodes {
+			if n.Value() <= minSize {
+				continue
+			}
+			switch getNodeState(n, ge) {
+			case model.Incomplete:
+				filtered[n.Coord()] = n
+			}
+		}
+	}
+	for _, tao := range p.twoArmOptions {
+		if tao.Value() <= minSize {
+			continue
+		}
+		if len(tao.Options) > 1 {
+			filtered[tao.Coord()] = tao.Node
+		}
+	}
+	return filtered
 }
 
 func (p Puzzle) NumEdges() int {
 	return p.edges.NumEdges()
 }
 
-func (p Puzzle) numNodes() int {
-	return p.NumEdges() + 1
-}
-
-func (p Puzzle) getNode(
+func (p Puzzle) GetNode(
 	nc model.NodeCoord,
 ) (model.Node, bool) {
-	if p.twoArmOptions == nil {
-		for _, n := range p.nodes {
-			if n.Coord() == nc {
-				return n, true
-			}
+	for _, n := range p.nodes {
+		if n.Coord() == nc {
+			return n, true
 		}
-		return model.Node{}, false
 	}
-
-	tao, ok := p.twoArmOptions[nc]
-	if !ok {
-		return model.Node{}, false
-	}
-
-	return tao.Node, true
+	return model.Node{}, false
 }
 
 func (p Puzzle) getPossibleTwoArms(
 	node model.Node,
 ) []model.TwoArms {
 
-	if p.twoArmOptions == nil {
-		return getTwoArmsForNode(node, p.NumEdges(), &p.edges, p).Options
-	}
-
-	tao := p.twoArmOptions[node.Coord()]
-	filteredOptions := make([]model.TwoArms, 0, len(tao.Options))
-
-	for _, o := range tao.Options {
-		if isTwoArmsPossible(node, o, &p.edges) {
-			filteredOptions = append(filteredOptions, o)
-		}
-	}
-
-	return filteredOptions
+	return getPossibleTwoArmsWithNewEdges(node, &p.edges, p, p.twoArmOptions)
 }
 
-func getTwoArmsCache(
-	nodes []model.Node,
-	numEdges int,
-	ge model.GetEdger,
-	gn getNoder,
-) map[model.NodeCoord]nodeWithOptions {
-	nwoByNC := make(map[model.NodeCoord]nodeWithOptions, len(nodes))
-
-	for _, node := range nodes {
-		nwoByNC[node.Coord()] = getTwoArmsForNode(node, numEdges, ge, gn)
-	}
-
-	return nwoByNC
-}
-
-func getTwoArmsForNode(
+func getPossibleTwoArmsWithNewEdges(
 	node model.Node,
-	numEdges int,
 	ge model.GetEdger,
-	gn getNoder,
-) nodeWithOptions {
-	options := model.BuildTwoArmOptions(node, numEdges)
-	filteredOptions := make([]model.TwoArms, 0, len(options))
+	gn model.GetNoder,
+	allTAOs []nodeWithOptions,
+) []model.TwoArms {
 
-	for _, o := range options {
-		if !isTwoArmsPossible(node, o, ge) {
-			continue
-		}
-		if isInTheWayOfOtherNodes(node, o, gn) {
-			continue
-		}
-		filteredOptions = append(filteredOptions, o)
+	if allTAOs == nil {
+		allTAs := model.BuildTwoArmOptions(node, ge.NumEdges())
+		return node.GetFilteredOptions(allTAs, ge, gn)
 	}
 
-	return nodeWithOptions{
-		Node:    node,
-		Options: filteredOptions,
+	var tao nodeWithOptions
+	for _, o := range allTAOs {
+		if o.Node.Coord() == node.Coord() {
+			tao = o
+			break
+		}
 	}
+
+	return getPossibleTwoArmsFromCache(ge, gn, tao)
 }
 
-func isTwoArmsPossible(
-	node model.Node,
-	ta model.TwoArms,
+func getPossibleTwoArmsFromCache(
 	ge model.GetEdger,
-) bool {
-
-	nc := node.Coord()
-	return !ge.AnyAvoided(nc, ta.One) &&
-		!ge.AnyAvoided(nc, ta.Two) &&
-		!ge.IsEdge(
-			model.NewEdgePair(
-				nc.TranslateAlongArm(ta.One),
-				ta.One.Heading,
-			),
-		) &&
-		!ge.IsEdge(
-			model.NewEdgePair(
-				nc.TranslateAlongArm(ta.Two),
-				ta.Two.Heading,
-			),
-		)
-}
-
-type getNoder interface {
-	getNode(model.NodeCoord) (model.Node, bool)
-}
-
-func isInTheWayOfOtherNodes(
-	node model.Node,
-	ta model.TwoArms,
-	gn getNoder,
-) bool {
-
-	nc := node.Coord()
-
-	a1StraightLineVal := ta.One.Len
-	a2StraightLineVal := ta.Two.Len
-	if node.Type() == model.WhiteNode {
-		a1StraightLineVal = ta.One.Len + ta.Two.Len
-		a2StraightLineVal = ta.One.Len + ta.Two.Len
-	}
-
-	for i, a1 := 1, nc; i < int(ta.One.Len); i++ {
-		a1 = a1.Translate(ta.One.Heading)
-		otherNode, ok := gn.getNode(a1)
-		if !ok {
-			continue
-		}
-		if otherNode.Type() == model.BlackNode {
-			// this arm would pass through this node in a straight line
-			// that makes this arm impossible.
-			return true
-		}
-		if otherNode.Value() != a1StraightLineVal {
-			// this arm would pass through the other node
-			// in a straight line, and the value would not be tenable
-			return true
-		}
-	}
-	if otherNode, ok := gn.getNode(nc.TranslateAlongArm(ta.One)); ok {
-		if otherNode.Type() == model.WhiteNode {
-			// this arm would end in a white node. That's not ok because
-			// we would need to continue through it
-			return true
-		}
-		if otherNode.Value()-a1StraightLineVal < 1 {
-			// this arm meets the other node, and would require going
-			// next in a perpendicular path. Since this arm would
-			// contribute too much to its value, we can filter it ou.
-			return true
-		}
-	}
-
-	for i, a2 := 1, nc; i < int(ta.Two.Len); i++ {
-		a2 = a2.Translate(ta.Two.Heading)
-		otherNode, ok := gn.getNode(a2)
-		if !ok {
-			continue
-		}
-		if otherNode.Type() == model.BlackNode {
-			// this arm would pass through this node in a straight line
-			// that makes this arm impossible.
-			return true
-		}
-		if otherNode.Value() != a2StraightLineVal {
-			// this arm would pass through the other node
-			// in a straight line, and the value would not be tenable
-			return true
-		}
-	}
-
-	if otherNode, ok := gn.getNode(nc.TranslateAlongArm(ta.Two)); ok {
-		if otherNode.Type() == model.WhiteNode {
-			// this arm would end in a white node. That's not ok because
-			// we would need to continue through it
-			return true
-		}
-		if otherNode.Value()-a2StraightLineVal < 1 {
-			// this arm meets the other node, and would require going
-			// next in a perpendicular path. Since this arm would
-			// contribute too much to its value, we can filter it ou.
-			return true
-		}
-	}
-
-	return false
+	gn model.GetNoder,
+	tao nodeWithOptions,
+) []model.TwoArms {
+	return tao.Node.GetFilteredOptions(tao.Options, ge, gn)
 }
 
 func (p Puzzle) GetNextTarget(

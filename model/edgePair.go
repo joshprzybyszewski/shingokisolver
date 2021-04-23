@@ -13,22 +13,30 @@ func NewEdgePair(
 	nc NodeCoord,
 	dir Cardinal,
 ) EdgePair {
-	switch dir {
+	return EdgePair{
+		NodeCoord: nc,
+		Cardinal:  dir,
+	}.Standardize()
+}
+
+func (ep EdgePair) Standardize() EdgePair {
+	switch ep.Cardinal {
 	case HeadUp, HeadLeft:
 		return EdgePair{
-			NodeCoord: nc.Translate(dir),
-			Cardinal:  dir.Opposite(),
-		}
-
-	case HeadRight, HeadDown:
-		// this is good.
-		return EdgePair{
-			NodeCoord: nc,
-			Cardinal:  dir,
+			NodeCoord: ep.NodeCoord.Translate(ep.Cardinal),
+			Cardinal:  ep.Cardinal.Opposite(),
 		}
 
 	default:
-		panic(`unexpected cardinal: ` + dir.String())
+		// this is good.
+		return ep
+	}
+}
+
+func (ep EdgePair) Next(dir Cardinal) EdgePair {
+	return EdgePair{
+		NodeCoord: ep.NodeCoord.Translate(dir),
+		Cardinal:  ep.Cardinal,
 	}
 }
 

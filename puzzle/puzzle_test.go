@@ -209,7 +209,7 @@ func TestGetEdgesFromNode(t *testing.T) {
 	assert.False(t, p.IsEdge(model.HeadRight, model.NewCoordFromInts(1, 1)))
 	assert.True(t, p.IsEdge(model.HeadDown, model.NewCoordFromInts(1, 1)))
 
-	nOut, isMax := p.GetSumOutgoingStraightLines(model.NewCoordFromInts(1, 1))
+	nOut, isMax := getSumOutgoingStraightLines(model.NewCoordFromInts(1, 1), &p.edges)
 	assert.Equal(t, int8(2), nOut)
 	assert.False(t, isMax)
 }

@@ -1,6 +1,8 @@
 package puzzle
 
 import (
+	"log"
+
 	"github.com/joshprzybyszewski/shingokisolver/logic"
 	"github.com/joshprzybyszewski/shingokisolver/model"
 	"github.com/joshprzybyszewski/shingokisolver/state"
@@ -10,58 +12,7 @@ func AddEdge(
 	p Puzzle,
 	ep model.EdgePair,
 ) (Puzzle, model.State) {
-	if !p.edges.IsInBounds(ep) {
-		return Puzzle{}, model.Violation
-	}
-
-	var ms model.State
-
-	newState := p.edges.Copy()
-	rq := logic.NewQueue(&newState, newState.NumEdges())
-	rules := p.rules
-
-	ms = addEdge(&newState, ep, rq, rules)
-	switch ms {
-	case model.Incomplete, model.Complete, model.Duplicate:
-	default:
-		return Puzzle{}, ms
-	}
-
-	ms = runQueue(&newState, rq, rules)
-	switch ms {
-	case model.Incomplete, model.Complete, model.Duplicate:
-		return p.withNewState(newState), ms
-	default:
-		return Puzzle{}, ms
-	}
-}
-
-func AvoidEdge(
-	p Puzzle,
-	ep model.EdgePair,
-) (Puzzle, model.State) {
-	if !p.edges.IsInBounds(ep) {
-		return Puzzle{}, model.Violation
-	}
-
-	newState := p.edges.Copy()
-	rq := logic.NewQueue(&newState, newState.NumEdges())
-	rules := p.rules
-
-	ms := avoidEdge(&newState, ep, rq, rules)
-	switch ms {
-	case model.Incomplete, model.Duplicate:
-	default:
-		return Puzzle{}, ms
-	}
-
-	ms = runQueue(&newState, rq, rules)
-	switch ms {
-	case model.Incomplete, model.Complete, model.Duplicate:
-		return p.withNewState(newState), ms
-	default:
-		return Puzzle{}, ms
-	}
+	return AddEdges(p, []model.EdgePair{ep})
 }
 
 func AddTwoArms(
@@ -77,32 +28,117 @@ func AddEdges(
 	p Puzzle,
 	eps []model.EdgePair,
 ) (Puzzle, model.State) {
+	return performUpdates(p, updates{
+		edgesToAdd: eps,
+	})
+}
+
+func AvoidEdge(
+	p Puzzle,
+	ep model.EdgePair,
+) (Puzzle, model.State) {
+	return performUpdates(p, updates{
+		edgesToAvoid: []model.EdgePair{ep},
+	})
+}
+
+func claimGimmes(
+	p Puzzle,
+	nodes []model.Node,
+) (Puzzle, model.State) {
+	obviousFilled, ms := performUpdates(p, updates{
+		nodes: p.nodes,
+	})
+
+	switch ms {
+	case model.Violation, model.Unexpected:
+		log.Printf("ClaimGimmes() first performUpdates got unexpected state: %s", ms)
+		return Puzzle{}, ms
+	}
+
+	// now we're going to add all of the extended rules
+	for _, n := range obviousFilled.nodes {
+		obviousFilled.rules.AddAllTwoArmRules(n, obviousFilled.getPossibleTwoArms(n))
+	}
+
+	return performUpdates(obviousFilled, updates{
+		nodes: obviousFilled.nodes,
+	})
+
+}
+
+type updates struct {
+	edgesToAdd   []model.EdgePair
+	edgesToAvoid []model.EdgePair
+
+	nodes []model.Node
+}
+
+func performUpdates(
+	p Puzzle,
+	u updates,
+) (Puzzle, model.State) {
 	var ms model.State
 
 	newState := p.edges.Copy()
 	rq := logic.NewQueue(&newState, newState.NumEdges())
 	rules := p.rules
 
-	for _, ep := range eps {
+	for _, ep := range u.edgesToAdd {
 		if !newState.IsInBounds(ep) {
+			// log.Printf("performUpdates(%+v) attempted to add an out-of-bounds edge: %v", u, ep)
 			return Puzzle{}, model.Violation
 		}
 
 		ms = addEdge(&newState, ep, rq, rules)
 		switch ms {
-		case model.Incomplete, model.Complete, model.Duplicate:
-		default:
+		case model.Violation, model.Unexpected:
+			// TODO remove this
+			// log.Printf("performUpdates(%+v) got bad state (%s) on addEdge: %v", u, ms, ep)
 			return Puzzle{}, ms
 		}
 	}
 
-	ms = runQueue(&newState, rq, rules)
+	for _, ep := range u.edgesToAvoid {
+		if !newState.IsInBounds(ep) {
+			// log.Printf("performUpdates(%+v) attempted to avoid an out-of-bounds edge: %v", u, ep)
+			return Puzzle{}, model.Violation
+		}
+
+		ms = avoidEdge(&newState, ep, rq, rules)
+		switch ms {
+		case model.Violation, model.Unexpected:
+			// TODO remove this
+			// log.Printf("performUpdates(%+v) got bad state (%s) on avoidEdge: %v", u, ms, ep)
+			return Puzzle{}, ms
+		}
+	}
+
+	for _, n := range u.nodes {
+		for _, dir := range model.AllCardinals {
+			ms = updateEdgeFromRules(
+				&newState,
+				model.NewEdgePair(n.Coord(), dir),
+				rq,
+				rules,
+			)
+			switch ms {
+			case model.Violation, model.Unexpected:
+				// log.Printf("performUpdates(%+v) got bad state (%s) on updateEdgeFromRules: %+v %s", u, ms, n, dir)
+				return Puzzle{}, ms
+			}
+		}
+	}
+
+	ms = runQueue(p, &newState, rq, rules, p.twoArmOptions)
 	switch ms {
-	case model.Incomplete, model.Complete, model.Duplicate:
-		return p.withNewState(newState), ms
-	default:
+	case model.Violation, model.Unexpected:
+		// TODO remove this
+		// log.Printf("performUpdates(%+v) got bad state on runQueue: %v", u, ms)
 		return Puzzle{}, ms
 	}
+
+	return p.withNewState(newState), ms
 }
 
 func addEdge(
@@ -136,25 +172,53 @@ func avoidEdge(
 		// see if I'm breaking any rules or I can make any more moves
 		return checkRuleset(edges, ep, model.EdgeAvoided, rq, rules)
 	default:
+		// log.Printf("avoidEdge(%+v) got bad state on AvoidEdge: %v", ep, ms)
 		return ms
 	}
 }
 
 func runQueue(
+	gn getIncompleteNodeser,
 	edges *state.TriEdges,
 	rq *logic.Queue,
 	rules *logic.RuleSet,
+	cache []nodeWithOptions,
 ) model.State {
 	defer rq.ClearUpdated()
 
-	for ep, ok := rq.Pop(); ok; ep, ok = rq.Pop() {
-		switch s := updateEdgeFromRules(edges, ep, rq, rules); s {
-		case model.Violation,
-			model.Unexpected:
-			return s
+	var ms model.State
+	incompleteNodes := gn.getIncompleteNodes(edges, 2)
+
+	for rq.HasEdgesToCheck() {
+		for ep, ok := rq.Pop(); ok; ep, ok = rq.Pop() {
+			switch ms = updateEdgeFromRules(edges, ep, rq, rules); ms {
+			case model.Violation, model.Unexpected:
+				// log.Printf("runQueue(%+v) got bad state on updateEdgeFromRules: %v", ep, ms)
+				return ms
+			}
 		}
+
+		for _, n := range incompleteNodes {
+			ms = checkNode(
+				gn,
+				edges,
+				rq,
+				rules,
+				n,
+				cache,
+			)
+			switch ms {
+			case model.Violation, model.Unexpected:
+				// log.Printf("runQueue(%+v) got bad state on checkNode: %v", n, ms)
+				return ms
+			}
+		}
+
+		incompleteNodes = filterIncomplete(incompleteNodes, edges)
 	}
 
+	// TODO can I?
+	// return model.Incomplete
 	for _, ep := range rq.Updated() {
 		eval := rules.Get(ep).GetEvaluatedState(edges)
 		if eval == model.EdgeUnknown || eval == model.EdgeOutOfBounds {
@@ -165,11 +229,26 @@ func runQueue(
 
 		exp := edges.GetEdge(ep)
 		if eval != exp {
+			// log.Printf("runQueue(%+v, %+v) got bad state on GetEdge: %v", exp, eval, ms)
 			return model.Violation
 		}
 	}
 
 	return model.Incomplete
+}
+
+func filterIncomplete(
+	incompleteNodes map[model.NodeCoord]model.Node,
+	ge model.GetEdger,
+) map[model.NodeCoord]model.Node {
+	for nc, n := range incompleteNodes {
+		switch getNodeState(n, ge) {
+		case model.Incomplete:
+		default:
+			delete(incompleteNodes, nc)
+		}
+	}
+	return incompleteNodes
 }
 
 func checkRuleset(
@@ -187,11 +266,12 @@ func checkRuleset(
 	switch newEdge {
 	case model.EdgeAvoided, model.EdgeExists:
 		if expState != newEdge {
+			// log.Printf("checkRuleset(%+v) got bad state on GetEvaluatedState: %s %s", ep, expState, newEdge)
 			return model.Violation
 		}
 		// TODO this may have broken everything...
 		// Now let's look at all of the other affected rules
-		rq.Push(r.Affects())
+		rq.Push(edges, r.Affects())
 	}
 
 	return model.Incomplete
@@ -213,4 +293,84 @@ func updateEdgeFromRules(
 	default:
 		return model.Unexpected
 	}
+}
+
+func checkNode(
+	gn model.GetNoder,
+	edges *state.TriEdges,
+	rq *logic.Queue,
+	rules *logic.RuleSet,
+	n model.Node,
+	cache []nodeWithOptions,
+) model.State {
+	var ms model.State
+
+	// TODO clean this up, using the cache from the puzzle
+	filteredTAs := getPossibleTwoArmsWithNewEdges(n, edges, gn, cache)
+	minArmByDir, isOnly := getMinArmsByDir(filteredTAs)
+
+	for dir, minLen := range minArmByDir {
+		ep := model.NewEdgePair(n.Coord(), dir)
+		for curLen := int8(0); curLen < minLen; curLen++ {
+			ms = addEdge(edges, ep, rq, rules)
+			switch ms {
+			case model.Violation, model.Unexpected:
+				// log.Printf("checkNode(%+v) got bad state on addEdge: %v", ep, ms)
+				return ms
+			}
+			ep = ep.Next(dir)
+		}
+
+		if isOnly {
+			// add all edges and then avoid
+			ms = avoidEdge(edges, ep, rq, rules)
+			switch ms {
+			case model.Violation, model.Unexpected:
+				// log.Printf("checkNode(%+v) got bad state on avoidEdge: %v", ep, ms)
+				return ms
+			}
+		}
+	}
+
+	return model.Incomplete
+}
+
+type getIncompleteNodeser interface {
+	model.GetNoder
+	getIncompleteNodes(model.GetEdger, int8) map[model.NodeCoord]model.Node
+}
+
+func getMinArmsByDir(
+	ta []model.TwoArms,
+) (map[model.Cardinal]int8, bool) {
+	if len(ta) == 0 {
+		return nil, false
+	}
+
+	res := make(map[model.Cardinal]int8, 2)
+	res[ta[0].One.Heading] = ta[0].One.Len
+	res[ta[0].Two.Heading] = ta[0].Two.Len
+
+	if len(ta) == 1 {
+		return res, true
+	}
+
+	for i := 1; i < len(ta) && len(res) > 0; i++ {
+		for k, v := range res {
+			switch k {
+			case ta[i].One.Heading:
+				if v > ta[i].One.Len {
+					res[k] = ta[i].One.Len
+				}
+			case ta[i].Two.Heading:
+				if v > ta[i].Two.Len {
+					res[k] = ta[i].Two.Len
+				}
+			default:
+				delete(res, k)
+			}
+		}
+	}
+
+	return res, false
 }

@@ -65,26 +65,6 @@ func (rs *RuleSet) AddAllTwoArmRules(
 			),
 		)
 	}
-
-	if node.Value() > 2 {
-		for _, dir := range model.AllCardinals {
-			cur := node.Coord()
-			for edgeIndex := 0; edgeIndex < int(node.Value()); edgeIndex++ {
-				ep := model.NewEdgePair(
-					cur,
-					dir,
-				)
-				rs.Get(ep).addEvaluation(
-					newMinArmCheckEvaluator(
-						node,
-						dir,
-						edgeIndex,
-					),
-				)
-				cur = cur.Translate(dir)
-			}
-		}
-	}
 }
 
 func getTwoArmsWithDirection(

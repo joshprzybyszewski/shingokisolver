@@ -5,12 +5,19 @@ import "github.com/joshprzybyszewski/shingokisolver/model"
 func (p Puzzle) GetNodeState(
 	nc model.NodeCoord,
 ) model.State {
-	n, ok := p.getNode(nc)
+	n, ok := p.GetNode(nc)
 	if !ok {
 		return model.Incomplete
 	}
 
-	nOut, isMax := p.GetSumOutgoingStraightLines(n.Coord())
+	return getNodeState(n, &p.edges)
+}
+
+func getNodeState(
+	n model.Node,
+	ge model.GetEdger,
+) model.State {
+	nOut, isMax := getSumOutgoingStraightLines(n.Coord(), ge)
 	switch {
 	case nOut > n.Value():
 		return model.Violation
@@ -23,26 +30,28 @@ func (p Puzzle) GetNodeState(
 	}
 }
 
-func (p Puzzle) GetSumOutgoingStraightLines(
+func getSumOutgoingStraightLines(
 	coord model.NodeCoord,
+	ge model.GetEdger,
 ) (int8, bool) {
 	var total int8
 	numAvoids := 0
 
 	for _, dir := range model.AllCardinals {
-		c := coord
+		var myTotal int8
 
-		ep := model.NewEdgePair(c, dir)
-		for p.edges.IsEdge(ep) {
-			total++
-			c = c.Translate(dir)
-			ep = model.NewEdgePair(c, dir)
+		ep := model.NewEdgePair(coord, dir)
+		for ge.IsEdge(ep) {
+			ep = ep.Next(dir)
+			myTotal++
 		}
 
-		if c != coord && p.edges.IsAvoided(ep) {
+		if myTotal > 0 && ge.IsAvoided(ep) {
 			numAvoids++
 		}
+
+		total += myTotal
 	}
 
-	return total, numAvoids >= 2
+	return total, numAvoids == 4
 }

@@ -5,19 +5,33 @@ type TwoArms struct {
 	Two Arm
 }
 
+func (ta TwoArms) AfterOne(start NodeCoord) EdgePair {
+	return NewEdgePair(
+		start.TranslateAlongArm(ta.One),
+		ta.One.Heading,
+	)
+}
+
+func (ta TwoArms) AfterTwo(start NodeCoord) EdgePair {
+	return NewEdgePair(
+		start.TranslateAlongArm(ta.Two),
+		ta.Two.Heading,
+	)
+}
+
 func (ta TwoArms) GetAllEdges(start NodeCoord) []EdgePair {
 	allEdges := make([]EdgePair, 0, ta.One.Len+ta.Two.Len)
 
-	arm1End := start
+	ep := NewEdgePair(start, ta.One.Heading)
 	for i := int8(0); i < ta.One.Len; i++ {
-		allEdges = append(allEdges, NewEdgePair(arm1End, ta.One.Heading))
-		arm1End = arm1End.Translate(ta.One.Heading)
+		allEdges = append(allEdges, ep)
+		ep = ep.Next(ta.One.Heading)
 	}
 
-	arm2End := start
+	ep = NewEdgePair(start, ta.Two.Heading)
 	for i := int8(0); i < ta.Two.Len; i++ {
-		allEdges = append(allEdges, NewEdgePair(arm2End, ta.Two.Heading))
-		arm2End = arm2End.Translate(ta.Two.Heading)
+		allEdges = append(allEdges, ep)
+		ep = ep.Next(ta.Two.Heading)
 	}
 
 	return allEdges

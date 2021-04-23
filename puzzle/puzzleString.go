@@ -7,17 +7,20 @@ import (
 	"github.com/joshprzybyszewski/shingokisolver/model"
 )
 
+func (p Puzzle) numNodes() int {
+	return p.NumEdges() + 1
+}
+
 func (p Puzzle) String() string {
-	return p.string(true, true)
+	return p.string(true)
 }
 
 func (p Puzzle) Solution() string {
-	return p.string(false, false)
+	return p.string(false)
 }
 
 func (p Puzzle) string(
 	includeXs bool,
-	includeQueue bool,
 ) string {
 	var sb strings.Builder
 	sb.WriteString("\n")
@@ -27,7 +30,7 @@ func (p Puzzle) string(
 			nc := model.NewCoordFromInts(r, c)
 			// write a node
 			sb.WriteString(`(`)
-			if n, ok := p.getNode(nc); ok {
+			if n, ok := p.GetNode(nc); ok {
 				if n.Type() == model.WhiteNode {
 					sb.WriteString(`w`)
 				} else {
@@ -42,40 +45,19 @@ func (p Puzzle) string(
 			// now draw an edge
 			ep := model.NewEdgePair(nc, model.HeadRight)
 			if p.edges.IsInBounds(ep) {
-				// _, ok := p.rq.toCheck[ep]
-				// enQueued := includeQueue && ok
-				// if enQueued {
-				// 	sb.WriteString(`qq`)
-				// }
 				switch p.edges.GetEdge(ep) {
 				case model.EdgeExists:
-					// if !enQueued {
-					sb.WriteString(`--`)
-					// }
-					sb.WriteString(`-`)
+					sb.WriteString(`---`)
 				case model.EdgeAvoided:
-					// if enQueued {
-					// 	if includeXs {
-					// 		sb.WriteString(`X`)
-					// 	} else {
-					// 		sb.WriteString(` `)
-					// 	}
-					// } else
 					if includeXs {
 						sb.WriteString(` X `)
 					} else {
 						sb.WriteString(`   `)
 					}
 				case model.EdgeUnknown:
-					// if !enQueued {
-					sb.WriteString(`  `)
-					// }
-					sb.WriteString(` `)
+					sb.WriteString(`   `)
 				default:
-					// if !enQueued {
-					sb.WriteString(`??`)
-					// }
-					sb.WriteString(`?`)
+					sb.WriteString(`???`)
 				}
 			}
 
@@ -83,44 +65,19 @@ func (p Puzzle) string(
 			below.WriteString(` `)
 			ep = model.NewEdgePair(nc, model.HeadDown)
 			if p.edges.IsInBounds(ep) {
-				// _, ok := p.rq.toCheck[ep]
-				// enQueued := includeQueue && ok
-				// if enQueued {
-				// 	below.WriteString(`qq`)
-				// }
-
 				switch p.edges.GetEdge(ep) {
 				case model.EdgeExists:
-					// if !enQueued {
-					below.WriteString(` `)
-					// }
-					below.WriteString(`|`)
-					// if !enQueued {
-					below.WriteString(` `)
-					// }
+					below.WriteString(` | `)
 				case model.EdgeAvoided:
-					// if enQueued {
-					// 	if includeXs {
-					// 		below.WriteString(`X`)
-					// 	} else {
-					// 		below.WriteString(` `)
-					// 	}
-					// } else
 					if includeXs {
 						below.WriteString(` X `)
 					} else {
 						below.WriteString(`   `)
 					}
 				case model.EdgeUnknown:
-					// if !enQueued {
-					below.WriteString(`  `)
-					// }
-					below.WriteString(` `)
+					below.WriteString(`   `)
 				default:
-					// if !enQueued {
-					below.WriteString(`??`)
-					// }
-					below.WriteString(`?`)
+					below.WriteString(`???`)
 				}
 			}
 			below.WriteString(`    `)

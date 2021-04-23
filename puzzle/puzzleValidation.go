@@ -10,18 +10,14 @@ func (p Puzzle) GetState(
 
 	nodeState := p.getStateOfNodes()
 	switch nodeState {
-	case model.Incomplete, model.Complete:
+	case model.Incomplete, model.NodesComplete:
 		// keep going through checks...
 	default:
 		return nodeState
 	}
 
 	if coord == model.InvalidNodeCoord {
-		for _, n := range p.nodes {
-			// just need a random starting node for the walker
-			coord = n.Coord()
-			break
-		}
+		coord = p.getRandomCoord()
 	}
 
 	w := newWalker(&p.edges, coord)
@@ -38,7 +34,13 @@ func (p Puzzle) GetState(
 		}
 	}
 
-	return nodeState
+	if nodeState == model.NodesComplete {
+		// it's a loop that has all of the nodes completed!
+		return model.Complete
+	}
+
+	// it's a loop that didn't complete all of the nodes!
+	return model.Violation
 }
 
 func (p Puzzle) getStateOfNodes() model.State {
@@ -54,5 +56,21 @@ func (p Puzzle) getStateOfNodes() model.State {
 		}
 	}
 
-	return model.Complete
+	return model.NodesComplete
+}
+
+func (p Puzzle) getRandomCoord() model.NodeCoord {
+	for _, n := range p.nodes {
+		return n.Coord()
+	}
+
+	for _, nwo := range p.twoArmOptions {
+		return nwo.Coord()
+	}
+
+	if p.rules == nil {
+		panic(`dev error: p.rules == nil`)
+	}
+
+	panic(`dev error: getRandomCoord couldn't find anything`)
 }

@@ -10,6 +10,7 @@ type RuleSet struct {
 }
 
 func New(
+	ge model.GetEdger,
 	numEdges int,
 	nodes []model.Node,
 ) *RuleSet {
@@ -28,6 +29,7 @@ func New(
 			if c < numEdges {
 				ep := model.NewEdgePair(nc, model.HeadRight)
 				rs.rows[r][c] = newRules(
+					ge,
 					ep,
 				)
 			}
@@ -35,6 +37,7 @@ func New(
 			if r < numEdges {
 				ep := model.NewEdgePair(nc, model.HeadDown)
 				rs.cols[r][c] = newRules(
+					ge,
 					ep,
 				)
 			}

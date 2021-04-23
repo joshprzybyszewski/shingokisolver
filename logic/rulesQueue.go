@@ -8,8 +8,6 @@ type EdgeChecker interface {
 }
 
 type Queue struct {
-	ec EdgeChecker
-
 	toCheck map[model.EdgePair]struct{}
 
 	updated map[model.EdgePair]struct{}
@@ -20,24 +18,28 @@ func NewQueue(
 	numEdges int,
 ) *Queue {
 	return &Queue{
-		ec:      ec,
 		toCheck: make(map[model.EdgePair]struct{}, 2*numEdges*(numEdges-1)),
 		updated: make(map[model.EdgePair]struct{}, 2*numEdges*(numEdges-1)),
 	}
 }
 
 func (rq *Queue) Push(
+	ec EdgeChecker,
 	others []model.EdgePair,
 ) {
 	for _, other := range others {
-		if !rq.ec.IsInBounds(other) {
-			continue
-		}
-		if rq.ec.IsDefined(other) {
+		// if !rq.ec.IsInBounds(other) {
+		// 	continue
+		// }
+		if ec.IsDefined(other) {
 			continue
 		}
 		rq.toCheck[other] = struct{}{}
 	}
+}
+
+func (rq *Queue) HasEdgesToCheck() bool {
+	return len(rq.toCheck) > 0
 }
 
 func (rq *Queue) Pop() (model.EdgePair, bool) {

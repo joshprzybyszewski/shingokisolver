@@ -2,6 +2,7 @@ package solvers
 
 import (
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/joshprzybyszewski/shingokisolver/model"
@@ -45,6 +46,7 @@ func doSolve(
 	case model.Incomplete, model.Complete:
 		printPuzzleUpdate(`ClaimGimmes`, puzz, model.Target{})
 	default:
+		log.Printf("puzz.ClaimGimmes() got unexpected state: %s", s)
 		return puzzle.Puzzle{}, false
 	}
 

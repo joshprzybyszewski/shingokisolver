@@ -16,6 +16,7 @@ type Rules struct {
 }
 
 func newRules(
+	ge model.GetEdger,
 	ep model.EdgePair,
 ) *Rules {
 
@@ -25,22 +26,14 @@ func newRules(
 		evals:       make([]evaluator, 0, 4),
 	}
 
-	otherStartEdges := getOtherEdgeInputs(ep.NodeCoord, ep.Cardinal)
-	otherEndEdges := getOtherEdgeInputs(ep.Translate(ep.Cardinal), ep.Opposite())
+	otherStartEdges := getOtherEdgeInputs(ge, ep.NodeCoord, ep.Cardinal)
+	otherEndEdges := getOtherEdgeInputs(ge, ep.NodeCoord.Translate(ep.Cardinal), ep.Cardinal.Opposite())
 
 	r.addAffected(otherStartEdges...)
-	r.addAffected(otherEndEdges...)
+	r.addEvaluation(newStandardInputEvaluator(otherStartEdges))
 
-	r.addEvaluation(
-		standardInput{
-			otherInputs: otherStartEdges,
-		},
-	)
-	r.addEvaluation(
-		standardInput{
-			otherInputs: otherEndEdges,
-		},
-	)
+	r.addAffected(otherEndEdges...)
+	r.addEvaluation(newStandardInputEvaluator(otherEndEdges))
 
 	return &r
 }
@@ -49,12 +42,14 @@ func (r *Rules) Affects() []model.EdgePair {
 	return r.couldAffect
 }
 
-func (r *Rules) addAffected(couldAffect ...model.EdgePair) {
+func (r *Rules) addAffected(otherEPs ...model.EdgePair) {
 	if r == nil {
 		return
 	}
-	for _, other := range couldAffect {
+	for _, other := range otherEPs {
 		if other == r.me || other.IsIn(r.couldAffect...) {
+			// don't allow self-reference, or multiple of
+			// the same reference
 			continue
 		}
 		r.couldAffect = append(r.couldAffect, other)
@@ -70,8 +65,9 @@ func (r *Rules) addEvaluation(eval evaluator) {
 	}
 
 	if eval == nil {
-		panic(`dev error`)
+		panic(`dev error: addEvaluation should not have been nil`)
 	}
+
 	r.evals = append(r.evals, eval)
 }
 
@@ -79,15 +75,20 @@ func (r *Rules) GetEvaluatedState(ge model.GetEdger) model.EdgeState {
 	if r == nil {
 		return model.EdgeOutOfBounds
 	}
+	// log.Printf("GetEvaluatedState(%s)", r.me)
 	es := model.EdgeUnknown
 
 	for _, e := range r.evals {
 		newES := e.evaluate(ge)
+		// log.Printf("%s = %T %+v", newES, e, e)
 		switch newES {
 		case model.EdgeErrored:
 			return newES
 		case model.EdgeAvoided, model.EdgeExists:
+			// return newES
+			// TODO go back to this if I don't trust myself anymore
 			if es != model.EdgeUnknown && es != newES {
+				// log.Printf("(%s) previously evaluated: %s, now evaluated: %s\n\tCurrent evaluator: %T = %+v", r.me, es, newES, e, e)
 				return model.EdgeErrored
 			}
 			es = newES
@@ -104,44 +105,37 @@ func (r *Rules) GetEvaluatedState(ge model.GetEdger) model.EdgeState {
 
 func (r *Rules) addRulesForNode(
 	node model.Node,
-	dir model.Cardinal,
+	myDir model.Cardinal,
 ) {
 	if r == nil {
 		// this node is actually out of bounds...
 		return
 	}
 
-	otherSideOfNode := model.NewEdgePair(
-		node.Coord(),
-		dir.Opposite(),
-	)
-
-	perps := make([]model.EdgePair, 0, 2)
-	for _, perpDir := range dir.Perpendiculars() {
-		perps = append(perps,
-			model.NewEdgePair(node.Coord(), perpDir),
-		)
-	}
-
-	r.addAffected(otherSideOfNode)
-	r.addAffected(perps...)
-
 	r.addEvaluation(
-		newSimpleNodeEvaluator(node, otherSideOfNode, perps),
+		newSimpleNodeEvaluator(node, myDir),
 	)
 }
 
 func getOtherEdgeInputs(
+	ge model.GetEdger,
 	coord model.NodeCoord,
-	dir model.Cardinal,
+	myDir model.Cardinal,
 ) []model.EdgePair {
 
-	perps := make([]model.EdgePair, 0, 3)
-	for _, perpDir := range dir.Perpendiculars() {
-		perps = append(perps,
-			model.NewEdgePair(coord, perpDir),
-		)
+	otherInputs := make([]model.EdgePair, 0, 3)
+	for dir := range model.AllCardinalsMap {
+		if dir == myDir {
+			continue
+		}
+
+		ep := model.NewEdgePair(coord, dir)
+		if !ge.IsInBounds(ep) {
+			continue
+		}
+
+		otherInputs = append(otherInputs, ep)
 	}
 
-	return append(perps, model.NewEdgePair(coord, dir.Opposite()))
+	return otherInputs
 }
