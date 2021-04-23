@@ -33,9 +33,10 @@ func buildTwoArmsCache(
 
 	for _, n := range allNodes {
 		allTAs := model.BuildTwoArmOptions(n, numEdges)
+		nearbyNodes := model.BuildNearbyNodes(n, allTAs, gn)
 		res = append(res, nodeWithOptions{
 			Node:    n,
-			Options: n.GetFilteredOptions(allTAs, ge, gn),
+			Options: n.GetFilteredOptions(allTAs, ge, nearbyNodes),
 		})
 	}
 

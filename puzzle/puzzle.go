@@ -77,7 +77,7 @@ func (p Puzzle) getIncompleteNodes(
 	filtered := make(map[model.NodeCoord]model.Node, len(p.nodes))
 	if p.twoArmOptions == nil {
 		for _, n := range p.nodes {
-			if n.Value() <= minSize {
+			if n.Value() < minSize {
 				continue
 			}
 			switch getNodeState(n, ge) {
@@ -87,7 +87,7 @@ func (p Puzzle) getIncompleteNodes(
 		}
 	}
 	for _, tao := range p.twoArmOptions {
-		if tao.Value() <= minSize {
+		if tao.Value() < minSize {
 			continue
 		}
 		if len(tao.Options) > 1 {
@@ -112,24 +112,12 @@ func (p Puzzle) GetNode(
 	return model.Node{}, false
 }
 
-func (p Puzzle) getPossibleTwoArms(
-	node model.Node,
-) []model.TwoArms {
-
-	return getPossibleTwoArmsWithNewEdges(node, &p.edges, p, p.twoArmOptions)
-}
-
 func getPossibleTwoArmsWithNewEdges(
 	node model.Node,
 	ge model.GetEdger,
 	gn model.GetNoder,
 	allTAOs []nodeWithOptions,
 ) []model.TwoArms {
-
-	if allTAOs == nil {
-		allTAs := model.BuildTwoArmOptions(node, ge.NumEdges())
-		return node.GetFilteredOptions(allTAs, ge, gn)
-	}
 
 	var tao nodeWithOptions
 	for _, o := range allTAOs {
@@ -147,7 +135,8 @@ func getPossibleTwoArmsFromCache(
 	gn model.GetNoder,
 	tao nodeWithOptions,
 ) []model.TwoArms {
-	return tao.Node.GetFilteredOptions(tao.Options, ge, gn)
+	nearbyNodes := model.BuildNearbyNodes(tao.Node, tao.Options, gn)
+	return tao.Node.GetFilteredOptions(tao.Options, ge, nearbyNodes)
 }
 
 func (p Puzzle) GetNextTarget(
@@ -157,10 +146,15 @@ func (p Puzzle) GetNextTarget(
 		return model.Target{}, model.Complete
 	}
 
+	tas := make([][]model.TwoArms, len(p.nodes))
+	for i, n := range p.nodes {
+		tas[i] = getPossibleTwoArmsWithNewEdges(n, &p.edges, p, p.twoArmOptions)
+	}
+
 	t, ok, err := model.GetNextTarget(
 		cur,
 		p.nodes,
-		p.getPossibleTwoArms,
+		tas,
 	)
 
 	if err != nil {
@@ -177,10 +171,15 @@ func (p Puzzle) GetFirstTarget() (model.Target, model.State) {
 		return model.Target{}, model.Complete
 	}
 
+	tas := make([][]model.TwoArms, len(p.nodes))
+	for i, n := range p.nodes {
+		tas[i] = getPossibleTwoArmsWithNewEdges(n, &p.edges, p, p.twoArmOptions)
+	}
+
 	t, ok, err := model.GetNextTarget(
 		model.InvalidTarget,
 		p.nodes,
-		p.getPossibleTwoArms,
+		tas,
 	)
 
 	if err != nil {

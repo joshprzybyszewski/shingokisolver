@@ -58,7 +58,14 @@ func claimGimmes(
 
 	// now we're going to add all of the extended rules
 	for _, n := range obviousFilled.nodes {
-		obviousFilled.rules.AddAllTwoArmRules(n, obviousFilled.getPossibleTwoArms(n))
+		allTAs := model.BuildTwoArmOptions(n, obviousFilled.NumEdges())
+		nearbyNodes := model.BuildNearbyNodes(n, allTAs, obviousFilled)
+		possibleTAs := n.GetFilteredOptions(allTAs, &obviousFilled.edges, nearbyNodes)
+		obviousFilled.rules.AddAllTwoArmRules(
+			n,
+			obviousFilled,
+			possibleTAs,
+		)
 	}
 
 	return performUpdates(obviousFilled, updates{
@@ -130,7 +137,7 @@ func performUpdates(
 		}
 	}
 
-	ms = runQueue(p, &newState, rq, rules, p.twoArmOptions)
+	ms = runQueue(&newState, rq, rules)
 	switch ms {
 	case model.Violation, model.Unexpected:
 		// TODO remove this
@@ -178,47 +185,23 @@ func avoidEdge(
 }
 
 func runQueue(
-	gn getIncompleteNodeser,
 	edges *state.TriEdges,
 	rq *logic.Queue,
 	rules *logic.RuleSet,
-	cache []nodeWithOptions,
 ) model.State {
 	defer rq.ClearUpdated()
 
 	var ms model.State
-	incompleteNodes := gn.getIncompleteNodes(edges, 2)
-
-	for rq.HasEdgesToCheck() {
-		for ep, ok := rq.Pop(); ok; ep, ok = rq.Pop() {
-			switch ms = updateEdgeFromRules(edges, ep, rq, rules); ms {
-			case model.Violation, model.Unexpected:
-				// log.Printf("runQueue(%+v) got bad state on updateEdgeFromRules: %v", ep, ms)
-				return ms
-			}
+	for ep, ok := rq.Pop(); ok; ep, ok = rq.Pop() {
+		switch ms = updateEdgeFromRules(edges, ep, rq, rules); ms {
+		case model.Violation, model.Unexpected:
+			// log.Printf("runQueue(%+v) got bad state on updateEdgeFromRules: %v", ep, ms)
+			return ms
 		}
-
-		for _, n := range incompleteNodes {
-			ms = checkNode(
-				gn,
-				edges,
-				rq,
-				rules,
-				n,
-				cache,
-			)
-			switch ms {
-			case model.Violation, model.Unexpected:
-				// log.Printf("runQueue(%+v) got bad state on checkNode: %v", n, ms)
-				return ms
-			}
-		}
-
-		incompleteNodes = filterIncomplete(incompleteNodes, edges)
 	}
 
 	// TODO can I?
-	// return model.Incomplete
+	return model.Incomplete
 	for _, ep := range rq.Updated() {
 		eval := rules.Get(ep).GetEvaluatedState(edges)
 		if eval == model.EdgeUnknown || eval == model.EdgeOutOfBounds {
@@ -235,20 +218,6 @@ func runQueue(
 	}
 
 	return model.Incomplete
-}
-
-func filterIncomplete(
-	incompleteNodes map[model.NodeCoord]model.Node,
-	ge model.GetEdger,
-) map[model.NodeCoord]model.Node {
-	for nc, n := range incompleteNodes {
-		switch getNodeState(n, ge) {
-		case model.Incomplete:
-		default:
-			delete(incompleteNodes, nc)
-		}
-	}
-	return incompleteNodes
 }
 
 func checkRuleset(
@@ -293,84 +262,4 @@ func updateEdgeFromRules(
 	default:
 		return model.Unexpected
 	}
-}
-
-func checkNode(
-	gn model.GetNoder,
-	edges *state.TriEdges,
-	rq *logic.Queue,
-	rules *logic.RuleSet,
-	n model.Node,
-	cache []nodeWithOptions,
-) model.State {
-	var ms model.State
-
-	// TODO clean this up, using the cache from the puzzle
-	filteredTAs := getPossibleTwoArmsWithNewEdges(n, edges, gn, cache)
-	minArmByDir, isOnly := getMinArmsByDir(filteredTAs)
-
-	for dir, minLen := range minArmByDir {
-		ep := model.NewEdgePair(n.Coord(), dir)
-		for curLen := int8(0); curLen < minLen; curLen++ {
-			ms = addEdge(edges, ep, rq, rules)
-			switch ms {
-			case model.Violation, model.Unexpected:
-				// log.Printf("checkNode(%+v) got bad state on addEdge: %v", ep, ms)
-				return ms
-			}
-			ep = ep.Next(dir)
-		}
-
-		if isOnly {
-			// add all edges and then avoid
-			ms = avoidEdge(edges, ep, rq, rules)
-			switch ms {
-			case model.Violation, model.Unexpected:
-				// log.Printf("checkNode(%+v) got bad state on avoidEdge: %v", ep, ms)
-				return ms
-			}
-		}
-	}
-
-	return model.Incomplete
-}
-
-type getIncompleteNodeser interface {
-	model.GetNoder
-	getIncompleteNodes(model.GetEdger, int8) map[model.NodeCoord]model.Node
-}
-
-func getMinArmsByDir(
-	ta []model.TwoArms,
-) (map[model.Cardinal]int8, bool) {
-	if len(ta) == 0 {
-		return nil, false
-	}
-
-	res := make(map[model.Cardinal]int8, 2)
-	res[ta[0].One.Heading] = ta[0].One.Len
-	res[ta[0].Two.Heading] = ta[0].Two.Len
-
-	if len(ta) == 1 {
-		return res, true
-	}
-
-	for i := 1; i < len(ta) && len(res) > 0; i++ {
-		for k, v := range res {
-			switch k {
-			case ta[i].One.Heading:
-				if v > ta[i].One.Len {
-					res[k] = ta[i].One.Len
-				}
-			case ta[i].Two.Heading:
-				if v > ta[i].Two.Len {
-					res[k] = ta[i].Two.Len
-				}
-			default:
-				delete(res, k)
-			}
-		}
-	}
-
-	return res, false
 }

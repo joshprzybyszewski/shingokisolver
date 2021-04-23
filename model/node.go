@@ -44,10 +44,38 @@ func (n Node) IsInvalidMotions(c1, c2 Cardinal) bool {
 	return n.Type().isInvalidMotions(c1, c2)
 }
 
+func BuildNearbyNodes(
+	myNode Node,
+	tas []TwoArms,
+	gn GetNoder,
+) map[Cardinal][]*Node {
+	maxLensByDir := GetMaxArmsByDir(tas)
+	otherNodes := make(map[Cardinal][]*Node, len(maxLensByDir))
+
+	for dir, maxLen := range maxLensByDir {
+		slice := make([]*Node, maxLen)
+		foundAny := false
+		nc := myNode.Coord()
+		for i := range otherNodes[dir] {
+			n, ok := gn.GetNode(nc)
+			if ok {
+				foundAny = true
+				otherNodes[dir][i] = &n
+			}
+			nc = nc.Translate(dir)
+		}
+		if foundAny {
+			otherNodes[dir] = slice
+		}
+	}
+
+	return otherNodes
+}
+
 func (n Node) GetFilteredOptions(
 	input []TwoArms,
 	ge GetEdger,
-	gn GetNoder,
+	otherNodes map[Cardinal][]*Node,
 ) []TwoArms {
 	filteredOptions := make([]TwoArms, 0, len(input))
 
@@ -55,9 +83,7 @@ func (n Node) GetFilteredOptions(
 		if !isTwoArmsPossible(n, o, ge) {
 			continue
 		}
-		// TODO isInTheWayOfOtherNodes could be cache across input
-		// and would be faster
-		if isInTheWayOfOtherNodes(n, o, gn) {
+		if isInTheWayOfOtherNodes(n, o, otherNodes) {
 			continue
 		}
 		filteredOptions = append(filteredOptions, o)
@@ -80,81 +106,63 @@ func isTwoArmsPossible(
 }
 
 func isInTheWayOfOtherNodes(
-	node Node,
+	myNode Node,
 	ta TwoArms,
-	gn GetNoder,
+	otherNodes map[Cardinal][]*Node,
 ) bool {
 
-	nc := node.Coord()
+	isInTheWay := func(otherNodes []*Node, maxLen int, myStraightLineVal int8) bool {
+		for i, otherNode := range otherNodes {
+			if i > maxLen {
+				return false
+			} else if i == maxLen {
+				if otherNode == nil {
+					return false
+				}
+				if otherNode.Type() == WhiteNode {
+					// this arm would end in a white node. That's not ok because
+					// we would need to continue through it
+					return true
+				}
+				if otherNode.Value()-myStraightLineVal < 1 {
+					// this arm meets the other node, and would require going
+					// next in a perpendicular path. Since this arm would
+					// contribute too much to its value, we can filter it ou.
+					return true
+				}
+				return false
+			}
+
+			if otherNode == nil {
+				continue
+			}
+
+			if otherNode.Type() == BlackNode {
+				// this arm would pass through this node in a straight line
+				// that makes this arm impossible.
+				return true
+			}
+			if otherNode.Value() != myStraightLineVal {
+				// this arm would pass through the other node
+				// in a straight line, and the value would not be tenable
+				return true
+			}
+		}
+		return false
+	}
 
 	a1StraightLineVal := ta.One.Len
 	a2StraightLineVal := ta.Two.Len
-	if node.Type() == WhiteNode {
+	if myNode.Type() == WhiteNode {
 		a1StraightLineVal = ta.One.Len + ta.Two.Len
 		a2StraightLineVal = ta.One.Len + ta.Two.Len
 	}
 
-	for i, a1 := 1, nc; i < int(ta.One.Len); i++ {
-		a1 = a1.Translate(ta.One.Heading)
-		otherNode, ok := gn.GetNode(a1)
-		if !ok {
-			continue
-		}
-		if otherNode.Type() == BlackNode {
-			// this arm would pass through this node in a straight line
-			// that makes this arm impossible.
-			return true
-		}
-		if otherNode.Value() != a1StraightLineVal {
-			// this arm would pass through the other node
-			// in a straight line, and the value would not be tenable
-			return true
-		}
+	if isInTheWay(otherNodes[ta.One.Heading], int(ta.One.Len), a1StraightLineVal) {
+		return true
 	}
-	if otherNode, ok := gn.GetNode(nc.TranslateAlongArm(ta.One)); ok {
-		if otherNode.Type() == WhiteNode {
-			// this arm would end in a white node. That's not ok because
-			// we would need to continue through it
-			return true
-		}
-		if otherNode.Value()-a1StraightLineVal < 1 {
-			// this arm meets the other node, and would require going
-			// next in a perpendicular path. Since this arm would
-			// contribute too much to its value, we can filter it ou.
-			return true
-		}
-	}
-
-	for i, a2 := 1, nc; i < int(ta.Two.Len); i++ {
-		a2 = a2.Translate(ta.Two.Heading)
-		otherNode, ok := gn.GetNode(a2)
-		if !ok {
-			continue
-		}
-		if otherNode.Type() == BlackNode {
-			// this arm would pass through this node in a straight line
-			// that makes this arm impossible.
-			return true
-		}
-		if otherNode.Value() != a2StraightLineVal {
-			// this arm would pass through the other node
-			// in a straight line, and the value would not be tenable
-			return true
-		}
-	}
-
-	if otherNode, ok := gn.GetNode(nc.TranslateAlongArm(ta.Two)); ok {
-		if otherNode.Type() == WhiteNode {
-			// this arm would end in a white node. That's not ok because
-			// we would need to continue through it
-			return true
-		}
-		if otherNode.Value()-a2StraightLineVal < 1 {
-			// this arm meets the other node, and would require going
-			// next in a perpendicular path. Since this arm would
-			// contribute too much to its value, we can filter it ou.
-			return true
-		}
+	if isInTheWay(otherNodes[ta.Two.Heading], int(ta.Two.Len), a2StraightLineVal) {
+		return true
 	}
 
 	return false

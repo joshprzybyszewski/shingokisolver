@@ -24,6 +24,7 @@ func (e twoArmFulfiller) evaluate(ge model.GetEdger) model.EdgeState {
 	if len(e.allTAs) == 0 {
 		return model.EdgeUnknown
 	}
+
 	for _, ta := range e.allTAs {
 		if !(ge.AnyAvoided(e.node.Coord(), ta.One) ||
 			ge.AnyAvoided(e.node.Coord(), ta.Two)) {
