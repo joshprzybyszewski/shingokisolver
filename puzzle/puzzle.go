@@ -44,35 +44,15 @@ func NewPuzzle(
 func (p Puzzle) withNewState(
 	edges state.TriEdges,
 ) Puzzle {
-	out := Puzzle{
-		nodes: p.nodes,
-		// TODO don't copy this entirely anymore
-		// twoArmOptions: make([]nodeWithOptions, 0, len(p.twoArmOptions)),
+	return Puzzle{
+		nodes:         p.nodes,
 		twoArmOptions: p.twoArmOptions,
 		edges:         edges,
 		rules:         p.rules,
 	}
-
-	// for _, tao := range p.twoArmOptions {
-	// 	newOptions := getPossibleTwoArmsFromCache(
-	// 		&out.edges,
-	// 		out,
-	// 		tao,
-	// 	)
-	// 	if len(newOptions) == 0 {
-	// 		continue
-	// 	}
-
-	// 	out.twoArmOptions = append(out.twoArmOptions, nodeWithOptions{
-	// 		Node:    tao.Node,
-	// 		Options: newOptions,
-	// 	})
-	// }
-
-	return out
 }
 
-func (p Puzzle) NumEdges() int {
+func (p Puzzle) numEdges() int {
 	return p.edges.NumEdges()
 }
 

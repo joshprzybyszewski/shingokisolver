@@ -41,12 +41,12 @@ func doSolve(
 ) (puzzle.Puzzle, bool) {
 
 	// claim all of the gimmes we can
-	puzz, s := puzz.ClaimGimmes()
+	puzz, s := puzzle.ClaimGimmes(puzz)
 	switch s {
 	case model.Incomplete, model.Complete:
 		printPuzzleUpdate(`ClaimGimmes`, puzz, model.Target{})
 	default:
-		log.Printf("puzz.ClaimGimmes() got unexpected state: %s", s)
+		log.Printf("ClaimGimmes() got unexpected state: %s", s)
 		return puzzle.Puzzle{}, false
 	}
 

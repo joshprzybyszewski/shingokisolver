@@ -36,12 +36,5 @@ func (p Puzzle) IsEdge(
 	move model.Cardinal,
 	nc model.NodeCoord,
 ) bool {
-	ep := model.NewEdgePair(nc, move)
-	return p.GetEdgeState(ep) == model.EdgeExists
-}
-
-func (p Puzzle) GetEdgeState(
-	ep model.EdgePair,
-) model.EdgeState {
-	return p.edges.GetEdge(ep)
+	return p.edges.GetEdge(model.NewEdgePair(nc, move)) == model.EdgeExists
 }

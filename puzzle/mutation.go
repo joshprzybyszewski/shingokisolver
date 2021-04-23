@@ -1,8 +1,6 @@
 package puzzle
 
 import (
-	"log"
-
 	"github.com/joshprzybyszewski/shingokisolver/logic"
 	"github.com/joshprzybyszewski/shingokisolver/model"
 	"github.com/joshprzybyszewski/shingokisolver/state"
@@ -42,49 +40,10 @@ func AvoidEdge(
 	})
 }
 
-func claimGimmes(
-	p Puzzle,
-) (Puzzle, model.State) {
-	allNodeEdgesToCheck := make(map[model.Node]map[model.Cardinal]int8, len(p.nodes))
-	for _, n := range p.nodes {
-		allNodeEdgesToCheck[n] = model.GetMaxArmsByDir(
-			model.BuildTwoArmOptions(n, p.NumEdges()),
-		)
-	}
-	obviousFilled, ms := performUpdates(p, updates{
-		nodes: allNodeEdgesToCheck,
-	})
-
-	if ms != model.Incomplete {
-		log.Printf("ClaimGimmes() first performUpdates got unexpected state: %s", ms)
-		return Puzzle{}, ms
-	}
-
-	// now we're going to add all of the extended rules
-	allNodeEdgesToCheck = make(map[model.Node]map[model.Cardinal]int8, len(obviousFilled.nodes))
-	for _, n := range obviousFilled.nodes {
-		allTAs := model.BuildTwoArmOptions(n, obviousFilled.NumEdges())
-		nearbyNodes := model.BuildNearbyNodes(n, allTAs, obviousFilled)
-		possibleTAs := n.GetFilteredOptions(allTAs, &obviousFilled.edges, nearbyNodes)
-		obviousFilled.rules.AddAllTwoArmRules(
-			n,
-			obviousFilled,
-			possibleTAs,
-		)
-		allNodeEdgesToCheck[n] = model.GetMaxArmsByDir(possibleTAs)
-	}
-
-	return performUpdates(obviousFilled, updates{
-		nodes: allNodeEdgesToCheck,
-	})
-
-}
-
 type updates struct {
+	nodes        map[model.Node]map[model.Cardinal]int8
 	edgesToAdd   []model.EdgePair
 	edgesToAvoid []model.EdgePair
-
-	nodes map[model.Node]map[model.Cardinal]int8
 }
 
 func performUpdates(

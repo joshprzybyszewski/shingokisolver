@@ -61,7 +61,7 @@ func addDim(
 }
 
 func (p Puzzle) numNodes() int {
-	return p.NumEdges() + 1
+	return p.numEdges() + 1
 }
 
 func (p Puzzle) String() string {

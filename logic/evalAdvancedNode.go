@@ -23,16 +23,16 @@ func newAdvancedNodeEvaluator(
 }
 
 type advancedNode struct {
+	nearbyNodes map[model.Cardinal][]*model.Node
+	options     []model.TwoArms
+
 	node  model.Node
 	dir   model.Cardinal
 	index int8
-
-	options     []model.TwoArms
-	nearbyNodes map[model.Cardinal][]*model.Node
 }
 
 func (an advancedNode) evaluate(ge model.GetEdger) model.EdgeState {
-	if ge.AnyAvoided(an.node.Coord(), model.Arm{
+	if an.index > 0 && ge.AnyAvoided(an.node.Coord(), model.Arm{
 		Heading: an.dir,
 		Len:     an.index,
 	}) {

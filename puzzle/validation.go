@@ -43,6 +43,7 @@ func (p Puzzle) getStateOfLoop(
 			ep := model.NewEdgePair(w.cur, dir)
 			if !p.edges.IsDefined(ep) {
 				nextUnknown = ep
+				break
 			}
 		}
 		return nextUnknown, model.Incomplete
@@ -58,22 +59,6 @@ func (p Puzzle) getStateOfLoop(
 
 	// it's a loop that has all of the nodes completed!
 	return model.InvalidEdgePair, model.Complete
-}
-
-func (p Puzzle) getStateOfNodes() model.State {
-	// it's cheaper for us to just iterate all of the nodes
-	// and check for their validity than it is to check every
-	// (r, c) or filtering out to only be in the range
-	for _, n := range p.nodes {
-		switch s := p.GetNodeState(n.Coord()); s {
-		case model.Complete:
-
-		default:
-			return s
-		}
-	}
-
-	return model.NodesComplete
 }
 
 func (p Puzzle) getRandomCoord() model.NodeCoord {
