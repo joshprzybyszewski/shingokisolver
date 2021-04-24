@@ -53,9 +53,7 @@ func (an advancedNode) evaluate(ge model.GetEdger) model.EdgeState {
 		return model.EdgeUnknown
 	}
 
-	if myMin, ok := minArmByDir[an.dir]; !ok {
-		return model.EdgeUnknown
-	} else if an.index == myMin {
+	if minArmByDir[an.dir] == an.index {
 		return model.EdgeAvoided
 	}
 

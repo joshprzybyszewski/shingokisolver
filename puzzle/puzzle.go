@@ -111,9 +111,9 @@ func (p Puzzle) getNextTarget(
 	tas := make([][]model.TwoArms, len(p.nodes))
 	for i, n := range p.nodes {
 		tas[i] = n.GetFilteredOptions(
-			p.getOptionsForNode(i),
+			p.twoArmOptions[i],
 			&p.edges,
-			p.getNearby(i),
+			p.nearby[i],
 		)
 	}
 
@@ -130,16 +130,4 @@ func (p Puzzle) getNextTarget(
 		return model.Target{}, model.NodesComplete
 	}
 	return t, model.Incomplete
-}
-
-func (p Puzzle) getNearby(
-	index int,
-) map[model.Cardinal][]*model.Node {
-	return p.nearby[index]
-}
-
-func (p Puzzle) getOptionsForNode(
-	index int,
-) []model.TwoArms {
-	return p.twoArmOptions[index]
 }

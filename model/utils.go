@@ -7,32 +7,48 @@ func GetMinArmsByDir(
 		return nil, false
 	}
 
-	res := make(map[Cardinal]int8, 2)
-	res[ta[0].One.Heading] = ta[0].One.Len
-	res[ta[0].Two.Heading] = ta[0].Two.Len
+	// I am choosing to write more lines of code in this
+	// func so that I avoid a map iteration
+	dirA := ta[0].One.Heading
+	lenA := ta[0].One.Len
 
-	if len(ta) == 1 {
-		return res, true
-	}
+	dirB := ta[0].Two.Heading
+	lenB := ta[0].Two.Len
 
-	for i := 1; i < len(ta) && len(res) > 0; i++ {
-		for k, v := range res {
-			switch k {
-			case ta[i].One.Heading:
-				if v > ta[i].One.Len {
-					res[k] = ta[i].One.Len
-				}
-			case ta[i].Two.Heading:
-				if v > ta[i].Two.Len {
-					res[k] = ta[i].Two.Len
-				}
-			default:
-				delete(res, k)
+	for i := 1; i < len(ta) && (lenA > 0 || lenB > 0); i++ {
+		switch dirA {
+		case ta[i].One.Heading:
+			if lenA > ta[i].One.Len {
+				lenA = ta[i].One.Len
 			}
+		case ta[i].Two.Heading:
+			if lenA > ta[i].Two.Len {
+				lenA = ta[i].Two.Len
+			}
+		default:
+			// this TwoArms option doesn't have dirA.
+			lenA = 0
+		}
+
+		switch dirB {
+		case ta[i].One.Heading:
+			if lenB > ta[i].One.Len {
+				lenB = ta[i].One.Len
+			}
+		case ta[i].Two.Heading:
+			if lenB > ta[i].Two.Len {
+				lenB = ta[i].Two.Len
+			}
+		default:
+			// this TwoArms option doesn't have dirB.
+			lenB = 0
 		}
 	}
 
-	return res, false
+	return map[Cardinal]int8{
+		dirA: lenA,
+		dirB: lenB,
+	}, len(ta) == 1
 }
 
 func GetMaxArmsByDir(
