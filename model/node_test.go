@@ -54,33 +54,6 @@ func TestNodeTypeIsInvalidMotions(t *testing.T) {
 	}
 }
 
-func TestNodeCopy(t *testing.T) {
-	n := Node{
-		nType: BlackNode,
-		val:   4,
-	}
-
-	cpy1 := n.Copy()
-	assert.Equal(t, Node{
-		nType: BlackNode,
-		val:   4,
-	}, cpy1)
-
-	assert.Equal(t, int8(4), n.Value())
-	assert.Equal(t, int8(4), cpy1.Value())
-	assert.Equal(t, BlackNode, n.Type())
-	assert.Equal(t, BlackNode, cpy1.Type())
-
-	n.val = 5
-	n.nType = WhiteNode
-
-	assert.Equal(t, int8(5), n.Value())
-	assert.Equal(t, int8(4), cpy1.Value())
-	assert.Equal(t, WhiteNode, n.Type())
-	assert.Equal(t, BlackNode, cpy1.Type())
-
-}
-
 func TestIsInvalidMotions(t *testing.T) {
 	w5 := NewNode(NodeCoord{}, true, 5)
 
@@ -112,4 +85,54 @@ func TestIsInvalidMotions(t *testing.T) {
 	assert.True(t, b7.IsInvalidMotions(HeadDown, HeadUp))
 	assert.True(t, b7.IsInvalidMotions(HeadLeft, HeadRight))
 	assert.True(t, b7.IsInvalidMotions(HeadRight, HeadLeft))
+}
+
+func TestGetFilteredOptionsSimpleAvoids(t *testing.T) {
+	nEdges := 15
+	b3 := NewNode(NewCoord(7, 7), false, 3)
+	allTAs := BuildTwoArmOptions(b3, nEdges)
+
+	tge := testGetEdger{
+		numEdges: nEdges,
+	}
+	filtered := b3.GetFilteredOptions(allTAs, tge, nil)
+	assert.Equal(t, filtered, allTAs)
+
+	tge = testGetEdger{
+		numEdges: nEdges,
+		avoided: []EdgePair{
+			NewEdgePair(NewCoord(7, 7), HeadUp),
+		},
+	}
+	filtered = b3.GetFilteredOptions(allTAs, tge, nil)
+	assert.NotEqual(t, filtered, allTAs)
+	for _, ta := range filtered {
+		assert.NotEqual(t, HeadUp, ta.One.Heading)
+		assert.NotEqual(t, HeadUp, ta.Two.Heading)
+	}
+
+	tge = testGetEdger{
+		numEdges: nEdges,
+		avoided: []EdgePair{
+			NewEdgePair(NewCoord(7, 7), HeadUp),
+			NewEdgePair(NewCoord(7, 7), HeadLeft),
+		},
+	}
+	filtered = b3.GetFilteredOptions(allTAs, tge, nil)
+	assert.NotEqual(t, filtered, allTAs)
+	for i, ta := range filtered {
+		assert.NotEqual(t, HeadUp, ta.One.Heading, `issue with TwoArms at index %d: %v`, i, ta)
+		assert.NotEqual(t, HeadLeft, ta.One.Heading, `issue with TwoArms at index %d: %v`, i, ta)
+		assert.NotEqual(t, HeadUp, ta.Two.Heading, `issue with TwoArms at index %d: %v`, i, ta)
+		assert.NotEqual(t, HeadLeft, ta.Two.Heading, `issue with TwoArms at index %d: %v`, i, ta)
+
+		if ta.One.Heading != HeadRight {
+			// one of the two needs to HeadRight
+			assert.Equal(t, HeadRight, ta.Two.Heading, `issue with TwoArms at index %d: %v`, i, ta)
+		}
+		if ta.One.Heading != HeadDown {
+			// one of the two needs to HeadDown
+			assert.Equal(t, HeadDown, ta.Two.Heading, `issue with TwoArms at index %d: %v`, i, ta)
+		}
+	}
 }

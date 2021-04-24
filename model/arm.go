@@ -14,8 +14,5 @@ func (a Arm) String() string {
 func (a Arm) EndFrom(
 	start NodeCoord,
 ) NodeCoord {
-	for i := int8(0); i < a.Len; i++ {
-		start = start.Translate(a.Heading)
-	}
-	return start
+	return start.TranslateAlongArm(a)
 }

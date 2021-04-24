@@ -47,7 +47,7 @@ func New(
 	for _, n := range nodes {
 		nc := n.Coord()
 		for _, dir := range model.AllCardinals {
-			rs.Get(model.NewEdgePair(nc, dir)).addRulesForNode(n, dir)
+			rs.Get(model.NewEdgePair(nc, dir)).addSimpleNodeRules(n, dir)
 		}
 	}
 

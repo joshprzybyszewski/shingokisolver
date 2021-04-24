@@ -43,6 +43,29 @@ func newRules(
 	return &r
 }
 
+func getOtherEdgeInputs(
+	ge model.GetEdger,
+	coord model.NodeCoord,
+	myDir model.Cardinal,
+) []model.EdgePair {
+
+	otherInputs := make([]model.EdgePair, 0, 3)
+	for dir := range model.AllCardinalsMap {
+		if dir == myDir {
+			continue
+		}
+
+		ep := model.NewEdgePair(coord, dir)
+		if !ge.IsInBounds(ep) {
+			continue
+		}
+
+		otherInputs = append(otherInputs, ep)
+	}
+
+	return otherInputs
+}
+
 func (r *Rules) Affects() []model.EdgePair {
 	return r.couldAffect
 }
@@ -65,9 +88,6 @@ func (r *Rules) addAffected(otherEPs ...model.EdgePair) {
 	}
 }
 
-// TODO instead of relying on the execution of evals of other
-// nodes _after_ these rules have been checked, we should detect
-// what other nodes change when "I" go into the Exists/Avoided state.
 func (r *Rules) addEvaluation(eval evaluator) {
 	if r == nil {
 		return
@@ -77,6 +97,12 @@ func (r *Rules) addEvaluation(eval evaluator) {
 		panic(`dev error: addEvaluation should not have been nil`)
 	}
 
+	// type checking isn't necessarily the best decision, but
+	// I chose to do it here because there's currently only
+	// one type of evaluator that is a "must run". If there were
+	// more kinds, I would add another method to the interface
+	// called "must() bool" and then each evaluator could define
+	// it if they think they're a must-run.
 	if si, ok := eval.(standardInput); ok {
 		r.mustRunEvals = append(r.mustRunEvals, si)
 	} else {
@@ -100,8 +126,25 @@ func (r *Rules) evaluateState(
 	if r == nil {
 		return model.EdgeOutOfBounds
 	}
-	es := model.EdgeUnknown
 
+	// These are the rules that _must_ be evaluated every time.
+	// They are the "standard input" rules that protect against branching.
+	es := r.evaluateMusts(ge)
+
+	if fullCheck || es == model.EdgeUnknown {
+		// These rules are additional node-related rules on this edge.
+		// They need not be evaluated all of the time, but they can
+		// help detect when we know what an edge is.
+		return r.evaluateAdditionals(ge, es, fullCheck)
+	}
+
+	return es
+}
+
+func (r *Rules) evaluateMusts(
+	ge model.GetEdger,
+) model.EdgeState {
+	es := model.EdgeUnknown
 	for _, e := range r.mustRunEvals {
 		newES := e.evaluate(ge)
 		switch newES {
@@ -119,24 +162,27 @@ func (r *Rules) evaluateState(
 			return model.EdgeErrored
 		}
 	}
+	return es
+}
 
-	if !fullCheck && es != model.EdgeUnknown {
-		return es
-	}
-
+func (r *Rules) evaluateAdditionals(
+	ge model.GetEdger,
+	found model.EdgeState,
+	fullCheck bool,
+) model.EdgeState {
 	for _, e := range r.otherEvals {
 		newES := e.evaluate(ge)
 		switch newES {
 		case model.EdgeErrored:
 			return newES
 		case model.EdgeAvoided, model.EdgeExists:
-			if es != model.EdgeUnknown && es != newES {
+			if found != model.EdgeUnknown && found != newES {
 				return model.EdgeErrored
 			}
 			if !fullCheck {
 				return newES
 			}
-			es = newES
+			found = newES
 		case model.EdgeUnknown:
 			// ok
 		default:
@@ -144,11 +190,10 @@ func (r *Rules) evaluateState(
 			return model.EdgeErrored
 		}
 	}
-
-	return es
+	return found
 }
 
-func (r *Rules) addRulesForNode(
+func (r *Rules) addSimpleNodeRules(
 	node model.Node,
 	myDir model.Cardinal,
 ) {
@@ -160,27 +205,4 @@ func (r *Rules) addRulesForNode(
 	r.addEvaluation(
 		newSimpleNodeEvaluator(node, myDir),
 	)
-}
-
-func getOtherEdgeInputs(
-	ge model.GetEdger,
-	coord model.NodeCoord,
-	myDir model.Cardinal,
-) []model.EdgePair {
-
-	otherInputs := make([]model.EdgePair, 0, 3)
-	for dir := range model.AllCardinalsMap {
-		if dir == myDir {
-			continue
-		}
-
-		ep := model.NewEdgePair(coord, dir)
-		if !ge.IsInBounds(ep) {
-			continue
-		}
-
-		otherInputs = append(otherInputs, ep)
-	}
-
-	return otherInputs
 }

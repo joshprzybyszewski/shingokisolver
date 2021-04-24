@@ -3,7 +3,14 @@ package model
 import (
 	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
+
+func TestAllCards(t *testing.T) {
+	assert.Len(t, AllCardinals, 4)
+	assert.Len(t, AllCardinalsMap, 4)
+}
 
 func TestPerpendiculars(t *testing.T) {
 	tests := []struct {

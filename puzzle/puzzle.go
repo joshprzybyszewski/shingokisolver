@@ -12,11 +12,11 @@ type nodeWithOptions struct {
 }
 
 type Puzzle struct {
-	edges state.TriEdges
 	rules *logic.RuleSet
 
 	twoArmOptions []nodeWithOptions
 	nodes         []model.Node
+	edges         state.TriEdges
 }
 
 func NewPuzzle(

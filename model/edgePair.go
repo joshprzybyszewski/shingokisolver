@@ -50,14 +50,3 @@ func (ep EdgePair) Next(dir Cardinal) EdgePair {
 func (ep EdgePair) String() string {
 	return fmt.Sprintf("EdgePair{coord: %+v, dir: %s}", ep.NodeCoord, ep.Cardinal)
 }
-
-func (ep EdgePair) IsIn(
-	others ...EdgePair,
-) bool {
-	for _, o := range others {
-		if o == ep {
-			return true
-		}
-	}
-	return false
-}

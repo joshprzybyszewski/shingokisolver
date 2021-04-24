@@ -84,15 +84,6 @@ func performUpdates(
 			ep := model.NewEdgePair(n.Coord(), dir)
 
 			maxLen := maxArmsByDir[dir]
-			// if maxLen == 0 {
-			// 	ms = avoidEdge(&newState, ep, rq, rules)
-			// 	if ms != model.Incomplete && ms != model.Duplicate {
-			// 		panic(`what5`)
-			// 		// here...
-			// 		return Puzzle{}, ms
-			// 	}
-			// }
-
 			for i := int8(0); i <= maxLen; i++ {
 				ms = updateEdgeFromRules(
 					&newState,

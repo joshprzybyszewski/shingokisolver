@@ -34,10 +34,10 @@ func TestGimmesPuzzle90104(t *testing.T) {
 		t,
 		r,
 		map[model.Cardinal][]*model.Node{
-			model.HeadRight: []*model.Node{
+			model.HeadRight: {
 				nil,
 			},
-			model.HeadLeft: []*model.Node{
+			model.HeadLeft: {
 				nil,
 			},
 		},
@@ -137,7 +137,7 @@ func TestBuildTwoArmsCache(t *testing.T) {
 	)
 
 	expOptionsByNode := map[model.Node][]model.TwoArms{
-		model.NewNode(model.NewCoord(0, 1), false, 4): []model.TwoArms{{
+		model.NewNode(model.NewCoord(0, 1), false, 4): {{
 			One: model.Arm{
 				Heading: model.HeadLeft,
 				Len:     1,

@@ -124,12 +124,14 @@ func claimGimmes(
 		&obviousFilled.edges,
 	)
 
+	gnp := nl.toNodeGrid()
+
 	allNodeEdgesToCheck = make(map[model.Node]map[model.Cardinal]int8, len(obviousFilled.nodes))
 	for _, tao := range twoArmOptions {
 		allNodeEdgesToCheck[tao.Node] = model.GetMaxArmsByDir(tao.Options)
 		obviousFilled.rules.AddAllTwoArmRules(
 			tao.Node,
-			nl, // .toNodeGrid(),
+			gnp,
 			tao.Options,
 		)
 	}
