@@ -25,21 +25,41 @@ func TestGimmesPuzzle90104(t *testing.T) {
 
 	puzz, s := ClaimGimmes(fresh)
 	require.Equal(t, model.Incomplete, s)
+	t.Logf("puzz: \n%s\n", puzz)
 
 	// inspect an edge's rules to verify we built it correctly.
 	r := puzz.rules.Get(model.NewEdgePair(model.NewCoord(0, 11), model.HeadRight))
 	require.NotNil(t, r)
-	b5 := model.NewNode(model.NewCoord(0, 16), false, 5)
 	logic.AssertHasAdvancedNode(
 		t,
 		r,
 		map[model.Cardinal][]*model.Node{
 			model.HeadRight: []*model.Node{
-				nil, nil, nil, nil, nil,
-				&b5,
+				nil,
+			},
+			model.HeadLeft: []*model.Node{
+				nil,
 			},
 		},
-		[]model.TwoArms{{}, {}},
+		[]model.TwoArms{{
+			Two: model.Arm{
+				Heading: model.HeadLeft,
+				Len:     8,
+			},
+			One: model.Arm{
+				Heading: model.HeadRight,
+				Len:     1,
+			},
+		}, {
+			Two: model.Arm{
+				Heading: model.HeadLeft,
+				Len:     7,
+			},
+			One: model.Arm{
+				Heading: model.HeadRight,
+				Len:     2,
+			},
+		}},
 		model.NewNode(model.NewCoord(0, 13), true, 9),
 		model.HeadLeft,
 		1,

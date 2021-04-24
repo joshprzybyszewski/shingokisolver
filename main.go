@@ -93,7 +93,7 @@ func runStandardSolver() {
 	maxPerSize := 10
 
 	for _, pd := range allPDs {
-		if pd.NumEdges > 25 {
+		if pd.NumEdges > 20 {
 			continue
 		}
 

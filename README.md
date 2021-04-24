@@ -13,13 +13,13 @@ Using golang, I've built a solver. You can see it execute on cached puzzles with
 
 </startResults>
 
-#### Results from 04-23-2021
+#### Results from 04-24-2021
 
 |Num Edges|Sample Size|Average Duration|Average Allocations (KB)|Average Garbage Collections|Average GC Pause (ns)|
 |-:|-:|-:|-:|-:|-:|
-|2x2|1|64.699µs|12.648|0.00|0s|
-|5x5|11|582.926µs|97.188|0.00|0s|
-|7x7|11|1.219036ms|268.479|0.00|0s|
-|10x10|11|7.175004ms|1526.866|0.18|6.836µs|
-|15x15|11|40.571497ms|9448.500|3.00|515.6µs|
-|20x20|11|2.596785303s|538339.442|171.36|11.442594ms|
+|2x2|1|112.649µs|14.148|0.00|0s|
+|5x5|11|757.575µs|141.564|0.00|0s|
+|7x7|11|1.86995ms|409.808|0.00|0s|
+|10x10|11|9.976014ms|2165.457|0.45|13.266µs|
+|15x15|11|71.874175ms|16980.570|5.73|232.07µs|
+|20x20|11|596.526623ms|137849.810|45.91|1.866981ms|
