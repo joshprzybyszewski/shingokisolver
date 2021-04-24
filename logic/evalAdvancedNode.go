@@ -39,7 +39,9 @@ func (an advancedNode) evaluate(ge model.GetEdger) model.EdgeState {
 		return model.EdgeUnknown
 	}
 
-	// TODO come up with a way to cache off this filter...
+	// TODO come up with a way to cache off this filter so that rules on
+	// multiple edges can use the same results. But this may not work well
+	// at all in my system...
 	minArmByDir, isOnly := model.GetMinArmsByDir(
 		an.node.GetFilteredOptions(an.options, ge, an.nearbyNodes),
 	)

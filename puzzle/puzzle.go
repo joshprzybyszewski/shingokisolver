@@ -17,6 +17,7 @@ type Puzzle struct {
 	twoArmOptions []nodeWithOptions
 	nodes         []model.Node
 	edges         state.TriEdges
+	gn            model.GetNoder
 }
 
 func NewPuzzle(
@@ -36,6 +37,7 @@ func NewPuzzle(
 	edges := state.New(numEdges)
 	return Puzzle{
 		nodes: nodes,
+		gn:    (nodeList)(nodes).toNodeGrid(),
 		edges: edges,
 		rules: logic.New(&edges, numEdges, nodes),
 	}
@@ -46,6 +48,7 @@ func (p Puzzle) withNewState(
 ) Puzzle {
 	return Puzzle{
 		nodes:         p.nodes,
+		gn:            p.gn,
 		twoArmOptions: p.twoArmOptions,
 		edges:         edges,
 		rules:         p.rules,
@@ -79,12 +82,14 @@ func (p Puzzle) getNextTarget(
 		return model.Target{}, s
 	}
 
-	// TODO determine if there's a better data structure/it's worth it
-	var gn model.GetNoder = (nodeList)(p.nodes)
-
 	tas := make([][]model.TwoArms, len(p.nodes))
 	for i, n := range p.nodes {
-		tas[i] = getPossibleTwoArmsWithNewEdges(n, &p.edges, gn, p.twoArmOptions)
+		tas[i] = getPossibleTwoArmsWithNewEdges(
+			n,
+			&p.edges,
+			p.gn,
+			getOptionsForNode(n, p.twoArmOptions),
+		)
 	}
 
 	t, ok, err := model.GetNextTarget(
@@ -102,27 +107,27 @@ func (p Puzzle) getNextTarget(
 	return t, model.Incomplete
 }
 
+func getOptionsForNode(
+	node model.Node,
+	allTAOs []nodeWithOptions,
+) []model.TwoArms {
+	for _, o := range allTAOs {
+		if o.Node.Coord() == node.Coord() {
+			return o.Options
+		}
+	}
+	// We should never be calling getOptionsForNode for a node that isn't in options
+	panic(`not found!`)
+}
+
 func getPossibleTwoArmsWithNewEdges(
 	node model.Node,
 	ge model.GetEdger,
 	gn model.GetNoder,
-	allTAOs []nodeWithOptions,
+	allTAs []model.TwoArms,
 ) []model.TwoArms {
 
-	var tao nodeWithOptions
-	found := false
-	for _, o := range allTAOs {
-		if o.Node.Coord() == node.Coord() {
-			tao = o
-			found = true
-			break
-		}
-	}
-	if !found {
-		panic(`not found!`)
-	}
-
-	maxLensByDir := model.GetMaxArmsByDir(tao.Options)
-	nearbyNodes := model.BuildNearbyNodes(tao.Node, gn, maxLensByDir)
-	return tao.Node.GetFilteredOptions(tao.Options, ge, nearbyNodes)
+	maxLensByDir := model.GetMaxArmsByDir(allTAs)
+	nearbyNodes := model.BuildNearbyNodes(node, gn, maxLensByDir)
+	return node.GetFilteredOptions(allTAs, ge, nearbyNodes)
 }

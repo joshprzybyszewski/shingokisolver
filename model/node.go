@@ -73,7 +73,7 @@ func (n Node) GetFilteredOptions(
 
 func (n Node) isTwoArmsPossible(
 	ta TwoArms,
-	his map[Cardinal]headingInfo,
+	his []headingInfo,
 	ge GetEdger,
 ) bool {
 

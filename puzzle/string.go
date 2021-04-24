@@ -76,8 +76,6 @@ func (p Puzzle) Solution() string {
 func (p Puzzle) string(
 	includeXs bool,
 ) string {
-	// TODO consider if there's a better way
-	var gn model.GetNoder = (nodeList)(p.nodes)
 
 	var sb strings.Builder
 	sb.WriteString("\n")
@@ -86,7 +84,7 @@ func (p Puzzle) string(
 		for c := 0; c < p.numNodes(); c++ {
 			nc := model.NewCoordFromInts(r, c)
 			// write a node
-			if n, ok := gn.GetNode(nc); ok {
+			if n, ok := p.gn.GetNode(nc); ok {
 				nOut, isMax := getSumOutgoingStraightLines(nc, &p.edges)
 				if nOut == n.Value() {
 					addGreen(&sb, n.PrettyString())

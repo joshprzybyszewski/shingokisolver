@@ -5,7 +5,7 @@ import "github.com/joshprzybyszewski/shingokisolver/model"
 type nodeList []model.Node
 
 func (nl nodeList) GetNode(nc model.NodeCoord) (model.Node, bool) {
-	// TODO replace with something better?
+	// TODO replace nodeList with something better?
 	for _, n := range nl {
 		if n.Coord() == nc {
 			return n, true

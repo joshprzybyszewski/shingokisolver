@@ -1,22 +1,22 @@
 package model
 
 type headingInfo struct {
-	armLensDoubleAvoids        map[int8]struct{}
+	armLensDoubleAvoids        []bool
 	maxArmLenUntilIncomingEdge int8
 }
 
 func buildHeadingInfos(
 	node Node,
 	ge GetEdger,
-) map[Cardinal]headingInfo {
-	res := make(map[Cardinal]headingInfo, 4)
+) []headingInfo {
+	res := make([]headingInfo, 5)
 
 	nc := node.Coord()
 	maxLen := node.Value() - 1
 
 	for _, heading := range AllCardinals {
 		hInfo := headingInfo{
-			armLensDoubleAvoids: make(map[int8]struct{}, 2),
+			armLensDoubleAvoids: make([]bool, maxLen+1),
 		}
 		cur := nc.Translate(heading)
 		for i := int8(1); i <= maxLen; i++ {
@@ -36,7 +36,7 @@ func buildHeadingInfos(
 				break
 			}
 			if bothAvoided {
-				hInfo.armLensDoubleAvoids[i] = struct{}{}
+				hInfo.armLensDoubleAvoids[i] = true
 			}
 
 			cur = cur.Translate(heading)
@@ -54,7 +54,7 @@ func (hi headingInfo) isValidArm(arm Arm) bool {
 		return false
 	}
 
-	if _, ok := hi.armLensDoubleAvoids[arm.Len]; ok {
+	if hi.armLensDoubleAvoids[arm.Len] {
 		return false
 	}
 
