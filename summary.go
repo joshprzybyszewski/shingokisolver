@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"sort"
 	"strings"
@@ -39,6 +40,8 @@ func updateReadme(allSummaries []summary) {
 		os.Exit(1)
 	}
 
+	log.Printf("wrote latest results to %q", latestResultsFileName)
+
 	input, err := ioutil.ReadFile(readmeFileName)
 	if err != nil {
 		fmt.Println(err)
@@ -52,6 +55,7 @@ func updateReadme(allSummaries []summary) {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+	log.Printf("updated readme at %q", readmeFileName)
 }
 
 func buildAllSummariesOutput(
@@ -172,7 +176,7 @@ func buildSummaryBySize(
 	sb.WriteString("\n")
 	sb.WriteString("|-:|-:|-:|-:|-:|-:|\n")
 
-	for size := 1; size < state.MaxEdges; size++ {
+	for size := 1; size <= state.MaxEdges; size++ {
 		summaries, ok := summsBySize[size]
 		if !ok {
 			continue

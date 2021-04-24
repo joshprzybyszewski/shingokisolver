@@ -90,15 +90,13 @@ func runStandardSolver() {
 	allSummaries := make([]summary, 0, len(allPDs))
 
 	numBySize := make(map[int]int, 8)
-	maxPerSize := 10
+	maxPerSize := 100
 
 	for _, pd := range allPDs {
-		if pd.NumEdges > 20 {
-			continue
-		}
-
+		// if pd.NumEdges > 20 {
+		// 	continue
+		// }
 		// if !strings.Contains(pd.String(), `90,104`) {
-		// 	// 	// if !strings.Contains(pd.String(), `2,589,287`) {
 		// 	continue
 		// }
 
