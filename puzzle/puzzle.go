@@ -56,16 +56,50 @@ func (p Puzzle) numEdges() int {
 	return p.edges.NumEdges()
 }
 
-func (p Puzzle) GetNode(
-	nc model.NodeCoord,
-) (model.Node, bool) {
-	// TODO remove/replace with something faster?
-	for _, n := range p.nodes {
-		if n.Coord() == nc {
-			return n, true
-		}
+func (p Puzzle) GetNextTarget(
+	cur model.Target,
+) (model.Target, model.State) {
+	return p.getNextTarget(cur)
+}
+
+func (p Puzzle) GetFirstTarget() (model.Target, model.State) {
+	return p.getNextTarget(model.InvalidTarget)
+}
+
+func (p Puzzle) getNextTarget(
+	curTarget model.Target,
+) (model.Target, model.State) {
+	switch s := p.GetState(); s {
+	case model.Complete:
+		return model.Target{}, model.Complete
+	case model.Incomplete:
+		// continue on...
+	default:
+		// Note: If we're NodesComplete, then we'll let our caller handle it.
+		return model.Target{}, s
 	}
-	return model.Node{}, false
+
+	// TODO determine if there's a better data structure/it's worth it
+	var gn model.GetNoder = (nodeList)(p.nodes)
+
+	tas := make([][]model.TwoArms, len(p.nodes))
+	for i, n := range p.nodes {
+		tas[i] = getPossibleTwoArmsWithNewEdges(n, &p.edges, gn, p.twoArmOptions)
+	}
+
+	t, ok, err := model.GetNextTarget(
+		curTarget,
+		p.nodes,
+		tas,
+	)
+
+	if err != nil {
+		return model.Target{}, model.Violation
+	}
+	if !ok {
+		return model.Target{}, model.NodesComplete
+	}
+	return t, model.Incomplete
 }
 
 func getPossibleTwoArmsWithNewEdges(
@@ -85,74 +119,10 @@ func getPossibleTwoArmsWithNewEdges(
 		}
 	}
 	if !found {
-		// TODO fix this if it's a problem
 		panic(`not found!`)
 	}
 
-	nearbyNodes := model.BuildNearbyNodes(tao.Node, tao.Options, gn)
+	maxLensByDir := model.GetMaxArmsByDir(tao.Options)
+	nearbyNodes := model.BuildNearbyNodes(tao.Node, gn, maxLensByDir)
 	return tao.Node.GetFilteredOptions(tao.Options, ge, nearbyNodes)
-}
-
-func (p Puzzle) GetNextTarget(
-	cur model.Target,
-) (model.Target, model.State) {
-	switch s := p.GetState(); s {
-	case model.Complete:
-		return model.Target{}, model.Complete
-	case model.Incomplete:
-	// case model.Incomplete, model.NodesComplete:
-	// continue. we'll let out caller handle the 'nodes complete' state
-	// TODO handle the nodes complete state now!
-	default:
-		return model.Target{}, s
-	}
-
-	tas := make([][]model.TwoArms, len(p.nodes))
-	for i, n := range p.nodes {
-		tas[i] = getPossibleTwoArmsWithNewEdges(n, &p.edges, p, p.twoArmOptions)
-	}
-
-	t, ok, err := model.GetNextTarget(
-		cur,
-		p.nodes,
-		tas,
-	)
-
-	if err != nil {
-		return model.Target{}, model.Violation
-	}
-	if !ok {
-		return model.Target{}, model.NodesComplete
-	}
-	return t, model.Incomplete
-}
-
-func (p Puzzle) GetFirstTarget() (model.Target, model.State) {
-	switch s := p.GetState(); s {
-	case model.Complete:
-		return model.Target{}, model.Complete
-	case model.Incomplete:
-		// continue. we'll let out caller handle the 'nodes complete' state
-	default:
-		return model.Target{}, s
-	}
-
-	tas := make([][]model.TwoArms, len(p.nodes))
-	for i, n := range p.nodes {
-		tas[i] = getPossibleTwoArmsWithNewEdges(n, &p.edges, p, p.twoArmOptions)
-	}
-
-	t, ok, err := model.GetNextTarget(
-		model.InvalidTarget,
-		p.nodes,
-		tas,
-	)
-
-	if err != nil {
-		return model.Target{}, model.Violation
-	}
-	if !ok {
-		return model.Target{}, model.NodesComplete
-	}
-	return t, model.Incomplete
 }

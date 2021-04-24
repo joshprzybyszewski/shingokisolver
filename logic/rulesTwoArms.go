@@ -37,7 +37,7 @@ func (rs *RuleSet) AddAllTwoArmRules(
 	}
 
 	maxArms := model.GetMaxArmsByDir(options)
-	nearbyNodes := model.BuildNearbyNodes(node, options, gn)
+	nearbyNodes := model.BuildNearbyNodes(node, gn, maxArms)
 	allEPs := make([]model.EdgePair, 0, 8)
 	for dir, maxLen := range maxArms {
 		start := node.Coord()

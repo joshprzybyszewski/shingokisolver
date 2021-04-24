@@ -2,24 +2,22 @@ package model
 
 func BuildNearbyNodes(
 	myNode Node,
-	tas []TwoArms,
 	gn GetNoder,
+	maxLensByDir map[Cardinal]int8,
 ) map[Cardinal][]*Node {
-	// TODO see if I can't speed this up
-	maxLensByDir := GetMaxArmsByDir(tas)
 	otherNodes := make(map[Cardinal][]*Node, len(maxLensByDir))
 
 	for dir, maxLen := range maxLensByDir {
 		slice := make([]*Node, maxLen)
-		nc := myNode.Coord().Translate(dir)
+		nc := myNode.Coord()
 		lastNodeIndex := 0
 		for i := 1; i < len(slice); i++ {
+			nc = nc.Translate(dir)
 			n, ok := gn.GetNode(nc)
 			if ok {
 				lastNodeIndex = i
 				slice[i] = &n
 			}
-			nc = nc.Translate(dir)
 		}
 		otherNodes[dir] = slice[:lastNodeIndex+1]
 	}

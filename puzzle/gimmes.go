@@ -31,7 +31,8 @@ func buildTwoArmsCache(
 
 	for _, n := range allNodes {
 		allTAs := model.BuildTwoArmOptions(n, numEdges)
-		nearbyNodes := model.BuildNearbyNodes(n, allTAs, allNodes)
+		maxLensByDir := model.GetMaxArmsByDir(allTAs)
+		nearbyNodes := model.BuildNearbyNodes(n, allNodes, maxLensByDir)
 		options := n.GetFilteredOptions(allTAs, ge, nearbyNodes)
 		res = append(res, nodeWithOptions{
 			Node:    n,
@@ -44,58 +45,6 @@ func buildTwoArmsCache(
 	})
 
 	return res
-}
-
-type nodeList []model.Node
-
-func (nl nodeList) GetNode(nc model.NodeCoord) (model.Node, bool) {
-	// TODO replace with something better?
-	for _, n := range nl {
-		if n.Coord() == nc {
-			return n, true
-		}
-	}
-	return model.Node{}, false
-}
-
-func (nl nodeList) toNodeGrid() nodeGrid {
-	maxRowIndex := -1
-	maxColIndex := -1
-	for _, n := range nl {
-		if int(n.Coord().Row) > maxRowIndex {
-			maxRowIndex = int(n.Coord().Row)
-		}
-		if int(n.Coord().Col) > maxColIndex {
-			maxColIndex = int(n.Coord().Col)
-		}
-	}
-
-	ng := make(nodeGrid, maxRowIndex+1)
-	for r := 0; r < len(ng); r++ {
-		row := make([]*model.Node, maxColIndex+1)
-		ng[r] = row
-	}
-
-	for _, n := range nl {
-		n := n
-		ng[n.Coord().Row][n.Coord().Col] = &n
-	}
-
-	return ng
-}
-
-type nodeGrid [][]*model.Node
-
-func (ng nodeGrid) GetNode(nc model.NodeCoord) (model.Node, bool) {
-	if ng != nil && int(nc.Row) < len(ng) {
-		if nRow := ng[nc.Row]; nRow != nil && int(nc.Col) < len(nRow) {
-			if n := nRow[nc.Col]; n != nil {
-				return *n, true
-			}
-		}
-	}
-
-	return model.Node{}, false
 }
 
 func claimGimmes(
@@ -125,7 +74,7 @@ func claimGimmes(
 	)
 
 	// TODO figure out the best way to give a GetNoder to the rules
-	gnp := nl // .toNodeGrid()
+	var gnp model.GetNoder = nl
 
 	allNodeEdgesToCheck = make(map[model.Node]map[model.Cardinal]int8, len(obviousFilled.nodes))
 	for _, tao := range twoArmOptions {

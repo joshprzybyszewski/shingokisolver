@@ -9,7 +9,8 @@ import "github.com/joshprzybyszewski/shingokisolver/model"
 func (p Puzzle) GetNodeState(
 	nc model.NodeCoord,
 ) model.State {
-	n, ok := p.GetNode(nc)
+	var gn model.GetNoder = (nodeList)(p.nodes)
+	n, ok := gn.GetNode(nc)
 	if !ok {
 		// why are you asking about this?
 		return model.Unexpected
