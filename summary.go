@@ -194,7 +194,7 @@ func buildSummaryBySize(
 	sb.WriteString("Average Garbage Collections|")
 	sb.WriteString("Average GC Pause (ns)|")
 	sb.WriteString("\n")
-	sb.WriteString("|-:|-:|-:|-:|-:|-:|\n")
+	sb.WriteString("|-:|-|-:|-:|-:|-:|-:|\n")
 
 	for size := 1; size <= state.MaxEdges; size++ {
 		for _, d := range model.AllDifficulties {

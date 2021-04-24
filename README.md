@@ -16,7 +16,7 @@ Using golang, I've built a solver. You can see it execute on cached puzzles with
 #### Results from 04-24-2021
 
 |Num Edges|Difficulty|Sample Size|Average Duration|Average Allocations (KB)|Average Garbage Collections|Average GC Pause (ns)|
-|-:|-:|-:|-:|-:|-:|
+|-:|-|-:|-:|-:|-:|-:|
 |5x5|easy|25|493.359µs|89.169|0.00|0s|
 |5x5|medium|25|560.54µs|94.296|0.00|0s|
 |5x5|hard|25|546.944µs|93.827|0.00|0s|
