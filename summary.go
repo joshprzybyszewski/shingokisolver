@@ -192,7 +192,7 @@ func buildSummaryBySize(
 	sb.WriteString("Average Duration|")
 	sb.WriteString("Average Allocations (KB)|")
 	sb.WriteString("Average Garbage Collections|")
-	sb.WriteString("Average GC Pause (ns)|")
+	sb.WriteString("Average GC Pause|")
 	sb.WriteString("\n")
 	sb.WriteString("|-:|-|-:|-:|-:|-:|-:|\n")
 
