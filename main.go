@@ -13,6 +13,7 @@ import (
 	"github.com/joshprzybyszewski/shingokisolver/puzzle"
 	"github.com/joshprzybyszewski/shingokisolver/reader"
 	"github.com/joshprzybyszewski/shingokisolver/solvers"
+	"github.com/joshprzybyszewski/shingokisolver/state"
 )
 
 var (
@@ -98,14 +99,16 @@ func runStandardSolver() {
 		if _, ok := numBySize[pd.NumEdges]; !ok {
 			numBySize[pd.NumEdges] = make(map[model.Difficulty]int, 3)
 		}
-		if pd.NumEdges > 15 {
+		if pd.NumEdges > state.MaxEdges {
 			continue
 		}
-		// if !strings.Contains(pd.String(), `90,104`) {
+		// if !strings.Contains(pd.String(), `1,483,954`) {
 		// 	continue
 		// }
 
-		if numBySize[pd.NumEdges][pd.Difficulty] > sampleSize {
+		if numBySize[pd.NumEdges][pd.Difficulty] >= sampleSize {
+			continue
+		} else if pd.NumEdges > 20 && pd.Difficulty == model.Hard && numBySize[pd.NumEdges][pd.Difficulty] >= 1 {
 			continue
 		}
 

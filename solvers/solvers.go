@@ -3,6 +3,7 @@ package solvers
 import (
 	"errors"
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/joshprzybyszewski/shingokisolver/model"
@@ -18,6 +19,9 @@ func SolveConcurrently(
 	}
 
 	cs := concurrentSolver{}
+	defer func(cs *concurrentSolver) {
+		log.Printf("solved with %d queued payloads and %d processed.", cs.numPayloads, cs.numProcessed)
+	}(&cs)
 
 	return cs.solve(puzzle.NewPuzzle(size, nl))
 }

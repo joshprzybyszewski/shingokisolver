@@ -18,6 +18,15 @@ run:
 crun:
 	go run . -concurrency
 
+.PHONY: debugcrun
+debugcrun:
+	go run . -concurrency -includeProcessLogs
+
+
+.PHONY: cresults
+cresults:
+	go run . -concurrency -results
+
 .PHONY: results
 results:
 	go run . -results
