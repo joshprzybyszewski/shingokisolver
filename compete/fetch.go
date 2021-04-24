@@ -6,34 +6,14 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 
+	"github.com/joshprzybyszewski/shingokisolver/model"
 	"github.com/joshprzybyszewski/shingokisolver/reader"
 )
-
-type difficulty int
-
-const (
-	easy   difficulty = 0
-	medium difficulty = 1
-	hard   difficulty = 2
-)
-
-func (d difficulty) String() string {
-	switch d {
-	case easy:
-		return `easy`
-	case medium:
-		return `medium`
-	case hard:
-		return `hard`
-	default:
-		return `unknown difficulty`
-	}
-}
 
 type websitePuzzle struct {
 	secret map[string]string
 	id     string
-	pd     reader.PuzzleDef
+	pd     model.Definition
 }
 
 func (wp websitePuzzle) String() string {
@@ -42,7 +22,7 @@ func (wp websitePuzzle) String() string {
 
 func getPuzzle(
 	size int,
-	diff difficulty,
+	diff model.Difficulty,
 ) (websitePuzzle, error) {
 
 	secret := map[string]string{}
@@ -67,7 +47,8 @@ func getPuzzle(
 
 	pd, err := reader.FromWebsiteTask(
 		size,
-		puzzID, diff.String(),
+		diff,
+		puzzID,
 		taskString,
 	)
 	if err != nil {

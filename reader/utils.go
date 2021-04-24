@@ -2,9 +2,11 @@ package reader
 
 import (
 	"log"
+
+	"github.com/joshprzybyszewski/shingokisolver/model"
 )
 
-func GetAllPuzzles() []PuzzleDef {
+func GetAllPuzzles() []model.Definition {
 	allPuzzles, err := CachedWebsitePuzzles()
 	if err != nil {
 		log.Printf("CachedWebsitePuzzles err: %+v\n", err)
@@ -15,10 +17,10 @@ func GetAllPuzzles() []PuzzleDef {
 }
 
 func GetPuzzleWithSize(
-	all []PuzzleDef,
+	all []model.Definition,
 	numEdges int,
-) []PuzzleDef {
-	filtered := make([]PuzzleDef, 0, len(all))
+) []model.Definition {
+	filtered := make([]model.Definition, 0, len(all))
 	for _, pd := range all {
 		if pd.NumEdges == numEdges {
 			filtered = append(filtered, pd)

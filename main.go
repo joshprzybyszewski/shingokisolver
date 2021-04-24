@@ -9,12 +9,15 @@ import (
 	"time"
 
 	"github.com/joshprzybyszewski/shingokisolver/compete"
+	"github.com/joshprzybyszewski/shingokisolver/model"
 	"github.com/joshprzybyszewski/shingokisolver/puzzle"
 	"github.com/joshprzybyszewski/shingokisolver/reader"
 	"github.com/joshprzybyszewski/shingokisolver/solvers"
 )
 
 var (
+	runConcurrently = flag.Bool(`concurrency`, false, `set to true to enable concurrency in the solver`)
+
 	addPprof            = flag.Bool(`includeProfile`, false, `set if you'd like to include a pprof output`)
 	includeProgressLogs = flag.Bool(`includeProcessLogs`, false, `set to see each solver's progress logs`)
 	shouldWriteResults  = flag.Bool(`results`, false, `set to update the results in the READMEs`)
@@ -89,18 +92,20 @@ func runStandardSolver() {
 	allPDs := reader.GetAllPuzzles()
 	allSummaries := make([]summary, 0, len(allPDs))
 
-	numBySize := make(map[int]int, 8)
-	maxPerSize := 10
+	numBySize := make(map[int]map[model.Difficulty]int, 8)
 
 	for _, pd := range allPDs {
-		// if pd.NumEdges > 20 {
-		// 	continue
-		// }
+		if _, ok := numBySize[pd.NumEdges]; !ok {
+			numBySize[pd.NumEdges] = make(map[model.Difficulty]int, 3)
+		}
+		if pd.NumEdges > 15 {
+			continue
+		}
 		// if !strings.Contains(pd.String(), `90,104`) {
 		// 	continue
 		// }
 
-		if numBySize[pd.NumEdges] > maxPerSize {
+		if numBySize[pd.NumEdges][pd.Difficulty] > sampleSize {
 			continue
 		}
 
@@ -110,7 +115,7 @@ func runStandardSolver() {
 		// collect garbage now, which should be that entire puzzle that we solved:#
 		runtime.GC()
 
-		numBySize[pd.NumEdges]++
+		numBySize[pd.NumEdges][pd.Difficulty]++
 	}
 
 	if *shouldWriteResults {
@@ -119,15 +124,20 @@ func runStandardSolver() {
 }
 
 func runSolver(
-	pd reader.PuzzleDef,
+	pd model.Definition,
 ) summary {
 
 	log.Printf("Starting to solve %q...\n", pd.String())
 
+	solve := solvers.Solve
+	if *runConcurrently {
+		solve = solvers.SolveConcurrently
+	}
+
 	var prevMemStats runtime.MemStats
 	runtime.ReadMemStats(&prevMemStats)
 
-	sr, err := solvers.Solve(
+	sr, err := solve(
 		pd.NumEdges,
 		pd.Nodes,
 	)
@@ -138,7 +148,7 @@ func runSolver(
 	unsolvedStr := puzzle.NewPuzzle(
 		pd.NumEdges,
 		pd.Nodes,
-	).String()
+	).BlandString()
 
 	if err != nil {
 		log.Fatalf("Could not solve! %v: %s\n%s\n\n\n", err, sr, unsolvedStr)
@@ -147,13 +157,14 @@ func runSolver(
 	}
 
 	return summary{
-		Name:     pd.String(),
-		NumEdges: pd.NumEdges,
-		Duration: sr.Duration,
-		heapSize: rms.TotalAlloc - prevMemStats.TotalAlloc,
-		numGCs:   rms.NumGC - prevMemStats.NumGC,
-		pauseNS:  rms.PauseTotalNs - prevMemStats.PauseTotalNs,
-		Unsolved: unsolvedStr,
-		Solution: sr.Puzzle.Solution(),
+		Name:       pd.String(),
+		NumEdges:   pd.NumEdges,
+		Difficulty: pd.Difficulty,
+		Duration:   sr.Duration,
+		heapSize:   rms.TotalAlloc - prevMemStats.TotalAlloc,
+		numGCs:     rms.NumGC - prevMemStats.NumGC,
+		pauseNS:    rms.PauseTotalNs - prevMemStats.PauseTotalNs,
+		Unsolved:   unsolvedStr,
+		Solution:   sr.Puzzle.BlandSolution(),
 	}
 }

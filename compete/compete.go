@@ -6,26 +6,22 @@ import (
 	"runtime"
 	"time"
 
+	"github.com/joshprzybyszewski/shingokisolver/model"
 	"github.com/joshprzybyszewski/shingokisolver/puzzle"
 	"github.com/joshprzybyszewski/shingokisolver/solvers"
 )
 
 func PopulateCache(
 	size int,
+	diff model.Difficulty,
 	numDesired int,
 ) {
 	for numGot := 0; numGot < numDesired; {
-		for _, d := range []difficulty{
-			easy,
-			medium,
-			hard,
-		} {
-			_, err := getPuzzle(size, d)
-			if err != nil {
-				log.Printf("getPuzzle errored: %+v", err)
-			}
-			numGot++
+		_, err := getPuzzle(size, diff)
+		if err != nil {
+			log.Printf("getPuzzle errored: %+v", err)
 		}
+		numGot++
 	}
 }
 
@@ -35,10 +31,10 @@ func Run() {
 	// dangerous, I know.
 	// debug.SetGCPercent(-1)
 
-	for _, d := range []difficulty{
-		easy,
-		medium,
-		hard,
+	for _, d := range []model.Difficulty{
+		model.Easy,
+		model.Medium,
+		model.Hard,
 	} {
 		for _, s := range []int{
 			// 5,
@@ -65,7 +61,7 @@ func Run() {
 
 func getAndSubmitPuzzle(
 	size int,
-	diff difficulty,
+	diff model.Difficulty,
 ) {
 	err := initLogs(fmt.Sprintf("%s_%dx%d/", diff, size, size))
 	if err != nil {

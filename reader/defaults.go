@@ -2,8 +2,8 @@ package reader
 
 import "github.com/joshprzybyszewski/shingokisolver/model"
 
-func DefaultPuzzles() []PuzzleDef {
-	pds := []PuzzleDef{{
+func DefaultPuzzles() []model.Definition {
+	pds := []model.Definition{{
 		Description: `Manual 2x2 (contrived example)`,
 		NumEdges:    2,
 		Nodes: []model.NodeLocation{{
@@ -14,6 +14,7 @@ func DefaultPuzzles() []PuzzleDef {
 		}},
 	}, {
 		Description: `Manual Easy`,
+		Difficulty:  model.Easy,
 		NumEdges:    5,
 		Nodes: []model.NodeLocation{{
 			Row:     3,

@@ -25,13 +25,19 @@ var (
 
 func FromWebsiteTask(
 	numEdges int,
-	puzzID, difficulty string,
+	difficulty model.Difficulty,
+	puzzID string,
 	input string,
-) (PuzzleDef, error) {
+) (model.Definition, error) {
 
-	go cacheTaskToFile(numEdges, puzzID, difficulty, input)
+	go cacheTaskToFile(numEdges, puzzID, difficulty.String(), input)
 
-	return fromWebsiteTask(numEdges, puzzID, input)
+	return fromWebsiteTask(
+		numEdges,
+		difficulty,
+		puzzID,
+		input,
+	)
 }
 
 func cacheTaskToFile(
@@ -56,9 +62,10 @@ func cacheTaskToFile(
 
 func fromWebsiteTask(
 	numEdges int,
+	diff model.Difficulty,
 	puzzID string,
 	input string,
-) (PuzzleDef, error) {
+) (model.Definition, error) {
 
 	// This func is based on the following source, grabbed from the js of the website:
 	/*
@@ -82,9 +89,10 @@ func fromWebsiteTask(
 		}
 	*/
 
-	pd := PuzzleDef{
+	pd := model.Definition{
 		NumEdges:    numEdges,
 		Description: `PuzzleID: ` + puzzID,
+		Difficulty:  diff,
 	}
 	numNodes := numEdges + 1
 	maxNodexIndex := numNodes * numNodes
@@ -96,7 +104,7 @@ func fromWebsiteTask(
 			if err == io.EOF {
 				break
 			}
-			return PuzzleDef{}, fmt.Errorf(`problem on ReadByte: %+v`, err)
+			return model.Definition{}, fmt.Errorf(`problem on ReadByte: %+v`, err)
 		}
 
 		if b != websiteWhiteNode && b != websiteBlackNode {
@@ -123,18 +131,18 @@ func fromWebsiteTask(
 			if err == io.EOF {
 				shouldBreak = true
 			} else {
-				return PuzzleDef{}, fmt.Errorf(`problem on ReadByte: %+v`, err)
+				return model.Definition{}, fmt.Errorf(`problem on ReadByte: %+v`, err)
 			}
 		}
 
 		err = reader.UnreadByte()
 		if err != nil {
-			return PuzzleDef{}, fmt.Errorf(`problem on UnreadByte: %+v`, err)
+			return model.Definition{}, fmt.Errorf(`problem on UnreadByte: %+v`, err)
 		}
 
 		val, err := strconv.Atoi(string(value))
 		if err != nil {
-			return PuzzleDef{}, fmt.Errorf(`expected value from bytes: %+v`, err)
+			return model.Definition{}, fmt.Errorf(`expected value from bytes: %+v`, err)
 		}
 
 		// read the next char(s) as an int

@@ -61,20 +61,76 @@ func addDim(
 	sb.WriteString(end)
 }
 
+type colorWriter interface {
+	addNormal(*strings.Builder, string)
+	addGreen(*strings.Builder, string)
+	addRed(*strings.Builder, string)
+	addYellow(*strings.Builder, string)
+	addDim(*strings.Builder, string)
+}
+
+type writer int
+
+const (
+	noColor  writer = 0
+	useColor writer = 1
+)
+
+func (w writer) addNormal(sb *strings.Builder, t string) {
+	addNormal(sb, t)
+}
+func (w writer) addGreen(sb *strings.Builder, t string) {
+	if w == noColor {
+		addNormal(sb, t)
+		return
+	}
+	addGreen(sb, t)
+}
+func (w writer) addRed(sb *strings.Builder, t string) {
+	if w == noColor {
+		addNormal(sb, t)
+		return
+	}
+	addRed(sb, t)
+}
+func (w writer) addYellow(sb *strings.Builder, t string) {
+	if w == noColor {
+		addNormal(sb, t)
+		return
+	}
+	addYellow(sb, t)
+}
+func (w writer) addDim(sb *strings.Builder, t string) {
+	if w == noColor {
+		addNormal(sb, t)
+		return
+	}
+	addDim(sb, t)
+}
+
 func (p Puzzle) numNodes() int {
 	return p.numEdges() + 1
 }
 
 func (p Puzzle) String() string {
-	return p.string(true)
+	return p.string(true, useColor)
 }
 
 func (p Puzzle) Solution() string {
-	return p.string(false)
+	return p.string(false, useColor)
+}
+
+func (p Puzzle) BlandString() string {
+	return p.string(true, noColor)
+}
+
+func (p Puzzle) BlandSolution() string {
+	return p.string(false, noColor)
 }
 
 func (p Puzzle) string(
 	includeXs bool,
+	cw colorWriter,
 ) string {
 
 	var sb strings.Builder
@@ -87,29 +143,29 @@ func (p Puzzle) string(
 			if n, ok := p.gn.GetNode(nc); ok {
 				nOut, isMax := getSumOutgoingStraightLines(nc, &p.edges)
 				if nOut == n.Value() {
-					addGreen(&sb, n.PrettyString())
+					cw.addGreen(&sb, n.PrettyString())
 				} else if isMax {
-					addRed(&sb, n.PrettyString())
+					cw.addRed(&sb, n.PrettyString())
 				} else if nOut, nAvoid := getNumOutEdges(nc, &p.edges); nOut > 2 {
-					addRed(&sb, n.PrettyString())
+					cw.addRed(&sb, n.PrettyString())
 				} else if nOut == 2 {
-					addYellow(&sb, n.PrettyString())
+					cw.addYellow(&sb, n.PrettyString())
 				} else if nAvoid+nOut == 4 || nAvoid == 3 {
-					addRed(&sb, n.PrettyString())
+					cw.addRed(&sb, n.PrettyString())
 				} else {
-					addNormal(&sb, n.PrettyString())
+					cw.addNormal(&sb, n.PrettyString())
 				}
 			} else {
 				if nOut, nAvoid := getNumOutEdges(nc, &p.edges); nOut > 2 {
-					addRed(&sb, emptyNode)
+					cw.addRed(&sb, emptyNode)
 				} else if nOut == 2 {
-					addGreen(&sb, emptyNode)
+					cw.addGreen(&sb, emptyNode)
 				} else if (nOut != 0 && nAvoid+nOut == 4) || nAvoid == 3 {
-					addRed(&sb, emptyNode)
+					cw.addRed(&sb, emptyNode)
 				} else if nOut == 1 {
-					addYellow(&sb, emptyNode)
+					cw.addYellow(&sb, emptyNode)
 				} else {
-					addNormal(&sb, emptyNode)
+					cw.addNormal(&sb, emptyNode)
 				}
 			}
 
@@ -118,17 +174,17 @@ func (p Puzzle) string(
 			if p.edges.IsInBounds(ep) {
 				switch p.edges.GetEdge(ep) {
 				case model.EdgeExists:
-					addGreen(&sb, `---`)
+					cw.addGreen(&sb, `---`)
 				case model.EdgeAvoided:
 					if includeXs {
-						addDim(&sb, ` X `)
+						cw.addDim(&sb, ` X `)
 					} else {
 						sb.WriteString(`   `)
 					}
 				case model.EdgeUnknown:
 					sb.WriteString(`   `)
 				default:
-					addRed(&sb, `???`)
+					cw.addRed(&sb, `???`)
 				}
 			}
 
@@ -138,17 +194,17 @@ func (p Puzzle) string(
 			if p.edges.IsInBounds(ep) {
 				switch p.edges.GetEdge(ep) {
 				case model.EdgeExists:
-					addGreen(&below, ` | `)
+					cw.addGreen(&below, ` | `)
 				case model.EdgeAvoided:
 					if includeXs {
-						addDim(&below, ` X `)
+						cw.addDim(&below, ` X `)
 					} else {
 						below.WriteString(`   `)
 					}
 				case model.EdgeUnknown:
 					below.WriteString(`   `)
 				default:
-					addRed(&below, `???`)
+					cw.addRed(&below, `???`)
 				}
 			}
 			below.WriteString(`    `)

@@ -12,13 +12,13 @@ func TestFromWebsiteTask(t *testing.T) {
 	testCases := []struct {
 		puzzID   string
 		task     string
-		expPD    PuzzleDef
+		expPD    model.Definition
 		numEdges int
 	}{{
 		numEdges: 5,
 		puzzID:   `5,258,416`,
 		task:     `B5eW2B2bB4cB2fB3eB3h`,
-		expPD: PuzzleDef{
+		expPD: model.Definition{
 			Description: `PuzzleID: 5,258,416`,
 			NumEdges:    5,
 			Nodes: []model.NodeLocation{{
@@ -61,14 +61,14 @@ func TestFromWebsiteTask(t *testing.T) {
 	}}
 
 	for _, tc := range testCases {
-		actPD, err := fromWebsiteTask(tc.numEdges, tc.puzzID, tc.task)
+		actPD, err := fromWebsiteTask(tc.numEdges, model.Hard, tc.puzzID, tc.task)
 		require.NoError(t, err)
 		assert.Equal(t, tc.expPD, actPD)
 	}
 }
 
 func TestFromWebsiteTaskEdgeCase(t *testing.T) {
-	actPD, err := fromWebsiteTask(7, `6,483,955`, `fB3dB4cW4B3cB2B2hB3aB6bB4eB4dB2gB2bW2eB3`)
+	actPD, err := fromWebsiteTask(7, model.Hard, `6,483,955`, `fB3dB4cW4B3cB2B2hB3aB6bB4eB4dB2gB2bW2eB3`)
 	require.NoError(t, err)
 	assert.Contains(t, actPD.Nodes, model.NodeLocation{
 		// b 3 at 7,7

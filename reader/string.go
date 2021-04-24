@@ -3,7 +3,6 @@ package reader
 
 import (
 	"errors"
-	"fmt"
 	"strconv"
 	"strings"
 
@@ -16,18 +15,8 @@ const (
 	WhiteNode byte = 'w'
 )
 
-type PuzzleDef struct {
-	Description string
-	Nodes       []model.NodeLocation
-	NumEdges    int
-}
-
-func (pd PuzzleDef) String() string {
-	return fmt.Sprintf("%dx%d (%s)", pd.NumEdges, pd.NumEdges, pd.Description)
-}
-
-func FromString(input string) (PuzzleDef, error) {
-	pd := PuzzleDef{}
+func FromString(input string) (model.Definition, error) {
+	pd := model.Definition{}
 	lines := strings.Split(input, "\n")
 	pd.NumEdges = len(lines) - 1
 
@@ -43,13 +32,13 @@ func FromString(input string) (PuzzleDef, error) {
 				continue
 			}
 			if (b != BlackNode) && (b != WhiteNode) {
-				return PuzzleDef{}, errors.New(`unexpected byte: `)
+				return model.Definition{}, errors.New(`unexpected byte: `)
 			}
 			isWhite := b == WhiteNode
 			var value []byte
 			b, err = r.ReadByte()
 			if err != nil {
-				return PuzzleDef{}, errors.New(`expected bytes for value: `)
+				return model.Definition{}, errors.New(`expected bytes for value: `)
 			}
 			value = append(value, b)
 			b, err = r.ReadByte()
@@ -57,7 +46,7 @@ func FromString(input string) (PuzzleDef, error) {
 				if b == emptyNode || b == BlackNode || b == WhiteNode {
 					err = r.UnreadByte()
 					if err != nil {
-						return PuzzleDef{}, errors.New(`problem on UnreadByte: `)
+						return model.Definition{}, errors.New(`problem on UnreadByte: `)
 					}
 				} else {
 					value = append(value, b)
@@ -65,7 +54,7 @@ func FromString(input string) (PuzzleDef, error) {
 			}
 			val, err := strconv.Atoi(string(value))
 			if err != nil {
-				return PuzzleDef{}, errors.New(`expected value from bytes: `)
+				return model.Definition{}, errors.New(`expected value from bytes: `)
 			}
 
 			pd.Nodes = append(pd.Nodes, model.NodeLocation{
@@ -76,7 +65,7 @@ func FromString(input string) (PuzzleDef, error) {
 			})
 		}
 		if colIndex != len(lines) {
-			return PuzzleDef{}, errors.New(`a line had a wrong number of nodes in it`)
+			return model.Definition{}, errors.New(`a line had a wrong number of nodes in it`)
 		}
 
 	}

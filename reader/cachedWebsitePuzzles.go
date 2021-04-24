@@ -4,14 +4,16 @@ import (
 	"io/ioutil"
 	"strconv"
 	"strings"
+
+	"github.com/joshprzybyszewski/shingokisolver/model"
 )
 
-func CachedWebsitePuzzles() ([]PuzzleDef, error) {
+func CachedWebsitePuzzles() ([]model.Definition, error) {
 	file, err := ioutil.ReadFile(websiteCachePuzzlesFilename)
 	if err != nil {
 		return nil, err
 	}
-	pds := []PuzzleDef{}
+	pds := []model.Definition{}
 	includedPuzzleIDs := map[string]struct{}{}
 
 	lines := strings.Split(string(file), "\n")
@@ -24,14 +26,18 @@ func CachedWebsitePuzzles() ([]PuzzleDef, error) {
 		if err != nil {
 			return nil, err
 		}
-		puzzID := parts[1]
+		desc := parts[1]
 		task := parts[2]
+
+		descParts := strings.Split(desc, "_")
+		puzzID := descParts[0]
+		diff := model.NewDifficulty(descParts[1])
 
 		if _, ok := includedPuzzleIDs[puzzID]; ok {
 			continue
 		}
 
-		pd, err := fromWebsiteTask(numEdges, puzzID, task)
+		pd, err := fromWebsiteTask(numEdges, diff, puzzID, task)
 		if err != nil {
 			return nil, err
 		}

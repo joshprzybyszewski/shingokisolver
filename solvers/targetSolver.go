@@ -2,7 +2,6 @@ package solvers
 
 import (
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/joshprzybyszewski/shingokisolver/model"
@@ -30,14 +29,43 @@ func doSolve(
 	puzz puzzle.Puzzle,
 ) (puzzle.Puzzle, bool) {
 
+	puzz, target, state := claimGimmes(puzz)
+	switch state {
+	case model.Complete:
+		return puzz, true
+	case model.NodesComplete:
+		// ok, the nodes are complete, but we're not solved.
+		// don't "aim at target" below, but start flipping edges
+		// now.
+		return firstFlip(
+			puzz,
+		)
+	case model.Incomplete:
+		// continue on
+	default:
+		printPuzzleUpdate(`claimGimmes issue!`, puzz, target)
+		return puzzle.Puzzle{}, false
+	}
+
+	// Now we're going to start descending through the nodes, aiming at our next
+	// target.
+	return solveAimingAtTarget(
+		puzz,
+		target,
+	)
+}
+
+func claimGimmes(
+	puzz puzzle.Puzzle,
+) (puzzle.Puzzle, model.Target, model.State) {
+
 	// claim all of the gimmes we can
-	puzz, s := puzzle.ClaimGimmes(puzz)
-	switch s {
+	puzz, state := puzzle.ClaimGimmes(puzz)
+	switch state {
 	case model.Incomplete, model.Complete:
 		printPuzzleUpdate(`ClaimGimmes`, puzz, model.Target{})
 	default:
-		log.Printf("ClaimGimmes() got unexpected state: %s", s)
-		return puzzle.Puzzle{}, false
+		return puzzle.Puzzle{}, model.Target{}, state
 	}
 
 	// Get the first node to target in the puzzle
@@ -45,19 +73,11 @@ func doSolve(
 	switch state {
 	case model.Complete:
 		// already solved!
-		return puzz, true
-	case model.NodesComplete:
-		// All of the Nodes are solved just by the gimmes. Skip looking
-		// at all of the "targets" and move forward into the flipping logic
-		return firstFlip(
-			puzz,
-		)
+		return puzz, model.Target{}, state
 	case model.Incomplete:
 		printPuzzleUpdate(`GetFirstTarget`, puzz, target)
 	default:
-		printPuzzleUpdate(`GetFirstTarget issue!`, puzz, model.Target{})
-		// Something's wrong
-		return puzzle.Puzzle{}, false
+		return puzzle.Puzzle{}, model.Target{}, state
 	}
 
 	// it's likely that a lot of the nodes will be able to be claimed right
@@ -69,33 +89,23 @@ func doSolve(
 		puzz, ok = addTwoArms(puzz, target.Node.Coord(), target.Options[0])
 		if !ok {
 			printPuzzleUpdate(`addTwoArms issue!`, puzz, target)
-			return puzzle.Puzzle{}, false
+			return puzzle.Puzzle{}, model.Target{}, model.Violation
 		}
 
 		target, state = puzz.GetNextTarget(target)
 		switch state {
 		case model.Complete:
 			// already solved!
-			return puzz, true
+			return puzz, model.Target{}, state
 		case model.NodesComplete:
-			// ok, the nodes are complete, but we're not solved.
-			// don't "aim at target" below, but start flipping edges
-			// now.
-			return firstFlip(
-				puzz,
-			)
+			return puzz, model.Target{}, state
 		case model.Violation:
 			printPuzzleUpdate(`GetNextTarget issue!`, puzz, target)
-			return puzzle.Puzzle{}, false
+			return puzzle.Puzzle{}, model.Target{}, state
 		}
 	}
 
-	// Now we're going to start descending through the nodes, aiming at our next
-	// target.
-	return solveAimingAtTarget(
-		puzz,
-		target,
-	)
+	return puzz, target, model.Incomplete
 }
 
 func solveAimingAtTarget(

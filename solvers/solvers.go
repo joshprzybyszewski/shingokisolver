@@ -9,6 +9,19 @@ import (
 	"github.com/joshprzybyszewski/shingokisolver/puzzle"
 )
 
+func SolveConcurrently(
+	size int,
+	nl []model.NodeLocation,
+) (SolvedResults, error) {
+	if len(nl) == 0 {
+		return SolvedResults{}, errors.New(`cannot solve a puzzle with no constraints`)
+	}
+
+	cs := concurrentSolver{}
+
+	return cs.solve(puzzle.NewPuzzle(size, nl))
+}
+
 func Solve(
 	size int,
 	nl []model.NodeLocation,

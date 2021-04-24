@@ -14,6 +14,10 @@ debug:
 run:
 	go run . 
 
+.PHONY: crun
+crun:
+	go run . -concurrency
+
 .PHONY: results
 results:
 	go run . -results

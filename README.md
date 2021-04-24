@@ -15,12 +15,17 @@ Using golang, I've built a solver. You can see it execute on cached puzzles with
 
 #### Results from 04-24-2021
 
-|Num Edges|Sample Size|Average Duration|Average Allocations (KB)|Average Garbage Collections|Average GC Pause (ns)|
+|Num Edges|Difficulty|Sample Size|Average Duration|Average Allocations (KB)|Average Garbage Collections|Average GC Pause (ns)|
 |-:|-:|-:|-:|-:|-:|
-|2x2|1|38.022µs|13.609|0.00|0s|
-|5x5|11|571.608µs|95.036|0.00|0s|
-|7x7|11|1.368588ms|227.580|0.00|0s|
-|10x10|11|5.131716ms|897.665|0.09|2.008µs|
-|15x15|11|35.69262ms|6737.759|1.82|85.01µs|
-|20x20|11|254.156415ms|47263.849|14.82|497.808µs|
-|25x25|11|1.508781847s|297822.812|81.45|2.966065ms|
+|5x5|easy|26|395.174µs|89.107|0.00|0s|
+|5x5|medium|26|405.068µs|93.618|0.00|0s|
+|5x5|hard|26|405.183µs|93.717|0.00|0s|
+|7x7|easy|26|1.059511ms|227.793|0.00|0s|
+|7x7|medium|26|1.166019ms|223.474|0.00|0s|
+|7x7|hard|26|1.382657ms|259.949|0.00|0s|
+|10x10|easy|7|3.542988ms|639.730|0.00|0s|
+|10x10|medium|5|3.865333ms|620.036|0.00|0s|
+|10x10|hard|5|5.048951ms|977.636|0.00|0s|
+|15x15|easy|4|12.548349ms|2396.385|0.25|10.918µs|
+|15x15|medium|4|14.715121ms|3028.678|0.25|10.046µs|
+|15x15|hard|4|46.012142ms|9566.773|3.25|139.971µs|

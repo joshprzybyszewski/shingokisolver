@@ -21,7 +21,7 @@ w2b2.b2.b2..
 	actPD, err := FromString(input)
 	require.NoError(t, err)
 
-	expPD := PuzzleDef{
+	expPD := model.Definition{
 		NumEdges: 7,
 		Nodes: []model.NodeLocation{{
 			Row:     0,
