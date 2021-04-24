@@ -124,7 +124,8 @@ func claimGimmes(
 		&obviousFilled.edges,
 	)
 
-	gnp := nl.toNodeGrid()
+	// TODO figure out the best way to give a GetNoder to the rules
+	gnp := nl // .toNodeGrid()
 
 	allNodeEdgesToCheck = make(map[model.Node]map[model.Cardinal]int8, len(obviousFilled.nodes))
 	for _, tao := range twoArmOptions {
