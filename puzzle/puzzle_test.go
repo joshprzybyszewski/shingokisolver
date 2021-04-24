@@ -213,3 +213,77 @@ func TestGetEdgesFromNode(t *testing.T) {
 	assert.Equal(t, int8(2), nOut)
 	assert.False(t, isMax)
 }
+
+func TestGetFilteredOptionsDoubleAvoid(t *testing.T) {
+	puzz := NewPuzzle(10, []model.NodeLocation{{
+		Row:     10,
+		Col:     2,
+		Value:   6,
+		IsWhite: false,
+	}})
+	puzz, ms := ClaimGimmes(puzz)
+	require.Equal(t, model.Incomplete, ms)
+
+	puzz, ms = AvoidEdge(puzz, model.NewEdgePair(model.NewCoord(10, 0), model.HeadRight))
+	require.Equal(t, model.Incomplete, ms)
+	t.Logf("puzz: \n%s\n", puzz)
+
+	ft, ms := puzz.GetFirstTarget()
+	require.Equal(t, model.Incomplete, ms)
+	assert.Equal(t, model.NewNode(model.NewCoord(10, 2), false, 6), ft.Node)
+
+	require.NotEmpty(t, ft.Options)
+	assert.True(t, containsArm(ft.Options, model.Arm{Heading: model.HeadUp, Len: 1}))
+	assert.True(t, containsArm(ft.Options, model.Arm{Heading: model.HeadUp, Len: 2}))
+	assert.True(t, containsArm(ft.Options, model.Arm{Heading: model.HeadUp, Len: 3}))
+	assert.True(t, containsArm(ft.Options, model.Arm{Heading: model.HeadUp, Len: 4}))
+	assert.True(t, containsArm(ft.Options, model.Arm{Heading: model.HeadUp, Len: 5}))
+	optionsBefore := ft.Options
+
+	// Now avoid edges on either side of "HU2"
+	puzz2, ms := AvoidEdge(puzz, model.NewEdgePair(model.NewCoord(8, 1), model.HeadRight))
+	require.Equal(t, model.Incomplete, ms)
+	puzz2, ms = AvoidEdge(puzz2, model.NewEdgePair(model.NewCoord(8, 2), model.HeadRight))
+	require.Equal(t, model.Incomplete, ms)
+	t.Logf("puzz2: \n%s\n", puzz2)
+
+	ft, ms = puzz2.GetFirstTarget()
+	require.Equal(t, model.Incomplete, ms)
+	assert.Equal(t, model.NewNode(model.NewCoord(10, 2), false, 6), ft.Node)
+
+	require.NotEmpty(t, ft.Options)
+	assert.NotEqual(t, optionsBefore, ft.Options)
+	assert.True(t, containsArm(ft.Options, model.Arm{Heading: model.HeadUp, Len: 1}))
+	assert.False(t, containsArm(ft.Options, model.Arm{Heading: model.HeadUp, Len: 2}))
+	assert.True(t, containsArm(ft.Options, model.Arm{Heading: model.HeadUp, Len: 3}))
+	assert.True(t, containsArm(ft.Options, model.Arm{Heading: model.HeadUp, Len: 4}))
+	assert.True(t, containsArm(ft.Options, model.Arm{Heading: model.HeadUp, Len: 5}))
+
+	// Now avoid an edge on one side of "HU2" and add the other
+	puzz3, ms := AddEdge(puzz, model.NewEdgePair(model.NewCoord(8, 1), model.HeadRight))
+	require.Equal(t, model.Incomplete, ms)
+	puzz3, ms = AvoidEdge(puzz3, model.NewEdgePair(model.NewCoord(8, 2), model.HeadRight))
+	require.Equal(t, model.Incomplete, ms)
+	t.Logf("puzz3: \n%s\n", puzz3)
+
+	ft, ms = puzz3.GetFirstTarget()
+	require.Equal(t, model.Incomplete, ms)
+	assert.Equal(t, model.NewNode(model.NewCoord(10, 2), false, 6), ft.Node)
+
+	require.NotEmpty(t, ft.Options)
+	assert.NotEqual(t, optionsBefore, ft.Options)
+	assert.True(t, containsArm(ft.Options, model.Arm{Heading: model.HeadUp, Len: 1}))
+	assert.True(t, containsArm(ft.Options, model.Arm{Heading: model.HeadUp, Len: 2}))
+	assert.False(t, containsArm(ft.Options, model.Arm{Heading: model.HeadUp, Len: 3}))
+	assert.False(t, containsArm(ft.Options, model.Arm{Heading: model.HeadUp, Len: 4}))
+	assert.False(t, containsArm(ft.Options, model.Arm{Heading: model.HeadUp, Len: 5}))
+}
+
+func containsArm(options []model.TwoArms, arm model.Arm) bool {
+	for _, ta := range options {
+		if ta.One == arm || ta.Two == arm {
+			return true
+		}
+	}
+	return false
+}

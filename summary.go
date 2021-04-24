@@ -102,7 +102,6 @@ func buildLatestResultsOutput(
 			if summaries[i].NumEdges != summaries[j].NumEdges {
 				return summaries[i].NumEdges < summaries[j].NumEdges
 			}
-			// return strings.Compare(summaries[i].Name, summaries[j].Name) > 0
 			return summaries[i].Duration > summaries[j].Duration
 		})
 

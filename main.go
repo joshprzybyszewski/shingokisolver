@@ -62,10 +62,13 @@ func runProfiler() {
 	t0 := time.Now()
 
 	for _, pd := range reader.GetAllPuzzles() {
-		if pd.NumEdges > 15 { //  || !strings.Contains(pd.String(), `2,589,287`) {
-			// if !strings.Contains(pd.String(), `5,434,778`) {
-			continue
-		}
+		// if pd.NumEdges < 15 { //  || !strings.Contains(pd.String(), `2,589,287`) {
+		// 	// if !strings.Contains(pd.String(), `5,434,778`) {
+		// 	continue
+		// }
+		// if !strings.Contains(pd.String(), `90,104`) {
+		// 	continue
+		// }
 
 		runSolver(pd)
 		// go runSolver(pd)
@@ -90,12 +93,12 @@ func runStandardSolver() {
 	maxPerSize := 10
 
 	for _, pd := range allPDs {
-		if pd.NumEdges > 20 {
+		if pd.NumEdges > 25 {
 			continue
 		}
 
 		// if !strings.Contains(pd.String(), `90,104`) {
-		// 	// if !strings.Contains(pd.String(), `2,589,287`) {
+		// 	// 	// if !strings.Contains(pd.String(), `2,589,287`) {
 		// 	continue
 		// }
 

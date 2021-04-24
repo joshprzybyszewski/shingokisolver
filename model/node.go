@@ -89,6 +89,7 @@ func (n Node) GetFilteredOptions(
 ) []TwoArms {
 	filteredOptions := make([]TwoArms, 0, len(input))
 
+	// TODO I have a lot of loops that are doing duplicate checks (isTwoArmsPossible)
 	for _, o := range input {
 		if !isTwoArmsPossible(n, o, ge) {
 			continue
@@ -109,10 +110,36 @@ func isTwoArmsPossible(
 ) bool {
 
 	nc := node.Coord()
-	return !ge.AnyAvoided(nc, ta.One) &&
-		!ge.AnyAvoided(nc, ta.Two) &&
-		!ge.IsEdge(ta.AfterOne(nc)) &&
-		!ge.IsEdge(ta.AfterTwo(nc))
+	if ge.AnyAvoided(nc, ta.One) ||
+		ge.AnyAvoided(nc, ta.Two) ||
+		ge.IsEdge(ta.AfterOne(nc)) ||
+		ge.IsEdge(ta.AfterTwo(nc)) {
+		return false
+	}
+
+	for _, arm := range []Arm{ta.One, ta.Two} {
+		cur := nc.Translate(arm.Heading)
+		for i := int8(1); i < arm.Len; i++ {
+			for _, dir := range arm.Heading.Perpendiculars() {
+				if ge.IsEdge(NewEdgePair(cur, dir)) {
+					return false
+				}
+			}
+			cur = cur.Translate(arm.Heading)
+		}
+		bothAvoided := true
+		for _, dir := range arm.Heading.Perpendiculars() {
+			if !ge.IsAvoided(NewEdgePair(cur, dir)) {
+				bothAvoided = false
+				break
+			}
+		}
+		if bothAvoided {
+			return false
+		}
+	}
+
+	return true
 }
 
 func isInTheWayOfOtherNodes(
@@ -122,6 +149,7 @@ func isInTheWayOfOtherNodes(
 ) bool {
 
 	isInTheWay := func(otherNodes []*Node, maxLen int, myStraightLineVal int8) bool {
+		// TODO this function has a lot of opportunity for improvement
 		for i, otherNode := range otherNodes {
 			if i == 0 {
 				// we can skip over "this" node

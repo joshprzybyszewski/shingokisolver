@@ -67,7 +67,7 @@ func getPuzzle(
 
 	pd, err := reader.FromWebsiteTask(
 		size,
-		puzzID,
+		puzzID, diff.String(),
 		taskString,
 	)
 	if err != nil {

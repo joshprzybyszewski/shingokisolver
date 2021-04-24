@@ -25,16 +25,19 @@ var (
 
 func FromWebsiteTask(
 	numEdges int,
-	puzzID string,
+	puzzID, difficulty string,
 	input string,
 ) (PuzzleDef, error) {
 
-	go cacheTaskToFile(numEdges, puzzID, input)
+	go cacheTaskToFile(numEdges, puzzID, difficulty, input)
 
 	return fromWebsiteTask(numEdges, puzzID, input)
 }
 
-func cacheTaskToFile(numEdges int, puzzID, input string) {
+func cacheTaskToFile(
+	numEdges int,
+	puzzID, difficulty, input string,
+) {
 	f, err := os.OpenFile(websiteCachePuzzlesFilename,
 		os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
@@ -43,7 +46,7 @@ func cacheTaskToFile(numEdges int, puzzID, input string) {
 	}
 	defer f.Close()
 
-	line := fmt.Sprintf("%d:%s:%s\n", numEdges, puzzID, input)
+	line := fmt.Sprintf("%d:%s_%s:%s\n", numEdges, puzzID, difficulty, input)
 
 	if _, err := f.WriteString(line); err != nil {
 		log.Printf("error WriteString file: %v\n", err)

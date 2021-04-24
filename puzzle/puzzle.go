@@ -89,14 +89,6 @@ func getPossibleTwoArmsWithNewEdges(
 		panic(`not found!`)
 	}
 
-	return getPossibleTwoArmsFromCache(ge, gn, tao)
-}
-
-func getPossibleTwoArmsFromCache(
-	ge model.GetEdger,
-	gn model.GetNoder,
-	tao nodeWithOptions,
-) []model.TwoArms {
 	nearbyNodes := model.BuildNearbyNodes(tao.Node, tao.Options, gn)
 	return tao.Node.GetFilteredOptions(tao.Options, ge, nearbyNodes)
 }
