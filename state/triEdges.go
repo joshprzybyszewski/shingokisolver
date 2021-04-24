@@ -110,19 +110,19 @@ func (ets *TriEdges) isArmInBounds(
 ) bool {
 	if start.Row < 0 ||
 		start.Col < 0 ||
-		start.Row > model.RowIndex(ets.numEdges) ||
-		start.Col > model.ColIndex(ets.numEdges) {
+		uint16(start.Row) > ets.numEdges ||
+		uint16(start.Col) > ets.numEdges {
 		return false
 	}
 	switch arm.Heading {
 	case model.HeadUp:
 		return start.Row-model.RowIndex(arm.Len) >= 0
 	case model.HeadDown:
-		return start.Row+model.RowIndex(arm.Len) <= model.RowIndex(ets.numEdges)
+		return uint16(start.Row+model.RowIndex(arm.Len)) <= ets.numEdges
 	case model.HeadLeft:
 		return start.Col-model.ColIndex(arm.Len) >= 0
 	case model.HeadRight:
-		return start.Col+model.ColIndex(arm.Len) <= model.ColIndex(ets.numEdges)
+		return uint16(start.Col+model.ColIndex(arm.Len)) <= ets.numEdges
 	}
 
 	return false
@@ -137,9 +137,9 @@ func (ets *TriEdges) IsInBounds(
 	}
 	switch ep.Cardinal {
 	case model.HeadRight:
-		return ep.Row <= model.RowIndex(ets.numEdges) && ep.Col < model.ColIndex(ets.numEdges)
+		return uint16(ep.Row) <= ets.numEdges && uint16(ep.Col) < ets.numEdges
 	case model.HeadDown:
-		return ep.Row < model.RowIndex(ets.numEdges) && ep.Col <= model.ColIndex(ets.numEdges)
+		return uint16(ep.Row) < ets.numEdges && uint16(ep.Col) <= ets.numEdges
 	default:
 		// unexpected input
 		return false

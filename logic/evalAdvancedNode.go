@@ -39,13 +39,21 @@ func (an advancedNode) evaluate(ge model.GetEdger) model.EdgeState {
 		return model.EdgeUnknown
 	}
 
-	filteredTAs := an.node.GetFilteredOptions(an.options, ge, an.nearbyNodes)
-	minArmByDir, isOnly := model.GetMinArmsByDir(filteredTAs)
+	// TODO come up with a way to cache off this filter...
+	minArmByDir, isOnly := model.GetMinArmsByDir(
+		an.node.GetFilteredOptions(an.options, ge, an.nearbyNodes),
+	)
 	if an.index < minArmByDir[an.dir] {
 		return model.EdgeExists
 	}
 
-	if isOnly && an.index == minArmByDir[an.dir] {
+	if !isOnly {
+		return model.EdgeUnknown
+	}
+
+	if myMin, ok := minArmByDir[an.dir]; !ok {
+		return model.EdgeUnknown
+	} else if an.index == myMin {
 		return model.EdgeAvoided
 	}
 

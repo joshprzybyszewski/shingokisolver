@@ -9,9 +9,8 @@ var (
 	}
 )
 
-// TODO these _could_ be 8 bits
-type RowIndex int16
-type ColIndex int16
+type RowIndex int8
+type ColIndex int8
 
 type NodeCoord struct {
 	Row RowIndex

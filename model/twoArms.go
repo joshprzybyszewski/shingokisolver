@@ -55,7 +55,7 @@ func BuildTwoArmOptions(
 		return answer
 	}
 
-	options := longBuildTwoArms(n, numEdges)
+	options := longBuildTwoArms(n, int8(numEdges))
 
 	optionsCache[numEdges][n] = options
 
@@ -64,7 +64,7 @@ func BuildTwoArmOptions(
 
 func longBuildTwoArms(
 	n Node,
-	numEdges int,
+	numEdges int8,
 ) []TwoArms {
 
 	var options []TwoArms

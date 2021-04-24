@@ -1,6 +1,8 @@
 package model
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type Node struct {
 	coord NodeCoord
@@ -56,6 +58,7 @@ func BuildNearbyNodes(
 	tas []TwoArms,
 	gn GetNoder,
 ) map[Cardinal][]*Node {
+	// TODO see if I can't speed this up
 	maxLensByDir := GetMaxArmsByDir(tas)
 	otherNodes := make(map[Cardinal][]*Node, len(maxLensByDir))
 
@@ -63,11 +66,11 @@ func BuildNearbyNodes(
 		slice := make([]*Node, maxLen)
 		foundAny := false
 		nc := myNode.Coord()
-		for i := range otherNodes[dir] {
+		for i := range slice {
 			n, ok := gn.GetNode(nc)
 			if ok {
 				foundAny = true
-				otherNodes[dir][i] = &n
+				slice[i] = &n
 			}
 			nc = nc.Translate(dir)
 		}
@@ -114,12 +117,16 @@ func isTwoArmsPossible(
 
 func isInTheWayOfOtherNodes(
 	myNode Node,
-	ta TwoArms,
+	twoArms TwoArms,
 	otherNodes map[Cardinal][]*Node,
 ) bool {
 
 	isInTheWay := func(otherNodes []*Node, maxLen int, myStraightLineVal int8) bool {
 		for i, otherNode := range otherNodes {
+			if i == 0 {
+				// we can skip over "this" node
+				continue
+			}
 			if i > maxLen {
 				return false
 			} else if i == maxLen {
@@ -158,17 +165,17 @@ func isInTheWayOfOtherNodes(
 		return false
 	}
 
-	a1StraightLineVal := ta.One.Len
-	a2StraightLineVal := ta.Two.Len
+	a1StraightLineVal := twoArms.One.Len
+	a2StraightLineVal := twoArms.Two.Len
 	if myNode.Type() == WhiteNode {
-		a1StraightLineVal = ta.One.Len + ta.Two.Len
-		a2StraightLineVal = ta.One.Len + ta.Two.Len
+		a1StraightLineVal = twoArms.One.Len + twoArms.Two.Len
+		a2StraightLineVal = twoArms.One.Len + twoArms.Two.Len
 	}
 
-	if isInTheWay(otherNodes[ta.One.Heading], int(ta.One.Len), a1StraightLineVal) {
+	if isInTheWay(otherNodes[twoArms.One.Heading], int(twoArms.One.Len), a1StraightLineVal) {
 		return true
 	}
-	if isInTheWay(otherNodes[ta.Two.Heading], int(ta.Two.Len), a2StraightLineVal) {
+	if isInTheWay(otherNodes[twoArms.Two.Heading], int(twoArms.Two.Len), a2StraightLineVal) {
 		return true
 	}
 

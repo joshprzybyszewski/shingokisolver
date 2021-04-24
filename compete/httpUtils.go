@@ -51,7 +51,8 @@ func doRequest(
 	writeToFile(`lastRequestHeaders.txt`, []byte(fmt.Sprintf("%+v\n", response.Header)))
 
 	if response.StatusCode != http.StatusOK {
-		resBytes, err := ioutil.ReadAll(response.Body)
+		var resBytes []byte
+		resBytes, err = ioutil.ReadAll(response.Body)
 		log.Printf("full response: %+v\n%s\n%s\n",
 			response,
 			response.Body,

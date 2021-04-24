@@ -31,6 +31,11 @@ func (rs *RuleSet) AddAllTwoArmRules(
 		)
 	}
 
+	if node.Value() <= 2 {
+		// we don't need the advanced node input for nodes that are only 2 in value
+		return
+	}
+
 	maxArms := model.GetMaxArmsByDir(options)
 	nearbyNodes := model.BuildNearbyNodes(node, options, gn)
 	allEPs := make([]model.EdgePair, 0, 8)
@@ -55,19 +60,4 @@ func (rs *RuleSet) AddAllTwoArmRules(
 	for _, ep := range allEPs {
 		rs.Get(ep).addAffected(allEPs...)
 	}
-}
-
-func getTwoArmsWithDirection(
-	allOptions []model.TwoArms,
-	dir model.Cardinal,
-) []model.TwoArms {
-	filtered := make([]model.TwoArms, 0, len(allOptions))
-
-	for _, ta := range allOptions {
-		if ta.One.Heading == dir || ta.Two.Heading == dir {
-			filtered = append(filtered, ta)
-		}
-	}
-
-	return filtered
 }

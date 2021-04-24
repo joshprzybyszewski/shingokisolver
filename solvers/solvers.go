@@ -17,7 +17,7 @@ func Solve(
 		return SolvedResults{}, errors.New(`cannot solve a puzzle with no constraints`)
 	}
 
-	return solveWithTargets(size, nl)
+	return solvePuzzleByTargets(puzzle.NewPuzzle(size, nl))
 }
 
 type SolvedResults struct {

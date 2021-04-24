@@ -12,7 +12,7 @@ func TestAllExist(t *testing.T) {
 	ets := New(5)
 
 	nc00 := model.NewCoord(0, 0)
-	assert.Equal(t, model.Incomplete, ets.SetEdge(model.NewEdgePair(nc00, model.HeadRight)))
+	assert.Equal(t, model.Incomplete, ets.setEdge(model.NewEdgePair(nc00, model.HeadRight)))
 
 	arm := model.Arm{
 		Heading: model.HeadRight,
@@ -30,11 +30,11 @@ func TestAllExist(t *testing.T) {
 	assert.False(t, ets.AllExist(nc00, arm))
 
 	nc22 := model.NewCoord(2, 2)
-	assert.Equal(t, model.Incomplete, ets.SetEdge(
+	assert.Equal(t, model.Incomplete, ets.setEdge(
 		model.NewEdgePair(nc22, model.HeadRight),
 	))
 	nc23 := model.NewCoord(2, 3)
-	assert.Equal(t, model.Incomplete, ets.SetEdge(
+	assert.Equal(t, model.Incomplete, ets.setEdge(
 		model.NewEdgePair(nc23, model.HeadRight),
 	))
 
@@ -59,7 +59,7 @@ func TestAllExist(t *testing.T) {
 	assert.False(t, ets.AllExist(nc22, arm))
 
 	nc20 := model.NewCoord(2, 0)
-	assert.Equal(t, model.Incomplete, ets.SetEdge(
+	assert.Equal(t, model.Incomplete, ets.setEdge(
 		model.NewEdgePair(nc20, model.HeadRight),
 	))
 
@@ -75,7 +75,7 @@ func TestAny(t *testing.T) {
 
 	nc00 := model.NewCoord(0, 0)
 	nc01 := model.NewCoord(0, 1)
-	assert.Equal(t, model.Incomplete, ets.SetEdge(model.NewEdgePair(nc00, model.HeadRight)))
+	assert.Equal(t, model.Incomplete, ets.setEdge(model.NewEdgePair(nc00, model.HeadRight)))
 
 	arm := model.Arm{
 		Heading: model.HeadRight,
@@ -109,11 +109,11 @@ func TestAny(t *testing.T) {
 	assert.True(t, anyAvoided)
 
 	nc22 := model.NewCoord(2, 2)
-	assert.Equal(t, model.Incomplete, ets.SetEdge(
+	assert.Equal(t, model.Incomplete, ets.setEdge(
 		model.NewEdgePair(nc22, model.HeadRight),
 	))
 	nc23 := model.NewCoord(2, 3)
-	assert.Equal(t, model.Incomplete, ets.SetEdge(
+	assert.Equal(t, model.Incomplete, ets.setEdge(
 		model.NewEdgePair(nc23, model.HeadRight),
 	))
 
@@ -156,7 +156,7 @@ func TestAny(t *testing.T) {
 	assert.False(t, anyAvoided)
 
 	nc20 := model.NewCoord(2, 0)
-	assert.Equal(t, model.Incomplete, ets.SetEdge(
+	assert.Equal(t, model.Incomplete, ets.setEdge(
 		model.NewEdgePair(nc20, model.HeadRight),
 	))
 
@@ -169,7 +169,7 @@ func TestAny(t *testing.T) {
 	assert.False(t, anyAvoided)
 
 	nc24 := model.NewCoord(2, 4)
-	assert.Equal(t, model.Incomplete, ets.AvoidEdge(
+	assert.Equal(t, model.Incomplete, ets.avoidEdge(
 		model.NewEdgePair(nc24, model.HeadRight),
 	))
 

@@ -59,6 +59,7 @@ func (p Puzzle) numEdges() int {
 func (p Puzzle) GetNode(
 	nc model.NodeCoord,
 ) (model.Node, bool) {
+	// TODO remove/replace with something faster?
 	for _, n := range p.nodes {
 		if n.Coord() == nc {
 			return n, true
@@ -75,11 +76,17 @@ func getPossibleTwoArmsWithNewEdges(
 ) []model.TwoArms {
 
 	var tao nodeWithOptions
+	found := false
 	for _, o := range allTAOs {
 		if o.Node.Coord() == node.Coord() {
 			tao = o
+			found = true
 			break
 		}
+	}
+	if !found {
+		// TODO fix this if it's a problem
+		panic(`not found!`)
 	}
 
 	return getPossibleTwoArmsFromCache(ge, gn, tao)
@@ -100,9 +107,10 @@ func (p Puzzle) GetNextTarget(
 	switch s := p.GetState(); s {
 	case model.Complete:
 		return model.Target{}, model.Complete
-	case model.Incomplete, model.NodesComplete:
-		// continue. we'll let out caller handle the 'nodes complete' state
-		// TODO handle the nodes complete state now!
+	case model.Incomplete:
+	// case model.Incomplete, model.NodesComplete:
+	// continue. we'll let out caller handle the 'nodes complete' state
+	// TODO handle the nodes complete state now!
 	default:
 		return model.Target{}, s
 	}

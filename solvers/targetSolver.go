@@ -9,16 +9,6 @@ import (
 	"github.com/joshprzybyszewski/shingokisolver/puzzle"
 )
 
-func solveWithTargets(
-	size int,
-	nl []model.NodeLocation,
-) (SolvedResults, error) {
-
-	return solvePuzzleByTargets(
-		puzzle.NewPuzzle(size, nl),
-	)
-}
-
 func solvePuzzleByTargets(
 	puzz puzzle.Puzzle,
 ) (sr SolvedResults, _ error) {
@@ -65,6 +55,7 @@ func doSolve(
 	case model.Incomplete:
 		printPuzzleUpdate(`GetFirstTarget`, puzz, target)
 	default:
+		printPuzzleUpdate(`GetFirstTarget issue!`, puzz, model.Target{})
 		// Something's wrong
 		return puzzle.Puzzle{}, false
 	}
@@ -77,6 +68,7 @@ func doSolve(
 	for len(target.Options) == 1 {
 		puzz, ok = addTwoArms(puzz, target.Node.Coord(), target.Options[0])
 		if !ok {
+			printPuzzleUpdate(`addTwoArms issue!`, puzz, target)
 			return puzzle.Puzzle{}, false
 		}
 
@@ -93,6 +85,7 @@ func doSolve(
 				puzz,
 			)
 		case model.Violation:
+			printPuzzleUpdate(`GetNextTarget issue!`, puzz, target)
 			return puzzle.Puzzle{}, false
 		}
 	}
@@ -115,6 +108,7 @@ func solveAimingAtTarget(
 	// Check to see if this node has already been completed.
 	switch puzz.GetNodeState(targeting.Node.Coord()) {
 	case model.Violation:
+		printPuzzleUpdate(`solveAimingAtTarget GetNodeState issue!`, puzz, targeting)
 		return puzzle.Puzzle{}, false
 
 	case model.Complete:

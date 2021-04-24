@@ -1,8 +1,6 @@
 package model
 
-import (
-	"errors"
-)
+import "fmt"
 
 var (
 	InvalidTarget = Target{
@@ -42,7 +40,7 @@ func GetNextTarget(
 		options := tas[i]
 		if len(options) == 0 {
 			// this means that there's a node with literally zero options
-			return Target{}, false, errors.New(`invalid node`)
+			return Target{}, false, fmt.Errorf(`no options for node %s`, n)
 		}
 
 		no := nodeOption{

@@ -18,7 +18,7 @@ var (
 	addPprof            = flag.Bool(`includeProfile`, false, `set if you'd like to include a pprof output`)
 	includeProgressLogs = flag.Bool(`includeProcessLogs`, false, `set to see each solver's progress logs`)
 	shouldWriteResults  = flag.Bool(`results`, false, `set to update the results in the READMEs`)
-	runCompetitive      = flag.Bool(`competitive`, false, `set to true to get a puzzle from the internet and submit a response`)
+	runCompetitive      = flag.Bool(`competitive`, false, `set to true to compete online!`)
 )
 
 func main() {
@@ -94,13 +94,14 @@ func runStandardSolver() {
 			continue
 		}
 
+		// if !strings.Contains(pd.String(), `90,104`) {
+		// 	// if !strings.Contains(pd.String(), `2,589,287`) {
+		// 	continue
+		// }
+
 		if numBySize[pd.NumEdges] > maxPerSize {
 			continue
 		}
-
-		// if !strings.Contains(pd.String(), `2,589,287`) {
-		// 	continue
-		// }
 
 		summ := runSolver(pd)
 		allSummaries = append(allSummaries, summ)

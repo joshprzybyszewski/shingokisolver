@@ -35,26 +35,27 @@ func Run() {
 	// dangerous, I know.
 	// debug.SetGCPercent(-1)
 
-	for _, s := range []int{
-		5,
-		7,
-		// 10,
-		// 15,
-		// 20,
-		25,
+	for _, d := range []difficulty{
+		easy,
+		medium,
+		hard,
 	} {
-		for _, d := range []difficulty{
-			// easy,
-			// medium,
-			hard,
+		for _, s := range []int{
+			5,
+			7,
+			10,
+			15,
+			20,
+			25,
 		} {
+
 			log.Printf("starting competition for %s %d edges", d, s)
 
 			getAndSubmitPuzzle(s, d)
 
-			// wait 10 seconds between runs so we don't overwhelm
+			// wait 5 seconds between runs so we don't overwhelm
 			// their servers or our machine accidentally:#
-			time.Sleep(10 * time.Second)
+			time.Sleep(5 * time.Second)
 
 			// collect garbage now, which should be that entire puzzle that we solved:#
 			runtime.GC()
