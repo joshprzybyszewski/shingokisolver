@@ -14,37 +14,9 @@ func ClaimGimmes(p Puzzle) (Puzzle, model.State) {
 		return Puzzle{}, ms
 	}
 
-	outPuzz.twoArmOptions = buildTwoArmsCache(
-		outPuzz.nodes,
-		outPuzz.numEdges(),
-		&outPuzz.edges,
-	)
+	updateCache(&outPuzz)
+
 	return outPuzz, outPuzz.GetState()
-}
-
-func buildTwoArmsCache(
-	allNodes nodeList,
-	numEdges int,
-	ge model.GetEdger,
-) []nodeWithOptions {
-	res := make([]nodeWithOptions, 0, len(allNodes))
-
-	for _, n := range allNodes {
-		allTAs := model.BuildTwoArmOptions(n, numEdges)
-		maxLensByDir := model.GetMaxArmsByDir(allTAs)
-		nearbyNodes := model.BuildNearbyNodes(n, allNodes, maxLensByDir)
-		options := n.GetFilteredOptions(allTAs, ge, nearbyNodes)
-		res = append(res, nodeWithOptions{
-			Node:    n,
-			Options: options,
-		})
-	}
-
-	sort.Slice(res, func(i, j int) bool {
-		return len(res[i].Options) < len(res[j].Options)
-	})
-
-	return res
 }
 
 func claimGimmes(
@@ -66,20 +38,37 @@ func claimGimmes(
 	}
 
 	// now we're going to add all of the extended rules
-	var nl nodeList = obviousFilled.nodes
-	twoArmOptions := buildTwoArmsCache(
-		nl,
-		obviousFilled.numEdges(),
-		&obviousFilled.edges,
-	)
+	updateCache(&obviousFilled)
 
 	allNodeEdgesToCheck = make(map[model.Node]map[model.Cardinal]int8, len(obviousFilled.nodes))
-	for _, tao := range twoArmOptions {
-		allNodeEdgesToCheck[tao.Node] = model.GetMaxArmsByDir(tao.Options)
+
+	nodesAndOptions := make([]nodeAndOptions, len(obviousFilled.nodes))
+
+	for i := range obviousFilled.nodes {
+		n := obviousFilled.nodes[i]
+
+		optionsCopy := make([]model.TwoArms, len(obviousFilled.twoArmOptions[i]))
+		copy(optionsCopy, obviousFilled.twoArmOptions[i])
+
+		allNodeEdgesToCheck[n] = model.GetMaxArmsByDir(optionsCopy)
+		nodesAndOptions[i] = nodeAndOptions{
+			Node:    n,
+			Options: optionsCopy,
+		}
+	}
+
+	// Now we're going to add rules for the nodes that have the fewest options first.
+	// This helps with evaluation because it means we're going to need to do less
+	// filtering on the first evaluators.
+	sort.Slice(nodesAndOptions, func(i, j int) bool {
+		return len(nodesAndOptions[i].Options) < len(nodesAndOptions[j].Options)
+	})
+
+	for _, nwo := range nodesAndOptions {
 		obviousFilled.rules.AddAllTwoArmRules(
-			tao.Node,
+			nwo.Node,
 			obviousFilled.gn,
-			tao.Options,
+			nwo.Options,
 		)
 	}
 
@@ -87,4 +76,9 @@ func claimGimmes(
 		nodes: allNodeEdgesToCheck,
 	})
 
+}
+
+type nodeAndOptions struct {
+	model.Node
+	Options []model.TwoArms
 }

@@ -6,18 +6,15 @@ import (
 	"github.com/joshprzybyszewski/shingokisolver/state"
 )
 
-type nodeWithOptions struct {
-	Options []model.TwoArms
-	model.Node
-}
-
 type Puzzle struct {
 	rules *logic.RuleSet
 
-	twoArmOptions []nodeWithOptions
 	nodes         []model.Node
-	edges         state.TriEdges
-	gn            model.GetNoder
+	nearby        []map[model.Cardinal][]*model.Node
+	twoArmOptions [][]model.TwoArms
+
+	edges state.TriEdges
+	gn    model.GetNoder
 }
 
 func NewPuzzle(
@@ -34,13 +31,22 @@ func NewPuzzle(
 		nodes = append(nodes, model.NewNode(nc, nl.IsWhite, nl.Value))
 	}
 
+	nearby := make([]map[model.Cardinal][]*model.Node, len(nodes))
+	gn := newNodeGrid(nodes)
 	edges := state.New(numEdges)
-	return Puzzle{
-		nodes: nodes,
-		gn:    (nodeList)(nodes).toNodeGrid(),
-		edges: edges,
-		rules: logic.New(&edges, numEdges, nodes),
+	rules := logic.New(&edges, numEdges, nodes)
+
+	puzz := Puzzle{
+		nodes:  nodes,
+		gn:     gn,
+		nearby: nearby,
+		edges:  edges,
+		rules:  rules,
 	}
+
+	updateCache(&puzz)
+
+	return puzz
 }
 
 func (p Puzzle) withNewState(
@@ -49,10 +55,30 @@ func (p Puzzle) withNewState(
 	return Puzzle{
 		nodes:         p.nodes,
 		gn:            p.gn,
+		nearby:        p.nearby,
 		twoArmOptions: p.twoArmOptions,
 		edges:         edges,
 		rules:         p.rules,
 	}
+}
+
+func updateCache(p *Puzzle) {
+	res := make([][]model.TwoArms, 0, len(p.nodes))
+	numEdges := p.numEdges()
+
+	for i, n := range p.nodes {
+		allTAs := model.BuildTwoArmOptions(n, numEdges)
+
+		maxLensByDir := model.GetMaxArmsByDir(allTAs)
+		nearbyNodes := model.BuildNearbyNodes(n, p.gn, maxLensByDir)
+		p.nearby[i] = nearbyNodes
+
+		res = append(res,
+			n.GetFilteredOptions(allTAs, &p.edges, nearbyNodes),
+		)
+	}
+
+	p.twoArmOptions = res
 }
 
 func (p Puzzle) numEdges() int {
@@ -84,11 +110,10 @@ func (p Puzzle) getNextTarget(
 
 	tas := make([][]model.TwoArms, len(p.nodes))
 	for i, n := range p.nodes {
-		tas[i] = getPossibleTwoArmsWithNewEdges(
-			n,
+		tas[i] = n.GetFilteredOptions(
+			p.getOptionsForNode(i),
 			&p.edges,
-			p.gn,
-			getOptionsForNode(n, p.twoArmOptions),
+			p.getNearby(i),
 		)
 	}
 
@@ -107,27 +132,14 @@ func (p Puzzle) getNextTarget(
 	return t, model.Incomplete
 }
 
-func getOptionsForNode(
-	node model.Node,
-	allTAOs []nodeWithOptions,
-) []model.TwoArms {
-	for _, o := range allTAOs {
-		if o.Node.Coord() == node.Coord() {
-			return o.Options
-		}
-	}
-	// We should never be calling getOptionsForNode for a node that isn't in options
-	panic(`not found!`)
+func (p Puzzle) getNearby(
+	index int,
+) map[model.Cardinal][]*model.Node {
+	return p.nearby[index]
 }
 
-func getPossibleTwoArmsWithNewEdges(
-	node model.Node,
-	ge model.GetEdger,
-	gn model.GetNoder,
-	allTAs []model.TwoArms,
+func (p Puzzle) getOptionsForNode(
+	index int,
 ) []model.TwoArms {
-
-	maxLensByDir := model.GetMaxArmsByDir(allTAs)
-	nearbyNodes := model.BuildNearbyNodes(node, gn, maxLensByDir)
-	return node.GetFilteredOptions(allTAs, ge, nearbyNodes)
+	return p.twoArmOptions[index]
 }

@@ -130,11 +130,7 @@ func TestBuildTwoArmsCache(t *testing.T) {
 	outPuzz, ms := claimGimmes(fresh)
 	require.Equal(t, model.Incomplete, ms)
 
-	twoArmOptions := buildTwoArmsCache(
-		outPuzz.nodes,
-		outPuzz.numEdges(),
-		&outPuzz.edges,
-	)
+	updateCache(&outPuzz)
 
 	expOptionsByNode := map[model.Node][]model.TwoArms{
 		model.NewNode(model.NewCoord(0, 1), false, 4): {{
@@ -148,10 +144,10 @@ func TestBuildTwoArmsCache(t *testing.T) {
 			},
 		}},
 	}
-	for _, tao := range twoArmOptions {
-		assert.NotEmpty(t, tao.Options)
-		if expOptions, ok := expOptionsByNode[tao.Node]; ok {
-			assert.Equal(t, expOptions, tao.Options)
+	for i, tao := range outPuzz.twoArmOptions {
+		assert.NotEmpty(t, tao)
+		if expOptions, ok := expOptionsByNode[outPuzz[i]]; ok {
+			assert.Equal(t, expOptions, tao)
 		}
 	}
 

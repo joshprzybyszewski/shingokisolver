@@ -66,10 +66,6 @@ func (p Puzzle) getRandomCoord() model.NodeCoord {
 		return n.Coord()
 	}
 
-	for _, nwo := range p.twoArmOptions {
-		return nwo.Coord()
-	}
-
 	if p.rules == nil {
 		panic(`dev error: p.rules == nil`)
 	}

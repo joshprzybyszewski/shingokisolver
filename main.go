@@ -90,7 +90,7 @@ func runStandardSolver() {
 	allSummaries := make([]summary, 0, len(allPDs))
 
 	numBySize := make(map[int]int, 8)
-	maxPerSize := 100
+	maxPerSize := 10
 
 	for _, pd := range allPDs {
 		// if pd.NumEdges > 20 {
