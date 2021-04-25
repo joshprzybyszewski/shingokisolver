@@ -7,26 +7,20 @@ type CoordSeener interface {
 	IsCoordSeen(model.NodeCoord) bool
 }
 
-// TODO this would be a lot less space using bits
-type slices struct {
-	seenCoords [][]bool
+type coordSeen struct {
+	rows []bitData
 }
 
 func NewCoordSeen(numEdges int) CoordSeener {
-	// TODO provide an alternative that requires less space (bit masking?)
-	s := make([][]bool, numEdges+1)
-	for i := range s {
-		s[i] = make([]bool, numEdges+1)
-	}
-	return slices{
-		seenCoords: s,
+	return coordSeen{
+		rows: make([]bitData, numEdges+1),
 	}
 }
 
-func (s slices) Mark(nc model.NodeCoord) {
-	s.seenCoords[nc.Row][nc.Col] = true
+func (s coordSeen) Mark(nc model.NodeCoord) {
+	s.rows[nc.Row] = s.rows[nc.Row] | masks[nc.Col]
 }
 
-func (s slices) IsCoordSeen(nc model.NodeCoord) bool {
-	return s.seenCoords[nc.Row][nc.Col]
+func (s coordSeen) IsCoordSeen(nc model.NodeCoord) bool {
+	return (s.rows[nc.Row] & masks[nc.Col]) != 0
 }
