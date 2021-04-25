@@ -13,14 +13,14 @@ import (
 
 const (
 	// TODO determine how big of a channel I want...
-	workChanLen = 256
+	workChanLen = 16
 )
 
 var (
 	numCPU = runtime.NumCPU()
 )
 
-type unsolvedPayload struct {
+type unsolved struct {
 	puzz   puzzle.Puzzle
 	target model.Target
 
@@ -28,12 +28,30 @@ type unsolvedPayload struct {
 	nextUnknown     model.EdgePair
 }
 
+type targetPayload struct {
+	puzz   puzzle.Puzzle
+	target model.Target
+}
+
+type flippingPayload struct {
+	puzz        puzzle.Puzzle
+	nextUnknown model.EdgePair
+}
+
 type concurrentSolver struct {
-	work     chan unsolvedPayload
+	targets  chan targetPayload
+	flipping chan flippingPayload
 	solution chan puzzle.Puzzle
 
-	numPayloads  int32
-	numProcessed int32
+	// TODO I don't want to keep track of these numbers
+	// because I don't think they boost my performance
+	numTargetsAdded     int32
+	numTargetsProcessed int32
+
+	numFlipsAdded     int32
+	numFlipsProcessed int32
+
+	numImmediates int32
 }
 
 func (cs *concurrentSolver) solve(
@@ -61,17 +79,19 @@ func (cs *concurrentSolver) solve(
 	}
 
 	// Start concurrency to find our solution
-	cs.work = make(chan unsolvedPayload, workChanLen)
+	cs.targets = make(chan targetPayload, workChanLen)
+	cs.flipping = make(chan flippingPayload, workChanLen)
 	cs.solution = make(chan puzzle.Puzzle, 1)
 
-	defer close(cs.work)
+	defer close(cs.flipping)
+	defer close(cs.targets)
 	defer close(cs.solution)
 
 	for i := 0; i < numCPU; i++ {
 		go cs.startWorker()
 	}
 
-	cs.queuePayload(unsolvedPayload{
+	cs.queuePayload(unsolved{
 		puzz:            puzz,
 		target:          target,
 		isNodesComplete: state == model.NodesComplete,
@@ -90,18 +110,40 @@ func (cs *concurrentSolver) solve(
 }
 
 func (cs *concurrentSolver) queuePayload(
-	payload unsolvedPayload,
+	payload unsolved,
 ) {
 
-	atomic.AddInt32(&cs.numPayloads, 1)
+	if payload.isNodesComplete {
+		cs.queueFlippingPayload(flippingPayload{
+			puzz:        payload.puzz,
+			nextUnknown: payload.nextUnknown,
+		})
+	} else {
+		atomic.AddInt32(&cs.numTargetsAdded, 1)
 
+		// it's alright if the targets channel has been closed
+		defer func() {
+			recover()
+		}()
+		cs.targets <- targetPayload{
+			puzz:   payload.puzz,
+			target: payload.target,
+		}
+	}
+}
+
+func (cs *concurrentSolver) queueFlippingPayload(
+	payload flippingPayload,
+) {
+
+	atomic.AddInt32(&cs.numFlipsAdded, 1)
+
+	// it's alright if the targets channel has been closed
 	defer func() {
-		// it's alright if the work channel has been closed
 		recover()
 	}()
 
-	// TODO consider having a channel for "node complete" and "pre-nodes complete"
-	cs.work <- payload
+	cs.flipping <- payload
 }
 
 func (cs *concurrentSolver) sendSolution(
@@ -116,23 +158,43 @@ func (cs *concurrentSolver) sendSolution(
 	cs.solution <- puzz
 }
 
-func (cs *concurrentSolver) startWorker() {
-	for payload := range cs.work {
-		cs.processPayload(payload)
-	}
-}
-
-func (cs *concurrentSolver) processPayload(
-	payload unsolvedPayload,
+func (cs *concurrentSolver) workOnPayloadNow(
+	payload unsolved,
 ) {
-	atomic.AddInt32(&cs.numProcessed, 1)
 
-	cs.printPayload(`processPayload`, payload)
+	atomic.AddInt32(&cs.numImmediates, 1)
+	// cs.printPayload(`workOnPayloadNow`, payload)
 
 	if payload.isNodesComplete {
 		cs.flip(payload.puzz, payload.nextUnknown)
-		return
+	} else {
+		cs.solveAimingAtTarget(payload.puzz, payload.target)
 	}
+}
+
+func (cs *concurrentSolver) startWorker() {
+	for {
+		select {
+		case tp, ok := <-cs.targets:
+			if !ok {
+				return
+			}
+			cs.processTargetPayload(tp)
+		case fp, ok := <-cs.flipping:
+			if !ok {
+				return
+			}
+			cs.processFlipPayload(fp)
+		}
+	}
+}
+
+func (cs *concurrentSolver) processTargetPayload(
+	payload targetPayload,
+) {
+	atomic.AddInt32(&cs.numTargetsProcessed, 1)
+
+	cs.printPayload(`processTargetPayload`, payload)
 
 	cs.solveAimingAtTarget(payload.puzz, payload.target)
 }
@@ -155,28 +217,31 @@ func (cs *concurrentSolver) solveAimingAtTarget(
 		if isSolved {
 			cs.sendSolution(puzz)
 		} else if canProcess {
-			cs.processPayload(up)
+			cs.workOnPayloadNow(up)
 		}
 		return
 	}
 
 	// for each of the TwoArm options, we're going to try setting the edges
 	// and then descending further into our targets
-	for _, option := range targeting.Options {
+	for i, option := range targeting.Options {
 		up, canProcess, isSolved := cs.addArms(puzz, targeting, option)
 		if isSolved {
 			cs.sendSolution(puzz)
+			return
 		} else if !canProcess {
 			continue
 		}
 
-		// Here, if we're the only option, then we're just going to descend on this
-		// same goroutine. We won't queue up the payload because that would be wasteful
-		// and we know we can just keep using this CPU
-		if len(targeting.Options) == 1 {
-			cs.processPayload(up)
+		if i == len(targeting.Options)-1 {
+			// This is the last option in our targeted options. Instead of
+			// sending it for someone else to work on, we're just going to
+			// continue using the CPU to see how it do.
+			cs.workOnPayloadNow(up)
 		} else {
-			cs.queuePayload(up)
+			// we've built the puzzle for another worker to pick up whenever
+			// it's free. Send it to them.
+			go cs.queuePayload(up)
 		}
 	}
 }
@@ -185,10 +250,10 @@ func (cs *concurrentSolver) addArms(
 	puzz puzzle.Puzzle,
 	curTarget model.Target,
 	ta model.TwoArms,
-) (unsolvedPayload, bool, bool) {
+) (unsolved, bool, bool) {
 	withArms, ok := addTwoArms(puzz, curTarget.Node.Coord(), ta)
 	if !ok {
-		return unsolvedPayload{}, false, false
+		return unsolved{}, false, false
 	}
 	return cs.getNextPayload(withArms, curTarget)
 }
@@ -196,23 +261,33 @@ func (cs *concurrentSolver) addArms(
 func (cs *concurrentSolver) getNextPayload(
 	puzz puzzle.Puzzle,
 	curTarget model.Target,
-) (unsolvedPayload, bool, bool) {
+) (unsolved, bool, bool) {
 
 	cs.printPuzzleUpdate(`getNextPayload`, puzz, curTarget)
 
 	nextTarget, state := puzz.GetNextTarget(curTarget)
 	switch state {
 	case model.Complete:
-		return unsolvedPayload{}, false, true
+		return unsolved{}, false, true
 	case model.Incomplete, model.NodesComplete:
-		return unsolvedPayload{
+		return unsolved{
 			puzz:            puzz,
 			target:          nextTarget,
 			isNodesComplete: state == model.NodesComplete,
 			nextUnknown:     model.InvalidEdgePair,
 		}, true, false
 	}
-	return unsolvedPayload{}, false, false
+	return unsolved{}, false, false
+}
+
+func (cs *concurrentSolver) processFlipPayload(
+	payload flippingPayload,
+) {
+	atomic.AddInt32(&cs.numFlipsProcessed, 1)
+
+	cs.printFlippingPayload(`processFlipPayload`, payload)
+
+	cs.flip(payload.puzz, payload.nextUnknown)
 }
 
 func (cs *concurrentSolver) flip(
@@ -220,8 +295,9 @@ func (cs *concurrentSolver) flip(
 	ep model.EdgePair,
 ) {
 
-	cs.printPuzzleUpdate(`flip`, puzz, model.InvalidTarget)
 	puzzle.SetNodesComplete(&puzz)
+
+	cs.printPuzzleUpdate(`flip`, puzz, model.InvalidTarget)
 
 	if ep == model.InvalidEdgePair {
 		var ok bool
@@ -235,51 +311,75 @@ func (cs *concurrentSolver) flip(
 		}
 	}
 
-	cs.justSetEdge(puzz, ep)
-	cs.justAvoidEdge(puzz, ep)
+	fp1, canContinue, isSolved := cs.justSetEdge(puzz, ep)
+	if isSolved {
+		return
+	}
+
+	fp2, canContinue2, isSolved := cs.justAvoidEdge(puzz, ep)
+	if isSolved {
+		return
+	}
+	cs.printFlippingPayload(`finished the justs`, flippingPayload{puzz, ep})
+
+	if canContinue && canContinue2 {
+		go cs.queueFlippingPayload(fp1)
+		cs.processFlipPayload(fp2)
+	} else if canContinue {
+		cs.processFlipPayload(fp1)
+	} else if canContinue2 {
+		cs.processFlipPayload(fp2)
+	}
 }
 
 func (cs *concurrentSolver) justSetEdge(
 	base puzzle.Puzzle,
 	ep model.EdgePair,
-) {
+) (flippingPayload, bool, bool) {
+	cs.printFlippingPayload(`justSetEdge`, flippingPayload{base, ep})
+
 	puzz, state := puzzle.AddEdge(
 		base,
 		ep,
 	)
 	switch state {
 	case model.Complete, model.Incomplete:
-		cs.checkStateAfterFlip(puzz, ep)
+		return cs.checkStateAfterFlip(puzz, ep)
 	}
+	return flippingPayload{}, false, false
 }
 
 func (cs *concurrentSolver) justAvoidEdge(
 	base puzzle.Puzzle,
 	ep model.EdgePair,
-) {
+) (flippingPayload, bool, bool) {
+	cs.printFlippingPayload(`justAvoidEdge`, flippingPayload{base, ep})
+
 	puzz, state := puzzle.AvoidEdge(
 		base,
 		ep,
 	)
 	switch state {
 	case model.Complete, model.Incomplete:
-		cs.checkStateAfterFlip(puzz, ep)
+		return cs.checkStateAfterFlip(puzz, ep)
 	}
+	return flippingPayload{}, false, false
 }
 
 func (cs *concurrentSolver) checkStateAfterFlip(
 	puzz puzzle.Puzzle,
 	ep model.EdgePair,
-) {
+) (flippingPayload, bool, bool) {
 	nextUnknown, state := puzz.GetStateOfLoop(ep.NodeCoord)
 	switch state {
 	case model.Complete:
 		cs.sendSolution(puzz)
+		return flippingPayload{}, false, true
 	case model.Incomplete:
-		cs.queuePayload(unsolvedPayload{
-			puzz:            puzz,
-			isNodesComplete: true,
-			nextUnknown:     nextUnknown,
-		})
+		return flippingPayload{
+			puzz:        puzz,
+			nextUnknown: nextUnknown,
+		}, true, false
 	}
+	return flippingPayload{}, false, false
 }

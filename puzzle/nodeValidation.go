@@ -34,6 +34,10 @@ func (p Puzzle) GetNodeState(
 // Returns `model.NodesComplete` if all nodes are satisfied.
 // Does not check for loops.
 func (p Puzzle) getStateOfNodes() model.State {
+	if p.areNodesComplete {
+		return model.NodesComplete
+	}
+
 	for _, n := range p.nodes {
 		switch s := getNodeState(n, &p.edges); s {
 		case model.Complete:

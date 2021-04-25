@@ -5,8 +5,6 @@ import (
 	"github.com/joshprzybyszewski/shingokisolver/state"
 )
 
-func AddProgressLogs() {}
-
 func (p Puzzle) Alpha() *state.TriEdges {
 	return &p.edges
 }

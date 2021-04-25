@@ -22,16 +22,6 @@ func firstFlip(
 		}
 	}
 
-	/*
-		isOk := puzzle.CheckBlankSpace(
-			puzz,
-			ep,
-		)
-		if !isOk {
-			return puzzle.Puzzle{}, false
-		}
-	*/
-
 	return flip(puzz, ep)
 }
 

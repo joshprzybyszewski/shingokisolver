@@ -43,7 +43,7 @@ func (p Puzzle) getStateOfLoop(
 	seenNodes, isLoop := w.walk()
 	if !isLoop {
 		nextUnknown := model.InvalidEdgePair
-		for dir := range model.AllCardinalsMap {
+		for _, dir := range model.AllCardinals {
 			ep := model.NewEdgePair(w.cur, dir)
 			if !p.edges.IsDefined(ep) {
 				nextUnknown = ep

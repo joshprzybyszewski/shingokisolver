@@ -19,19 +19,13 @@ import (
 var (
 	runConcurrently = flag.Bool(`concurrency`, false, `set to true to enable concurrency in the solver`)
 
-	addPprof            = flag.Bool(`includeProfile`, false, `set if you'd like to include a pprof output`)
-	includeProgressLogs = flag.Bool(`includeProcessLogs`, false, `set to see each solver's progress logs`)
-	shouldWriteResults  = flag.Bool(`results`, false, `set to update the results in the READMEs`)
-	runCompetitive      = flag.Bool(`competitive`, false, `set to true to compete online!`)
+	addPprof           = flag.Bool(`includeProfile`, false, `set if you'd like to include a pprof output`)
+	shouldWriteResults = flag.Bool(`results`, false, `set to update the results in the READMEs`)
+	runCompetitive     = flag.Bool(`competitive`, false, `set to true to compete online!`)
 )
 
 func main() {
 	flag.Parse()
-
-	if *includeProgressLogs {
-		puzzle.AddProgressLogs()
-		solvers.AddProgressLogs()
-	}
 
 	if *addPprof {
 		runProfiler()
@@ -102,7 +96,7 @@ func runStandardSolver() {
 		if pd.NumEdges > state.MaxEdges {
 			continue
 		}
-		// if !strings.Contains(pd.String(), `1,483,954`) {
+		// if !strings.Contains(pd.String(), `7,626,434`) {
 		// 	continue
 		// }
 

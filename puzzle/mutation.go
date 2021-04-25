@@ -19,7 +19,13 @@ func AddTwoArms(
 	ta model.TwoArms,
 ) (Puzzle, model.State) {
 
-	return AddEdges(p, ta.GetAllEdges(start))
+	existing, avoided := ta.GetAllEdges(start)
+
+	return performUpdates(p, updates{
+		edgesToAdd:             existing,
+		edgesToAvoid:           avoided,
+		allowOutOfBoundsAvoids: true,
+	})
 }
 
 func AddEdges(
@@ -41,9 +47,11 @@ func AvoidEdge(
 }
 
 type updates struct {
-	nodes        map[model.Node]map[model.Cardinal]int8
-	edgesToAdd   []model.EdgePair
-	edgesToAvoid []model.EdgePair
+	nodes      map[model.Node]map[model.Cardinal]int8
+	edgesToAdd []model.EdgePair
+
+	edgesToAvoid           []model.EdgePair
+	allowOutOfBoundsAvoids bool
 }
 
 func performUpdates(
@@ -69,6 +77,9 @@ func performUpdates(
 
 	for _, ep := range u.edgesToAvoid {
 		if !newState.IsInBounds(ep) {
+			if u.allowOutOfBoundsAvoids {
+				continue
+			}
 			return Puzzle{}, model.Violation
 		}
 

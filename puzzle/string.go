@@ -2,6 +2,7 @@
 package puzzle
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/joshprzybyszewski/shingokisolver/model"
@@ -133,10 +134,29 @@ func (p Puzzle) string(
 	cw colorWriter,
 ) string {
 
+	isBland := cw == noColor
+
 	var sb strings.Builder
+
 	sb.WriteString("\n")
+
+	if !isBland {
+		cw.addNormal(&sb, `    `)
+		for c := 0; c < p.numNodes(); c++ {
+			cw.addNormal(&sb, fmt.Sprintf(" c%2d ", c))
+			cw.addNormal(&sb, `   `)
+		}
+		sb.WriteString("\n")
+		sb.WriteString("\n")
+	}
+
 	for r := 0; r < p.numNodes(); r++ {
 		var below strings.Builder
+		if !isBland {
+			cw.addNormal(&sb, fmt.Sprintf("r%2d ", r))
+			cw.addNormal(&below, `    `)
+		}
+
 		for c := 0; c < p.numNodes(); c++ {
 			nc := model.NewCoordFromInts(r, c)
 			// write a node
@@ -209,10 +229,25 @@ func (p Puzzle) string(
 			}
 			below.WriteString(`    `)
 		}
+		if !isBland {
+			cw.addNormal(&sb, fmt.Sprintf(" r%2d", r))
+			cw.addNormal(&below, `    `)
+		}
+
 		sb.WriteString("\n")
 		sb.WriteString(below.String())
 		sb.WriteString("\n")
 	}
+
+	if !isBland {
+		cw.addNormal(&sb, `    `)
+		for c := 0; c < p.numNodes(); c++ {
+			cw.addNormal(&sb, fmt.Sprintf(" c%2d ", c))
+			cw.addNormal(&sb, `   `)
+		}
+		sb.WriteString("\n")
+	}
+
 	return sb.String()
 }
 

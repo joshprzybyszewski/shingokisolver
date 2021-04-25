@@ -19,22 +19,25 @@ func (ta TwoArms) AfterTwo(start NodeCoord) EdgePair {
 	)
 }
 
-func (ta TwoArms) GetAllEdges(start NodeCoord) []EdgePair {
-	allEdges := make([]EdgePair, 0, ta.One.Len+ta.Two.Len)
+func (ta TwoArms) GetAllEdges(start NodeCoord) ([]EdgePair, []EdgePair) {
+	existing := make([]EdgePair, 0, ta.One.Len+ta.Two.Len)
+	avoided := make([]EdgePair, 0, 2)
 
 	ep := NewEdgePair(start, ta.One.Heading)
 	for i := int8(0); i < ta.One.Len; i++ {
-		allEdges = append(allEdges, ep)
+		existing = append(existing, ep)
 		ep = ep.Next(ta.One.Heading)
 	}
+	avoided = append(avoided, ep)
 
 	ep = NewEdgePair(start, ta.Two.Heading)
 	for i := int8(0); i < ta.Two.Len; i++ {
-		allEdges = append(allEdges, ep)
+		existing = append(existing, ep)
 		ep = ep.Next(ta.Two.Heading)
 	}
+	avoided = append(avoided, ep)
 
-	return allEdges
+	return existing, avoided
 }
 
 func (ta TwoArms) equals(other TwoArms) bool {

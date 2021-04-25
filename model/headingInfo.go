@@ -9,6 +9,9 @@ func buildHeadingInfos(
 	node Node,
 	ge GetEdger,
 ) []headingInfo {
+	// TODO this func is expensive!
+	// Is there a way to cache it for re-use, or to
+	// harvest the data in a more performant fashion?
 	res := make([]headingInfo, len(AllCardinals)+1)
 
 	nc := node.Coord()

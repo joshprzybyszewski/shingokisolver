@@ -15,7 +15,7 @@ func (p Puzzle) GetUnknownEdge() (model.EdgePair, bool) {
 	nc, isLoop := w.walkToTheEndOfThePath()
 	if isLoop {
 		// This is an error case. We made a loop, but we weren't expecting to.
-		return model.EdgePair{}, false
+		return model.InvalidEdgePair, false
 	}
 
 	// now from this end of the path, choose a random edge
@@ -29,7 +29,7 @@ func (p Puzzle) GetUnknownEdge() (model.EdgePair, bool) {
 
 	// we walked to the end of the path and did not find an unknown edge.
 	// this is an error case.
-	return model.EdgePair{}, false
+	return model.InvalidEdgePair, false
 }
 
 func (p Puzzle) IsEdge(

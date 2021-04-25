@@ -31,3 +31,32 @@ func TestBuildTwoArmOptions(t *testing.T) {
 		assert.LessOrEqual(t, len(actTwoArms), expNumOptions, `unexpected num options for a white node: %+v`, whiteNode)
 	}
 }
+
+func TestGetAllEdges(t *testing.T) {
+	ta := TwoArms{
+		One: Arm{
+			Heading: HeadRight,
+			Len:     2,
+		},
+		Two: Arm{
+			Heading: HeadDown,
+			Len:     2,
+		},
+	}
+
+	existing, avoided := ta.GetAllEdges(NewCoord(0, 0))
+
+	expExisting := []EdgePair{
+		NewEdgePair(NewCoord(0, 0), HeadRight),
+		NewEdgePair(NewCoord(0, 1), HeadRight),
+		NewEdgePair(NewCoord(0, 0), HeadDown),
+		NewEdgePair(NewCoord(1, 0), HeadDown),
+	}
+	expAvoided := []EdgePair{
+		NewEdgePair(NewCoord(0, 2), HeadRight),
+		NewEdgePair(NewCoord(2, 0), HeadDown),
+	}
+
+	assert.Equal(t, expExisting, existing)
+	assert.Equal(t, expAvoided, avoided)
+}

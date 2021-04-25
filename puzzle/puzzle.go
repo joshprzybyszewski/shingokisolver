@@ -20,7 +20,7 @@ type Puzzle struct {
 
 	// TODO consider keeping a mapping of start segment model.NodeCoord
 	// to end segment model.NodeCoord, so that the walker can make strides
-	// instead of needing to do `IsEdge` for everything multiple times...
+	// instead of needing to do `IsEdge` for the entire path...
 }
 
 func NewPuzzle(
