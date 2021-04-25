@@ -9,6 +9,8 @@ import (
 	"strings"
 	"time"
 
+	cpu "github.com/klauspost/cpuid/v2"
+
 	"github.com/joshprzybyszewski/shingokisolver/compete"
 	"github.com/joshprzybyszewski/shingokisolver/model"
 	"github.com/joshprzybyszewski/shingokisolver/state"
@@ -185,6 +187,26 @@ func buildSummaryBySize(
 	sb.WriteString("#### Results from ")
 	sb.WriteString(time.Now().Format("01-02-2006"))
 	sb.WriteString("\n\n")
+
+	// Print basic CPU information:
+	sb.WriteString("_")
+	sb.WriteString(cpu.CPU.BrandName)
+	sb.WriteString("_\n\n")
+	// fmt.Println("PhysicalCores:", cpu.CPU.PhysicalCores)
+	// fmt.Println("ThreadsPerCore:", cpu.CPU.ThreadsPerCore)
+	// fmt.Println("LogicalCores:", cpu.CPU.LogicalCores)
+	// fmt.Println("Family", cpu.CPU.Family, "Model:", cpu.CPU.Model, "Vendor ID:", cpu.CPU.VendorID)
+	// fmt.Println("Features:", fmt.Sprintf(strings.Join(cpu.CPU.FeatureSet(), ",")))
+	// fmt.Println("Cacheline bytes:", cpu.CPU.CacheLine)
+	// fmt.Println("L1 Data Cache:", cpu.CPU.Cache.L1D, "bytes")
+	// fmt.Println("L1 Instruction Cache:", cpu.CPU.Cache.L1D, "bytes")
+	// fmt.Println("L2 Cache:", cpu.CPU.Cache.L2, "bytes")
+	// fmt.Println("L3 Cache:", cpu.CPU.Cache.L3, "bytes")
+	// fmt.Println("Frequency", cpu.CPU.Hz, "hz")
+
+	// if cpu := sysinfo.CPU.Name(); cpu != "" {
+	// 	sb.WriteString(fmt.Sprintf("_CPU: %s_\n", cpu))
+	// }
 
 	sb.WriteString("|Num Edges|")
 	sb.WriteString("Difficulty|")

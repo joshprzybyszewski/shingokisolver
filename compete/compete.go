@@ -26,11 +26,6 @@ func PopulateCache(
 }
 
 func Run() {
-	// TODO figure out GC
-	// disable garbage collection entirely.
-	// dangerous, I know.
-	// debug.SetGCPercent(-1)
-
 	for _, d := range []model.Difficulty{
 		model.Easy,
 		model.Medium,

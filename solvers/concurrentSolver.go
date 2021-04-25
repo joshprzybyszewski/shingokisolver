@@ -12,8 +12,7 @@ import (
 )
 
 const (
-	// TODO determine how big of a channel I want...
-	workChanLen = 16
+	workChanLen = 64
 )
 
 var (
@@ -44,7 +43,8 @@ type concurrentSolver struct {
 	solution chan puzzle.Puzzle
 
 	// TODO I don't want to keep track of these numbers
-	// because I don't think they boost my performance
+	// because I don't think they boost my performance. I'd
+	// like to just get rid of them.
 	numTargetsAdded     int32
 	numTargetsProcessed int32
 
@@ -213,10 +213,8 @@ func (cs *concurrentSolver) solveAimingAtTarget(
 		return
 
 	case model.Complete:
-		up, canProcess, isSolved := cs.getNextPayload(puzz, targeting)
-		if isSolved {
-			cs.sendSolution(puzz)
-		} else if canProcess {
+		up, canProcess := cs.getNextPayload(puzz, targeting)
+		if canProcess {
 			cs.workOnPayloadNow(up)
 		}
 		return
@@ -225,18 +223,18 @@ func (cs *concurrentSolver) solveAimingAtTarget(
 	// for each of the TwoArm options, we're going to try setting the edges
 	// and then descending further into our targets
 	for i, option := range targeting.Options {
-		up, canProcess, isSolved := cs.addArms(puzz, targeting, option)
-		if isSolved {
-			cs.sendSolution(puzz)
-			return
-		} else if !canProcess {
+		up, canProcess := cs.addArms(puzz, targeting, option)
+		if !canProcess {
 			continue
 		}
 
-		if i == len(targeting.Options)-1 {
+		if i == len(targeting.Options)-1 || i >= numCPU {
 			// This is the last option in our targeted options. Instead of
 			// sending it for someone else to work on, we're just going to
 			// continue using the CPU to see how it do.
+			// OR this is an index that is more than our number of CPU. I'm
+			// doing this to avoid spinning up _too_ many goroutines. I should
+			// probably be using GOMAXPROCS instead:#
 			cs.workOnPayloadNow(up)
 		} else {
 			// we've built the puzzle for another worker to pick up whenever
@@ -250,10 +248,10 @@ func (cs *concurrentSolver) addArms(
 	puzz puzzle.Puzzle,
 	curTarget model.Target,
 	ta model.TwoArms,
-) (unsolved, bool, bool) {
+) (unsolved, bool) {
 	withArms, ok := addTwoArms(puzz, curTarget.Node.Coord(), ta)
 	if !ok {
-		return unsolved{}, false, false
+		return unsolved{}, false
 	}
 	return cs.getNextPayload(withArms, curTarget)
 }
@@ -261,23 +259,24 @@ func (cs *concurrentSolver) addArms(
 func (cs *concurrentSolver) getNextPayload(
 	puzz puzzle.Puzzle,
 	curTarget model.Target,
-) (unsolved, bool, bool) {
+) (unsolved, bool) {
 
 	cs.printPuzzleUpdate(`getNextPayload`, puzz, curTarget)
 
 	nextTarget, state := puzz.GetNextTarget(curTarget)
 	switch state {
 	case model.Complete:
-		return unsolved{}, false, true
+		cs.sendSolution(puzz)
+		return unsolved{}, false
 	case model.Incomplete, model.NodesComplete:
 		return unsolved{
 			puzz:            puzz,
 			target:          nextTarget,
 			isNodesComplete: state == model.NodesComplete,
 			nextUnknown:     model.InvalidEdgePair,
-		}, true, false
+		}, true
 	}
-	return unsolved{}, false, false
+	return unsolved{}, false
 }
 
 func (cs *concurrentSolver) processFlipPayload(
