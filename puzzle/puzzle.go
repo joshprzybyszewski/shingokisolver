@@ -10,11 +10,15 @@ type Puzzle struct {
 	rules *logic.RuleSet
 
 	nodes         []model.Node
-	nearby        []map[model.Cardinal][]*model.Node
+	nearby        []model.NearbyNodes
 	twoArmOptions [][]model.TwoArms
 
 	edges state.TriEdges
 	gn    model.GetNoder
+
+	// TODO consider keeping a mapping of start segment model.NodeCoord
+	// to end segment model.NodeCoord, so that the walker can make strides
+	// instead of needing to do `IsEdge` for everything multiple times...
 }
 
 func NewPuzzle(
@@ -31,7 +35,7 @@ func NewPuzzle(
 		nodes = append(nodes, model.NewNode(nc, nl.IsWhite, nl.Value))
 	}
 
-	nearby := make([]map[model.Cardinal][]*model.Node, len(nodes))
+	nearby := make([]model.NearbyNodes, len(nodes))
 	gn := newNodeGrid(nodes)
 	edges := state.New(numEdges)
 	rules := logic.New(&edges, numEdges, nodes)

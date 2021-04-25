@@ -4,8 +4,8 @@ func BuildNearbyNodes(
 	myNode Node,
 	gn GetNoder,
 	maxLensByDir map[Cardinal]int8,
-) map[Cardinal][]*Node {
-	otherNodes := make(map[Cardinal][]*Node, len(maxLensByDir))
+) NearbyNodes {
+	nearby := make(NearbyNodes, len(AllCardinals)+1)
 
 	for dir, maxLen := range maxLensByDir {
 		slice := make([]*Node, maxLen)
@@ -19,10 +19,10 @@ func BuildNearbyNodes(
 				slice[i] = &n
 			}
 		}
-		otherNodes[dir] = slice[:lastNodeIndex+1]
+		nearby[dir] = slice[:lastNodeIndex+1]
 	}
 
-	return otherNodes
+	return nearby
 }
 
 func isInTheWay(otherNodes []*Node, maxLen int8, myStraightLineVal int8) bool {

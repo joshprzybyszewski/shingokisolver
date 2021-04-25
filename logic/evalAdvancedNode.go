@@ -11,7 +11,7 @@ func newAdvancedNodeEvaluator(
 	myDir model.Cardinal,
 	myIndex int8,
 	options []model.TwoArms,
-	nearbyNodes map[model.Cardinal][]*model.Node,
+	nearbyNodes model.NearbyNodes,
 ) evaluator {
 	return advancedNode{
 		node:        node,
@@ -23,7 +23,7 @@ func newAdvancedNodeEvaluator(
 }
 
 type advancedNode struct {
-	nearbyNodes map[model.Cardinal][]*model.Node
+	nearbyNodes model.NearbyNodes
 	options     []model.TwoArms
 
 	node  model.Node

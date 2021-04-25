@@ -9,7 +9,7 @@ func buildHeadingInfos(
 	node Node,
 	ge GetEdger,
 ) []headingInfo {
-	res := make([]headingInfo, 5)
+	res := make([]headingInfo, len(AllCardinals)+1)
 
 	nc := node.Coord()
 	maxLen := node.Value() - 1

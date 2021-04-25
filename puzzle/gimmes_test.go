@@ -33,11 +33,13 @@ func TestGimmesPuzzle90104(t *testing.T) {
 	logic.AssertHasAdvancedNode(
 		t,
 		r,
-		map[model.Cardinal][]*model.Node{
-			model.HeadRight: {
+		model.NearbyNodes{
+			{},
+			{
 				nil,
 			},
-			model.HeadLeft: {
+			{},
+			{
 				nil,
 			},
 		},

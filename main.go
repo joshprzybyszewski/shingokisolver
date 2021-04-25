@@ -65,7 +65,7 @@ func runProfiler() {
 	// debug.SetGCPercent(-1)
 	t0 := time.Now()
 
-	for _, pd := range reader.GetAllPuzzles() {
+	for i, pd := range reader.GetAllPuzzles() {
 		if pd.NumEdges <= 20 { //  || !strings.Contains(pd.String(), `2,589,287`) {
 			// if !strings.Contains(pd.String(), `5,434,778`) {
 			continue
@@ -78,7 +78,7 @@ func runProfiler() {
 		// go runSolver(pd)
 		// time.Sleep(30 * time.Second)
 
-		if time.Since(t0) > 30*time.Second {
+		if time.Since(t0) > 5*60*time.Second || i > 50 {
 			return
 		}
 	}

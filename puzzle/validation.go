@@ -50,7 +50,7 @@ func (p Puzzle) getStateOfLoop(
 	}
 
 	for _, n := range p.nodes {
-		if _, ok := seenNodes[n.Coord()]; !ok {
+		if !seenNodes.IsCoordSeen(n.Coord()) {
 			// node was not seen. therefore, we completed a loop that
 			// doesn't see all nodes!
 			return model.InvalidEdgePair, model.Violation

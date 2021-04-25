@@ -52,7 +52,7 @@ func (n Node) IsInvalidMotions(c1, c2 Cardinal) bool {
 func (n Node) GetFilteredOptions(
 	input []TwoArms,
 	ge GetEdger,
-	otherNodes map[Cardinal][]*Node,
+	nearby NearbyNodes,
 ) []TwoArms {
 	filteredOptions := make([]TwoArms, 0, len(input))
 
@@ -62,7 +62,7 @@ func (n Node) GetFilteredOptions(
 		if !n.isTwoArmsPossible(o, hInfos, ge) {
 			continue
 		}
-		if n.isInTheWayOfOtherNodes(o, otherNodes) {
+		if n.isInTheWayOfOtherNodes(o, nearby) {
 			continue
 		}
 		filteredOptions = append(filteredOptions, o)
@@ -96,7 +96,7 @@ func (n Node) isTwoArmsPossible(
 
 func (n Node) isInTheWayOfOtherNodes(
 	twoArms TwoArms,
-	otherNodes map[Cardinal][]*Node,
+	nearby NearbyNodes,
 ) bool {
 
 	sumLens := twoArms.One.Len + twoArms.Two.Len
@@ -107,7 +107,7 @@ func (n Node) isInTheWayOfOtherNodes(
 			slVal = sumLens
 		}
 
-		if isInTheWay(otherNodes[arm.Heading], arm.Len, slVal) {
+		if isInTheWay(nearby.Get(arm.Heading), arm.Len, slVal) {
 			return true
 		}
 	}

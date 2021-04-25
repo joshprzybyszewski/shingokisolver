@@ -2,12 +2,13 @@ package puzzle
 
 import (
 	"github.com/joshprzybyszewski/shingokisolver/model"
+	"github.com/joshprzybyszewski/shingokisolver/state"
 )
 
 type simpleWalker struct {
 	provider model.GetEdger
 
-	seen     map[model.NodeCoord]struct{}
+	seen     state.CoordSeener
 	skipSeen bool
 
 	start model.NodeCoord
@@ -22,7 +23,7 @@ func newWalker(
 		provider: ge,
 		start:    start,
 		cur:      start,
-		seen:     make(map[model.NodeCoord]struct{}, 16),
+		seen:     state.NewCoordSeen(ge.NumEdges()),
 	}
 }
 
@@ -32,7 +33,7 @@ func (sw *simpleWalker) walkToTheEndOfThePath() (model.NodeCoord, bool) {
 	return sw.cur, isLoop
 }
 
-func (sw *simpleWalker) walk() (map[model.NodeCoord]struct{}, bool) {
+func (sw *simpleWalker) walk() (state.CoordSeener, bool) {
 	move := sw.walkToNextPoint(model.HeadNowhere)
 	if move == model.HeadNowhere {
 		// our path all the way around was incomplete
@@ -66,8 +67,7 @@ func (sw *simpleWalker) walkToNextPoint(
 		}
 
 		if !sw.skipSeen {
-			// avoid allocs if skipSeen is true
-			sw.seen[sw.cur] = struct{}{}
+			sw.seen.Mark(sw.cur)
 		}
 
 		sw.cur = sw.cur.Translate(dir)

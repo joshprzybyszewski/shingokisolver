@@ -10,7 +10,7 @@ import (
 func AssertHasAdvancedNode(
 	t *testing.T,
 	r *Rules,
-	expNearbyNodes map[model.Cardinal][]*model.Node,
+	expNearbyNodes model.NearbyNodes,
 	expOptions []model.TwoArms,
 	expNode model.Node,
 	expDir model.Cardinal,

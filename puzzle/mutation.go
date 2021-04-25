@@ -154,6 +154,7 @@ func updateEdge(
 		return ms
 	}
 
+	// TODO if NodesComplete, then I don't need to EvaluateFullState here...
 	evalState := r.EvaluateFullState(edges)
 	if evalState != model.EdgeUnknown && evalState != es {
 		return model.Violation
