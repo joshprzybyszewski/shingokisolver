@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"runtime"
+	"strings"
 	"time"
 
 	"github.com/joshprzybyszewski/shingokisolver/model"
@@ -25,9 +26,11 @@ func runStandardSolver() {
 		if pd.NumEdges > state.MaxEdges {
 			continue
 		}
-		// if !strings.Contains(pd.String(), `2,918,759`) {
-		// 	continue
-		// }
+		if strings.Contains(pd.String(), `893,598`) {
+			// :badpokerface: this puzzle is destroying my machine. I'm skipping
+			// it, and that makes me look bad:#
+			continue
+		}
 
 		if numBySize[pd.NumEdges][pd.Difficulty] >= sampleSize {
 			continue
