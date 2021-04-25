@@ -108,7 +108,7 @@ func runStandardSolver() {
 
 		if numBySize[pd.NumEdges][pd.Difficulty] >= sampleSize {
 			continue
-		} else if pd.NumEdges > 20 && pd.Difficulty == model.Hard && numBySize[pd.NumEdges][pd.Difficulty] >= 1 {
+		} else if pd.NumEdges > 20 && pd.Difficulty == model.Hard && numBySize[pd.NumEdges][pd.Difficulty] >= 3 {
 			continue
 		}
 

@@ -25,6 +25,7 @@ func newWalker(
 		seen:     make(map[model.NodeCoord]struct{}, 16),
 	}
 }
+
 func (sw *simpleWalker) walkToTheEndOfThePath() (model.NodeCoord, bool) {
 	sw.skipSeen = true
 	_, isLoop := sw.walk()
@@ -55,7 +56,7 @@ func (sw *simpleWalker) walkToNextPoint(
 	avoid model.Cardinal,
 ) model.Cardinal {
 
-	for dir := range model.AllCardinalsMap {
+	for _, dir := range model.AllCardinals {
 		if avoid == dir {
 			continue
 		}
