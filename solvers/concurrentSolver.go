@@ -151,14 +151,33 @@ func (cs *concurrentSolver) solveAimingAtTarget(
 		return
 
 	case model.Complete:
-		cs.stepAheadToNextTarget(puzz, targeting)
+		up, canProcess, isSolved := cs.getNextPayload(puzz, targeting)
+		if isSolved {
+			cs.sendSolution(puzz)
+		} else if canProcess {
+			cs.processPayload(up)
+		}
 		return
 	}
 
 	// for each of the TwoArm options, we're going to try setting the edges
 	// and then descending further into our targets
 	for _, option := range targeting.Options {
-		go cs.addArms(puzz, targeting, option)
+		up, canProcess, isSolved := cs.addArms(puzz, targeting, option)
+		if isSolved {
+			cs.sendSolution(puzz)
+		} else if !canProcess {
+			continue
+		}
+
+		// Here, if we're the only option, then we're just going to descend on this
+		// same goroutine. We won't queue up the payload because that would be wasteful
+		// and we know we can just keep using this CPU
+		if len(targeting.Options) == 1 {
+			cs.processPayload(up)
+		} else {
+			cs.queuePayload(up)
+		}
 	}
 }
 
@@ -166,32 +185,34 @@ func (cs *concurrentSolver) addArms(
 	puzz puzzle.Puzzle,
 	curTarget model.Target,
 	ta model.TwoArms,
-) {
+) (unsolvedPayload, bool, bool) {
 	withArms, ok := addTwoArms(puzz, curTarget.Node.Coord(), ta)
-	if ok {
-		cs.stepAheadToNextTarget(withArms, curTarget)
+	if !ok {
+		return unsolvedPayload{}, false, false
 	}
+	return cs.getNextPayload(withArms, curTarget)
 }
 
-func (cs *concurrentSolver) stepAheadToNextTarget(
+func (cs *concurrentSolver) getNextPayload(
 	puzz puzzle.Puzzle,
 	curTarget model.Target,
-) {
+) (unsolvedPayload, bool, bool) {
 
-	cs.printPuzzleUpdate(`stepAheadToNextTarget`, puzz, curTarget)
+	cs.printPuzzleUpdate(`getNextPayload`, puzz, curTarget)
 
 	nextTarget, state := puzz.GetNextTarget(curTarget)
 	switch state {
 	case model.Complete:
-		cs.sendSolution(puzz)
+		return unsolvedPayload{}, false, true
 	case model.Incomplete, model.NodesComplete:
-		cs.queuePayload(unsolvedPayload{
+		return unsolvedPayload{
 			puzz:            puzz,
 			target:          nextTarget,
 			isNodesComplete: state == model.NodesComplete,
 			nextUnknown:     model.InvalidEdgePair,
-		})
+		}, true, false
 	}
+	return unsolvedPayload{}, false, false
 }
 
 func (cs *concurrentSolver) flip(
@@ -200,6 +221,7 @@ func (cs *concurrentSolver) flip(
 ) {
 
 	cs.printPuzzleUpdate(`flip`, puzz, model.InvalidTarget)
+	puzzle.SetNodesComplete(&puzz)
 
 	if ep == model.InvalidEdgePair {
 		var ok bool
@@ -213,8 +235,8 @@ func (cs *concurrentSolver) flip(
 		}
 	}
 
-	go cs.justSetEdge(puzz, ep)
-	go cs.justAvoidEdge(puzz, ep)
+	cs.justSetEdge(puzz, ep)
+	cs.justAvoidEdge(puzz, ep)
 }
 
 func (cs *concurrentSolver) justSetEdge(

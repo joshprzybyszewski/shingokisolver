@@ -8,6 +8,8 @@ import (
 func firstFlip(
 	puzz puzzle.Puzzle,
 ) (puzzle.Puzzle, bool) {
+	puzzle.SetNodesComplete(&puzz)
+
 	printPuzzleUpdate(`firstFlip`, puzz, model.InvalidTarget)
 
 	ep, ok := puzz.GetUnknownEdge()

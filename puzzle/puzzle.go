@@ -16,6 +16,8 @@ type Puzzle struct {
 	edges state.TriEdges
 	gn    model.GetNoder
 
+	areNodesComplete bool
+
 	// TODO consider keeping a mapping of start segment model.NodeCoord
 	// to end segment model.NodeCoord, so that the walker can make strides
 	// instead of needing to do `IsEdge` for everything multiple times...
@@ -57,12 +59,13 @@ func (p Puzzle) withNewState(
 	edges state.TriEdges,
 ) Puzzle {
 	return Puzzle{
-		nodes:         p.nodes,
-		gn:            p.gn,
-		nearby:        p.nearby,
-		twoArmOptions: p.twoArmOptions,
-		edges:         edges,
-		rules:         p.rules,
+		nodes:            p.nodes,
+		gn:               p.gn,
+		nearby:           p.nearby,
+		twoArmOptions:    p.twoArmOptions,
+		edges:            edges,
+		rules:            p.rules,
+		areNodesComplete: p.areNodesComplete,
 	}
 }
 

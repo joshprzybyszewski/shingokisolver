@@ -61,7 +61,7 @@ func performUpdates(
 			return Puzzle{}, model.Violation
 		}
 
-		ms = addEdge(&newState, ep, rq, rules)
+		ms = addEdge(&newState, ep, rq, rules, p.areNodesComplete)
 		if ms != model.Incomplete && ms != model.Duplicate {
 			return Puzzle{}, ms
 		}
@@ -72,7 +72,7 @@ func performUpdates(
 			return Puzzle{}, model.Violation
 		}
 
-		ms = avoidEdge(&newState, ep, rq, rules)
+		ms = avoidEdge(&newState, ep, rq, rules, p.areNodesComplete)
 		if ms != model.Incomplete && ms != model.Duplicate {
 			return Puzzle{}, ms
 		}
@@ -90,6 +90,7 @@ func performUpdates(
 					ep,
 					rq,
 					rules,
+					p.areNodesComplete,
 				)
 				if ms != model.Incomplete && ms != model.Duplicate {
 					return Puzzle{}, ms
@@ -99,7 +100,7 @@ func performUpdates(
 		}
 	}
 
-	ms = runQueue(&newState, rq, rules)
+	ms = runQueue(&newState, rq, rules, p.areNodesComplete)
 	if ms != model.Incomplete {
 		return Puzzle{}, ms
 	}
@@ -111,11 +112,12 @@ func runQueue(
 	edges *state.TriEdges,
 	rq *logic.Queue,
 	rules *logic.RuleSet,
+	areNodesComplete bool,
 ) model.State {
 
 	var ms model.State
 	for ep, ok := rq.Pop(); ok; ep, ok = rq.Pop() {
-		ms = updateEdgeFromRules(edges, ep, rq, rules)
+		ms = updateEdgeFromRules(edges, ep, rq, rules, areNodesComplete)
 		if ms != model.Incomplete && ms != model.Duplicate {
 			return ms
 		}
@@ -129,8 +131,9 @@ func addEdge(
 	ep model.EdgePair,
 	rq *logic.Queue,
 	rules *logic.RuleSet,
+	areNodesComplete bool,
 ) model.State {
-	return updateEdge(model.EdgeExists, ep, edges, rq, rules.Get(ep))
+	return updateEdge(model.EdgeExists, ep, edges, rq, rules.Get(ep), areNodesComplete)
 }
 
 func avoidEdge(
@@ -138,8 +141,9 @@ func avoidEdge(
 	ep model.EdgePair,
 	rq *logic.Queue,
 	rules *logic.RuleSet,
+	areNodesComplete bool,
 ) model.State {
-	return updateEdge(model.EdgeAvoided, ep, edges, rq, rules.Get(ep))
+	return updateEdge(model.EdgeAvoided, ep, edges, rq, rules.Get(ep), areNodesComplete)
 }
 
 func updateEdge(
@@ -148,14 +152,23 @@ func updateEdge(
 	edges *state.TriEdges,
 	rq *logic.Queue,
 	r *logic.Rules,
+	areNodesComplete bool,
 ) model.State {
 
 	if ms := edges.UpdateEdge(ep, es); ms != model.Incomplete {
 		return ms
 	}
 
-	// TODO if NodesComplete, then I don't need to EvaluateFullState here...
-	evalState := r.EvaluateFullState(edges)
+	// if NodesComplete, then I don't need to EvaluateFullState.
+	// This will by-pass the extended "advanced node" and "simple node"
+	// evaluators everywhere.
+
+	var evalState model.EdgeState
+	if areNodesComplete {
+		evalState = r.EvaluateQuickState(edges)
+	} else {
+		evalState = r.EvaluateFullState(edges)
+	}
 	if evalState != model.EdgeUnknown && evalState != es {
 		return model.Violation
 	}
@@ -169,12 +182,13 @@ func updateEdgeFromRules(
 	ep model.EdgePair,
 	rq *logic.Queue,
 	rules *logic.RuleSet,
+	areNodesComplete bool,
 ) model.State {
 	switch es := rules.Get(ep).EvaluateQuickState(edges); es {
 	case model.EdgeAvoided:
-		return avoidEdge(edges, ep, rq, rules)
+		return avoidEdge(edges, ep, rq, rules, areNodesComplete)
 	case model.EdgeExists:
-		return addEdge(edges, ep, rq, rules)
+		return addEdge(edges, ep, rq, rules, areNodesComplete)
 	case model.EdgeUnknown, model.EdgeOutOfBounds:
 		return model.Incomplete
 	default:

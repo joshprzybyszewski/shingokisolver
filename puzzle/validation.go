@@ -4,6 +4,10 @@ import (
 	"github.com/joshprzybyszewski/shingokisolver/model"
 )
 
+func SetNodesComplete(p *Puzzle) {
+	p.areNodesComplete = true
+}
+
 func (p Puzzle) GetState() model.State {
 	_, s := p.GetStateOfLoop(model.InvalidNodeCoord)
 	return s

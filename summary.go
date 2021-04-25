@@ -108,7 +108,7 @@ func buildLatestResultsOutput(
 `)
 	var unsolvedCell, solutionCell string
 
-	for size := 1; size < state.MaxEdges; size++ {
+	for size := state.MaxEdges; size > 0; size-- {
 		for _, d := range model.AllDifficulties {
 			summaries, ok := summsBySize[size][d]
 			if !ok {

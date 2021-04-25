@@ -4,6 +4,8 @@ import (
 	"github.com/joshprzybyszewski/shingokisolver/model"
 )
 
+// TODO I don't think I should use this code because my
+// loose end detection isn't advanced enough
 func CheckBlankSpace(
 	puzz Puzzle,
 	ep model.EdgePair,
