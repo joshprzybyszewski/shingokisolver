@@ -21,7 +21,8 @@ const (
 	latestResultsFileName = `latestResults.md`
 	resultsStartString    = `</startResults>`
 
-	sampleSize = 25
+	sampleSize = 50
+	numHard25s = 5
 	numSlowest = 4
 )
 

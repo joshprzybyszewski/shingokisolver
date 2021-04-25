@@ -34,14 +34,14 @@ func runStandardSolver() {
 
 		if numBySize[pd.NumEdges][pd.Difficulty] >= sampleSize {
 			continue
-		} else if pd.NumEdges > 20 && pd.Difficulty == model.Hard && numBySize[pd.NumEdges][pd.Difficulty] >= 0 {
+		} else if pd.NumEdges > 20 && pd.Difficulty == model.Hard && numBySize[pd.NumEdges][pd.Difficulty] >= numHard25s {
 			continue
 		}
 
 		summ := runSolver(pd)
 		allSummaries = append(allSummaries, summ)
 
-		time.Sleep(10 * time.Millisecond)
+		time.Sleep(100 * time.Millisecond)
 		// collect garbage now, which should be that entire puzzle that we solved:#
 		runtime.GC()
 
