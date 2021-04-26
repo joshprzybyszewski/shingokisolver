@@ -7,14 +7,15 @@ import (
 )
 
 type Puzzle struct {
+	edges state.TriEdges
+	gn    model.GetNoder
 	rules *logic.RuleSet
 
+	// The following fields are all index-matched (nodes, nearby, twoArmOptions)
+	// TODO store it as a slice of a separate struct
 	nodes         []model.Node
 	nearby        []model.NearbyNodes
 	twoArmOptions [][]model.TwoArms
-
-	edges state.TriEdges
-	gn    model.GetNoder
 
 	areNodesComplete bool
 

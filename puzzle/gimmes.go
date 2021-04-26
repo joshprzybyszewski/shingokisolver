@@ -79,6 +79,6 @@ func claimGimmes(
 }
 
 type nodeAndOptions struct {
-	model.Node
 	Options []model.TwoArms
+	model.Node
 }

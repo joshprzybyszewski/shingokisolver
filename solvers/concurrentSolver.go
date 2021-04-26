@@ -123,7 +123,7 @@ func (cs *concurrentSolver) queuePayload(
 
 		// it's alright if the targets channel has been closed
 		defer func() {
-			recover()
+			_ = recover()
 		}()
 		cs.targets <- targetPayload{
 			puzz:   payload.puzz,
@@ -140,7 +140,7 @@ func (cs *concurrentSolver) queueFlippingPayload(
 
 	// it's alright if the targets channel has been closed
 	defer func() {
-		recover()
+		_ = recover()
 	}()
 
 	cs.flipping <- payload
@@ -152,7 +152,7 @@ func (cs *concurrentSolver) sendSolution(
 
 	defer func() {
 		// it's alright if the solution channel has been closed
-		recover()
+		_ = recover()
 	}()
 
 	cs.solution <- puzz

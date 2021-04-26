@@ -193,21 +193,21 @@ func buildSummaryBySize(
 	sb.WriteString("_")
 	sb.WriteString(cpu.CPU.BrandName)
 	sb.WriteString("_\n\n")
-	// fmt.Println("PhysicalCores:", cpu.CPU.PhysicalCores)
-	// fmt.Println("ThreadsPerCore:", cpu.CPU.ThreadsPerCore)
-	// fmt.Println("LogicalCores:", cpu.CPU.LogicalCores)
-	// fmt.Println("Family", cpu.CPU.Family, "Model:", cpu.CPU.Model, "Vendor ID:", cpu.CPU.VendorID)
-	// fmt.Println("Features:", fmt.Sprintf(strings.Join(cpu.CPU.FeatureSet(), ",")))
-	// fmt.Println("Cacheline bytes:", cpu.CPU.CacheLine)
-	// fmt.Println("L1 Data Cache:", cpu.CPU.Cache.L1D, "bytes")
-	// fmt.Println("L1 Instruction Cache:", cpu.CPU.Cache.L1D, "bytes")
-	// fmt.Println("L2 Cache:", cpu.CPU.Cache.L2, "bytes")
-	// fmt.Println("L3 Cache:", cpu.CPU.Cache.L3, "bytes")
-	// fmt.Println("Frequency", cpu.CPU.Hz, "hz")
-
-	// if cpu := sysinfo.CPU.Name(); cpu != "" {
-	// 	sb.WriteString(fmt.Sprintf("_CPU: %s_\n", cpu))
-	// }
+	/*
+		This is just the example I pulled from:
+		https://github.com/klauspost/cpuid/blob/c6a3519c8125843cc14161fb2349bc3fd8b19643/README.md#example
+			fmt.Println("PhysicalCores:", cpu.CPU.PhysicalCores)
+			fmt.Println("ThreadsPerCore:", cpu.CPU.ThreadsPerCore)
+			fmt.Println("LogicalCores:", cpu.CPU.LogicalCores)
+			fmt.Println("Family", cpu.CPU.Family, "Model:", cpu.CPU.Model, "Vendor ID:", cpu.CPU.VendorID)
+			fmt.Println("Features:", fmt.Sprintf(strings.Join(cpu.CPU.FeatureSet(), ",")))
+			fmt.Println("Cacheline bytes:", cpu.CPU.CacheLine)
+			fmt.Println("L1 Data Cache:", cpu.CPU.Cache.L1D, "bytes")
+			fmt.Println("L1 Instruction Cache:", cpu.CPU.Cache.L1D, "bytes")
+			fmt.Println("L2 Cache:", cpu.CPU.Cache.L2, "bytes")
+			fmt.Println("L3 Cache:", cpu.CPU.Cache.L3, "bytes")
+			fmt.Println("Frequency", cpu.CPU.Hz, "hz")
+	*/
 
 	sb.WriteString("|Num Edges|")
 	sb.WriteString("Difficulty|")

@@ -4,9 +4,10 @@ import "fmt"
 
 type Definition struct {
 	Description string
-	Difficulty  Difficulty
 	Nodes       []NodeLocation
-	NumEdges    int
+
+	NumEdges   int
+	Difficulty Difficulty
 }
 
 func (d Definition) String() string {
