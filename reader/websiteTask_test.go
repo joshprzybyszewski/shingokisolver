@@ -20,6 +20,7 @@ func TestFromWebsiteTask(t *testing.T) {
 		task:     `B5eW2B2bB4cB2fB3eB3h`,
 		expPD: model.Definition{
 			Description: `PuzzleID: 5,258,416`,
+			Difficulty:  model.Hard,
 			NumEdges:    5,
 			Nodes: []model.NodeLocation{{
 				Row:     0,

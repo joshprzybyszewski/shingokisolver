@@ -297,14 +297,14 @@ func TestGetMask(t *testing.T) {
 			Heading: model.HeadDown,
 			Len:     MaxEdges,
 		},
-		expBitaData: armLenMasks[len(armLenMasks)-1],
+		expBitaData: armLenMasks[MaxEdges],
 	}, {
 		start: model.NewCoord(1, 0),
 		arm: model.Arm{
 			Heading: model.HeadDown,
 			Len:     MaxEdges,
 		},
-		expBitaData: armLenMasks[len(armLenMasks)-1] << 1,
+		expBitaData: armLenMasks[MaxEdges] << 1,
 	}, {
 		start: model.NewCoord(1, 0),
 		arm: model.Arm{

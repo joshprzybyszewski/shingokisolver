@@ -34,14 +34,15 @@ func TestGimmesPuzzle90104(t *testing.T) {
 		t,
 		r,
 		model.NearbyNodes{
-			{},
+			nil, // HeadNowhere
 			{
 				nil,
-			},
-			{},
+			}, // HeadRight
+			nil, // HeadUp
 			{
 				nil,
-			},
+			}, // HeadLeft
+			nil, // HeadDown
 		},
 		[]model.TwoArms{{
 			Two: model.Arm{
@@ -148,7 +149,7 @@ func TestBuildTwoArmsCache(t *testing.T) {
 	}
 	for i, tao := range outPuzz.twoArmOptions {
 		assert.NotEmpty(t, tao)
-		if expOptions, ok := expOptionsByNode[outPuzz[i]]; ok {
+		if expOptions, ok := expOptionsByNode[outPuzz.nodes[i]]; ok {
 			assert.Equal(t, expOptions, tao)
 		}
 	}

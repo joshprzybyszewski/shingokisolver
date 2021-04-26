@@ -39,11 +39,11 @@ compete: ## Fetch puzzles from the internet and submit the answers for the hall 
 
 .PHONY: test
 test: ## Run unit tests
-	go test -short ./...
+	go test -timeout=30s -short ./...
 
 .PHONY: longtest
 longtest: ## Runs unit tests, including potentially long-running ones
-	go test ./...
+	go test -timeout=5m ./...
 
 .PHONY: bench
 bench: ## Runs benchmarks (replaced by 'make results')

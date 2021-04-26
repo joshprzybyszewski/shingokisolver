@@ -91,11 +91,15 @@ func TestGetFilteredOptionsSimpleAvoids(t *testing.T) {
 	nEdges := 15
 	b3 := NewNode(NewCoord(7, 7), false, 3)
 	allTAs := BuildTwoArmOptions(b3, nEdges)
+	nearby := make(NearbyNodes, len(AllCardinals)+1)
+	for _, dir := range AllCardinals {
+		nearby[dir] = make([]*Node, b3.Value()+1)
+	}
 
 	tge := testGetEdger{
 		numEdges: nEdges,
 	}
-	filtered := b3.GetFilteredOptions(allTAs, tge, nil)
+	filtered := b3.GetFilteredOptions(allTAs, tge, nearby)
 	assert.Equal(t, filtered, allTAs)
 
 	tge = testGetEdger{
@@ -104,7 +108,7 @@ func TestGetFilteredOptionsSimpleAvoids(t *testing.T) {
 			NewEdgePair(NewCoord(7, 7), HeadUp),
 		},
 	}
-	filtered = b3.GetFilteredOptions(allTAs, tge, nil)
+	filtered = b3.GetFilteredOptions(allTAs, tge, nearby)
 	assert.NotEqual(t, filtered, allTAs)
 	for _, ta := range filtered {
 		assert.NotEqual(t, HeadUp, ta.One.Heading)
@@ -118,7 +122,7 @@ func TestGetFilteredOptionsSimpleAvoids(t *testing.T) {
 			NewEdgePair(NewCoord(7, 7), HeadLeft),
 		},
 	}
-	filtered = b3.GetFilteredOptions(allTAs, tge, nil)
+	filtered = b3.GetFilteredOptions(allTAs, tge, nearby)
 	assert.NotEqual(t, filtered, allTAs)
 	for i, ta := range filtered {
 		assert.NotEqual(t, HeadUp, ta.One.Heading, `issue with TwoArms at index %d: %v`, i, ta)
