@@ -6,6 +6,8 @@ import (
 
 func SetNodesComplete(p *Puzzle) {
 	p.areNodesComplete = true
+
+	p.loop = newAllSegmentsFromNodesComplete(p.nodes, &p.edges)
 }
 
 func (p Puzzle) GetState() model.State {
@@ -34,6 +36,17 @@ func (p Puzzle) GetStateOfLoop(
 func (p Puzzle) getStateOfLoop(
 	coord model.NodeCoord,
 ) (model.EdgePair, model.State) {
+
+	if p.loop != nil {
+		if p.loop.IsLoop() {
+			if p.loop.NumNodesInLoop() != len(p.nodes) {
+				return model.InvalidEdgePair, model.Violation
+			}
+			return model.InvalidEdgePair, model.Complete
+		}
+
+		return p.loop.GetUnknownEdge(&p.edges)
+	}
 
 	if coord == model.InvalidNodeCoord {
 		coord = p.getRandomCoord()
@@ -66,12 +79,12 @@ func (p Puzzle) getStateOfLoop(
 }
 
 func (p Puzzle) getRandomCoord() model.NodeCoord {
-	for _, n := range p.nodes {
-		return n.Coord()
-	}
+	return getRandomCoord(p.nodes)
+}
 
-	if p.rules == nil {
-		panic(`dev error: p.rules == nil`)
+func getRandomCoord(nodes []model.Node) model.NodeCoord {
+	for _, n := range nodes {
+		return n.Coord()
 	}
 
 	panic(`dev error: getRandomCoord couldn't find anything`)
