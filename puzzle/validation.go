@@ -1,11 +1,16 @@
 package puzzle
 
 import (
+	"log"
+
 	"github.com/joshprzybyszewski/shingokisolver/model"
 )
 
 func SetNodesComplete(p *Puzzle) {
 	p.areNodesComplete = true
+
+	// TODO figure out b2s that are ambiguous
+	log.Printf("SetNodesComplete:\n%s", p.String())
 
 	p.loop = newAllSegmentsFromNodesComplete(p.nodes, &p.edges)
 }
@@ -53,11 +58,11 @@ func (p Puzzle) getStateOfLoop(
 	}
 
 	w := newWalker(&p.edges, coord)
-	seenNodes, isLoop := w.walk()
+	lastNC, seenNodes, isLoop := w.walk()
 	if !isLoop {
 		nextUnknown := model.InvalidEdgePair
 		for _, dir := range model.AllCardinals {
-			ep := model.NewEdgePair(w.cur, dir)
+			ep := model.NewEdgePair(lastNC, dir)
 			if !p.edges.IsDefined(ep) {
 				nextUnknown = ep
 				break
