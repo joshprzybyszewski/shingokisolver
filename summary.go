@@ -22,7 +22,7 @@ const (
 	resultsStartString    = `</startResults>`
 
 	sampleSize = 50
-	numHard25s = 50
+	numHard25s = 10
 	numSlowest = 4
 )
 
