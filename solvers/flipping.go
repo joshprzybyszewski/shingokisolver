@@ -40,7 +40,7 @@ func flip(
 	)
 	switch state {
 	case model.Complete, model.Incomplete:
-		nextUnknown, state = puzzWithEdge.GetStateOfLoop(ep.NodeCoord)
+		nextUnknown, state = puzzWithEdge.GetStateOfLoop()
 		if state == model.Complete {
 			return puzzWithEdge, true
 		}
@@ -57,7 +57,7 @@ func flip(
 	)
 	switch state {
 	case model.Complete, model.Incomplete:
-		nextUnknown, state = puzzWithoutEdge.GetStateOfLoop(ep.NodeCoord)
+		nextUnknown, state = puzzWithoutEdge.GetStateOfLoop()
 		if state == model.Complete {
 			return puzzWithoutEdge, true
 		}

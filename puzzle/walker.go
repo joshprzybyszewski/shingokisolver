@@ -12,7 +12,6 @@ type simpleWalker struct {
 	skipSeen bool
 
 	start model.NodeCoord
-	cur   model.NodeCoord
 }
 
 func newWalker(
@@ -22,38 +21,78 @@ func newWalker(
 	return &simpleWalker{
 		provider: ge,
 		start:    start,
-		cur:      start,
 		seen:     state.NewCoordSeen(ge.NumEdges()),
 	}
 }
 
 func (sw *simpleWalker) walkToTheEndOfThePath() (model.NodeCoord, bool) {
 	sw.skipSeen = true
-	_, isLoop := sw.walk()
-	return sw.cur, isLoop
+	cur, _, isLoop := sw.walkWithInfo(model.HeadNowhere)
+	return cur, isLoop
 }
 
-func (sw *simpleWalker) walk() (state.CoordSeener, bool) {
-	move := sw.walkToNextPoint(model.HeadNowhere)
+func (sw *simpleWalker) walk() (model.NodeCoord, state.CoordSeener, bool) {
+	lastNC, _, isLoop := sw.walkWithInfo(model.HeadNowhere)
+	if isLoop {
+		return model.InvalidNodeCoord, sw.seen, true
+	}
+	return lastNC, nil, false
+}
+
+func (sw *simpleWalker) walkWithInfo(
+	initialMove model.Cardinal,
+) (
+	model.NodeCoord, model.Cardinal, bool,
+) {
+
+	cur := sw.start
+	lastMove := initialMove
+
+	move := sw.walkToNextPoint(cur, lastMove)
 	if move == model.HeadNowhere {
 		// our path all the way around was incomplete
-		return nil, false
+		return cur, model.HeadNowhere, false
 	}
 
-	for sw.cur != sw.start {
-		move = sw.walkToNextPoint(move)
+	cur = cur.Translate(move)
+	lastMove = move
+
+	for cur != sw.start {
+		move = sw.walkToNextPoint(cur, move.Opposite())
 
 		if move == model.HeadNowhere {
 			// if we can't go anywhere, then we'll break out of the loop
-			// because this means we don't have a loop.
-			return nil, false
+			// because this means the path has a loose end.
+			return cur, lastMove, false
 		}
+		cur = cur.Translate(move)
+		lastMove = move
 	}
 
-	return sw.seen, true
+	return cur, lastMove, true
 }
 
 func (sw *simpleWalker) walkToNextPoint(
+	from model.NodeCoord,
+	avoid model.Cardinal,
+) model.Cardinal {
+
+	going := getNextEdge(sw.provider, from, avoid)
+
+	if going == model.HeadNowhere {
+		return model.HeadNowhere
+	}
+
+	if !sw.skipSeen {
+		sw.seen.Mark(from)
+	}
+
+	return going
+}
+
+func getNextEdge(
+	ge model.GetEdger,
+	nc model.NodeCoord,
 	avoid model.Cardinal,
 ) model.Cardinal {
 
@@ -62,16 +101,9 @@ func (sw *simpleWalker) walkToNextPoint(
 			continue
 		}
 
-		if !sw.provider.IsEdge(model.NewEdgePair(sw.cur, dir)) {
-			continue
+		if ge.IsEdge(model.NewEdgePair(nc, dir)) {
+			return dir
 		}
-
-		if !sw.skipSeen {
-			sw.seen.Mark(sw.cur)
-		}
-
-		sw.cur = sw.cur.Translate(dir)
-		return dir.Opposite()
 	}
 
 	return model.HeadNowhere

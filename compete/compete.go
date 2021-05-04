@@ -16,6 +16,11 @@ func PopulateCache(
 	diff model.Difficulty,
 	numDesired int,
 ) {
+	if numDesired < 1000 {
+		// we have plenty
+		return
+	}
+
 	for numGot := 0; numGot < numDesired; {
 		_, err := getPuzzle(size, diff)
 		if err != nil {

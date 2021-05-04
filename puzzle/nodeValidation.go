@@ -53,13 +53,13 @@ func getNodeState(
 	n model.Node,
 	ge model.GetEdger,
 ) model.State {
-	nOut, isMax := getSumOutgoingStraightLines(n.Coord(), ge)
+	nOut, cannotGrow := getSumOutgoingStraightLines(n.Coord(), ge)
 	switch {
 	case nOut > n.Value():
 		return model.Violation
-	case n.Value() == nOut:
+	case nOut == n.Value():
 		return model.Complete
-	case isMax:
+	case cannotGrow:
 		return model.Violation
 	default:
 		return model.Incomplete
@@ -70,11 +70,13 @@ func getSumOutgoingStraightLines(
 	coord model.NodeCoord,
 	ge model.GetEdger,
 ) (int8, bool) {
+	// TODO this functions is SLOW.
+	// if I could speed it up, that'd be _great_.
 	var total int8
 	numAvoids := 0
 
 	for _, dir := range model.AllCardinals {
-		var myTotal int8
+		myTotal := int8(0)
 
 		ep := model.NewEdgePair(coord, dir)
 		for ge.IsEdge(ep) {
@@ -82,7 +84,7 @@ func getSumOutgoingStraightLines(
 			myTotal++
 		}
 
-		if myTotal > 0 && ge.IsAvoided(ep) {
+		if ge.IsAvoided(ep) {
 			numAvoids++
 		}
 

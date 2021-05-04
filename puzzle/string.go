@@ -164,6 +164,8 @@ func (p Puzzle) string(
 				nOut, isMax := getSumOutgoingStraightLines(nc, &p.edges)
 				if nOut == n.Value() {
 					cw.addGreen(&sb, n.PrettyString())
+				} else if nOut > n.Value() {
+					cw.addRed(&sb, n.PrettyString())
 				} else if isMax {
 					cw.addRed(&sb, n.PrettyString())
 				} else if nOut, nAvoid := getNumOutEdges(nc, &p.edges); nOut > 2 {

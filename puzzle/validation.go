@@ -9,13 +9,11 @@ func SetNodesComplete(p *Puzzle) {
 }
 
 func (p Puzzle) GetState() model.State {
-	_, s := p.GetStateOfLoop(model.InvalidNodeCoord)
+	_, s := p.GetStateOfLoop()
 	return s
 }
 
-func (p Puzzle) GetStateOfLoop(
-	coord model.NodeCoord,
-) (model.EdgePair, model.State) {
+func (p Puzzle) GetStateOfLoop() (model.EdgePair, model.State) {
 	nodeState := p.getStateOfNodes()
 	switch nodeState {
 	case model.Incomplete, model.NodesComplete:
@@ -40,11 +38,11 @@ func (p Puzzle) getStateOfLoop(
 	}
 
 	w := newWalker(&p.edges, coord)
-	seenNodes, isLoop := w.walk()
+	lastNC, seenNodes, isLoop := w.walk()
 	if !isLoop {
 		nextUnknown := model.InvalidEdgePair
 		for _, dir := range model.AllCardinals {
-			ep := model.NewEdgePair(w.cur, dir)
+			ep := model.NewEdgePair(lastNC, dir)
 			if !p.edges.IsDefined(ep) {
 				nextUnknown = ep
 				break
@@ -66,12 +64,12 @@ func (p Puzzle) getStateOfLoop(
 }
 
 func (p Puzzle) getRandomCoord() model.NodeCoord {
-	for _, n := range p.nodes {
-		return n.Coord()
-	}
+	return getRandomCoord(p.nodes)
+}
 
-	if p.rules == nil {
-		panic(`dev error: p.rules == nil`)
+func getRandomCoord(nodes []model.Node) model.NodeCoord {
+	for _, n := range nodes {
+		return n.Coord()
 	}
 
 	panic(`dev error: getRandomCoord couldn't find anything`)

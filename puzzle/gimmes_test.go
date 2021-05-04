@@ -23,6 +23,7 @@ func TestGimmesPuzzle90104(t *testing.T) {
 		Value:   5,
 	}})
 
+	t.Logf("fresh: \n%s\n", fresh)
 	puzz, s := ClaimGimmes(fresh)
 	require.Equal(t, model.Incomplete, s)
 	t.Logf("puzz: \n%s\n", puzz)
@@ -89,6 +90,74 @@ func TestGimmesPuzzle90104(t *testing.T) {
 	// The black node should not extend right. It could go one edge
 	// to the left, and then 4 down.
 	assert.False(t, puzz.IsEdge(model.HeadRight, model.NewCoord(0, 16)))
+}
+
+func TestGimmesPuzzle5817105(t *testing.T) {
+	fresh := NewPuzzle(25, []model.NodeLocation{{
+		Row:     24,
+		Col:     0,
+		Value:   7,
+		IsWhite: true,
+	}, {
+		Row:     25,
+		Col:     3,
+		Value:   6,
+		IsWhite: true,
+	}, {
+		Row:     25,
+		Col:     8,
+		Value:   2,
+		IsWhite: false,
+	}})
+
+	puzz, s := ClaimGimmes(fresh)
+	require.Equal(t, model.Incomplete, s)
+	t.Logf("puzz: \n%s\n", puzz)
+
+	// inspect an edge's rules to verify we built it correctly.
+	r := puzz.rules.Get(model.NewEdgePair(model.NewCoord(25, 1), model.HeadRight))
+	require.NotNil(t, r)
+	logic.AssertHasAdvancedNode(
+		t,
+		r,
+		model.NearbyNodes{
+			nil, // HeadNowhere
+			{
+				nil,
+			}, // HeadRight
+			nil, // HeadUp
+			{
+				nil,
+			}, // HeadLeft
+			nil, // HeadDown
+		},
+		[]model.TwoArms{{
+			Two: model.Arm{
+				Heading: model.HeadLeft,
+				Len:     3,
+			},
+			One: model.Arm{
+				Heading: model.HeadRight,
+				Len:     3,
+			},
+		}},
+		model.NewNode(model.NewCoord(25, 3), true, 6),
+		model.HeadLeft,
+		1,
+	)
+
+	assert.True(t, puzz.IsEdge(model.HeadRight, model.NewCoord(25, 0)))
+	assert.True(t, puzz.IsEdge(model.HeadRight, model.NewCoord(25, 1)))
+	assert.True(t, puzz.IsEdge(model.HeadRight, model.NewCoord(25, 2)))
+	assert.True(t, puzz.IsEdge(model.HeadRight, model.NewCoord(25, 3)))
+	assert.True(t, puzz.IsEdge(model.HeadRight, model.NewCoord(25, 4)))
+	assert.True(t, puzz.IsEdge(model.HeadRight, model.NewCoord(25, 5)))
+
+	assert.False(t, puzz.IsEdge(model.HeadRight, model.NewCoord(25, 6)))
+	assert.True(t, puzz.edges.IsAvoided(model.NewEdgePair(model.NewCoord(25, 6), model.HeadRight)))
+
+	assert.False(t, puzz.IsEdge(model.HeadRight, model.NewCoord(25, 7)))
+	assert.False(t, puzz.IsEdge(model.HeadRight, model.NewCoord(25, 8)))
 }
 
 func TestBuildTwoArmsCache(t *testing.T) {
@@ -168,4 +237,111 @@ func TestBuildTwoArmsCache(t *testing.T) {
 		(   ) X (   )   (b 2)   (   )   (   )---(   )
 
 	*/
+}
+
+func TestGimmesPuzzle5817105Extended(t *testing.T) {
+	// like puzzle 5,817,105
+	fresh := NewPuzzle(25, []model.NodeLocation{{
+		Row:     24,
+		Col:     0,
+		IsWhite: true,
+		Value:   7,
+	}, {
+		Row:     24,
+		Col:     1,
+		IsWhite: false,
+		Value:   4,
+	}, {
+		Row:     25,
+		Col:     3,
+		IsWhite: true,
+		Value:   6,
+	}, {
+		Row:     24,
+		Col:     5,
+		IsWhite: false,
+		Value:   3,
+	}, {
+		Row:     23,
+		Col:     5,
+		IsWhite: false,
+		Value:   3,
+	}, {
+		Row:     25,
+		Col:     8,
+		IsWhite: false,
+		Value:   2,
+	}})
+
+	puzz, s := ClaimGimmes(fresh)
+	require.Equal(t, model.Incomplete, s)
+	t.Logf("puzz: \n%s\n", puzz)
+
+	assert.True(t, puzz.IsEdge(model.HeadRight, model.NewCoord(25, 0)))
+	assert.True(t, puzz.IsEdge(model.HeadRight, model.NewCoord(25, 1)))
+	assert.True(t, puzz.IsEdge(model.HeadRight, model.NewCoord(25, 2)))
+	assert.True(t, puzz.IsEdge(model.HeadRight, model.NewCoord(25, 3)))
+	assert.True(t, puzz.IsEdge(model.HeadRight, model.NewCoord(25, 4)))
+	assert.True(t, puzz.IsEdge(model.HeadRight, model.NewCoord(25, 5)))
+	assert.False(t, puzz.IsEdge(model.HeadRight, model.NewCoord(25, 6)))
+
+	assert.True(t, puzz.IsEdge(model.HeadUp, model.NewCoord(25, 0)))
+	assert.True(t, puzz.IsEdge(model.HeadUp, model.NewCoord(24, 0)))
+	assert.True(t, puzz.IsEdge(model.HeadUp, model.NewCoord(23, 0)))
+	assert.True(t, puzz.IsEdge(model.HeadUp, model.NewCoord(22, 0)))
+	assert.True(t, puzz.IsEdge(model.HeadUp, model.NewCoord(21, 0)))
+	assert.True(t, puzz.IsEdge(model.HeadUp, model.NewCoord(20, 0)))
+	assert.True(t, puzz.IsEdge(model.HeadUp, model.NewCoord(19, 0)))
+	assert.False(t, puzz.IsEdge(model.HeadUp, model.NewCoord(18, 0)))
+
+	assert.True(t, puzz.IsEdge(model.HeadUp, model.NewCoord(25, 6)))
+
+	assert.True(t, puzz.IsEdge(model.HeadUp, model.NewCoord(24, 5)))
+	assert.True(t, puzz.IsEdge(model.HeadLeft, model.NewCoord(24, 5)))
+	assert.True(t, puzz.IsEdge(model.HeadLeft, model.NewCoord(24, 4)))
+	assert.False(t, puzz.IsEdge(model.HeadLeft, model.NewCoord(24, 3)))
+
+	assert.True(t, puzz.IsEdge(model.HeadRight, model.NewCoord(24, 1)))
+	assert.True(t, puzz.IsEdge(model.HeadUp, model.NewCoord(24, 1)))
+	assert.True(t, puzz.IsEdge(model.HeadUp, model.NewCoord(23, 1)))
+	assert.True(t, puzz.IsEdge(model.HeadUp, model.NewCoord(22, 1)))
+}
+
+func TestGimmesAvoidsAtTheEndOfAnArm(t *testing.T) {
+	// I first spotted this in 	893,598
+	fresh := NewPuzzle(5, []model.NodeLocation{{
+		Row:     0,
+		Col:     1,
+		IsWhite: false,
+		Value:   2,
+	}, {
+		Row:     2,
+		Col:     1,
+		IsWhite: true,
+		Value:   2,
+	}, {
+		Row:     2,
+		Col:     3,
+		IsWhite: false,
+		Value:   2,
+	}})
+
+	puzz, s := ClaimGimmes(fresh)
+	require.Equal(t, model.Incomplete, s)
+	t.Logf("puzz: \n%s\n", puzz)
+
+	assert.False(t, puzz.IsEdge(model.HeadRight, model.NewCoord(0, 0)))
+	assert.False(t, puzz.IsEdge(model.HeadRight, model.NewCoord(0, 1)))
+	assert.True(t, puzz.IsEdge(model.HeadDown, model.NewCoord(0, 1)))
+	assert.False(t, puzz.IsEdge(model.HeadDown, model.NewCoord(1, 1)))
+	assert.True(t, puzz.edges.IsAvoided(model.NewEdgePair(model.NewCoord(1, 1), model.HeadDown)))
+
+	assert.True(t, puzz.IsEdge(model.HeadRight, model.NewCoord(2, 0)))
+	assert.True(t, puzz.IsEdge(model.HeadRight, model.NewCoord(2, 1)))
+	assert.False(t, puzz.IsEdge(model.HeadRight, model.NewCoord(2, 2)))
+	assert.True(t, puzz.edges.IsAvoided(model.NewEdgePair(model.NewCoord(2, 2), model.HeadRight)))
+
+	assert.True(t, puzz.IsEdge(model.HeadRight, model.NewCoord(2, 3)))
+	assert.False(t, puzz.IsEdge(model.HeadRight, model.NewCoord(2, 4)))
+	assert.True(t, puzz.edges.IsAvoided(model.NewEdgePair(model.NewCoord(2, 4), model.HeadRight)))
 }

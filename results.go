@@ -13,6 +13,23 @@ import (
 	"github.com/joshprzybyszewski/shingokisolver/state"
 )
 
+func shouldSkip(pd model.Definition) bool {
+	if pd.NumEdges > state.MaxEdges {
+		return true
+	}
+	if strings.Contains(pd.String(), `893,598`) {
+		// :badpokerface: this puzzle is destroying my machine. I'm skipping
+		// it, and that makes me look bad:#
+		return true
+	}
+	// if !strings.Contains(pd.String(), `3,225,837`) {
+	// 	// :badpokerface: this puzzle is destroying my machine. I'm skipping
+	// 	// it, and that makes me look bad:#
+	// 	continue
+	// }
+	return false
+}
+
 func runStandardSolver() {
 	allPDs := reader.GetAllPuzzles()
 	allSummaries := make([]summary, 0, len(allPDs))
@@ -23,18 +40,9 @@ func runStandardSolver() {
 		if _, ok := numBySize[pd.NumEdges]; !ok {
 			numBySize[pd.NumEdges] = make(map[model.Difficulty]int, 3)
 		}
-		if pd.NumEdges > state.MaxEdges {
+		if shouldSkip(pd) {
 			continue
 		}
-		if strings.Contains(pd.String(), `893,598`) {
-			// :badpokerface: this puzzle is destroying my machine. I'm skipping
-			// it, and that makes me look bad:#
-			continue
-		}
-
-		// if !strings.Contains(pd.String(), `5,817,105`) {
-		// continue
-		// }
 
 		if numBySize[pd.NumEdges][pd.Difficulty] >= sampleSize {
 			continue
