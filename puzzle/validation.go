@@ -51,8 +51,8 @@ func (p Puzzle) getStateOfLoop(
 		return nextUnknown, model.Incomplete
 	}
 
-	for _, n := range p.nodes {
-		if !seenNodes.IsCoordSeen(n.Coord()) {
+	for _, nm := range p.nodes {
+		if !seenNodes.IsCoordSeen(nm.node.Coord()) {
 			// node was not seen. therefore, we completed a loop that
 			// doesn't see all nodes!
 			return model.InvalidEdgePair, model.Violation
@@ -67,9 +67,9 @@ func (p Puzzle) getRandomCoord() model.NodeCoord {
 	return getRandomCoord(p.nodes)
 }
 
-func getRandomCoord(nodes []model.Node) model.NodeCoord {
-	for _, n := range nodes {
-		return n.Coord()
+func getRandomCoord(nodes []nodeMeta) model.NodeCoord {
+	for _, nm := range nodes {
+		return nm.node.Coord()
 	}
 
 	panic(`dev error: getRandomCoord couldn't find anything`)

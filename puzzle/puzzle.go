@@ -11,11 +11,7 @@ type Puzzle struct {
 	gn    model.GetNoder
 	rules *logic.RuleSet
 
-	// The following fields are all index-matched (nodes, nearby, twoArmOptions)
-	// TODO store it as a slice of a separate struct
-	nodes         []model.Node
-	nearby        []model.NearbyNodes
-	twoArmOptions [][]model.TwoArms
+	nodes []nodeMeta
 
 	areNodesComplete bool
 
@@ -33,22 +29,25 @@ func NewPuzzle(
 	}
 
 	nodes := make([]model.Node, 0, len(nodeLocations))
+	nodeMetas := make([]nodeMeta, 0, len(nodeLocations))
 	for _, nl := range nodeLocations {
 		nc := model.NewCoordFromInts(nl.Row, nl.Col)
-		nodes = append(nodes, model.NewNode(nc, nl.IsWhite, nl.Value))
+		n := model.NewNode(nc, nl.IsWhite, nl.Value)
+		nodes = append(nodes, n)
+		nodeMetas = append(nodeMetas, nodeMeta{
+			node: n,
+		})
 	}
 
-	nearby := make([]model.NearbyNodes, len(nodes))
 	gn := newNodeGrid(nodes)
 	edges := state.New(numEdges)
 	rules := logic.New(&edges, numEdges, nodes)
 
 	puzz := Puzzle{
-		nodes:  nodes,
-		gn:     gn,
-		nearby: nearby,
-		edges:  edges,
-		rules:  rules,
+		nodes: nodeMetas,
+		gn:    gn,
+		edges: edges,
+		rules: rules,
 	}
 
 	updateCache(&puzz)
@@ -62,8 +61,6 @@ func (p Puzzle) withNewState(
 	return Puzzle{
 		nodes:            p.nodes,
 		gn:               p.gn,
-		nearby:           p.nearby,
-		twoArmOptions:    p.twoArmOptions,
 		edges:            edges,
 		rules:            p.rules,
 		areNodesComplete: p.areNodesComplete,
@@ -71,22 +68,25 @@ func (p Puzzle) withNewState(
 }
 
 func updateCache(p *Puzzle) {
-	res := make([][]model.TwoArms, 0, len(p.nodes))
 	numEdges := p.numEdges()
+	oldMetas := p.nodes
+	newMetas := make([]nodeMeta, len(oldMetas))
 
-	for i, n := range p.nodes {
-		allTAs := model.BuildTwoArmOptions(n, numEdges)
+	for i, nm := range oldMetas {
+		allTAs := model.BuildTwoArmOptions(nm.node, numEdges)
 
 		maxLensByDir := model.GetMaxArmsByDir(allTAs)
-		nearbyNodes := model.BuildNearbyNodes(n, p.gn, maxLensByDir)
-		p.nearby[i] = nearbyNodes
+		nearbyNodes := model.BuildNearbyNodes(nm.node, p.gn, maxLensByDir)
 
-		res = append(res,
-			n.GetFilteredOptions(allTAs, &p.edges, nearbyNodes),
+		newMetas[i].node = nm.node
+		newMetas[i].nearby = nearbyNodes
+		newMetas[i].twoArmOptions = nm.node.GetFilteredOptions(
+			allTAs,
+			&p.edges,
+			nearbyNodes,
 		)
 	}
-
-	p.twoArmOptions = res
+	p.nodes = newMetas
 }
 
 func (p Puzzle) numEdges() int {
@@ -120,15 +120,16 @@ func (p Puzzle) getNextTarget(
 
 	nodesCopy := make([]model.Node, 0, len(p.nodes))
 	tas := make([][]model.TwoArms, 0, len(p.nodes))
-	for i, n := range p.nodes {
-		if cs.IsCoordSeen(n.Coord()) {
+	for _, nm := range p.nodes {
+		if cs.IsCoordSeen(nm.node.Coord()) {
 			continue
 		}
-		nodesCopy = append(nodesCopy, n)
-		tas = append(tas, n.GetFilteredOptions(
-			p.twoArmOptions[i],
+
+		nodesCopy = append(nodesCopy, nm.node)
+		tas = append(tas, nm.node.GetFilteredOptions(
+			nm.twoArmOptions,
 			&p.edges,
-			p.nearby[i],
+			nm.nearby,
 		))
 	}
 
