@@ -29,7 +29,6 @@ type pathSegment struct {
 	end   segmentCap
 
 	numNodes int
-	// seenNodes []model.Node
 }
 
 type allSegments struct {
@@ -66,13 +65,6 @@ func newAllSegmentsFromNodesComplete(
 			}
 		}
 		all = append(all, ps)
-	}
-
-	for _, seen := range isSeen {
-		if !seen {
-			// sanity check
-			panic(`dev error: expected to see all nodes`)
-		}
 	}
 
 	return &allSegments{

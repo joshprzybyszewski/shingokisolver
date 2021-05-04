@@ -91,7 +91,7 @@ func (cs *concurrentSolver) solve(
 		go cs.startWorker()
 	}
 
-	cs.queuePayload(unsolved{
+	cs.queuePayload(&unsolved{
 		puzz:            puzz,
 		target:          target,
 		isNodesComplete: state == model.NodesComplete,
@@ -109,9 +109,8 @@ func (cs *concurrentSolver) solve(
 	}, nil
 }
 
-func (cs *concurrentSolver) queuePayload(
-	payload unsolved,
-) {
+func (cs *concurrentSolver) queuePayload(payload *unsolved) {
+	// Note: payload is only a pointer because it's like 300 bytes to copy it.
 
 	if payload.isNodesComplete {
 		cs.queueFlippingPayload(flippingPayload{
@@ -159,7 +158,7 @@ func (cs *concurrentSolver) sendSolution(
 }
 
 func (cs *concurrentSolver) workOnPayloadNow(
-	payload unsolved,
+	payload *unsolved,
 ) {
 
 	atomic.AddInt32(&cs.numImmediates, 1)
@@ -215,7 +214,7 @@ func (cs *concurrentSolver) solveAimingAtTarget(
 	case model.Complete:
 		up, canProcess := cs.getNextPayload(puzz, targeting)
 		if canProcess {
-			cs.workOnPayloadNow(up)
+			cs.workOnPayloadNow(&up)
 		}
 		return
 	}
@@ -235,11 +234,11 @@ func (cs *concurrentSolver) solveAimingAtTarget(
 			// OR this is an index that is more than our number of CPU. I'm
 			// doing this to avoid spinning up _too_ many goroutines. I should
 			// probably be using GOMAXPROCS instead:#
-			cs.workOnPayloadNow(up)
+			cs.workOnPayloadNow(&up)
 		} else {
 			// we've built the puzzle for another worker to pick up whenever
 			// it's free. Send it to them.
-			go cs.queuePayload(up)
+			go cs.queuePayload(&up)
 		}
 	}
 }

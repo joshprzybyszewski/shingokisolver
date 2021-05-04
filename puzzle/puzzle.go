@@ -10,6 +10,7 @@ type Puzzle struct {
 	edges state.TriEdges
 	gn    model.GetNoder
 	rules *logic.RuleSet
+	loop  looper
 
 	// The following fields are all index-matched (nodes, nearby, twoArmOptions)
 	// TODO store it as a slice of a separate struct
@@ -17,9 +18,8 @@ type Puzzle struct {
 	nearby        []model.NearbyNodes
 	twoArmOptions [][]model.TwoArms
 
+	// TODO replace this as a method that checks is loop != nil
 	areNodesComplete bool
-
-	loop looper
 }
 
 func NewPuzzle(
