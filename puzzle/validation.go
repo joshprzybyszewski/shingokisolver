@@ -5,8 +5,6 @@ import (
 )
 
 func SetNodesComplete(p *Puzzle) {
-	p.areNodesComplete = true
-
 	p.loop = newAllSegmentsFromNodesComplete(p.nodes, &p.edges)
 }
 
@@ -80,7 +78,7 @@ func (p Puzzle) getRandomCoord() model.NodeCoord {
 	return getRandomCoord(p.nodes)
 }
 
-func getRandomCoord(metas []nodeMeta) model.NodeCoord {
+func getRandomCoord(metas []*nodeMeta) model.NodeCoord {
 	for _, nm := range metas {
 		return nm.node.Coord()
 	}

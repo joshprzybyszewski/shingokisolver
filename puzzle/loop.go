@@ -38,7 +38,7 @@ type allSegments struct {
 }
 
 func newAllSegmentsFromNodesComplete(
-	metas []nodeMeta,
+	metas []*nodeMeta,
 	ge model.GetEdger,
 ) *allSegments {
 	all := make([]pathSegment, 0, len(metas)/2)

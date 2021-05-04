@@ -12,10 +12,7 @@ type Puzzle struct {
 	rules *logic.RuleSet
 	loop  looper
 
-	nodes []nodeMeta
-
-	// TODO replace this as a method that checks is loop != nil
-	areNodesComplete bool
+	nodes []*nodeMeta
 }
 
 func NewPuzzle(
@@ -27,13 +24,14 @@ func NewPuzzle(
 	}
 
 	nodes := make([]model.Node, 0, len(nodeLocations))
-	nodeMetas := make([]nodeMeta, 0, len(nodeLocations))
+	nodeMetas := make([]*nodeMeta, 0, len(nodeLocations))
 	for _, nl := range nodeLocations {
 		nc := model.NewCoordFromInts(nl.Row, nl.Col)
 		n := model.NewNode(nc, nl.IsWhite, nl.Value)
 		nodes = append(nodes, n)
-		nodeMetas = append(nodeMetas, nodeMeta{
-			node: n,
+		nodeMetas = append(nodeMetas, &nodeMeta{
+			node:          n,
+			twoArmOptions: model.BuildTwoArmOptions(n, numEdges),
 		})
 	}
 
@@ -61,39 +59,43 @@ func (p Puzzle) withNewState(
 		newLoop = p.loop.withUpdatedEdges(&edges)
 	}
 	return Puzzle{
-		nodes:            p.nodes,
-		gn:               p.gn,
-		edges:            edges,
-		rules:            p.rules,
-		areNodesComplete: p.areNodesComplete,
-		loop:             newLoop,
+		nodes: p.nodes,
+		gn:    p.gn,
+		edges: edges,
+		rules: p.rules,
+		loop:  newLoop,
 	}
 }
 
 func updateCache(p *Puzzle) {
-	numEdges := p.numEdges()
 	oldMetas := p.nodes
-	newMetas := make([]nodeMeta, len(oldMetas))
+	newMetas := make([]*nodeMeta, len(oldMetas))
 
 	for i, nm := range oldMetas {
-		allTAs := model.BuildTwoArmOptions(nm.node, numEdges)
+		allTAs := nm.twoArmOptions
 
 		maxLensByDir := model.GetMaxArmsByDir(allTAs)
 		nearbyNodes := model.BuildNearbyNodes(nm.node, p.gn, maxLensByDir)
 
-		newMetas[i].node = nm.node
-		newMetas[i].nearby = nearbyNodes
-		newMetas[i].twoArmOptions = nm.node.GetFilteredOptions(
-			allTAs,
-			&p.edges,
-			nearbyNodes,
-		)
+		newMetas[i] = &nodeMeta{
+			node:   nm.node,
+			nearby: nearbyNodes,
+			twoArmOptions: nm.node.GetFilteredOptions(
+				allTAs,
+				&p.edges,
+				nearbyNodes,
+			),
+		}
 	}
 	p.nodes = newMetas
 }
 
 func (p Puzzle) numEdges() int {
 	return p.edges.NumEdges()
+}
+
+func (p Puzzle) areNodesComplete() bool {
+	return p.loop != nil
 }
 
 func (p Puzzle) GetNextTarget(
