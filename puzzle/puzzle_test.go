@@ -287,3 +287,34 @@ func containsArm(options []model.TwoArms, arm model.Arm) bool {
 	}
 	return false
 }
+
+func Test5817105Example(t *testing.T) {
+	puzz := NewPuzzle(25, []model.NodeLocation{{
+		Row:     24,
+		Col:     0,
+		Value:   7,
+		IsWhite: true,
+	}, {
+		Row:     25,
+		Col:     3,
+		Value:   6,
+		IsWhite: true,
+	}, {
+		Row:     25,
+		Col:     8,
+		Value:   2,
+		IsWhite: false,
+	}})
+	t.Logf("puzz:\n%s", puzz)
+	puzz, ms := ClaimGimmes(puzz)
+	require.Equal(t, model.Incomplete, ms)
+	t.Logf("puzz:\n%s", puzz)
+
+	assert.True(t, puzz.IsEdge(model.HeadRight, model.NewCoord(25, 0)))
+	assert.True(t, puzz.IsEdge(model.HeadRight, model.NewCoord(25, 1)))
+	assert.True(t, puzz.IsEdge(model.HeadRight, model.NewCoord(25, 2)))
+	assert.True(t, puzz.IsEdge(model.HeadRight, model.NewCoord(25, 3)))
+	assert.True(t, puzz.IsEdge(model.HeadRight, model.NewCoord(25, 4)))
+	assert.True(t, puzz.IsEdge(model.HeadRight, model.NewCoord(25, 5)))
+	assert.False(t, puzz.IsEdge(model.HeadRight, model.NewCoord(25, 6)))
+}

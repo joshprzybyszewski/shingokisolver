@@ -91,6 +91,74 @@ func TestGimmesPuzzle90104(t *testing.T) {
 	assert.False(t, puzz.IsEdge(model.HeadRight, model.NewCoord(0, 16)))
 }
 
+func TestGimmesPuzzle5817105(t *testing.T) {
+	fresh := NewPuzzle(25, []model.NodeLocation{{
+		Row:     24,
+		Col:     0,
+		Value:   7,
+		IsWhite: true,
+	}, {
+		Row:     25,
+		Col:     3,
+		Value:   6,
+		IsWhite: true,
+	}, {
+		Row:     25,
+		Col:     8,
+		Value:   2,
+		IsWhite: false,
+	}})
+
+	puzz, s := ClaimGimmes(fresh)
+	require.Equal(t, model.Incomplete, s)
+	t.Logf("puzz: \n%s\n", puzz)
+
+	// inspect an edge's rules to verify we built it correctly.
+	r := puzz.rules.Get(model.NewEdgePair(model.NewCoord(25, 1), model.HeadRight))
+	require.NotNil(t, r)
+	logic.AssertHasAdvancedNode(
+		t,
+		r,
+		model.NearbyNodes{
+			nil, // HeadNowhere
+			{
+				nil,
+			}, // HeadRight
+			nil, // HeadUp
+			{
+				nil,
+			}, // HeadLeft
+			nil, // HeadDown
+		},
+		[]model.TwoArms{{
+			Two: model.Arm{
+				Heading: model.HeadLeft,
+				Len:     3,
+			},
+			One: model.Arm{
+				Heading: model.HeadRight,
+				Len:     3,
+			},
+		}},
+		model.NewNode(model.NewCoord(25, 3), true, 6),
+		model.HeadLeft,
+		1,
+	)
+
+	assert.True(t, puzz.IsEdge(model.HeadRight, model.NewCoord(25, 0)))
+	assert.True(t, puzz.IsEdge(model.HeadRight, model.NewCoord(25, 1)))
+	assert.True(t, puzz.IsEdge(model.HeadRight, model.NewCoord(25, 2)))
+	assert.True(t, puzz.IsEdge(model.HeadRight, model.NewCoord(25, 3)))
+	assert.True(t, puzz.IsEdge(model.HeadRight, model.NewCoord(25, 4)))
+	assert.True(t, puzz.IsEdge(model.HeadRight, model.NewCoord(25, 5)))
+
+	assert.False(t, puzz.IsEdge(model.HeadRight, model.NewCoord(25, 6)))
+	assert.True(t, puzz.edges.IsAvoided(model.NewEdgePair(model.NewCoord(25, 6), model.HeadRight)))
+
+	assert.False(t, puzz.IsEdge(model.HeadRight, model.NewCoord(25, 7)))
+	assert.False(t, puzz.IsEdge(model.HeadRight, model.NewCoord(25, 8)))
+}
+
 func TestBuildTwoArmsCache(t *testing.T) {
 	// PuzzleID: 530,864
 	fresh := NewPuzzle(5, []model.NodeLocation{{
