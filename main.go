@@ -9,7 +9,9 @@ import (
 var (
 	shouldUseConcurrency = flag.Bool(`concurrency`, false, `set to true to enable concurrency in the solver`)
 
-	shouldRunProfiler  = flag.Bool(`includeProfile`, false, `set if you'd like to include a pprof output`)
+	shouldRunProfiler    = flag.Bool(`includeProfile`, false, `set if you'd like to include a pprof output`)
+	includeMemoryProfile = flag.Bool(`includeMemProf`, false, `set if you'd like to include a memory profile output`)
+
 	shouldWriteResults = flag.Bool(`results`, false, `set to update the results in the READMEs`)
 	shouldRunCompete   = flag.Bool(`competitive`, false, `set to true to compete online!`)
 )
@@ -17,7 +19,7 @@ var (
 func main() {
 	flag.Parse()
 
-	if *shouldRunProfiler {
+	if *shouldRunProfiler || *includeMemoryProfile {
 		runProfiler()
 		return
 	}

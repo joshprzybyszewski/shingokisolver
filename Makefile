@@ -8,6 +8,12 @@ profile: ## Run the solver and grab a CPU profile using pprof
 	./solver.out -includeProfile
 	go tool pprof solver.out solverProfile.pprof
 
+.PHONY: memprofile
+memprofile: ## Run the solver and grab a memory profile using pprof. Only runs on one puzzle
+	go build -o solver.out .
+	./solver.out -includeMemProf
+	go tool pprof solver.out solverMemory.pprof
+
 .PHONY: serialdebug
 serialdebug: ## Run the serial solver and include progress logs
 	go run -tags="debug" .
