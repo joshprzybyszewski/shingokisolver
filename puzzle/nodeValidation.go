@@ -38,8 +38,8 @@ func (p Puzzle) getStateOfNodes() model.State {
 		return model.NodesComplete
 	}
 
-	for _, n := range p.nodes {
-		switch s := getNodeState(n, &p.edges); s {
+	for _, nm := range p.nodes {
+		switch s := getNodeState(nm.node, &p.edges); s {
 		case model.Complete:
 		default:
 			return s

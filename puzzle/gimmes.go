@@ -23,9 +23,9 @@ func claimGimmes(
 	p Puzzle,
 ) (Puzzle, model.State) {
 	allNodeEdgesToCheck := make(map[model.Node]map[model.Cardinal]int8, len(p.nodes))
-	for _, n := range p.nodes {
-		allNodeEdgesToCheck[n] = model.GetMaxArmsByDir(
-			model.BuildTwoArmOptions(n, p.numEdges()),
+	for _, nm := range p.nodes {
+		allNodeEdgesToCheck[nm.node] = model.GetMaxArmsByDir(
+			model.BuildTwoArmOptions(nm.node, p.numEdges()),
 		)
 	}
 	obviousFilled, ms := performUpdates(p, updates{
@@ -45,14 +45,14 @@ func claimGimmes(
 	nodesAndOptions := make([]nodeAndOptions, len(obviousFilled.nodes))
 
 	for i := range obviousFilled.nodes {
-		n := obviousFilled.nodes[i]
+		nm := obviousFilled.nodes[i]
 
-		optionsCopy := make([]model.TwoArms, len(obviousFilled.twoArmOptions[i]))
-		copy(optionsCopy, obviousFilled.twoArmOptions[i])
+		optionsCopy := make([]model.TwoArms, len(nm.twoArmOptions))
+		copy(optionsCopy, nm.twoArmOptions)
 
-		allNodeEdgesToCheck[n] = model.GetMaxArmsByDir(optionsCopy)
+		allNodeEdgesToCheck[nm.node] = model.GetMaxArmsByDir(optionsCopy)
 		nodesAndOptions[i] = nodeAndOptions{
-			Node:    n,
+			Node:    nm.node,
 			Options: optionsCopy,
 		}
 	}

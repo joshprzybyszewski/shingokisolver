@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"runtime"
+	"strings"
 	"time"
 
 	"github.com/joshprzybyszewski/shingokisolver/model"
@@ -11,6 +12,28 @@ import (
 	"github.com/joshprzybyszewski/shingokisolver/solvers"
 	"github.com/joshprzybyszewski/shingokisolver/state"
 )
+
+var (
+	veryHardPuzzles = []string{
+		`893,598`,
+		`3,225,837`,
+		`5,070,205`,
+	}
+)
+
+func shouldSkip(pd model.Definition) bool {
+	if pd.NumEdges > state.MaxEdges {
+		return true
+	}
+	for _, hardPID := range veryHardPuzzles {
+		if strings.Contains(pd.String(), hardPID) {
+			// :badpokerface: this puzzle is destroying my machine. I'm skipping
+			// it, and that makes me look bad:#
+			return true
+		}
+	}
+	return false
+}
 
 func runStandardSolver() {
 	allPDs := reader.GetAllPuzzles()
@@ -22,14 +45,9 @@ func runStandardSolver() {
 		if _, ok := numBySize[pd.NumEdges]; !ok {
 			numBySize[pd.NumEdges] = make(map[model.Difficulty]int, 3)
 		}
-		if pd.NumEdges > state.MaxEdges {
+		if shouldSkip(pd) {
 			continue
 		}
-		// if !strings.Contains(pd.String(), `3,225,837`) {
-		// 	// :badpokerface: this puzzle is destroying my machine. I'm skipping
-		// 	// it, and that makes me look bad:#
-		// 	continue
-		// }
 
 		if numBySize[pd.NumEdges][pd.Difficulty] >= sampleSize {
 			continue
