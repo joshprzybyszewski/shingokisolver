@@ -5,9 +5,9 @@ import (
 	"os"
 	"runtime"
 	"runtime/pprof"
-	"strings"
 	"time"
 
+	"github.com/joshprzybyszewski/shingokisolver/model"
 	"github.com/joshprzybyszewski/shingokisolver/reader"
 )
 
@@ -50,16 +50,18 @@ func runProfiler() {
 			// ones because I can solve them so fast
 			continue
 		}
-		if !strings.Contains(pd.String(), `5,817,105`) {
+		if pd.Difficulty != model.Hard {
 			continue
 		}
+		// if !strings.Contains(pd.String(), `5,817,105`) {
+		// 	continue
+		// }
 
 		if *includeMemoryProfile {
 			runtime.GC()
 		}
 
-		go runSolver(pd)
-		time.Sleep(time.Minute)
+		runSolver(pd)
 		numSolved++
 
 		if *includeMemoryProfile {

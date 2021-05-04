@@ -32,13 +32,13 @@ func runStandardSolver() {
 			continue
 		}
 
-		if !strings.Contains(pd.String(), `9,307,442`) {
-			// this puzzle is busted?
+		// if !strings.Contains(pd.String(), `9,307,442`) {
+		// 	// this puzzle is busted?
+		// 	continue
+		// }
+		if !strings.Contains(pd.String(), `5,817,105`) {
 			continue
 		}
-		// if !strings.Contains(pd.String(), `5,817,105`) {
-		// continue
-		// }
 
 		if numBySize[pd.NumEdges][pd.Difficulty] >= sampleSize {
 			continue

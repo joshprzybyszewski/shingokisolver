@@ -1,16 +1,11 @@
 package puzzle
 
 import (
-	"log"
-
 	"github.com/joshprzybyszewski/shingokisolver/model"
 )
 
 func SetNodesComplete(p *Puzzle) {
 	p.areNodesComplete = true
-
-	// TODO figure out b2s that are ambiguous
-	log.Printf("SetNodesComplete:\n%s", p.String())
 
 	p.loop = newAllSegmentsFromNodesComplete(p.nodes, &p.edges)
 }

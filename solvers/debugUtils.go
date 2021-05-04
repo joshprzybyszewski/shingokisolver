@@ -3,6 +3,7 @@
 package solvers
 
 import (
+	// "fmt"
 	"log"
 	"time"
 
@@ -26,6 +27,7 @@ func (cs *concurrentSolver) printPuzzleUpdate(
 
 	log.Printf("\tpuzzle:\n%s\n", puzz)
 	time.Sleep(100 * time.Millisecond)
+	// fmt.Scanf("wait")
 }
 
 func (cs *concurrentSolver) printPayload(
@@ -43,6 +45,7 @@ func (cs *concurrentSolver) printPayload(
 
 	log.Printf("\tpuzzle:\n%s\n", payload.puzz)
 	time.Sleep(100 * time.Millisecond)
+	// fmt.Scanf("wait")
 }
 
 func (cs *concurrentSolver) printFlippingPayload(
@@ -60,6 +63,7 @@ func (cs *concurrentSolver) printFlippingPayload(
 
 	log.Printf("\tpuzzle:\n%s\n", payload.puzz)
 	time.Sleep(100 * time.Millisecond)
+	// fmt.Scanf("wait")
 }
 
 func (cs *concurrentSolver) logMeta() {
@@ -100,5 +104,6 @@ func printPuzzleUpdate(
 
 	log.Printf("\tpuzzle:\n%s\n", puzz)
 	time.Sleep(100 * time.Millisecond)
+	// fmt.Scanf("wait")
 	// fmt.Scanf("wait for acknowledgement")
 }

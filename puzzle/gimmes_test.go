@@ -169,3 +169,71 @@ func TestBuildTwoArmsCache(t *testing.T) {
 
 	*/
 }
+
+func TestGimmesPuzzle5817105(t *testing.T) {
+	// like puzzle 5,817,105
+	fresh := NewPuzzle(25, []model.NodeLocation{{
+		Row:     24,
+		Col:     0,
+		IsWhite: true,
+		Value:   7,
+	}, {
+		Row:     24,
+		Col:     1,
+		IsWhite: false,
+		Value:   4,
+	}, {
+		Row:     25,
+		Col:     3,
+		IsWhite: true,
+		Value:   6,
+	}, {
+		Row:     24,
+		Col:     5,
+		IsWhite: false,
+		Value:   3,
+	}, {
+		Row:     23,
+		Col:     5,
+		IsWhite: false,
+		Value:   3,
+	}, {
+		Row:     25,
+		Col:     8,
+		IsWhite: false,
+		Value:   2,
+	}})
+
+	puzz, s := ClaimGimmes(fresh)
+	require.Equal(t, model.Incomplete, s)
+	t.Logf("puzz: \n%s\n", puzz)
+
+	assert.True(t, puzz.IsEdge(model.HeadRight, model.NewCoord(25, 0)))
+	assert.True(t, puzz.IsEdge(model.HeadRight, model.NewCoord(25, 1)))
+	assert.True(t, puzz.IsEdge(model.HeadRight, model.NewCoord(25, 2)))
+	assert.True(t, puzz.IsEdge(model.HeadRight, model.NewCoord(25, 3)))
+	assert.True(t, puzz.IsEdge(model.HeadRight, model.NewCoord(25, 4)))
+	assert.True(t, puzz.IsEdge(model.HeadRight, model.NewCoord(25, 5)))
+	assert.False(t, puzz.IsEdge(model.HeadRight, model.NewCoord(25, 6)))
+
+	assert.True(t, puzz.IsEdge(model.HeadUp, model.NewCoord(25, 0)))
+	assert.True(t, puzz.IsEdge(model.HeadUp, model.NewCoord(24, 0)))
+	assert.True(t, puzz.IsEdge(model.HeadUp, model.NewCoord(23, 0)))
+	assert.True(t, puzz.IsEdge(model.HeadUp, model.NewCoord(22, 0)))
+	assert.True(t, puzz.IsEdge(model.HeadUp, model.NewCoord(21, 0)))
+	assert.True(t, puzz.IsEdge(model.HeadUp, model.NewCoord(20, 0)))
+	assert.True(t, puzz.IsEdge(model.HeadUp, model.NewCoord(19, 0)))
+	assert.False(t, puzz.IsEdge(model.HeadUp, model.NewCoord(18, 0)))
+
+	assert.True(t, puzz.IsEdge(model.HeadUp, model.NewCoord(25, 6)))
+
+	assert.True(t, puzz.IsEdge(model.HeadUp, model.NewCoord(24, 5)))
+	assert.True(t, puzz.IsEdge(model.HeadLeft, model.NewCoord(24, 5)))
+	assert.True(t, puzz.IsEdge(model.HeadLeft, model.NewCoord(24, 4)))
+	assert.False(t, puzz.IsEdge(model.HeadLeft, model.NewCoord(24, 3)))
+
+	assert.True(t, puzz.IsEdge(model.HeadRight, model.NewCoord(24, 1)))
+	assert.True(t, puzz.IsEdge(model.HeadUp, model.NewCoord(24, 1)))
+	assert.True(t, puzz.IsEdge(model.HeadUp, model.NewCoord(23, 1)))
+	assert.True(t, puzz.IsEdge(model.HeadUp, model.NewCoord(22, 1)))
+}
