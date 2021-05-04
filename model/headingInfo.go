@@ -22,16 +22,18 @@ func buildHeadingInfos(
 			armLensDoubleAvoids: make([]bool, maxLen+1),
 		}
 		cur := nc.Translate(heading)
-		for i := int8(1); i <= maxLen; i++ {
+		for i := int8(1); i < int8(len(hInfo.armLensDoubleAvoids)); i++ {
+
+			// TODO consolidate calls to ge
 			bothAvoided := true
 			for _, dir := range heading.Perpendiculars() {
-				if ge.IsEdge(NewEdgePair(cur, dir)) {
+				ep := NewEdgePair(cur, dir)
+				if ge.IsEdge(ep) {
 					hInfo.maxArmLenUntilIncomingEdge = i
 					break
 				}
-				if !ge.IsAvoided(NewEdgePair(cur, dir)) {
+				if !ge.IsAvoided(ep) {
 					bothAvoided = false
-					break
 				}
 			}
 

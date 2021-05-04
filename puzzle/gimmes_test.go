@@ -23,6 +23,7 @@ func TestGimmesPuzzle90104(t *testing.T) {
 		Value:   5,
 	}})
 
+	t.Logf("fresh: \n%s\n", fresh)
 	puzz, s := ClaimGimmes(fresh)
 	require.Equal(t, model.Incomplete, s)
 	t.Logf("puzz: \n%s\n", puzz)
@@ -238,7 +239,7 @@ func TestBuildTwoArmsCache(t *testing.T) {
 	*/
 }
 
-func TestGimmesPuzzle5817105(t *testing.T) {
+func TestGimmesPuzzle5817105Extended(t *testing.T) {
 	// like puzzle 5,817,105
 	fresh := NewPuzzle(25, []model.NodeLocation{{
 		Row:     24,
@@ -304,4 +305,43 @@ func TestGimmesPuzzle5817105(t *testing.T) {
 	assert.True(t, puzz.IsEdge(model.HeadUp, model.NewCoord(24, 1)))
 	assert.True(t, puzz.IsEdge(model.HeadUp, model.NewCoord(23, 1)))
 	assert.True(t, puzz.IsEdge(model.HeadUp, model.NewCoord(22, 1)))
+}
+
+func TestGimmesAvoidsAtTheEndOfAnArm(t *testing.T) {
+	// I first spotted this in 	893,598
+	fresh := NewPuzzle(5, []model.NodeLocation{{
+		Row:     0,
+		Col:     1,
+		IsWhite: false,
+		Value:   2,
+	}, {
+		Row:     2,
+		Col:     1,
+		IsWhite: true,
+		Value:   2,
+	}, {
+		Row:     2,
+		Col:     3,
+		IsWhite: false,
+		Value:   2,
+	}})
+
+	puzz, s := ClaimGimmes(fresh)
+	require.Equal(t, model.Incomplete, s)
+	t.Logf("puzz: \n%s\n", puzz)
+
+	assert.False(t, puzz.IsEdge(model.HeadRight, model.NewCoord(0, 0)))
+	assert.False(t, puzz.IsEdge(model.HeadRight, model.NewCoord(0, 1)))
+	assert.True(t, puzz.IsEdge(model.HeadDown, model.NewCoord(0, 1)))
+	assert.False(t, puzz.IsEdge(model.HeadDown, model.NewCoord(1, 1)))
+	assert.True(t, puzz.edges.IsAvoided(model.NewEdgePair(model.NewCoord(1, 1), model.HeadDown)))
+
+	assert.True(t, puzz.IsEdge(model.HeadRight, model.NewCoord(2, 0)))
+	assert.True(t, puzz.IsEdge(model.HeadRight, model.NewCoord(2, 1)))
+	assert.False(t, puzz.IsEdge(model.HeadRight, model.NewCoord(2, 2)))
+	assert.True(t, puzz.edges.IsAvoided(model.NewEdgePair(model.NewCoord(2, 2), model.HeadRight)))
+
+	assert.True(t, puzz.IsEdge(model.HeadRight, model.NewCoord(2, 3)))
+	assert.False(t, puzz.IsEdge(model.HeadRight, model.NewCoord(2, 4)))
+	assert.True(t, puzz.edges.IsAvoided(model.NewEdgePair(model.NewCoord(2, 4), model.HeadRight)))
 }
