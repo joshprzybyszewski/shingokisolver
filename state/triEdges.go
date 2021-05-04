@@ -190,7 +190,19 @@ func (ets *TriEdges) IsAvoided(ep model.EdgePair) bool {
 }
 
 func (ets *TriEdges) IsDefined(ep model.EdgePair) bool {
-	return ets.IsAvoided(ep) || ets.IsEdge(ep)
+	if !ets.IsInBounds(ep) {
+		return true
+	}
+
+	switch ep.Cardinal {
+	case model.HeadRight:
+		return ((ets.avoidRows[ep.Row] | ets.rows[ep.Row]) & masks[ep.Col]) != 0
+	case model.HeadDown:
+		return ((ets.avoidCols[ep.Col] | ets.cols[ep.Col]) & masks[ep.Row]) != 0
+	}
+
+	// unexpected!
+	return false
 }
 
 func (ets *TriEdges) GetEdge(
