@@ -72,6 +72,14 @@ func updateCache(p *Puzzle) {
 	newMetas := make([]*nodeMeta, len(oldMetas))
 
 	for i, nm := range oldMetas {
+		if nm.isComplete {
+			newMetas[i] = &nodeMeta{
+				node:       nm.node,
+				isComplete: true,
+			}
+			continue
+		}
+
 		allTAs := nm.twoArmOptions
 
 		maxLensByDir := model.GetMaxArmsByDir(allTAs)
