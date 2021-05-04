@@ -116,18 +116,25 @@ func (p Puzzle) getNextTarget(
 		return model.Target{}, s
 	}
 
-	tas := make([][]model.TwoArms, len(p.nodes))
+	cs := buildSeenState(p.numEdges(), curTarget)
+
+	nodesCopy := make([]model.Node, 0, len(p.nodes))
+	tas := make([][]model.TwoArms, 0, len(p.nodes))
 	for i, n := range p.nodes {
-		tas[i] = n.GetFilteredOptions(
+		if cs.IsCoordSeen(n.Coord()) {
+			continue
+		}
+		nodesCopy = append(nodesCopy, n)
+		tas = append(tas, n.GetFilteredOptions(
 			p.twoArmOptions[i],
 			&p.edges,
 			p.nearby[i],
-		)
+		))
 	}
 
 	t, ok, err := model.GetNextTarget(
 		curTarget,
-		p.nodes,
+		nodesCopy,
 		tas,
 	)
 
@@ -138,4 +145,17 @@ func (p Puzzle) getNextTarget(
 		return model.Target{}, model.NodesComplete
 	}
 	return t, model.Incomplete
+}
+
+func buildSeenState(
+	numEdges int,
+	curTarget model.Target,
+) state.CoordSeener {
+	cs := state.NewCoordSeen(numEdges)
+
+	for t := curTarget; t.Node != model.InvalidNode; t = *t.Parent {
+		cs.Mark(t.Node.Coord())
+	}
+
+	return cs
 }

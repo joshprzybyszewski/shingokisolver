@@ -2,9 +2,7 @@ package model
 
 var (
 	InvalidTarget = Target{
-		Node: Node{
-			coord: InvalidNodeCoord,
-		},
+		Node: InvalidNode,
 	}
 )
 

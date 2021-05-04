@@ -32,9 +32,9 @@ func runStandardSolver() {
 			continue
 		}
 
-		if !strings.Contains(pd.String(), `5,817,105`) {
-			continue
-		}
+		// if !strings.Contains(pd.String(), `5,817,105`) {
+		// continue
+		// }
 
 		if numBySize[pd.NumEdges][pd.Difficulty] >= sampleSize {
 			continue
