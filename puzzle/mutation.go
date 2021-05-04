@@ -69,7 +69,7 @@ func performUpdates(
 			return Puzzle{}, model.Violation
 		}
 
-		ms = addEdge(&newState, ep, rq, rules, p.areNodesComplete)
+		ms = addEdge(&newState, ep, rq, rules, p.areNodesComplete())
 		if ms != model.Incomplete && ms != model.Duplicate {
 			return Puzzle{}, ms
 		}
@@ -83,7 +83,7 @@ func performUpdates(
 			return Puzzle{}, model.Violation
 		}
 
-		ms = avoidEdge(&newState, ep, rq, rules, p.areNodesComplete)
+		ms = avoidEdge(&newState, ep, rq, rules, p.areNodesComplete())
 		if ms != model.Incomplete && ms != model.Duplicate {
 			return Puzzle{}, ms
 		}
@@ -101,7 +101,7 @@ func performUpdates(
 					ep,
 					rq,
 					rules,
-					p.areNodesComplete,
+					p.areNodesComplete(),
 				)
 				if ms != model.Incomplete && ms != model.Duplicate {
 					return Puzzle{}, ms
@@ -111,7 +111,7 @@ func performUpdates(
 		}
 	}
 
-	ms = runQueue(&newState, rq, rules, p.areNodesComplete)
+	ms = runQueue(&newState, rq, rules, p.areNodesComplete())
 	if ms != model.Incomplete {
 		return Puzzle{}, ms
 	}

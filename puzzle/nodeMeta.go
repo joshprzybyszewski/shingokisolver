@@ -6,4 +6,6 @@ type nodeMeta struct {
 	node          model.Node
 	nearby        model.NearbyNodes
 	twoArmOptions []model.TwoArms
+
+	isComplete bool
 }

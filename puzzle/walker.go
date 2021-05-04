@@ -25,6 +25,36 @@ func newWalker(
 	}
 }
 
+func (sw *simpleWalker) walkSegment() (pathSegment, bool) {
+	sh := getNextEdge(sw.provider, sw.start, model.HeadNowhere)
+	eh := getNextEdge(sw.provider, sw.start, sh)
+
+	startCap, scCameFrom, isLoop := sw.walkWithInfo(sh)
+	if isLoop {
+		return pathSegment{}, true
+	}
+
+	endCap, ecCameFrom, isLoop := sw.walkWithInfo(eh)
+	if isLoop {
+		return pathSegment{}, true
+	}
+
+	ps := pathSegment{
+		start: segmentCap{
+			coord:    startCap,
+			outbound: scCameFrom.Opposite(),
+			// edge:  model.NewEdgePair(startCap, scCameFrom.Opposite()),
+		},
+		end: segmentCap{
+			coord:    endCap,
+			outbound: ecCameFrom.Opposite(),
+			// edge:  model.NewEdgePair(endCap, ecCameFrom.Opposite()),
+		},
+	}
+
+	return ps, false
+}
+
 func (sw *simpleWalker) walkToTheEndOfThePath() (model.NodeCoord, bool) {
 	sw.skipSeen = true
 	cur, _, isLoop := sw.walkWithInfo(model.HeadNowhere)
@@ -58,6 +88,33 @@ func (sw *simpleWalker) walkWithInfo(
 	lastMove = move
 
 	for cur != sw.start {
+		move = sw.walkToNextPoint(cur, move.Opposite())
+
+		if move == model.HeadNowhere {
+			// if we can't go anywhere, then we'll break out of the loop
+			// because this means the path has a loose end.
+			return cur, lastMove, false
+		}
+		cur = cur.Translate(move)
+		lastMove = move
+	}
+
+	return cur, lastMove, true
+}
+
+func (sw *simpleWalker) walkToTargets(
+	start model.NodeCoord,
+	initialMove model.Cardinal,
+	targets state.CoordSeener,
+) (model.NodeCoord, model.Cardinal, bool) {
+
+	sw.skipSeen = true
+
+	move := initialMove
+	lastMove := move
+	cur := start.Translate(move)
+
+	for !targets.IsCoordSeen(cur) {
 		move = sw.walkToNextPoint(cur, move.Opposite())
 
 		if move == model.HeadNowhere {
