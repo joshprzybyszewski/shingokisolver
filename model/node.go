@@ -4,6 +4,12 @@ import (
 	"fmt"
 )
 
+var (
+	InvalidNode = Node{
+		coord: InvalidNodeCoord,
+	}
+)
+
 type Node struct {
 	coord NodeCoord
 	nType NodeType

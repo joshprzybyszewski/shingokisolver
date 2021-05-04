@@ -15,7 +15,7 @@
 # vendor/
 
 solver.out
-solverProfile.pprof
+*.pprof
 
 compete/exampleRequests/
 compete/secretSauce.go

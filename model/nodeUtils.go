@@ -8,7 +8,7 @@ func BuildNearbyNodes(
 	nearby := make(NearbyNodes, len(AllCardinals)+1)
 
 	for dir, maxLen := range maxLensByDir {
-		slice := make([]*Node, maxLen)
+		slice := make([]*Node, maxLen+1)
 		nc := myNode.Coord()
 		lastNodeIndex := 0
 		for i := 1; i < len(slice); i++ {
