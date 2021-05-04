@@ -25,7 +25,7 @@ func runStandardSolver() {
 		if pd.NumEdges > state.MaxEdges {
 			continue
 		}
-		// if !strings.Contains(pd.String(), `893,598`) {
+		// if !strings.Contains(pd.String(), `3,225,837`) {
 		// 	// :badpokerface: this puzzle is destroying my machine. I'm skipping
 		// 	// it, and that makes me look bad:#
 		// 	continue
