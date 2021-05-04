@@ -12,8 +12,8 @@ import (
 )
 
 const (
-	maxProfileDuration = 5 * time.Second
-	maxPuzzlesToSolve  = 50
+	maxProfileDuration = 60 * time.Second
+	maxPuzzlesToSolve  = 250
 
 	cpuFileName = `solverProfile.pprof`
 	memFileName = `solverMemory.pprof`

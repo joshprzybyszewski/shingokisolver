@@ -343,7 +343,7 @@ func (cs *concurrentSolver) justSetEdge(
 	)
 	switch state {
 	case model.Complete, model.Incomplete:
-		return cs.checkStateAfterFlip(puzz, ep)
+		return cs.checkStateAfterFlip(puzz)
 	}
 	return flippingPayload{}, false, false
 }
@@ -360,16 +360,15 @@ func (cs *concurrentSolver) justAvoidEdge(
 	)
 	switch state {
 	case model.Complete, model.Incomplete:
-		return cs.checkStateAfterFlip(puzz, ep)
+		return cs.checkStateAfterFlip(puzz)
 	}
 	return flippingPayload{}, false, false
 }
 
 func (cs *concurrentSolver) checkStateAfterFlip(
 	puzz puzzle.Puzzle,
-	ep model.EdgePair,
 ) (flippingPayload, bool, bool) {
-	nextUnknown, state := puzz.GetStateOfLoop(ep.NodeCoord)
+	nextUnknown, state := puzz.GetStateOfLoop()
 	switch state {
 	case model.Complete:
 		cs.sendSolution(puzz)

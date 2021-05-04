@@ -11,13 +11,11 @@ func SetNodesComplete(p *Puzzle) {
 }
 
 func (p Puzzle) GetState() model.State {
-	_, s := p.GetStateOfLoop(model.InvalidNodeCoord)
+	_, s := p.GetStateOfLoop()
 	return s
 }
 
-func (p Puzzle) GetStateOfLoop(
-	coord model.NodeCoord,
-) (model.EdgePair, model.State) {
+func (p Puzzle) GetStateOfLoop() (model.EdgePair, model.State) {
 	nodeState := p.getStateOfNodes()
 	switch nodeState {
 	case model.Incomplete, model.NodesComplete:
