@@ -8,6 +8,7 @@ var (
 	InvalidNode = Node{
 		coord: InvalidNodeCoord,
 	}
+	ZeroNode = Node{}
 )
 
 type Node struct {

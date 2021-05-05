@@ -14,10 +14,10 @@ func (nm *NodeMeta) Copy() *NodeMeta {
 		return nil
 	}
 	if nm.IsComplete {
-		return &NodeMeta{
-			Node:       nm.Node,
-			IsComplete: true,
-		}
+		// instead of allocing another meta to heap,
+		// we can just return this pointer because
+		// we only care about Node and IsComplete
+		return nm
 	}
 
 	tao := make([]TwoArms, len(nm.TwoArmOptions))
@@ -25,14 +25,17 @@ func (nm *NodeMeta) Copy() *NodeMeta {
 
 	return &NodeMeta{
 		Node:          nm.Node,
-		Nearby:        nm.Nearby, // TODO copy nearby?
+		Nearby:        nm.Nearby,
 		TwoArmOptions: tao,
 	}
 }
 
 func (nm *NodeMeta) Filter(ge GetEdger) State {
-	if nm == nil || nm.IsComplete {
+	if nm == nil {
 		return Incomplete
+	}
+	if nm.IsComplete {
+		return Complete
 	}
 
 	nm.TwoArmOptions = nm.GetFilteredOptions(
@@ -61,7 +64,10 @@ func (nm *NodeMeta) CheckComplete(ge GetEdger) State {
 		ge.IsAvoided(nm.TwoArmOptions[0].AfterOne(nm.Node.Coord())) &&
 		ge.AllExist(nm.Node.Coord(), nm.TwoArmOptions[0].Two) &&
 		ge.IsAvoided(nm.TwoArmOptions[0].AfterTwo(nm.Node.Coord())) {
+
 		nm.IsComplete = true
+		nm.TwoArmOptions = nil
+
 		return Complete
 	}
 

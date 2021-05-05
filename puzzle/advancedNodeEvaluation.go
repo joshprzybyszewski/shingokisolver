@@ -1,23 +1,32 @@
 package puzzle
 
 import (
-	"github.com/joshprzybyszewski/shingokisolver/logic"
 	"github.com/joshprzybyszewski/shingokisolver/model"
-	"github.com/joshprzybyszewski/shingokisolver/state"
 )
 
-func checkAdvancedRules(
-	edges *state.TriEdges,
-	rq *logic.Queue,
-	rules *logic.RuleSet,
-	nm *model.NodeMeta,
+func (su stateUpdater) checkAdvancedRules(
+	n model.Node,
 ) model.State {
-	if nm == nil {
-		panic(`dev error!`)
-		return model.Unexpected
+	var nm *model.NodeMeta
+
+	for _, m := range su.nms {
+		// TODO if I can get this faster than iterating through all of nms, that'd be great...
+		if m.Coord() == n.Coord() {
+			nm = m
+			break
+		}
 	}
 
-	ms := nm.Filter(edges)
+	// if nm == nil {
+	// 	panic(fmt.Errorf("dev error: did not find NodeMeta for coord: %s", n))
+	// 	return model.Unexpected
+	// }
+
+	if nm.IsComplete {
+		return model.Complete
+	}
+
+	ms := nm.Filter(su.edges)
 	if ms != model.Incomplete {
 		if ms == model.Complete {
 			return model.Incomplete
@@ -26,23 +35,20 @@ func checkAdvancedRules(
 	}
 
 	for _, dir := range model.AllCardinals {
-		ms = checkAdvancedInDirection(edges, rq, rules, nm, dir)
+		ms = su.checkAdvancedInDirection(nm, dir)
 		if ms != model.Incomplete && ms != model.Duplicate {
 			return ms
 		}
 	}
 
-	ms = nm.CheckComplete(edges)
+	ms = nm.CheckComplete(su.edges)
 	if ms == model.Complete {
 		return model.Incomplete
 	}
 	return ms
 }
 
-func checkAdvancedInDirection(
-	edges *state.TriEdges,
-	rq *logic.Queue,
-	rules *logic.RuleSet,
+func (su stateUpdater) checkAdvancedInDirection(
 	nm *model.NodeMeta,
 	dir model.Cardinal,
 ) model.State {
@@ -59,31 +65,21 @@ func checkAdvancedInDirection(
 	ep := model.NewEdgePair(nm.Coord(), dir)
 	for i := int8(0); i <= minArm; i++ {
 		arm.Len = i
-		if i > 0 && edges.AnyAvoided(nm.Coord(), arm) {
-			// we should not have found an avoided edge before the "min arm len"
-			panic(`dev error`)
-			return model.Unexpected
-		}
+		// if i > 0 && su.edges.AnyAvoided(nm.Coord(), arm) {
+		// 	// we should not have found an avoided edge before the "min arm len"
+		// 	panic(`dev error`)
+		// 	return model.Unexpected
+		// }
 
 		if i < minArm {
-			ms = addEdge(
-				edges,
-				ep,
-				rq,
-				rules,
-			)
+			ms = su.addEdge(ep)
 			if ms != model.Incomplete && ms != model.Duplicate {
 				return ms
 			}
 		}
 
 		if isOnlyOneLength && minArm == i {
-			ms = avoidEdge(
-				edges,
-				ep,
-				rq,
-				rules,
-			)
+			ms = su.avoidEdge(ep)
 			if ms != model.Incomplete && ms != model.Duplicate {
 				return ms
 			}
@@ -99,11 +95,11 @@ func getMinArmInDir(
 	dir model.Cardinal,
 	ta []model.TwoArms,
 ) (int8, bool) {
-	if len(ta) == 0 {
-		// this is unexpected!
-		panic(`dev error`)
-		return -1, false
-	}
+	// if len(ta) == 0 {
+	// 	// this is unexpected!
+	// 	panic(`dev error`)
+	// 	return -1, false
+	// }
 
 	var min int8
 	if ta[0].One.Heading == dir {

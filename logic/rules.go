@@ -32,7 +32,7 @@ func newRules(
 		couldAffectMap:        make(map[model.EdgePair]struct{}, 8),
 		couldAffect:           make([]model.EdgePair, 8),
 		interestedNodesSeener: state.NewCoordSeen(ge.NumEdges()),
-		interestedNodes:       make([]model.Node, 8),
+		interestedNodes:       make([]model.Node, 0, 8),
 		mustRunEvals:          make([]standardInput, 0, 2),
 		otherEvals:            make([]evaluator, 0, 4),
 	}
@@ -102,6 +102,10 @@ func (r *Rules) addInterestedNode(node model.Node) {
 	if r == nil {
 		return
 	}
+	// if node == model.ZeroNode {
+	// 	panic(`dev error`)
+	// }
+
 	if r.interestedNodesSeener.IsCoordSeen(node.Coord()) {
 		return
 	}
@@ -116,9 +120,9 @@ func (r *Rules) addEvaluation(eval evaluator) {
 		return
 	}
 
-	if eval == nil {
-		panic(`dev error: addEvaluation should not have been nil`)
-	}
+	// if eval == nil {
+	// 	panic(`dev error: addEvaluation should not have been nil`)
+	// }
 
 	// type checking isn't necessarily the best decision, but
 	// I chose to do it here because there's currently only

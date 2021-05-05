@@ -9,14 +9,16 @@ import (
 )
 
 const (
-	esc    = "\033"
-	red    = esc + `[31m`
-	green  = esc + `[32m`
-	yellow = esc + `[33m`
-	dim    = esc + `[2m`
-	end    = esc + `[0m`
+	esc         = "\033"
+	red         = esc + `[31m`
+	green       = esc + `[32m`
+	yellow      = esc + `[33m`
+	lightYellow = esc + `[93m`
+	dim         = esc + `[2m`
+	darkGray    = esc + `[90m`
+	end         = esc + `[0m`
 
-	emptyNode = `(   )`
+	emptyNode = `  •  ` //`(   )`
 )
 
 func addNormal(
@@ -44,7 +46,7 @@ func addRed(
 	sb.WriteString(end)
 }
 
-func addYellow(
+func addOrange(
 	sb *strings.Builder,
 	text string,
 ) {
@@ -53,11 +55,20 @@ func addYellow(
 	sb.WriteString(end)
 }
 
+func addYellow(
+	sb *strings.Builder,
+	text string,
+) {
+	sb.WriteString(lightYellow)
+	sb.WriteString(text)
+	sb.WriteString(end)
+}
+
 func addDim(
 	sb *strings.Builder,
 	text string,
 ) {
-	sb.WriteString(dim)
+	sb.WriteString(darkGray)
 	sb.WriteString(text)
 	sb.WriteString(end)
 }
@@ -66,6 +77,7 @@ type colorWriter interface {
 	addNormal(*strings.Builder, string)
 	addGreen(*strings.Builder, string)
 	addRed(*strings.Builder, string)
+	addOrange(*strings.Builder, string)
 	addYellow(*strings.Builder, string)
 	addDim(*strings.Builder, string)
 }
@@ -93,6 +105,13 @@ func (w writer) addRed(sb *strings.Builder, t string) {
 		return
 	}
 	addRed(sb, t)
+}
+func (w writer) addOrange(sb *strings.Builder, t string) {
+	if w == noColor {
+		addNormal(sb, t)
+		return
+	}
+	addOrange(sb, t)
 }
 func (w writer) addYellow(sb *strings.Builder, t string) {
 	if w == noColor {
@@ -144,11 +163,13 @@ func (p Puzzle) string(
 		cw.addNormal(&sb, `    `)
 		for c := 0; c < p.numNodes(); c++ {
 			cw.addNormal(&sb, fmt.Sprintf(" c%2d ", c))
-			cw.addNormal(&sb, `   `)
+			cw.addNormal(&sb, ` `)
 		}
 		sb.WriteString("\n")
 		sb.WriteString("\n")
 	}
+
+	gn := p.buildGetNoder()
 
 	for r := 0; r < p.numNodes(); r++ {
 		var below strings.Builder
@@ -161,38 +182,50 @@ func (p Puzzle) string(
 			nc := model.NewCoordFromInts(r, c)
 			var n model.Node
 			ok := false
-			if p.gn != nil {
-				n, ok = p.gn.GetNode(nc)
+			if gn != nil {
+				n, ok = gn.GetNode(nc)
 			}
 			// write a node
 			if ok {
-				nOut, isMax := getSumOutgoingStraightLines(nc, &p.edges)
-				if nOut == n.Value() {
-					cw.addGreen(&sb, n.PrettyString())
-				} else if nOut > n.Value() {
-					cw.addRed(&sb, n.PrettyString())
-				} else if isMax {
-					cw.addRed(&sb, n.PrettyString())
-				} else if nOut, nAvoid := getNumOutEdges(nc, &p.edges); nOut > 2 {
-					cw.addRed(&sb, n.PrettyString())
-				} else if nOut == 2 {
-					cw.addYellow(&sb, n.PrettyString())
-				} else if nAvoid+nOut == 4 || nAvoid == 3 {
-					cw.addRed(&sb, n.PrettyString())
-				} else {
+				if cw == noColor {
 					cw.addNormal(&sb, n.PrettyString())
+				} else {
+					nOut, isMax := getSumOutgoingStraightLines(nc, &p.edges)
+					if nOut == n.Value() {
+						cw.addGreen(&sb, n.PrettyString())
+					} else if nOut > n.Value() {
+						cw.addRed(&sb, n.PrettyString())
+					} else if isMax {
+						cw.addRed(&sb, n.PrettyString())
+					} else if nOut, nAvoid := getNumOutEdges(nc, &p.edges); nOut > 2 {
+						cw.addRed(&sb, n.PrettyString())
+					} else if nOut == 2 {
+						cw.addOrange(&sb, n.PrettyString())
+					} else if nAvoid+nOut == 4 || nAvoid == 3 {
+						cw.addRed(&sb, n.PrettyString())
+					} else if nOut > 0 {
+						cw.addYellow(&sb, n.PrettyString())
+					} else {
+						cw.addNormal(&sb, n.PrettyString())
+					}
 				}
 			} else {
-				if nOut, nAvoid := getNumOutEdges(nc, &p.edges); nOut > 2 {
-					cw.addRed(&sb, emptyNode)
-				} else if nOut == 2 {
-					cw.addGreen(&sb, emptyNode)
-				} else if (nOut != 0 && nAvoid+nOut == 4) || nAvoid == 3 {
-					cw.addRed(&sb, emptyNode)
-				} else if nOut == 1 {
-					cw.addYellow(&sb, emptyNode)
-				} else {
+				if cw == noColor {
 					cw.addNormal(&sb, emptyNode)
+				} else {
+					if nOut, nAvoid := getNumOutEdges(nc, &p.edges); nOut > 2 {
+						cw.addRed(&sb, emptyNode)
+					} else if nOut == 2 {
+						cw.addGreen(&sb, emptyNode)
+					} else if (nOut != 0 && nAvoid+nOut == 4) || nAvoid == 3 {
+						cw.addRed(&sb, emptyNode)
+					} else if nOut == 1 {
+						cw.addYellow(&sb, emptyNode)
+					} else if nAvoid == 4 {
+						cw.addDim(&sb, emptyNode)
+					} else {
+						cw.addNormal(&sb, emptyNode)
+					}
 				}
 			}
 
@@ -201,17 +234,17 @@ func (p Puzzle) string(
 			if p.edges.IsInBounds(ep) {
 				switch p.edges.GetEdge(ep) {
 				case model.EdgeExists:
-					cw.addGreen(&sb, `---`)
+					cw.addGreen(&sb, `—`)
 				case model.EdgeAvoided:
 					if includeXs {
-						cw.addDim(&sb, ` X `)
+						cw.addDim(&sb, `X`)
 					} else {
-						sb.WriteString(`   `)
+						sb.WriteString(` `)
 					}
 				case model.EdgeUnknown:
-					sb.WriteString(`   `)
+					sb.WriteString(` `)
 				default:
-					cw.addRed(&sb, `???`)
+					cw.addRed(&sb, `?`)
 				}
 			}
 
@@ -234,7 +267,7 @@ func (p Puzzle) string(
 					cw.addRed(&below, `???`)
 				}
 			}
-			below.WriteString(`    `)
+			below.WriteString(`  `)
 		}
 		if !isBland {
 			cw.addNormal(&sb, fmt.Sprintf(" r%2d", r))
@@ -250,7 +283,7 @@ func (p Puzzle) string(
 		cw.addNormal(&sb, `    `)
 		for c := 0; c < p.numNodes(); c++ {
 			cw.addNormal(&sb, fmt.Sprintf(" c%2d ", c))
-			cw.addNormal(&sb, `   `)
+			cw.addNormal(&sb, ` `)
 		}
 		sb.WriteString("\n")
 	}
@@ -272,4 +305,30 @@ func getNumOutEdges(
 		}
 	}
 	return nOut, nAvoid
+}
+
+func getSumOutgoingStraightLines(
+	coord model.NodeCoord,
+	ge model.GetEdger,
+) (int8, bool) {
+	var total int8
+	numAvoids := 0
+
+	for _, dir := range model.AllCardinals {
+		myTotal := int8(0)
+
+		ep := model.NewEdgePair(coord, dir)
+		for ge.IsEdge(ep) {
+			ep = ep.Next(dir)
+			myTotal++
+		}
+
+		if ge.IsAvoided(ep) {
+			numAvoids++
+		}
+
+		total += myTotal
+	}
+
+	return total, numAvoids == 4
 }

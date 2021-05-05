@@ -1,6 +1,8 @@
 package puzzle
 
 import (
+	"log"
+
 	"github.com/joshprzybyszewski/shingokisolver/logic"
 	"github.com/joshprzybyszewski/shingokisolver/model"
 	"github.com/joshprzybyszewski/shingokisolver/state"
@@ -63,14 +65,31 @@ func performUpdates(
 
 	newState := p.edges.Copy()
 	rq := logic.NewQueue(newState.NumEdges())
-	rules := p.rules
+
+	var nms []*model.NodeMeta
+	if u.metas != nil {
+		nms = u.metas
+		for _, nm := range u.metas {
+			rq.PushNodes([]model.Node{nm.Node})
+		}
+	} else {
+		nms = p.getMetasCopy()
+	}
+
+	su := newStateUpdater(
+		&newState,
+		rq,
+		p.rules,
+		nms,
+		p.areNodesComplete(),
+	)
 
 	for _, ep := range u.edgesToAdd {
 		if !newState.IsInBounds(ep) {
 			return Puzzle{}, model.Violation
 		}
 
-		ms = addEdge(&newState, ep, rq, rules)
+		ms = su.addEdge(ep)
 		if ms != model.Incomplete && ms != model.Duplicate {
 			return Puzzle{}, ms
 		}
@@ -84,23 +103,22 @@ func performUpdates(
 			return Puzzle{}, model.Violation
 		}
 
-		ms = avoidEdge(&newState, ep, rq, rules)
+		ms = su.avoidEdge(ep)
 		if ms != model.Incomplete && ms != model.Duplicate {
 			return Puzzle{}, ms
 		}
 	}
 
-	var nms []*model.NodeMeta
-	if u.metas != nil {
-		nms = u.metas
-		for _, nm := range u.metas {
-			rq.PushNodes([]model.Node{nm.Node})
+	defer func() {
+		if r := recover(); r != nil {
+			log.Printf("recovered: %+v", r)
+			log.Printf("old puzzle: %s", p.String())
+			log.Printf("new puzzle: %s", p.withNewState(newState, nms).String())
+			panic(r)
 		}
-	} else {
-		nms = p.getMetasCopy()
-	}
+	}()
 
-	ms = runQueue(&newState, rq, rules, nms, p.areNodesComplete())
+	ms = su.runQueue()
 	if ms != model.Incomplete {
 		return Puzzle{}, ms
 	}
@@ -108,47 +126,64 @@ func performUpdates(
 	return p.withNewState(newState, nms), ms
 }
 
-func runQueue(
+type stateUpdater struct {
+	edges *state.TriEdges
+	rq    *logic.Queue
+	rules *logic.RuleSet
+	nms   []*model.NodeMeta
+
+	areNodesComplete bool
+}
+
+func newStateUpdater(
 	edges *state.TriEdges,
 	rq *logic.Queue,
 	rules *logic.RuleSet,
 	nms []*model.NodeMeta,
 	areNodesComplete bool,
-) model.State {
+) stateUpdater {
+	return stateUpdater{
+		edges:            edges,
+		rq:               rq,
+		rules:            rules,
+		nms:              nms,
+		areNodesComplete: areNodesComplete,
+	}
+}
+
+func (su stateUpdater) runQueue() model.State {
 
 	var ms model.State
 
 	for {
 
 		// empty out the edge queue entirely
-		for ep, ok := rq.Pop(); ok; ep, ok = rq.Pop() {
-			ms = updateEdgeFromRules(edges, ep, rq, rules)
+		for ep, ok := su.rq.Pop(); ok; ep, ok = su.rq.Pop() {
+			ms = su.updateEdgeFromRules(ep)
 			if ms != model.Incomplete && ms != model.Duplicate {
 				return ms
 			}
 		}
-		if areNodesComplete {
+		if su.areNodesComplete {
 			// no use checking nodes for when we know they're all complete.
 			break
 		}
 
-		nodesToCheck := rq.PopAllNodes()
+		nodesToCheck := su.rq.PopAllNodes()
 		if len(nodesToCheck) == 0 {
 			break
 		}
 
 		// TODO this is n squared
 		for _, n := range nodesToCheck {
-			for _, nm := range nms {
-				if nm.IsComplete || nm.Coord() != n.Coord() {
-					continue
-				}
-
-				ms = checkAdvancedRules(edges, rq, rules, nm)
-				if ms != model.Incomplete && ms != model.Duplicate {
-					return ms
-				}
-				break // out of nms
+			ms = su.checkAdvancedRules(n)
+			switch ms {
+			case model.Complete:
+				// TODO check for a loop?
+			case model.Incomplete, model.Duplicate:
+				// just keep going
+			default:
+				return ms
 			}
 		}
 	}
@@ -156,59 +191,54 @@ func runQueue(
 	return model.Incomplete
 }
 
-func addEdge(
-	edges *state.TriEdges,
+func (su stateUpdater) addEdge(
 	ep model.EdgePair,
-	rq *logic.Queue,
-	rules *logic.RuleSet,
 ) model.State {
-	return updateEdge(model.EdgeExists, ep, edges, rq, rules.Get(ep))
+	return su.updateEdge(ep, model.EdgeExists)
 }
 
-func avoidEdge(
-	edges *state.TriEdges,
+func (su stateUpdater) avoidEdge(
 	ep model.EdgePair,
-	rq *logic.Queue,
-	rules *logic.RuleSet,
 ) model.State {
-	return updateEdge(model.EdgeAvoided, ep, edges, rq, rules.Get(ep))
+	return su.updateEdge(ep, model.EdgeAvoided)
 }
 
-func updateEdge(
+func (su stateUpdater) updateEdge(
+	ep model.EdgePair,
 	es model.EdgeState,
-	ep model.EdgePair,
-	edges *state.TriEdges,
-	rq *logic.Queue,
-	r *logic.Rules,
 ) model.State {
 
-	if ms := edges.UpdateEdge(ep, es); ms != model.Incomplete {
+	if ms := su.edges.UpdateEdge(ep, es); ms != model.Incomplete {
 		return ms
 	}
 
-	evalState := r.EvaluateQuickState(edges)
+	r := su.rules.Get(ep)
+
+	var evalState model.EdgeState
+	if su.areNodesComplete {
+		evalState = r.EvaluateQuickState(su.edges)
+	} else {
+		evalState = r.EvaluateFullState(su.edges)
+	}
 	if evalState != model.EdgeUnknown && evalState != es {
 		return model.Violation
 	}
 
-	rq.Push(edges, r.Affects())
+	su.rq.Push(su.edges, r.Affects())
 
-	rq.PushNodes(r.InterestedNodes())
+	su.rq.PushNodes(r.InterestedNodes())
 
 	return model.Incomplete
 }
 
-func updateEdgeFromRules(
-	edges *state.TriEdges,
+func (su stateUpdater) updateEdgeFromRules(
 	ep model.EdgePair,
-	rq *logic.Queue,
-	rules *logic.RuleSet,
 ) model.State {
-	switch es := rules.Get(ep).EvaluateQuickState(edges); es {
+	switch es := su.rules.Get(ep).EvaluateQuickState(su.edges); es {
 	case model.EdgeAvoided:
-		return avoidEdge(edges, ep, rq, rules)
+		return su.avoidEdge(ep)
 	case model.EdgeExists:
-		return addEdge(edges, ep, rq, rules)
+		return su.addEdge(ep)
 	case model.EdgeUnknown, model.EdgeOutOfBounds:
 		return model.Incomplete
 	default:

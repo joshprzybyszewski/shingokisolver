@@ -21,7 +21,8 @@ func solvePuzzleByTargets(
 	}
 
 	return SolvedResults{
-		Puzzle: solution,
+		Puzzle:     solution,
+		FinalState: model.Complete,
 	}, nil
 }
 
@@ -62,17 +63,22 @@ func claimGimmes(
 	// claim all of the gimmes we can
 	puzz, state := puzzle.ClaimGimmes(puzz)
 	switch state {
-	case model.Incomplete, model.Complete:
+	case model.Incomplete:
 		printPuzzleUpdate(`ClaimGimmes`, puzz, model.Target{})
+	case model.Complete, model.NodesComplete:
+		// already solved, or all of the nodes are solved!
+		// there are no more gimmes to claim, so let's zip on out.
+		return puzz, model.Target{}, state
 	default:
+		printPuzzleUpdate(`claimGimmes issue`, puzz, model.Target{})
 		return puzzle.Puzzle{}, model.Target{}, state
 	}
 
 	// Get the first node to target in the puzzle
 	target, state := puzz.GetFirstTarget()
 	switch state {
-	case model.Complete:
-		// already solved!
+	case model.Complete, model.NodesComplete:
+		// already solved, or all of the nodes are solved!
 		return puzz, model.Target{}, state
 	case model.Incomplete:
 		printPuzzleUpdate(`GetFirstTarget`, puzz, target)

@@ -57,9 +57,7 @@ func (rq *Queue) PushNodes(
 func (rq *Queue) PopAllNodes() []model.Node {
 	all := rq.nodes
 
-	for _, n := range all {
-		rq.nodeSeener.UnMark(n.Coord())
-	}
+	rq.nodeSeener.UnmarkAll()
 	rq.nodes = rq.nodes[:0]
 
 	return all

@@ -5,73 +5,101 @@ import (
 	"os"
 	"runtime"
 	"runtime/pprof"
+	"strings"
 	"time"
 
 	"github.com/joshprzybyszewski/shingokisolver/model"
 	"github.com/joshprzybyszewski/shingokisolver/reader"
+	"github.com/joshprzybyszewski/shingokisolver/state"
 )
 
 const (
-	maxProfileDuration = 60 * time.Second
+	maxProfileDuration = 5 * time.Minute
 	maxPuzzlesToSolve  = 250
 
 	cpuFileName = `solverProfile.pprof`
 	memFileName = `solverMemory.pprof`
 )
 
-func runProfiler() {
-	log.Printf("Starting a pprof...")
-	f, err := os.Create(cpuFileName)
-	if err != nil {
-		log.Fatal(err)
+var (
+	veryHardPuzzlesToProfile = []string{
+		// `5,817,105`,
+		// `5,996,280`,
+		// `9,307,442`,
+	}
+)
+
+func shouldSkipProfiling(pd model.Definition) bool {
+	if pd.NumEdges > state.MaxEdges {
+		return true
 	}
 
-	err = pprof.StartCPUProfile(f)
-	if err != nil {
-		log.Fatal(err)
+	if pd.NumEdges <= 20 {
+		// only profile large puzzles. I don't care about small
+		// ones because I can solve them so fast
+		return true
 	}
-	defer pprof.StopCPUProfile()
+	if pd.Difficulty != model.Hard {
+		return true
+	}
 
-	var memFile *os.File
-	if *includeMemoryProfile {
-		memFile, err = os.Create(memFileName)
-		if err != nil {
-			log.Fatal("could not create memory profile: ", err)
+	for _, hardPID := range veryHardPuzzlesToProfile {
+		if strings.Contains(pd.String(), hardPID) {
+			// :badpokerface: this puzzle is destroying my machine. I'm skipping
+			// it, and that makes me look bad:#
+			return true
 		}
-		defer f.Close() // error handling omitted for example
+	}
+	return false
+}
+
+func runProfiler() {
+	allPDs := reader.GetAllPuzzles()
+	allSummaries := make([]summary, 0, maxPuzzlesToSolve)
+
+	log.Printf("Starting a pprof...")
+
+	if *shouldRunProfiler {
+		log.Printf("\tincluding CPU profile.")
+		cpuFile, err := os.Create(cpuFileName)
+		if err != nil {
+			log.Fatal("could not create CPU profile file: ", err)
+		}
+		defer cpuFile.Close()
+
+		err = pprof.StartCPUProfile(cpuFile)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer pprof.StopCPUProfile()
+	}
+
+	if *includeMemoryProfile {
+		log.Printf("\tincluding memory profile.")
+		memFile, err := os.Create(memFileName)
+		if err != nil {
+			log.Fatal("could not create memory profile file: ", err)
+		}
+		defer memFile.Close()
+
+		defer pprof.WriteHeapProfile(memFile)
+
+		runtime.GC()
 	}
 
 	t0 := time.Now()
-	numSolved := 0
 
-	for _, pd := range reader.GetAllPuzzles() {
-		if pd.NumEdges <= 20 {
-			// only profile large puzzles. I don't care about small
-			// ones because I can solve them so fast
+	for _, pd := range allPDs {
+		if shouldSkipProfiling(pd) {
 			continue
 		}
-		if pd.Difficulty != model.Hard {
-			continue
-		}
-		// if !strings.Contains(pd.String(), `5,817,105`) {
-		// 	continue
-		// }
 
-		if *includeMemoryProfile {
-			runtime.GC()
+		summ, solved := runSolver(pd)
+		if solved {
+			allSummaries = append(allSummaries, summ)
 		}
 
-		runSolver(pd)
-		numSolved++
-
-		if *includeMemoryProfile {
-			if err := pprof.WriteHeapProfile(memFile); err != nil {
-				log.Fatal("could not write memory profile: ", err)
-			}
-			return
-		}
-
-		if time.Since(t0) > maxProfileDuration || numSolved >= maxPuzzlesToSolve {
+		if time.Since(t0) > maxProfileDuration || len(allSummaries) >= maxPuzzlesToSolve {
 			return
 		}
 	}

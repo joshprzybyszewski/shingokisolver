@@ -3,7 +3,6 @@ package solvers
 import (
 	"errors"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/joshprzybyszewski/shingokisolver/model"
@@ -36,16 +35,16 @@ func Solve(
 }
 
 type SolvedResults struct {
-	Puzzle puzzle.Puzzle
+	Puzzle     puzzle.Puzzle
+	FinalState model.State
 
 	Duration time.Duration
 }
 
 func (sr SolvedResults) String() string {
-	if state := sr.Puzzle.GetState(); state != model.Complete {
-		log.Printf("Took %s. %s <no solution>\n%s\n", sr.Duration, state, sr.Puzzle.String())
-		return fmt.Sprintf("Took %s. %s <no solution>\n%s\n", sr.Duration, state, sr.Puzzle.String())
+	if sr.FinalState != model.Complete {
+		return fmt.Sprintf("Took %s. %s <no solution>\n%s\n", sr.Duration, sr.FinalState, sr.Puzzle.String())
 	}
 
-	return fmt.Sprintf("Took %s\n%s\n", sr.Duration, sr.Puzzle.Solution())
+	return fmt.Sprintf("Took %s\n%s\n", sr.Duration, sr.Puzzle.BlandSolution())
 }

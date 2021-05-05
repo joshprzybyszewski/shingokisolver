@@ -43,12 +43,10 @@ func (sw *simpleWalker) walkSegment() (pathSegment, bool) {
 		start: segmentCap{
 			coord:    startCap,
 			outbound: scCameFrom.Opposite(),
-			// edge:  model.NewEdgePair(startCap, scCameFrom.Opposite()),
 		},
 		end: segmentCap{
 			coord:    endCap,
 			outbound: ecCameFrom.Opposite(),
-			// edge:  model.NewEdgePair(endCap, ecCameFrom.Opposite()),
 		},
 	}
 

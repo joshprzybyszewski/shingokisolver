@@ -4,7 +4,7 @@ import "github.com/joshprzybyszewski/shingokisolver/model"
 
 type CoordSeener interface {
 	Mark(model.NodeCoord)
-	UnMark(model.NodeCoord)
+	UnmarkAll()
 	IsCoordSeen(model.NodeCoord) bool
 }
 
@@ -22,8 +22,10 @@ func (s coordSeen) Mark(nc model.NodeCoord) {
 	s.rows[nc.Row] = s.rows[nc.Row] | masks[nc.Col]
 }
 
-func (s coordSeen) UnMark(nc model.NodeCoord) {
-	s.rows[nc.Row] = s.rows[nc.Row] ^ masks[nc.Col]
+func (s coordSeen) UnmarkAll() {
+	for i := range s.rows {
+		s.rows[i] = 0
+	}
 }
 
 func (s coordSeen) IsCoordSeen(nc model.NodeCoord) bool {

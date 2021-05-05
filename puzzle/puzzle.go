@@ -8,7 +8,6 @@ import (
 
 type Puzzle struct {
 	edges state.TriEdges
-	gn    model.GetNoder
 	rules *logic.RuleSet
 	loop  looper
 
@@ -23,29 +22,29 @@ func NewPuzzle(
 		return Puzzle{}
 	}
 
-	nodes := make([]model.Node, 0, len(nodeLocations))
-	for _, nl := range nodeLocations {
-		nodes = append(nodes,
-			model.NewNode(
-				model.NewCoordFromInts(nl.Row, nl.Col),
-				nl.IsWhite,
-				nl.Value,
-			),
-		)
-	}
-	gn := newNodeGrid(nodes)
-
 	metas := make([]*model.NodeMeta, 0, len(nodeLocations))
-	for _, n := range nodes {
-		tao := model.BuildTwoArmOptions(n, numEdges)
-		maxLensByDir := model.GetMaxArmsByDir(tao)
-		nearby := model.BuildNearbyNodes(n, gn, maxLensByDir)
+	for _, nl := range nodeLocations {
+
+		n := model.NewNode(
+			model.NewCoordFromInts(nl.Row, nl.Col),
+			nl.IsWhite,
+			nl.Value,
+		)
 
 		metas = append(metas, &model.NodeMeta{
-			Node:          n,
-			TwoArmOptions: tao,
-			Nearby:        nearby,
+			Node: n,
 		})
+	}
+
+	// we need this GetNoder to build nearby nodes
+	gn := newNodeGrid(metas)
+
+	for _, m := range metas {
+		m.TwoArmOptions = model.BuildTwoArmOptions(m.Node, numEdges)
+
+		maxLensByDir := model.GetMaxArmsByDir(m.TwoArmOptions)
+
+		m.Nearby = model.BuildNearbyNodes(m.Node, gn, maxLensByDir)
 	}
 
 	edges := state.New(numEdges)
@@ -53,20 +52,25 @@ func NewPuzzle(
 
 	return Puzzle{
 		metas: metas,
-		gn:    gn,
 		edges: edges,
 		rules: rules,
 	}
+}
+
+func (p Puzzle) buildGetNoder() model.GetNoder {
+	if p.metas == nil {
+		return nil
+	}
+	return newNodeGrid(p.metas)
 }
 
 func (p Puzzle) withNewState(
 	edges state.TriEdges,
 	newNMs []*model.NodeMeta,
 ) Puzzle {
-	if len(newNMs) != len(p.metas) {
-		// TODO remove
-		panic(`dev error`)
-	}
+	// if len(newNMs) != len(p.metas) {
+	// 	panic(`dev error`)
+	// }
 
 	var newLoop looper
 	if p.loop != nil {
@@ -74,7 +78,6 @@ func (p Puzzle) withNewState(
 	}
 	return Puzzle{
 		metas: newNMs,
-		gn:    p.gn,
 		edges: edges,
 		rules: p.rules,
 		loop:  newLoop,
@@ -100,6 +103,13 @@ func (p Puzzle) getMetasCopy() []*model.NodeMeta {
 func (p Puzzle) GetNextTarget(
 	cur model.Target,
 ) (model.Target, model.State) {
+	_, loopState := p.getStateOfLoop(cur.Node.Coord())
+	switch loopState {
+	case model.Incomplete:
+		// continue down
+	default:
+		return model.InvalidTarget, loopState
+	}
 	return p.getNextTarget(cur)
 }
 
@@ -110,15 +120,15 @@ func (p Puzzle) GetFirstTarget() (model.Target, model.State) {
 func (p Puzzle) getNextTarget(
 	curTarget model.Target,
 ) (model.Target, model.State) {
-	switch s := p.GetState(); s {
-	case model.Complete:
-		return model.Target{}, model.Complete
-	case model.Incomplete:
-		// continue on...
-	default:
-		// Note: If we're NodesComplete, then we'll let our caller handle it.
-		return model.Target{}, s
-	}
+
+	// TODO maybe get rid of GetState?
+	// switch s := p.GetState(); s {
+	// case model.Incomplete:
+	// 	// continue on...
+	// default:
+	// 	// Note: If we're NodesComplete, then we'll let our caller handle it.
+	// 	return model.Target{}, s
+	// }
 
 	cs := buildSeenState(p.numEdges(), curTarget)
 

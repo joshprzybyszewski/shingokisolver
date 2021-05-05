@@ -6,10 +6,9 @@ var _ model.GetNoder = (nodeGrid)(nil)
 
 type nodeGrid [][]*model.Node
 
-func newNodeGrid(nl []model.Node) nodeGrid {
-
+func newNodeGrid(metas []*model.NodeMeta) nodeGrid {
 	maxRowIndex := int8(-1)
-	for _, n := range nl {
+	for _, n := range metas {
 		if int8(n.Coord().Row) > maxRowIndex {
 			maxRowIndex = int8(n.Coord().Row)
 		}
@@ -18,7 +17,7 @@ func newNodeGrid(nl []model.Node) nodeGrid {
 	ng := make(nodeGrid, maxRowIndex+1)
 	for r := int8(0); r < maxRowIndex+1; r++ {
 		maxColIndex := int8(-1)
-		for _, n := range nl {
+		for _, n := range metas {
 			if n.Coord().Row != model.RowIndex(r) {
 				continue
 			}
@@ -29,12 +28,11 @@ func newNodeGrid(nl []model.Node) nodeGrid {
 
 		row := make([]*model.Node, maxColIndex+1)
 
-		for _, n := range nl {
-			if n.Coord().Row != model.RowIndex(r) {
+		for _, nm := range metas {
+			if nm.Coord().Row != model.RowIndex(r) {
 				continue
 			}
-			n := n
-			row[n.Coord().Col] = &n
+			row[nm.Coord().Col] = &nm.Node
 		}
 
 		ng[r] = row

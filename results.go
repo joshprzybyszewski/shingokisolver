@@ -18,6 +18,9 @@ var (
 		`893,598`,
 		`3,225,837`,
 		`5,070,205`,
+		`5,155,284`,
+		`5,996,280`,
+		`9,506,048`,
 	}
 )
 
@@ -32,6 +35,10 @@ func shouldSkip(pd model.Definition) bool {
 			return true
 		}
 	}
+	// if strings.Contains(pd.String(), `3,746,739`) {
+	// 	return false
+	// }
+	// return true
 	return false
 }
 
@@ -55,8 +62,12 @@ func runStandardSolver() {
 			continue
 		}
 
-		summ := runSolver(pd)
-		allSummaries = append(allSummaries, summ)
+		summ, solved := runSolver(pd)
+		if solved {
+			allSummaries = append(allSummaries, summ)
+		} else if !(*shouldWriteResults) {
+			panic(`unsolved puzzle`)
+		}
 
 		time.Sleep(100 * time.Millisecond)
 		// collect garbage now, which should be that entire puzzle that we solved:#
@@ -72,7 +83,7 @@ func runStandardSolver() {
 
 func runSolver(
 	pd model.Definition,
-) summary {
+) (summary, bool) {
 
 	log.Printf("Starting to solve %q...\n", pd.String())
 
@@ -98,7 +109,8 @@ func runSolver(
 	).BlandString()
 
 	if err != nil {
-		log.Fatalf("Could not solve! %v: %s\n%s\n\n\n", err, sr, unsolvedStr)
+		log.Printf("Could not solve! %v: %s\n%s\n\n\n", err, sr, unsolvedStr)
+		return summary{}, false
 	} else {
 		log.Printf("Solved: %s\n\n\n", sr)
 	}
@@ -113,5 +125,5 @@ func runSolver(
 		pauseNS:    rms.PauseTotalNs - prevMemStats.PauseTotalNs,
 		Unsolved:   unsolvedStr,
 		Solution:   sr.Puzzle.BlandSolution(),
-	}
+	}, true
 }

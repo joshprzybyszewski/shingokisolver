@@ -15,6 +15,8 @@ func (s State) String() string {
 	switch s {
 	case Complete:
 		return `Complete`
+	case NodesComplete:
+		return `NodesComplete`
 	case Incomplete:
 		return `Incomplete`
 	case Violation:

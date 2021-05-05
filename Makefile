@@ -3,16 +3,32 @@ help: ## Prints out the options available in this makefile
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 .PHONY: profile
-profile: ## Run the solver and grab a CPU profile using pprof
+profile: ## Run the solver and grab a CPU/memory profile using pprof
 	go build -o solver.out .
-	./solver.out -includeProfile
-	go tool pprof solver.out solverProfile.pprof
+	./solver.out -concurrency -includeProfile -includeMemProf
+	pprof -web solver.out solverProfile.pprof
+	pprof -web solver.out solverMemory.pprof
+
+
+.PHONY: serialprofile
+serialprofile: ## Run the solver (in serial) and grab a CPU/memory profile using pprof
+	go build -o solver.out .
+	./solver.out -includeProfile -includeMemProf
+	pprof -web solver.out solverProfile.pprof
+	pprof -web solver.out solverMemory.pprof
+
+.PHONY: cpuprofile
+cpuprofile: ## Run the solver and grab a CPU profile using pprof.
+	go build -o solver.out .
+	./solver.out -concurrency -includeProfile
+	pprof -web solver.out solverProfile.pprof
 
 .PHONY: memprofile
-memprofile: ## Run the solver and grab a memory profile using pprof. Only runs on one puzzle
+memprofile: ## Run the solver and grab a memory profile using pprof.
 	go build -o solver.out .
-	./solver.out -includeMemProf
-	go tool pprof solver.out solverMemory.pprof
+	./solver.out -concurrency -includeMemProf
+	pprof -web solver.out solverProfile.pprof
+	pprof -web solver.out solverMemory.pprof
 
 .PHONY: serialdebug
 serialdebug: ## Run the serial solver and include progress logs
