@@ -2,6 +2,7 @@ package logic
 
 import (
 	"github.com/joshprzybyszewski/shingokisolver/model"
+	"github.com/joshprzybyszewski/shingokisolver/state"
 )
 
 type evaluator interface {
@@ -11,6 +12,9 @@ type evaluator interface {
 type Rules struct {
 	couldAffectMap map[model.EdgePair]struct{}
 	couldAffect    []model.EdgePair
+
+	interestedNodesSeener state.CoordSeener
+	interestedNodes       []model.Node
 
 	mustRunEvals []standardInput
 	otherEvals   []evaluator
@@ -24,11 +28,13 @@ func newRules(
 ) *Rules {
 
 	r := Rules{
-		me:             ep,
-		couldAffectMap: make(map[model.EdgePair]struct{}, 8),
-		couldAffect:    make([]model.EdgePair, 8),
-		mustRunEvals:   make([]standardInput, 0, 2),
-		otherEvals:     make([]evaluator, 0, 4),
+		me:                    ep,
+		couldAffectMap:        make(map[model.EdgePair]struct{}, 8),
+		couldAffect:           make([]model.EdgePair, 8),
+		interestedNodesSeener: state.NewCoordSeen(ge.NumEdges()),
+		interestedNodes:       make([]model.Node, 8),
+		mustRunEvals:          make([]standardInput, 0, 2),
+		otherEvals:            make([]evaluator, 0, 4),
 	}
 
 	otherStartEdges := getOtherEdgeInputs(ge, ep.NodeCoord, ep.Cardinal)
@@ -70,6 +76,10 @@ func (r *Rules) Affects() []model.EdgePair {
 	return r.couldAffect
 }
 
+func (r *Rules) InterestedNodes() []model.Node {
+	return r.interestedNodes
+}
+
 func (r *Rules) addAffected(otherEPs ...model.EdgePair) {
 	if r == nil {
 		return
@@ -86,6 +96,19 @@ func (r *Rules) addAffected(otherEPs ...model.EdgePair) {
 		r.couldAffectMap[other] = struct{}{}
 		r.couldAffect = append(r.couldAffect, other)
 	}
+}
+
+func (r *Rules) addInterestedNode(node model.Node) {
+	if r == nil {
+		return
+	}
+	if r.interestedNodesSeener.IsCoordSeen(node.Coord()) {
+		return
+	}
+
+	r.interestedNodesSeener.Mark(node.Coord())
+
+	r.interestedNodes = append(r.interestedNodes, node)
 }
 
 func (r *Rules) addEvaluation(eval evaluator) {

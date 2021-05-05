@@ -5,7 +5,7 @@ import (
 )
 
 func SetNodesComplete(p *Puzzle) {
-	p.loop = newAllSegmentsFromNodesComplete(p.nodes, &p.edges)
+	p.loop = newAllSegmentsFromNodesComplete(p.metas, &p.edges)
 }
 
 func (p Puzzle) GetState() model.State {
@@ -35,7 +35,7 @@ func (p Puzzle) getStateOfLoop(
 
 	if p.loop != nil {
 		if p.loop.IsLoop() {
-			if p.loop.NumNodesInLoop() != len(p.nodes) {
+			if p.loop.NumNodesInLoop() != len(p.metas) {
 				return model.InvalidEdgePair, model.Violation
 			}
 			return model.InvalidEdgePair, model.Complete
@@ -62,8 +62,8 @@ func (p Puzzle) getStateOfLoop(
 		return nextUnknown, model.Incomplete
 	}
 
-	for _, nm := range p.nodes {
-		if !seenNodes.IsCoordSeen(nm.node.Coord()) {
+	for _, nm := range p.metas {
+		if !seenNodes.IsCoordSeen(nm.Coord()) {
 			// node was not seen. therefore, we completed a loop that
 			// doesn't see all nodes!
 			return model.InvalidEdgePair, model.Violation
@@ -75,12 +75,12 @@ func (p Puzzle) getStateOfLoop(
 }
 
 func (p Puzzle) getRandomCoord() model.NodeCoord {
-	return getRandomCoord(p.nodes)
+	return getRandomCoord(p.metas)
 }
 
-func getRandomCoord(metas []*nodeMeta) model.NodeCoord {
+func getRandomCoord(metas []*model.NodeMeta) model.NodeCoord {
 	for _, nm := range metas {
-		return nm.node.Coord()
+		return nm.Coord()
 	}
 
 	panic(`dev error: getRandomCoord couldn't find anything`)

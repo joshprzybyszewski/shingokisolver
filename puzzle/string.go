@@ -159,8 +159,13 @@ func (p Puzzle) string(
 
 		for c := 0; c < p.numNodes(); c++ {
 			nc := model.NewCoordFromInts(r, c)
+			var n model.Node
+			ok := false
+			if p.gn != nil {
+				n, ok = p.gn.GetNode(nc)
+			}
 			// write a node
-			if n, ok := p.gn.GetNode(nc); ok {
+			if ok {
 				nOut, isMax := getSumOutgoingStraightLines(nc, &p.edges)
 				if nOut == n.Value() {
 					cw.addGreen(&sb, n.PrettyString())

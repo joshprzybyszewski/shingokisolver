@@ -18,21 +18,20 @@ type nodeOption struct {
 //   An error if the input is invalid (this is unexpected).
 func GetNextTarget(
 	curTarget Target,
-	nodes []Node,
-	tas [][]TwoArms,
+	metas []*NodeMeta,
 ) (Target, bool, error) {
 
 	var best nodeOption
 
-	for i, n := range nodes {
-		options := tas[i]
+	for _, nm := range metas {
+		options := nm.TwoArmOptions
 		if len(options) == 0 {
 			// this means that there's a node with literally zero options
-			return Target{}, false, fmt.Errorf(`no options for node %s`, n)
+			return Target{}, false, fmt.Errorf(`no options for node %s`, nm)
 		}
 
 		no := nodeOption{
-			Node:    n,
+			Node:    nm.Node,
 			Options: options,
 		}
 

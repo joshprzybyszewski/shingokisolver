@@ -12,7 +12,7 @@ type RuleSet struct {
 func New(
 	ge model.GetEdger,
 	numEdges int,
-	nodes []model.Node,
+	metas []*model.NodeMeta,
 ) *RuleSet {
 	rs := &RuleSet{
 		rows: make([][]*Rules, numEdges+1),
@@ -44,11 +44,13 @@ func New(
 		}
 	}
 
-	for _, n := range nodes {
-		nc := n.Coord()
+	for _, nm := range metas {
+		nc := nm.Coord()
 		for _, dir := range model.AllCardinals {
-			rs.Get(model.NewEdgePair(nc, dir)).addSimpleNodeRules(n, dir)
+			rs.Get(model.NewEdgePair(nc, dir)).addSimpleNodeRules(nm.Node, dir)
 		}
+
+		rs.AddAllTwoArmRules(*nm)
 	}
 
 	return rs

@@ -23,18 +23,18 @@ func BuildTestPuzzleWithNoRules(
 		t.Error(`bad input numEdges`)
 	}
 
-	nodeMetas := make([]*nodeMeta, 0, len(nls))
+	nodeMetas := make([]*model.NodeMeta, 0, len(nls))
 	for _, nl := range nls {
 		nc := model.NewCoordFromInts(nl.Row, nl.Col)
 		n := model.NewNode(nc, nl.IsWhite, nl.Value)
-		nodeMetas = append(nodeMetas, &nodeMeta{
-			node:          n,
-			twoArmOptions: model.BuildTwoArmOptions(n, numEdges),
+		nodeMetas = append(nodeMetas, &model.NodeMeta{
+			Node:          n,
+			TwoArmOptions: model.BuildTwoArmOptions(n, numEdges),
 		})
 	}
 
 	puzz := Puzzle{
-		nodes: nodeMetas,
+		metas: nodeMetas,
 		edges: state.New(numEdges),
 		rules: &logic.RuleSet{},
 	}

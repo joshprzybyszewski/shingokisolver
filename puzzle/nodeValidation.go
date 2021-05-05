@@ -15,6 +15,7 @@ func (p Puzzle) GetNodeState(
 		return model.Unexpected
 	}
 
+	// TODO convert this to a check on CheckComplete of the NodeMeta
 	ns := getNodeState(n, &p.edges)
 	if ns != model.Complete {
 		return ns
@@ -38,13 +39,13 @@ func (p Puzzle) getStateOfNodes() model.State {
 		return model.NodesComplete
 	}
 
-	for _, nm := range p.nodes {
-		if nm.isComplete {
+	for _, nm := range p.metas {
+		if nm.IsComplete {
 			continue
 		}
-		switch s := getNodeState(nm.node, &p.edges); s {
+
+		switch s := nm.CheckComplete(&p.edges); s {
 		case model.Complete:
-			nm.isComplete = true
 		default:
 			return s
 		}

@@ -12,13 +12,18 @@ type EdgeChecker interface {
 
 type Queue struct {
 	toCheck state.EdgeQueue
+
+	nodeSeener state.CoordSeener
+	nodes      []model.Node
 }
 
 func NewQueue(
 	numEdges int,
 ) *Queue {
 	return &Queue{
-		toCheck: state.NewEdgeQueue(numEdges),
+		toCheck:    state.NewEdgeQueue(numEdges),
+		nodeSeener: state.NewCoordSeen(numEdges),
+		nodes:      make([]model.Node, 0, 16),
 	}
 }
 
@@ -35,4 +40,28 @@ func (rq *Queue) Push(
 
 func (rq *Queue) Pop() (model.EdgePair, bool) {
 	return rq.toCheck.Pop()
+}
+
+func (rq *Queue) PushNodes(
+	others []model.Node,
+) {
+	for _, other := range others {
+		if rq.nodeSeener.IsCoordSeen(other.Coord()) {
+			continue
+		}
+		rq.nodeSeener.Mark(other.Coord())
+		rq.nodes = append(rq.nodes, other)
+	}
+}
+
+func (rq *Queue) PopAllNodes() []model.Node {
+	all := rq.nodes
+
+	for _, n := range all {
+		rq.nodeSeener.UnMark(n.Coord())
+	}
+	rq.nodes = rq.nodes[:0]
+
+	return all
+
 }

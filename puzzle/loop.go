@@ -38,7 +38,7 @@ type allSegments struct {
 }
 
 func newAllSegmentsFromNodesComplete(
-	metas []*nodeMeta,
+	metas []*model.NodeMeta,
 	ge model.GetEdger,
 ) *allSegments {
 	all := make([]pathSegment, 0, len(metas)/2)
@@ -49,10 +49,10 @@ func newAllSegmentsFromNodesComplete(
 		if isSeen[i] {
 			continue
 		}
-		ps, cs, isLoop := getPathSegment(ge, nm.node.Coord())
+		ps, cs, isLoop := getPathSegment(ge, nm.Coord())
 
 		for j := i; j < len(metas); j++ {
-			if cs.IsCoordSeen(metas[j].node.Coord()) {
+			if cs.IsCoordSeen(metas[j].Coord()) {
 				ps.numNodes++
 				isSeen[j] = true
 			}

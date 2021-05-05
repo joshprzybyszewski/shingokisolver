@@ -12,7 +12,7 @@ type Puzzle struct {
 	rules *logic.RuleSet
 	loop  looper
 
-	nodes []*nodeMeta
+	metas []*model.NodeMeta
 }
 
 func NewPuzzle(
@@ -24,78 +24,61 @@ func NewPuzzle(
 	}
 
 	nodes := make([]model.Node, 0, len(nodeLocations))
-	nodeMetas := make([]*nodeMeta, 0, len(nodeLocations))
 	for _, nl := range nodeLocations {
-		nc := model.NewCoordFromInts(nl.Row, nl.Col)
-		n := model.NewNode(nc, nl.IsWhite, nl.Value)
-		nodes = append(nodes, n)
-		nodeMetas = append(nodeMetas, &nodeMeta{
-			node:          n,
-			twoArmOptions: model.BuildTwoArmOptions(n, numEdges),
+		nodes = append(nodes,
+			model.NewNode(
+				model.NewCoordFromInts(nl.Row, nl.Col),
+				nl.IsWhite,
+				nl.Value,
+			),
+		)
+	}
+	gn := newNodeGrid(nodes)
+
+	metas := make([]*model.NodeMeta, 0, len(nodeLocations))
+	for _, n := range nodes {
+		tao := model.BuildTwoArmOptions(n, numEdges)
+		maxLensByDir := model.GetMaxArmsByDir(tao)
+		nearby := model.BuildNearbyNodes(n, gn, maxLensByDir)
+
+		metas = append(metas, &model.NodeMeta{
+			Node:          n,
+			TwoArmOptions: tao,
+			Nearby:        nearby,
 		})
 	}
 
-	gn := newNodeGrid(nodes)
 	edges := state.New(numEdges)
-	rules := logic.New(&edges, numEdges, nodes)
+	rules := logic.New(&edges, numEdges, metas)
 
-	puzz := Puzzle{
-		nodes: nodeMetas,
+	return Puzzle{
+		metas: metas,
 		gn:    gn,
 		edges: edges,
 		rules: rules,
 	}
-
-	updateCache(&puzz)
-
-	return puzz
 }
 
 func (p Puzzle) withNewState(
 	edges state.TriEdges,
+	newNMs []*model.NodeMeta,
 ) Puzzle {
+	if len(newNMs) != len(p.metas) {
+		// TODO remove
+		panic(`dev error`)
+	}
+
 	var newLoop looper
 	if p.loop != nil {
 		newLoop = p.loop.withUpdatedEdges(&edges)
 	}
 	return Puzzle{
-		nodes: p.nodes,
+		metas: newNMs,
 		gn:    p.gn,
 		edges: edges,
 		rules: p.rules,
 		loop:  newLoop,
 	}
-}
-
-func updateCache(p *Puzzle) {
-	oldMetas := p.nodes
-	newMetas := make([]*nodeMeta, len(oldMetas))
-
-	for i, nm := range oldMetas {
-		if nm.isComplete {
-			newMetas[i] = &nodeMeta{
-				node:       nm.node,
-				isComplete: true,
-			}
-			continue
-		}
-
-		allTAs := nm.twoArmOptions
-
-		maxLensByDir := model.GetMaxArmsByDir(allTAs)
-		nearbyNodes := model.BuildNearbyNodes(nm.node, p.gn, maxLensByDir)
-
-		newMetas[i] = &nodeMeta{
-			node:   nm.node,
-			nearby: nearbyNodes,
-			twoArmOptions: nm.node.GetFilteredOptions(
-				allTAs,
-				&p.edges,
-				nearbyNodes,
-			),
-		}
-	}
-	p.nodes = newMetas
 }
 
 func (p Puzzle) numEdges() int {
@@ -104,6 +87,14 @@ func (p Puzzle) numEdges() int {
 
 func (p Puzzle) areNodesComplete() bool {
 	return p.loop != nil
+}
+
+func (p Puzzle) getMetasCopy() []*model.NodeMeta {
+	metas := make([]*model.NodeMeta, 0, len(p.metas))
+	for _, n := range p.metas {
+		metas = append(metas, n.Copy())
+	}
+	return metas
 }
 
 func (p Puzzle) GetNextTarget(
@@ -131,25 +122,17 @@ func (p Puzzle) getNextTarget(
 
 	cs := buildSeenState(p.numEdges(), curTarget)
 
-	nodesCopy := make([]model.Node, 0, len(p.nodes))
-	tas := make([][]model.TwoArms, 0, len(p.nodes))
-	for _, nm := range p.nodes {
-		if cs.IsCoordSeen(nm.node.Coord()) {
+	metasCpy := make([]*model.NodeMeta, 0, len(p.metas))
+	for _, nm := range p.metas {
+		if nm.IsComplete || cs.IsCoordSeen(nm.Coord()) {
 			continue
 		}
-
-		nodesCopy = append(nodesCopy, nm.node)
-		tas = append(tas, nm.node.GetFilteredOptions(
-			nm.twoArmOptions,
-			&p.edges,
-			nm.nearby,
-		))
+		metasCpy = append(metasCpy, nm.Copy())
 	}
 
 	t, ok, err := model.GetNextTarget(
 		curTarget,
-		nodesCopy,
-		tas,
+		metasCpy,
 	)
 
 	if err != nil {
