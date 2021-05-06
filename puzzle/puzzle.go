@@ -11,6 +11,7 @@ type Puzzle struct {
 	rules *logic.RuleSet
 	loop  looper
 
+	// TODO keep a slice of structs, not pointers
 	metas []*model.NodeMeta
 }
 
@@ -120,15 +121,6 @@ func (p Puzzle) GetFirstTarget() (model.Target, model.State) {
 func (p Puzzle) getNextTarget(
 	curTarget model.Target,
 ) (model.Target, model.State) {
-
-	// TODO maybe get rid of GetState?
-	// switch s := p.GetState(); s {
-	// case model.Incomplete:
-	// 	// continue on...
-	// default:
-	// 	// Note: If we're NodesComplete, then we'll let our caller handle it.
-	// 	return model.Target{}, s
-	// }
 
 	cs := buildSeenState(p.numEdges(), curTarget)
 

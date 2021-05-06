@@ -13,16 +13,19 @@ type EdgeQueue interface {
 type edgeState struct {
 	rows []bitData
 	cols []bitData
+
+	edges []model.EdgePair
 }
 
 func NewEdgeQueue(numEdges int) EdgeQueue {
-	return edgeState{
-		rows: make([]bitData, numEdges+1),
-		cols: make([]bitData, numEdges+1),
+	return &edgeState{
+		rows:  make([]bitData, numEdges+1),
+		cols:  make([]bitData, numEdges+1),
+		edges: make([]model.EdgePair, 16),
 	}
 }
 
-func (es edgeState) IsEdgeSeen(ep model.EdgePair) bool {
+func (es *edgeState) IsEdgeSeen(ep model.EdgePair) bool {
 	switch ep.Cardinal {
 	case model.HeadRight:
 		return (es.rows[ep.Row] & masks[ep.Col]) != 0
@@ -32,7 +35,8 @@ func (es edgeState) IsEdgeSeen(ep model.EdgePair) bool {
 	return false
 }
 
-func (es edgeState) Push(ep model.EdgePair) {
+func (es *edgeState) Push(ep model.EdgePair) {
+	es.edges = append(es.edges, ep)
 	switch ep.Cardinal {
 	case model.HeadRight:
 		es.rows[ep.Row] |= masks[ep.Col]
@@ -41,40 +45,15 @@ func (es edgeState) Push(ep model.EdgePair) {
 	}
 }
 
-func (es edgeState) Pop() (model.EdgePair, bool) {
-	for r, row := range es.rows {
-		if row == 0 {
-			continue
-		}
-		for c := 0; c < len(es.cols); c++ {
-			if row&masks[c] == 0 {
-				continue
-			}
-			es.rows[r] = row ^ masks[c]
-
-			return model.NewEdgePair(
-				model.NewCoordFromInts(r, c),
-				model.HeadRight,
-			), true
-		}
+func (es *edgeState) Pop() (model.EdgePair, bool) {
+	if len(es.edges) == 0 {
+		return model.InvalidEdgePair, false
 	}
+	ep := es.edges[0]
+	es.rows[ep.Row] = es.rows[ep.Row] ^ masks[ep.Col]
 
-	for c, col := range es.cols {
-		if col == 0 {
-			continue
-		}
-		for r := 0; r < len(es.cols); r++ {
-			if col&masks[r] == 0 {
-				continue
-			}
-			es.cols[c] = col ^ masks[r]
+	es.edges[0] = es.edges[len(es.edges)-1]
+	es.edges = es.edges[:len(es.edges)-1]
 
-			return model.NewEdgePair(
-				model.NewCoordFromInts(r, c),
-				model.HeadDown,
-			), true
-		}
-	}
-
-	return model.InvalidEdgePair, false
+	return ep, true
 }

@@ -178,9 +178,7 @@ func (su stateUpdater) runQueue() model.State {
 		for _, n := range nodesToCheck {
 			ms = su.checkAdvancedRules(n)
 			switch ms {
-			case model.Complete:
-				// TODO check for a loop?
-			case model.Incomplete, model.Duplicate:
+			case model.Complete, model.Incomplete, model.Duplicate:
 				// just keep going
 			default:
 				return ms

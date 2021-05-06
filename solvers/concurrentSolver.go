@@ -12,9 +12,11 @@ import (
 )
 
 const (
-	workChanLen = 16
+	workChanLen = 32
 
 	maxAdditionsAllowed = int32(1 << 20)
+
+	maxAttemptDuration = time.Minute
 )
 
 var (
@@ -99,7 +101,7 @@ func (cs *concurrentSolver) solve(
 	var sol puzzle.Puzzle
 	ok := false
 	select {
-	case <-time.After(3 * time.Minute):
+	case <-time.After(maxAttemptDuration):
 		//	three minutes is as long as any run these days..
 	case sol, ok = <-cs.solution:
 	}
@@ -323,8 +325,6 @@ func (cs *concurrentSolver) getNextPayload(
 				if ok {
 					withArmAndPerps = append(withArmAndPerps, u)
 				}
-			case model.Duplicate:
-				panic(`josh`)
 			}
 
 		}

@@ -23,10 +23,11 @@ func (si standardInput) evaluate(ge model.GetEdger) model.EdgeState {
 	numExisting := 0
 
 	for _, otherEP := range si.otherInputs {
-		if ge.IsEdge(otherEP) {
-			numExisting++
-		} else if ge.IsAvoided(otherEP) {
+		switch ge.GetEdge(otherEP) {
+		case model.EdgeAvoided:
 			numNonExisting++
+		case model.EdgeExists:
+			numExisting++
 		}
 	}
 
