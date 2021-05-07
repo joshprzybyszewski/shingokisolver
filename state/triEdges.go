@@ -4,8 +4,10 @@ import (
 	"github.com/joshprzybyszewski/shingokisolver/model"
 )
 
+type bitData uint32
+
 const (
-	MaxEdges = 25 // currently, the len(masks)
+	MaxEdges = 32 // needs to have the space for it in bitData
 )
 
 var _ model.GetEdger = (*TriEdges)(nil)

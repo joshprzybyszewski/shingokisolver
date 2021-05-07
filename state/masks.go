@@ -2,8 +2,6 @@ package state
 
 import "github.com/joshprzybyszewski/shingokisolver/model"
 
-type bitData uint32
-
 var (
 	masks       = make([]bitData, MaxEdges+1)
 	armLenMasks = make([]bitData, len(masks)+1)

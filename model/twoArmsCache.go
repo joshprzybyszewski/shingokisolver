@@ -2,7 +2,8 @@ package model
 
 var (
 	// puzzle size to Node to options
-	optionsCache map[int]map[Node][]TwoArms = make(map[int]map[Node][]TwoArms, 25)
+	// should allow for state.MaxEdges
+	optionsCache map[int]map[Node][]TwoArms = make(map[int]map[Node][]TwoArms, 50)
 )
 
 func BuildTwoArmOptions(

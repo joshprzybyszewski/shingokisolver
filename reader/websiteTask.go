@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/joshprzybyszewski/shingokisolver/model"
 )
@@ -51,6 +52,24 @@ func cacheTaskToFile(
 		return
 	}
 	defer f.Close()
+
+	if puzzID == `` {
+		var date string
+		switch numEdges {
+		case 30:
+			// daily special
+			date = time.Now().Format("01-02-2006")
+		case 35:
+			// weekly special
+			date = time.Now().Format("01-02-2006")
+		case 40:
+			// monthly special
+			date = time.Now().Format("01-2006")
+		default:
+			date = `unspecified`
+		}
+		puzzID = fmt.Sprintf("%s-%dx%d", date, numEdges, numEdges)
+	}
 
 	line := fmt.Sprintf("%d:%s_%s:%s\n", numEdges, puzzID, difficulty, input)
 

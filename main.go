@@ -30,4 +30,10 @@ func main() {
 	}
 
 	runStandardSolver()
+
+	/* fetch the daily/weekly/monthly special
+	compete.PopulateCache(30, model.Easy, 5)
+	compete.PopulateCache(35, model.Easy, 5)
+	compete.PopulateCache(40, model.Easy, 5)
+	*/
 }

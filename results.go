@@ -35,10 +35,6 @@ func shouldSkip(pd model.Definition) bool {
 			return true
 		}
 	}
-	// if strings.Contains(pd.String(), `3,746,739`) {
-	// 	return false
-	// }
-	// return true
 	return false
 }
 

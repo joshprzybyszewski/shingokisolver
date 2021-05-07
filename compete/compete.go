@@ -16,7 +16,10 @@ func PopulateCache(
 	diff model.Difficulty,
 	numDesired int,
 ) {
-	if numDesired < 1000 {
+	if size > 25 {
+		// these are daily/weekly/monthly "specials"
+		numDesired = 1
+	} else if numDesired < 1000 {
 		// we have plenty
 		return
 	}
@@ -41,8 +44,11 @@ func Run() {
 			// 7,
 			// 10,
 			// 15,
-			20,
+			// 20,
 			25,
+			30,
+			35,
+			40,
 		} {
 
 			log.Printf("starting competition for %s %d edges", d, s)
@@ -51,7 +57,7 @@ func Run() {
 
 			// wait 5 seconds between runs so we don't overwhelm
 			// their servers or our machine accidentally:#
-			time.Sleep(5 * time.Second)
+			time.Sleep(3 * time.Second)
 
 			// collect garbage now, which should be that entire puzzle that we solved:#
 			runtime.GC()
