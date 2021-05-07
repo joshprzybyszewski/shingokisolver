@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 
@@ -192,6 +193,18 @@ func buildSummaryBySize(
 	// Print basic CPU information:
 	sb.WriteString("_")
 	sb.WriteString(cpu.CPU.BrandName)
+	sb.WriteString("_\n")
+	sb.WriteString("_")
+	sb.WriteString(strconv.Itoa(cpu.CPU.LogicalCores))
+	sb.WriteString(" logical cores")
+	sb.WriteString("_\n")
+	sb.WriteString("_")
+	sb.WriteString(strconv.Itoa(cpu.CPU.PhysicalCores))
+	sb.WriteString(" physical cores")
+	sb.WriteString("_\n")
+	sb.WriteString("_")
+	sb.WriteString(strconv.Itoa(cpu.CPU.ThreadsPerCore))
+	sb.WriteString(" threads per core")
 	sb.WriteString("_\n\n")
 	/*
 		This is just the example I pulled from:
@@ -212,12 +225,14 @@ func buildSummaryBySize(
 	sb.WriteString("|Num Edges|")
 	sb.WriteString("Difficulty|")
 	sb.WriteString("Sample Size|")
+	sb.WriteString("Best Duration|")
 	sb.WriteString("Average Duration|")
+	sb.WriteString("Best Allocations (KB)|")
 	sb.WriteString("Average Allocations (KB)|")
 	sb.WriteString("Average Garbage Collections|")
 	sb.WriteString("Average GC Pause|")
 	sb.WriteString("\n")
-	sb.WriteString("|-:|-|-:|-:|-:|-:|-:|\n")
+	sb.WriteString("|-:|-|-:|-:|-:|-:|-:|-:|-:|\n")
 
 	for size := 1; size <= state.MaxEdges; size++ {
 		for _, d := range model.AllDifficulties {
@@ -230,14 +245,31 @@ func buildSummaryBySize(
 				compete.PopulateCache(size, d, sampleSize-len(summaries))
 			}
 
+			var bestDur time.Duration
 			var totalDur time.Duration
+			var bestHeapBytes uint64
 			var totalHeapBytes uint64
 			var totalGCs uint32
 			var totalPauseNS uint64
 
+			if len(summaries) > 0 {
+				bestDur = summaries[0].Duration
+				bestHeapBytes = summaries[0].heapSize
+			}
+
 			for i := range summaries {
-				totalDur += summaries[i].Duration
-				totalHeapBytes += summaries[i].heapSize
+				dur := summaries[i].Duration
+				if dur < bestDur {
+					bestDur = dur
+				}
+				totalDur += dur
+
+				hs := summaries[i].heapSize
+				if hs < bestHeapBytes {
+					bestHeapBytes = hs
+				}
+				totalHeapBytes += hs
+
 				totalGCs += summaries[i].numGCs
 				totalPauseNS += summaries[i].pauseNS
 			}
@@ -248,11 +280,13 @@ func buildSummaryBySize(
 			avgPauseNS := time.Duration(float64(totalPauseNS) / float64(len(summaries)))
 
 			sb.WriteString(fmt.Sprintf(
-				"|%dx%d|%s|%d|%s|%.3f|%.2f|%s|\n",
+				"|%dx%d|%s|%d|%s|%s|%.3f|%.3f|%.2f|%s|\n",
 				size, size,
 				d,
 				len(summaries),
+				bestDur,
 				avgDur,
+				float64(totalHeapBytes)/1024,
 				avgAllocs/1024,
 				avgGCs,
 				avgPauseNS,
