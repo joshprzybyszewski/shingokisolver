@@ -90,6 +90,7 @@ func (p Puzzle) numEdges() int {
 }
 
 func (p Puzzle) areNodesComplete() bool {
+	// TODO convert to looking at all node metas for complete.
 	return p.loop != nil
 }
 

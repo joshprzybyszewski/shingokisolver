@@ -1,6 +1,7 @@
 package solvers
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"runtime"
@@ -48,6 +49,7 @@ type concurrentSolver struct {
 
 	pendingTargets int32
 	pendingFlips   int32
+	finished       int32
 
 	started time.Time
 }
@@ -87,8 +89,11 @@ func (cs *concurrentSolver) solve(
 	defer close(cs.flipping)
 	defer close(cs.targets)
 
+	ctx, cancelFn := context.WithTimeout(context.Background(), maxAttemptDuration)
+	defer cancelFn()
+
 	for i := 0; i < numCPU; i++ {
-		go cs.startWorker()
+		go cs.startWorker(ctx)
 	}
 
 	cs.queuePayload(&unsolved{
@@ -101,10 +106,11 @@ func (cs *concurrentSolver) solve(
 	var sol puzzle.Puzzle
 	ok := false
 	select {
-	case <-time.After(maxAttemptDuration):
+	case <-ctx.Done():
 		//	three minutes is as long as any run these days..
 	case sol, ok = <-cs.solution:
 	}
+	atomic.AddInt32(&cs.finished, 1)
 	if !ok {
 		log.Printf("solution channel closed!")
 		log.Printf("\tpendingTargets:       %d",
@@ -136,11 +142,7 @@ func (cs *concurrentSolver) queuePayload(payload *unsolved) {
 
 	if payload.isNodesComplete {
 		if !cs.isFlipsBackedUp() {
-			tot := atomic.AddInt32(&cs.pendingFlips, 1)
-			if tot > workChanLen*4 {
-				// wtf?
-				close(cs.solution)
-			}
+			atomic.AddInt32(&cs.pendingFlips, 1)
 			go cs.queueFlippingPayload(flippingPayload{
 				puzz:        payload.puzz,
 				nextUnknown: payload.nextUnknown,
@@ -149,17 +151,16 @@ func (cs *concurrentSolver) queuePayload(payload *unsolved) {
 		}
 	} else {
 		if !cs.isTargetsBackedUp() {
-			tot := atomic.AddInt32(&cs.pendingTargets, 1)
-			if tot > workChanLen*4 {
-				// wtf?
-				close(cs.solution)
-			}
+			atomic.AddInt32(&cs.pendingTargets, 1)
 			go cs.queueTargetPayload(targetPayload{
 				puzz:   payload.puzz,
 				target: payload.target,
 			})
 			return
 		}
+	}
+	if atomic.LoadInt32(&cs.finished) > 0 {
+		return
 	}
 
 	cs.workOnPayloadNow(payload)
@@ -212,9 +213,11 @@ func (cs *concurrentSolver) workOnPayloadNow(
 	}
 }
 
-func (cs *concurrentSolver) startWorker() {
+func (cs *concurrentSolver) startWorker(ctx context.Context) {
 	for {
 		select {
+		case <-ctx.Done():
+			return
 		case tp, ok := <-cs.targets:
 			if !ok {
 				return

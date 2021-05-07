@@ -49,6 +49,10 @@ func runStandardSolver() {
 	numBySize := make(map[int]map[model.Difficulty]int, 8)
 
 	for _, pd := range allPDs {
+		if pd.Difficulty == model.Unknown {
+			// don't solve "unknowns" because it bloats my stats
+			continue
+		}
 		if _, ok := numBySize[pd.NumEdges]; !ok {
 			numBySize[pd.NumEdges] = make(map[model.Difficulty]int, 3)
 		}

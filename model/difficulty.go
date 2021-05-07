@@ -1,7 +1,7 @@
 package model
 
 const (
-	unknown Difficulty = 0
+	Unknown Difficulty = 0
 	Easy    Difficulty = 1
 	Medium  Difficulty = 2
 	Hard    Difficulty = 3
@@ -26,7 +26,7 @@ func NewDifficulty(s string) Difficulty {
 	case `hard`:
 		return Hard
 	default:
-		return unknown
+		return Unknown
 	}
 }
 
@@ -39,6 +39,6 @@ func (d Difficulty) String() string {
 	case Hard:
 		return `hard`
 	default:
-		return `unknown Difficulty`
+		return `Unknown Difficulty`
 	}
 }

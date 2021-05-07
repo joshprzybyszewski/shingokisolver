@@ -47,7 +47,10 @@ func CachedWebsitePuzzles() ([]model.Definition, error) {
 	}
 
 	sort.Slice(pds, func(i, j int) bool {
-		return pds[i].NumEdges < pds[j].NumEdges
+		if pds[i].NumEdges != pds[j].NumEdges {
+			return pds[i].NumEdges < pds[j].NumEdges
+		}
+		return pds[i].Difficulty < pds[j].Difficulty
 	})
 
 	return pds, nil

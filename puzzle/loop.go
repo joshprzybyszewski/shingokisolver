@@ -120,6 +120,9 @@ func (as *allSegments) withUpdatedEdges(
 		return as
 	}
 
+	// TODO consider if I don't have "all of the segments".
+	// How do I find out if the edger added new segments?
+
 	newSegments := make([]pathSegment, 0, len(as.all))
 
 	targets := state.NewCoordSeen(ge.NumEdges())
