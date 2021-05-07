@@ -2,6 +2,7 @@ package reader
 
 import (
 	"io/ioutil"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -44,6 +45,10 @@ func CachedWebsitePuzzles() ([]model.Definition, error) {
 		pds = append(pds, pd)
 		includedPuzzleIDs[puzzID] = struct{}{}
 	}
+
+	sort.Slice(pds, func(i, j int) bool {
+		return pds[i].NumEdges < pds[j].NumEdges
+	})
 
 	return pds, nil
 }
