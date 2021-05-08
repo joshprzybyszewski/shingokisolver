@@ -193,16 +193,13 @@ func buildSummaryBySize(
 	// Print basic CPU information:
 	sb.WriteString("_")
 	sb.WriteString(cpu.CPU.BrandName)
-	sb.WriteString("_\n")
-	sb.WriteString("_")
+	sb.WriteString(", ")
 	sb.WriteString(strconv.Itoa(cpu.CPU.LogicalCores))
 	sb.WriteString(" logical cores")
-	sb.WriteString("_\n")
-	sb.WriteString("_")
+	sb.WriteString(", ")
 	sb.WriteString(strconv.Itoa(cpu.CPU.PhysicalCores))
 	sb.WriteString(" physical cores")
-	sb.WriteString("_\n")
-	sb.WriteString("_")
+	sb.WriteString(", ")
 	sb.WriteString(strconv.Itoa(cpu.CPU.ThreadsPerCore))
 	sb.WriteString(" threads per core")
 	sb.WriteString("_\n\n")
@@ -286,7 +283,7 @@ func buildSummaryBySize(
 				len(summaries),
 				bestDur,
 				avgDur,
-				float64(totalHeapBytes)/1024,
+				float64(bestHeapBytes)/1024,
 				avgAllocs/1024,
 				avgGCs,
 				avgPauseNS,
