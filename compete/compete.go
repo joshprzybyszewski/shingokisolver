@@ -34,6 +34,9 @@ func PopulateCache(
 }
 
 func Run() {
+	numPuzzles := 14
+	sleepDur := time.Second
+
 	for _, d := range []model.Difficulty{
 		model.Easy,
 		model.Medium,
@@ -42,25 +45,29 @@ func Run() {
 		for _, s := range []int{
 			// 5,
 			// 7,
-			// 10,
-			// 15,
-			// 20,
+			10,
+			15,
+			20,
 			25,
 			30,
-			35,
-			40,
+			// 35,
+			// 40,
 		} {
+			for i := 0; i < numPuzzles; i++ {
+				log.Printf("starting competition for %s %d edges", d, s)
 
-			log.Printf("starting competition for %s %d edges", d, s)
+				getAndSubmitPuzzle(s, d, i)
 
-			getAndSubmitPuzzle(s, d)
+				// collect garbage now, which should be that entire puzzle that we solved:#
+				runtime.GC()
 
-			// wait 5 seconds between runs so we don't overwhelm
-			// their servers or our machine accidentally:#
-			time.Sleep(3 * time.Second)
+				// between runs so we don't overwhelm
+				// their servers or our machine accidentally:#
+				time.Sleep(sleepDur)
 
-			// collect garbage now, which should be that entire puzzle that we solved:#
-			runtime.GC()
+				// another garbage collect can't hurt
+				runtime.GC()
+			}
 		}
 	}
 }
@@ -68,8 +75,9 @@ func Run() {
 func getAndSubmitPuzzle(
 	size int,
 	diff model.Difficulty,
+	i int,
 ) {
-	err := initLogs(fmt.Sprintf("%s_%dx%d/", diff, size, size))
+	err := initLogs(fmt.Sprintf("%s_%dx%d_%d/", diff, size, size, i))
 	if err != nil {
 		panic(err)
 	}
